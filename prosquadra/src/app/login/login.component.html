@@ -1,0 +1,21 @@
+<div class="login-container">
+    <div class="login-card">
+      <h2>ProSquadra</h2>
+      <div class="logo">LOGO</div>
+  
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <mat-form-field appearance="fill">
+          <mat-label>Benutzername</mat-label>
+          <input matInput formControlName="username" placeholder="Benutzername">
+        </mat-form-field>
+  
+        <mat-form-field appearance="fill">
+          <mat-label>Passwort</mat-label>
+          <input matInput formControlName="password" placeholder="Passwort" type="password">
+        </mat-form-field>
+  
+        <button mat-raised-button color="primary" type="submit">Anmelden</button>
+      </form>
+    </div>
+  </div>
+  
