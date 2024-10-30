@@ -35,7 +35,7 @@ Das Dashboard ist so aufgebaut, dass die linke und rechte Seitenleiste (Sidebar)
 
 ### Routenstruktur
 
-* ````/dashboard```` oder ````/dashboard/home````: Lädt die Standard-Ansicht des Dashboards ((````DashboardHomeComponent(````).
+* ````/dashboard```` oder ````/dashboard/home````: Lädt die Standard-Ansicht des Dashboards (````DashboardHomeComponent````).
 * ````/dashboard/create-project````: Lädt die Projekt-Erstellungsansicht (````CreateProjectComponent````).
 
 Dieses Routing-Konzept sorgt für eine einfache Navigation innerhalb des Dashboards und ermöglicht ein schnelles Umschalten zwischen Ansichten, ohne die allgemeine Seitenstruktur zu beeinträchtigen :)
@@ -44,3 +44,7 @@ Dieses Routing-Konzept sorgt für eine einfache Navigation innerhalb des Dashboa
 
 * Dieses Projekt nutzt Standalone Components, sodass jede Komponente ihre eigenen Abhängigkeiten verwaltet.
 * RouterModule und andere Angular-Module (z. B. ````MatButtonModule````) müssen direkt in der ````imports````-Liste jeder Komponente angegeben werden, wenn sie benötigt werden.
+
+## Preview
+
+![](https://web06.iis.uni-bamberg.de/gitlab/wip2425g1/wip2425_g1/-/tree/main/prosquadra/readme_preview.gif)
