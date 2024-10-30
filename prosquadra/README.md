@@ -47,4 +47,4 @@ Dieses Routing-Konzept sorgt für eine einfache Navigation innerhalb des Dashboa
 
 ## Preview
 
-![](https://web06.iis.uni-bamberg.de/gitlab/wip2425g1/wip2425_g1/-/tree/main/prosquadra/readme_preview.gif)
+![](https://web06.iis.uni-bamberg.de/gitlab/wip2425g1/wip2425_g1/-/raw/main/prosquadra/readme_preview.gif)
