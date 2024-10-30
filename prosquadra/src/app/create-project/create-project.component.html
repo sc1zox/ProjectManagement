@@ -1,0 +1,27 @@
+<div class="create-project-container">
+    <h2>Neues Projekt erstellen</h2>
+    <form [formGroup]="projectForm" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="fill">
+        <mat-label>Projekt Name</mat-label>
+        <input matInput formControlName="projectName" placeholder="Projekt Name">
+      </mat-form-field>
+  
+      <mat-form-field appearance="fill">
+        <mat-label>Product Owner</mat-label>
+        <input matInput formControlName="productOwner" placeholder="Product Owner">
+      </mat-form-field>
+  
+      <mat-form-field appearance="fill">
+        <mat-label>Scrum Master</mat-label>
+        <input matInput formControlName="scrumMaster" placeholder="Scrum Master">
+      </mat-form-field>
+  
+      <mat-form-field appearance="fill">
+        <mat-label>Team</mat-label>
+        <input matInput formControlName="teamName" placeholder="Team">
+      </mat-form-field>
+  
+      <button mat-raised-button color="primary" type="submit">Erstellen</button>
+    </form>
+  </div>
+  

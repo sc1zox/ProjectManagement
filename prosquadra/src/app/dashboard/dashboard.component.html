@@ -2,7 +2,8 @@
     <!-- Left Sidebar -->
     <aside class="sidebar">
       <mat-nav-list>
-        <mat-list-item>Projekt erstellen</mat-list-item>
+        <mat-list-item routerLink="/dashboard/home">Dashboard</mat-list-item>
+        <mat-list-item routerLink="/dashboard/create-project">Projekt erstellen</mat-list-item>
         <mat-list-item>Analyse Bereich</mat-list-item>
         <mat-list-item>Teamplanung</mat-list-item>
       </mat-nav-list>
@@ -10,13 +11,7 @@
   
     <!-- Main Content Area -->
     <main class="main-content">
-      <mat-card *ngFor="let project of projects" class="project-card">
-        <h3>{{ project.name }}</h3>
-        <!-- Placeholders -->
-        <p>Beginn - Ende</p>
-        <p>Backlogitems: x / x | %</p>
-        <p>Weitere Informationen</p>
-      </mat-card>
+        <router-outlet></router-outlet>
     </main>
   
     <!-- Right Sidebar -->
@@ -34,5 +29,4 @@
         <!-- Optionale Anforderung -->
       </div>
     </aside>
-  </div>
-  
+</div>
