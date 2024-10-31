@@ -1,0 +1,18 @@
+.project-card {
+    margin-bottom: calc(var(--content-margin)*2);
+    padding: calc(var(--content-padding)/2);
+    background-color: #f5f9ff;
+  }
+.main-content{
+  padding: var(--content-padding);
+  width: 80%;
+}
+.dashboard-home{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.link-button{
+  margin-top: var(--content-margin);
+}

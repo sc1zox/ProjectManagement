@@ -1,0 +1,59 @@
+<div class="sidebar-right">
+  <mat-icon matBadge="{{ notifications }}" id="notification">notifications</mat-icon> <!-- notifications should be fetched by a service aswell and be clickable -->
+
+  <div class="user-info">
+    <p>Benutzer</p>
+    <div class="user-avatar">
+      <div class="name">CI</div> <!-- this should be fetched by the username -->
+    </div>
+  </div>
+
+
+  <mat-accordion class="ProjectListContainer">
+
+    <mat-expansion-panel [expanded]="false">
+      <mat-expansion-panel-header>
+        <mat-panel-title>Projekte</mat-panel-title>
+      </mat-expansion-panel-header>
+
+
+      <div *ngFor="let proj of userProjects">
+        <mat-expansion-panel class="project">
+          <mat-expansion-panel-header>
+            <mat-panel-title>{{ proj }}</mat-panel-title>
+          </mat-expansion-panel-header>
+          <p>Details about {{ proj }} go here.</p>
+        </mat-expansion-panel>
+      </div>
+    </mat-expansion-panel>
+  </mat-accordion>
+
+  <div class="user-skills">
+    <mat-form-field>
+      <mat-label>My Skills:</mat-label>
+      <mat-chip-grid #chipGrid aria-label="Enter programming languages">
+        <mat-chip-row
+          *ngFor="let pl of result()"
+          (removed)="remove(pl)"
+          [removable]="true"
+          [editable]="true"
+          (edited)="edit(pl, $event)"
+        >
+          {{ pl.name }}
+          <button matChipRemove>
+            <mat-icon>close</mat-icon>
+          </button>
+        </mat-chip-row>
+        <input
+          placeholder="New language..."
+          [matChipInputFor]="chipGrid"
+          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+          [matChipInputAddOnBlur]="addOnBlur"
+          (matChipInputTokenEnd)="add($event)"
+        />
+      </mat-chip-grid>
+    </mat-form-field>
+  </div>
+
+
+</div>

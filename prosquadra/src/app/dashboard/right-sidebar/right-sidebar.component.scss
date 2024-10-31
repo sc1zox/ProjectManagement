@@ -1,0 +1,68 @@
+.sidebar-right {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--sidebar-color);
+  padding: var(--sidebar-padding);
+  height: 100%;
+}
+#notification{
+  align-self: end;
+}
+
+.user-avatar{
+  height: 60px;
+  width: 60px;
+  border: 2px solid black;
+  border-radius: 50%;
+  background: linear-gradient(
+  to bottom,
+  grey,
+  white
+  );
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .name{
+    font-size: 30px;
+  }
+}
+
+.ProjectListContainer{
+  padding: var(--content-padding);
+}
+.project{
+  padding: calc(var(--content-padding)/2);
+  margin: var(--content-margin);
+}
+
+.user-skills{
+  padding: var(--content-padding);
+}
+::ng-deep .mdc-evolution-chip{
+  background: var(--primary-blue) !important;
+}
+::ng-deep .mat-mdc-standard-chip{
+  color: white !important;
+}
+.dashboard-container .sidebar-right {
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px 0 0 8px;
+}
+
+//mobile layout
+@media screen and (max-width: 1000px) {
+  .dashboard-container {
+    flex-direction: column;
+  }
+
+  .dashboard-container .sidebar-right {
+    position: relative;
+    bottom: 0;
+    height: auto;
+    overflow: hidden;
+    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
+    padding: calc(var(--content-padding)*2) !important;
+  }
+}
