@@ -1,0 +1,21 @@
+<div class="dashboard-home">
+  <main class="main-content">
+    <mat-card *ngFor="let project of projects" class="project-card">
+      <mat-card-header>{{ project.name }}</mat-card-header>
+      <mat-card-content class="project-content">
+      <p>Beginn - Ende</p>
+
+      <p>Backlogitems: {{ project.backlogItemsDone }} / {{ project.backlogItemsTotal }} | {{ getProgress(project.backlogItemsDone, project.backlogItemsTotal) }}%</p>
+
+      <mat-progress-bar mode="determinate" [value]="getProgress(project.backlogItemsDone, project.backlogItemsTotal)"></mat-progress-bar>
+
+
+        </mat-card-content>
+      <mat-card-footer class="link-button">
+        <mat-card-actions>
+          <a mat-raised-button [routerLink]="['more-information']">Link</a>
+        </mat-card-actions>
+        </mat-card-footer>
+    </mat-card>
+  </main>
+</div>

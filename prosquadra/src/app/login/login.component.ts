@@ -34,7 +34,7 @@ export class LoginComponent {
       const { username, password } = this.loginForm.value;
       console.log('Username:', username);
       console.log('Password:', password);
-      // login logic here 
+      // login logic here
     }
     this.router.navigate(['/dashboard']);
   }

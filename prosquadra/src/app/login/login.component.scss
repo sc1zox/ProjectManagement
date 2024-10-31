@@ -2,43 +2,42 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    height: 100%;
+    padding: var(--content-padding);
     background-color: #f26c3b; // Use the orange color from the sketch
   }
-  
+
   .login-card {
     background-color: #ffffff;
     padding: 2rem;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     text-align: center;
-    width: 300px;
   }
-  
+
   h2 {
     font-size: 1.2rem;
     font-weight: bold;
     margin-bottom: 1rem;
   }
-  
+
   .logo {
     font-size: 1.5rem;
     font-weight: bold;
     margin-bottom: 2rem;
   }
-  
+
   mat-form-field {
     width: 100%;
     margin-bottom: 1rem;
   }
-  
+
   button {
     width: 100%;
     background-color: #f26c3b;
     color: #fff;
-  
+
     &:hover {
       background-color: #e25b2b;
     }
   }
-  

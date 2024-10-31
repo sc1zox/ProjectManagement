@@ -5,24 +5,23 @@
     background-color: #f0f4f8;  // Light gray-blue background
     border-radius: 8px;
     text-align: center;
-  
+
     h2 {
       margin-bottom: 1.5rem;
     }
-  
+
     mat-form-field {
       width: 100%;
       margin-bottom: 1rem;
     }
-  
+
     button {
       width: 100%;
       background-color: #f26c3b;
       color: white;
-  
+
       &:hover {
         background-color: #e25b2b;
       }
     }
   }
-  
