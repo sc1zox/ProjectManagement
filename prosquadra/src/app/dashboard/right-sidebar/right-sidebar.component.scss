@@ -5,6 +5,8 @@
   background-color: var(--sidebar-color);
   padding: var(--sidebar-padding);
   height: 100%;
+  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+  border-radius: 8px 0 0 8px;
 }
 #notification{
   align-self: end;
@@ -46,23 +48,5 @@
 ::ng-deep .mat-mdc-standard-chip{
   color: white !important;
 }
-.dashboard-container .sidebar-right {
-  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
-  border-radius: 8px 0 0 8px;
-}
 
-//mobile layout
-@media screen and (max-width: 1000px) {
-  .dashboard-container {
-    flex-direction: column;
-  }
 
-  .dashboard-container .sidebar-right {
-    position: relative;
-    bottom: 0;
-    height: auto;
-    overflow: hidden;
-    box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.2);
-    padding: calc(var(--content-padding)*2) !important;
-  }
-}
