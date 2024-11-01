@@ -1,6 +1,6 @@
 <div class="team-roadmap">
     <h2>Team Roadmap</h2>
-  
+
     <!-- Horizontal scrollable project list -->
     <div #projectList class="project-list">
       <div
@@ -12,7 +12,7 @@
         {{ project.name }}
       </div>
     </div>
-  
+
     <!-- Selected project details -->
     <div *ngIf="selectedProject" class="project-details">
       <h3>{{ selectedProject.name }}</h3>
@@ -21,4 +21,4 @@
       <p>Beschreibung: {{ selectedProject.description }}</p>
     </div>
   </div>
-  
+

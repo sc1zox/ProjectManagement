@@ -3,13 +3,13 @@
   flex-direction: row;
   justify-content: space-between;
   background-color: var(--main-background);
-  height: 100vh;
+  height: auto;
   min-height: 100%;
   overflow: hidden;
 
 
   .main-content {
-    overflow-y: auto;
+    overflow-y: hidden;
     width: 100%;
     box-sizing: border-box;
 
@@ -18,7 +18,7 @@
   scrollbar-color: #c5c5c5 #f0f0f0; // Color for Firefox
 
   // Everything below is UNTESTED
-  // Chrome, Edge, Safari 
+  // Chrome, Edge, Safari
   &::-webkit-scrollbar {
     width: 8px;
   }
