@@ -2,9 +2,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100%;
+    height: 100vh;
     padding: var(--content-padding);
     background-color: #f26c3b; // Use the orange color from the sketch
+    box-sizing: border-box; // Hides the scrollbar
   }
 
   .login-card {
