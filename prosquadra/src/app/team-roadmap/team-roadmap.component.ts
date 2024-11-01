@@ -12,7 +12,7 @@ interface Project {
 }
 
 @Component({
-  selector: 'app-team-roadmap',
+  selector: 'app-team-roadmap.ts',
   standalone: true,
   imports: [CommonModule],
   templateUrl: './team-roadmap.component.html',
@@ -117,7 +117,7 @@ export class TeamRoadmapComponent {
   }
 
 
-  // Access projectList from team-roadmap.component.html
+  // Access projectList from team-roadmap.ts.component.html
   @ViewChild('projectList') projectList!: ElementRef;
 
   // Block default scroll, enable horizontal scroll

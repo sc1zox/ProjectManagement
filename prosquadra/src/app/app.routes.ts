@@ -17,7 +17,7 @@ export const routes: Routes = [
       { path: '', component: DashboardHomeComponent},
       { path: 'home', component: DashboardHomeComponent},
       { path: 'create-project', component: CreateProjectComponent},
-      { path: 'team-roadmap', component: TeamRoadmapComponent},
+      { path: 'team-roadmap.ts', component: TeamRoadmapComponent},
       { path: 'more-information', component: MoreInformationComponent}
     ]
   },
