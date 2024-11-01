@@ -4,6 +4,7 @@ import {DashboardComponent} from './dashboard/dashboard.component';
 import {CreateProjectComponent} from './dashboard/create-project/create-project.component';
 import {DashboardHomeComponent} from './dashboard/dashboard-home/dashboard-home.component';
 import {MoreInformationComponent} from './dashboard/dashboard-home/more-information/more-information.component';
+import { TeamRoadmapComponent } from './team-roadmap/team-roadmap.component';
 
 export const routes: Routes = [
   {
@@ -16,6 +17,7 @@ export const routes: Routes = [
       { path: '', component: DashboardHomeComponent},
       { path: 'home', component: DashboardHomeComponent},
       { path: 'create-project', component: CreateProjectComponent},
+      { path: 'team-roadmap', component: TeamRoadmapComponent},
       { path: 'home/more-information', component: MoreInformationComponent}
     ]
   },
