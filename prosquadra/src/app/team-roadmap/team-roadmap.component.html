@@ -1,0 +1,24 @@
+<div class="team-roadmap">
+    <h2>Team Roadmap</h2>
+  
+    <!-- Horizontal scrollable project list -->
+    <div #projectList class="project-list">
+      <div
+        *ngFor="let project of projects"
+        class="project-box"
+        [class.selected]="project.id === selectedProject?.id"
+        (click)="selectProject(project)"
+      >
+        {{ project.name }}
+      </div>
+    </div>
+  
+    <!-- Selected project details -->
+    <div *ngIf="selectedProject" class="project-details">
+      <h3>{{ selectedProject.name }}</h3>
+      <p>Start: {{ selectedProject.startDate }} End: {{ selectedProject.endDate }}</p>
+      <p>Aufwandseinschätzung: {{ selectedProject.effortEstimation }}</p>
+      <p>Beschreibung: {{ selectedProject.description }}</p>
+    </div>
+  </div>
+  
