@@ -18,7 +18,7 @@ export const routes: Routes = [
       { path: 'home', component: DashboardHomeComponent},
       { path: 'create-project', component: CreateProjectComponent},
       { path: 'team-roadmap', component: TeamRoadmapComponent},
-      { path: 'home/more-information', component: MoreInformationComponent}
+      { path: 'more-information', component: MoreInformationComponent}
     ]
   },
   {   // Redirekt root to login page
