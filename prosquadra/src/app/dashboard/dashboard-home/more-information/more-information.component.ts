@@ -24,6 +24,6 @@ export class MoreInformationComponent implements OnInit {
 
   ngOnInit(): void {
     // wird später von der api kommen und dem projekt angehören oder so
-    this.InformationContent = this.projectService.getInformation();
+
   }
 }
