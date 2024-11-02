@@ -1,0 +1,33 @@
+<div class="arrow-navigation">
+  <button mat-icon-button [routerLink]="['..']" aria-label="Go Backward">
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+</div>
+
+<!-- Die Frage ist ob man hier auch schon Roadmap auswählen kann oder ob es nochmal ein Team anpassen interface gibt, was vermutlich schöner wäre, da nicht der admin dies tut -->
+<div id="form-container">
+  <form [formGroup]="teamForm" (ngSubmit)="onSubmit()" class="team-form">
+    <mat-form-field class="full-width">
+      <mat-label>Team Name</mat-label>
+      <input matInput formControlName="teamName" required>
+      <mat-error *ngIf="teamForm.get('teamName')?.hasError('required')">Teamname wird benötigt.</mat-error>
+    </mat-form-field>
+
+    <div>
+      <mat-form-field class="full-width">
+        <mat-label>Mitglieder hinzufügen</mat-label>
+        <mat-select formControlName="selectedUser" [multiple]="true" required>
+          <mat-option *ngFor="let user of filteredUsers" [value]="user.id">
+            {{ user.vorname }}
+          </mat-option>
+        </mat-select>
+        <mat-error *ngIf="teamForm.get('selectedUser')?.hasError('required')">Ein Teammitglied muss mindestens
+          ausgewählt werden.
+        </mat-error>
+      </mat-form-field>
+    </div>
+    <button mat-raised-button type="submit" [disabled]="teamForm.invalid">Team erstellen</button>
+  </form>
+</div>
+<!-- Hier muss man überprüfen, wenn es kein SM ist, dann darf er nicht in mehr als einem Team sein -->
+

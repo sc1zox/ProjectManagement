@@ -1,0 +1,24 @@
+.mitarbeiter-form {
+  padding: var(--content-padding);
+  max-width: var(--form-maxsize);
+}
+
+.full-width {
+  width: 100%;
+}
+
+.button{
+  margin-top: var(--content-margin);
+}
+#form-container{
+  width: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+@media screen and (max-width: 1000px) {
+  .mitarbeiter-form {
+    margin-bottom: calc(var(--form-maxsize)/2.5);
+    margin-top: calc(var(--form-maxsize)/2.5);
+  }
+}

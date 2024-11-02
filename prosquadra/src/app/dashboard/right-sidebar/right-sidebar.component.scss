@@ -7,7 +7,7 @@
   height: 100%;
   box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
   border-radius: 0;
-  
+
   overflow-y: auto;
 
   // Custom Scrollbar Styles
@@ -15,7 +15,7 @@
   scrollbar-color: #c5c5c5 #f0f0f0; // Color for Firefox
 
   // Everything below is UNTESTED
-  // Chrome, Edge, Safari 
+  // Chrome, Edge, Safari
   &::-webkit-scrollbar {
     width: 8px;
   }
@@ -44,9 +44,9 @@
   border: 2px solid black;
   border-radius: 50%;
   background: linear-gradient(
-  to bottom,
-  grey,
-  white
+      to bottom,
+      grey,
+      white
   );
   display: flex;
   justify-content: center;
@@ -74,5 +74,4 @@
 ::ng-deep .mat-mdc-standard-chip{
   color: white !important;
 }
-
 

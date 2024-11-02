@@ -1,5 +1,12 @@
-import {ChangeDetectionStrategy, Component, inject, signal} from '@angular/core';
-import {MatChipEditedEvent, MatChipGrid, MatChipInput, MatChipInputEvent, MatChipsModule, MatChipRow} from '@angular/material/chips';
+import {ChangeDetectionStrategy, Component, inject, OnInit, signal} from '@angular/core';
+import {
+  MatChipEditedEvent,
+  MatChipGrid,
+  MatChipInput,
+  MatChipInputEvent,
+  MatChipsModule,
+  MatChipRow
+} from '@angular/material/chips';
 import {LiveAnnouncer} from '@angular/cdk/a11y';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
 import {MatFormField, MatLabel} from '@angular/material/form-field';
@@ -12,8 +19,15 @@ import {
 } from '@angular/material/expansion';
 import {NgForOf} from '@angular/common';
 import {MatBadge} from '@angular/material/badge';
+import {Project} from '../../../types/project';
+import {ProjectService} from '../../../services/project.service';
+import {User} from '../../../types/user';
+import {UserService} from '../../../services/user.service';
+import {MatButton} from '@angular/material/button';
+import {RouterLink} from '@angular/router';
+import {NotificationsService} from '../../../services/notifications.service';
 
-export interface ProgrammingLanguage{
+export interface ProgrammingLanguage {
   name: string
 }
 
@@ -35,15 +49,36 @@ export interface ProgrammingLanguage{
     MatBadge,
     MatExpansionPanelHeader,
     MatChipsModule,
+    MatButton,
+    RouterLink,
   ],
   standalone: true,
   changeDetection: ChangeDetectionStrategy.OnPush
 })
 
-export class RightSidebarComponent {
+export class RightSidebarComponent implements OnInit {
 
-  public userProjects: string[] = ["Project A","Project A","Project A","Project A","Project A","Project A","Project A","Project A",]
-  public notifications: number = 15;
+  userProjects: Project[] = []
+  notifications?: number;
+  userInitials: string = '';
+  user?: User = {
+    id: 1,
+    vorname: 'TestSidebar',
+    nachname: 'Right',
+  }; // das hier vom Auth service holen
+
+  constructor(private UserService: UserService,private NotificationService: NotificationsService) {
+    if (this.user && this.user.id) {
+      this.userProjects = this.UserService.getUserProjects(this.user.id);
+    }
+    this.notifications = this.NotificationService.getNotificationAmount();
+  }
+
+  ngOnInit() {
+    if (this.user) {
+      this.userInitials = this.user.vorname.charAt(0).toUpperCase() + this.user.nachname.charAt(0).toUpperCase();
+    }
+  }
 
   // Source https://material.angular.io/components/chips/examples
 
@@ -55,12 +90,12 @@ export class RightSidebarComponent {
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
 
-    // Add our fruit
+
     if (value) {
       this.result.update(pls => [...pls, {name: value}]);
     }
 
-    // Clear the input value
+
     event.chipInput!.clear();
   }
 
@@ -80,13 +115,13 @@ export class RightSidebarComponent {
   edit(pl: ProgrammingLanguage, event: MatChipEditedEvent) {
     const value = event.value.trim();
 
-    // Remove fruit if it no longer has a name
+
     if (!value) {
       this.remove(pl);
       return;
     }
 
-    // Edit existing fruit
+
     this.result.update(pls => {
       const index = pls.indexOf(pl);
       if (index >= 0) {

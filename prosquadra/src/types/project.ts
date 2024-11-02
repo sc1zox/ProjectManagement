@@ -7,11 +7,11 @@ export interface Project {
   description: string;
   startDate: Date;
   endDate: Date;
-  userId: number;
   developers: User[];
-  team: Team;
+  team: Team | undefined; // macht developer und team sinn? Wahrscheinlich nicht, aber wird man sehen
   backlogItemsDone: number;
   backlogItemsTotal: number;
+  effortEstimation: string;
   estimationDays: number;
 }
 

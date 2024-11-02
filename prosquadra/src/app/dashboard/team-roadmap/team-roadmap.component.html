@@ -1,0 +1,34 @@
+<div class="team-roadmap">
+  <h2>Team Roadmap</h2>
+
+  <!-- Horizontal scrollable project list -->
+  <div #projectList class="project-list">
+    <div
+      *ngFor="let project of projects"
+      class="project-box"
+      [class.selected]="project.id === selectedProject?.id"
+      (click)="selectProject(project)"
+    >
+      {{ project.name }}
+    </div>
+  </div>
+
+  <!-- Selected project details -->
+  <div *ngIf="selectedProject" class="project-details">
+    <h3>{{ selectedProject.name }}</h3>
+    <p><strong>Start:</strong> {{ selectedProject.startDate | date: 'shortDate' }}</p>
+    <p><strong>End:</strong> {{ selectedProject.endDate | date: 'shortDate' }}</p>
+    <p><strong>Aufwandseinschätzung:</strong> {{ selectedProject.effortEstimation }}</p>
+    <p><strong>Beschreibung:</strong> {{ selectedProject.description }}</p>
+    <p><strong>Entwickler:</strong></p>
+    <ul>
+      <li *ngFor="let developer of selectedProject.developers">
+        {{ developer.vorname + ' ' + developer.nachname}}
+      </li>
+    </ul>
+    <p><strong>Team:</strong> {{ selectedProject.team?.name || 'Kein Team zugewiesen' }}</p>
+    <p><strong>Backlog Items Done:</strong> {{ selectedProject.backlogItemsDone }}</p>
+    <p><strong>Backlog Items Total:</strong> {{ selectedProject.backlogItemsTotal }}</p>
+    <p><strong>Aufwand in Tagen:</strong> {{ selectedProject.estimationDays }}</p>
+  </div>
+</div>

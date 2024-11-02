@@ -1,9 +1,5 @@
-export interface Roadmap {
-    milestones: Milestone[];
-}
+import {Project} from './project';
 
-export interface Milestone {
-    title: string;
-    description: string;
-    dueDate: Date;
+export interface Roadmap {
+    projekte: Project[]
 }
