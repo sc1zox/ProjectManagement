@@ -1,24 +1,26 @@
-import { Component, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
+import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {ProjectService} from '../../../services/project.service';
 import {Project} from '../../../types/project';
+import {CdkDrag, CdkDragDrop, CdkDragPlaceholder, CdkDropList, moveItemInArray} from '@angular/cdk/drag-drop';
 
 
 
 @Component({
-  selector: 'app-team-roadmap.ts',
+  selector: 'app-team-roadmap',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, CdkDropList, CdkDrag, CdkDragPlaceholder],
   templateUrl: './team-roadmap.component.html',
   styleUrls: ['./team-roadmap.component.scss']
 })
 export class TeamRoadmapComponent implements AfterViewInit{
 
-  projects?:Project[];
+  projects:Project[]=[];
   selectedProject?: Project;
+  protected readonly window = window;
 
   constructor(private ProjectService: ProjectService) {
-    this.projects= this.ProjectService.getProjects();
+    this.projects= this.ProjectService.getProjects(); // hier mit Team holen um individualisiert anzuzeigen
   }
 
   selectProject(project: Project): void {
@@ -48,6 +50,7 @@ export class TeamRoadmapComponent implements AfterViewInit{
   ngAfterViewInit(): void {
     this.projectList.nativeElement.addEventListener('wheel', this.onWheelScroll.bind(this));
 
+
     setTimeout(() => {
       this.selectInitialProject(); // timeout to avoid angular error during lifecycle method
     });
@@ -58,4 +61,11 @@ export class TeamRoadmapComponent implements AfterViewInit{
       this.selectProject(this.projects[0]);
     }
   }
+  drop(event: CdkDragDrop<Project[]>) {
+    if (this.projects) {
+      moveItemInArray(this.projects, event.previousIndex, event.currentIndex)
+    }
+  }
+
+
 }

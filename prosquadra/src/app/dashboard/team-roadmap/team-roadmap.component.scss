@@ -1,5 +1,5 @@
 .team-roadmap {
-    padding: 1rem;
+    padding: var(--content-padding);
     background-color: #f9f9f9;
 
     h2 {
@@ -8,8 +8,8 @@
 
     .project-list {
         display: flex;
-        gap: 1rem;
-        padding: 1rem;
+        gap: 1.5rem;
+        padding: var(--content-padding);
         background-color: #e0e0e0;
         border-radius: 8px;
         overflow-x: auto; // Enable horizontal scrolling
@@ -44,6 +44,7 @@
         width: 100px; // Fixed width for each project box
         height: 60px;
         background-color: #3e3e3e;
+      padding: var(--content-padding);
         color: #ffffff;
         display: flex;
         justify-content: center;
@@ -51,7 +52,7 @@
         font-size: 1.2rem;
         font-weight: bold;
         border-radius: 4px;
-        cursor: pointer;
+        cursor: move;
         transition: transform 0.2s;
         flex: 0 0 auto; // Prevent the boxes from shrinking and keep the fixed width
 
@@ -81,4 +82,27 @@
       justify-content: center;
     }
   }
+
+}
+.cdk-drag-preview {
+  box-sizing: border-box;
+  border-radius: 4px;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+  0 8px 10px 1px rgba(0, 0, 0, 0.14),
+  0 3px 14px 2px rgba(0, 0, 0, 0.12);
+  width: 100px; // Fixed width for each project box
+  height: 60px;
+  background-color: #3e3e3e;
+  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: move;
+  flex: 0 0 auto; // Prevent the boxes from shrinking and keep the fixed width
+}
+
+.cdk-drag-placeholder {
+  opacity: 0;
 }

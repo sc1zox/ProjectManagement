@@ -25,13 +25,6 @@ import {MatExpansionPanel} from '@angular/material/expansion';
 export class DashboardComponent {
   isExpanded: boolean = false; // Zustand der Sidebar
 
-  toggleSidebar(): void {
-    if (window.innerWidth >= 1000) {
-      this.isExpanded = !this.isExpanded;
-    } else {
-      this.isExpanded = true; // Always expand on mobile when toggled
-    }
-  }
 
   @HostListener('window:resize', ['$event'])
   onResize(event: Event): void {

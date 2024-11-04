@@ -5,10 +5,12 @@ export interface Project {
   id: number;
   name: string;
   description: string;
-  startDate: Date;
-  endDate: Date;
+  startDate?: Date;
+  endDate?: Date;
   developers: User[];
-  team: Team | undefined; // macht developer und team sinn? Wahrscheinlich nicht, aber wird man sehen
+  scrumMaster: User;
+  productOwner: User;
+  team?: Team; // macht developer und team sinn? Wahrscheinlich nicht, aber wird man sehen
   backlogItemsDone: number;
   backlogItemsTotal: number;
   effortEstimation: string;
