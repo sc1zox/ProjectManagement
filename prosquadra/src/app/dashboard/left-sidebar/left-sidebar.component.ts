@@ -29,7 +29,7 @@ export class LeftSidebarComponent {
   public user:User;
 
   constructor(private Userservice: UserService) {
-    this.user = this.Userservice.getUser(1);
+    this.user = this.Userservice.getUser(2);
   }
 
 

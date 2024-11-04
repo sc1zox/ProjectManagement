@@ -1,4 +1,4 @@
-import {ChangeDetectionStrategy, Component, inject, OnInit, signal} from '@angular/core';
+import {Component, inject, OnInit, signal} from '@angular/core';
 import {
   MatChipEditedEvent,
   MatChipGrid,
@@ -20,7 +20,6 @@ import {
 import {NgForOf} from '@angular/common';
 import {MatBadge} from '@angular/material/badge';
 import {Project} from '../../../types/project';
-import {ProjectService} from '../../../services/project.service';
 import {User} from '../../../types/user';
 import {UserService} from '../../../services/user.service';
 import {MatButton} from '@angular/material/button';
@@ -53,7 +52,6 @@ export interface ProgrammingLanguage {
     RouterLink,
   ],
   standalone: true,
-  changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 export class RightSidebarComponent implements OnInit {

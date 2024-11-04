@@ -14,6 +14,7 @@ import {UserService} from '../../../../services/user.service';
 import {User, UserRole} from '../../../../types/user';
 import {ConfirmDialogComponent} from '../mitarbeiter-form/confirm-dialog/confirm-dialog.component';
 import {MatDialog} from '@angular/material/dialog';
+import {SnackbarService} from '../../../../services/snackbar.service';
 
 @Component({
   selector: 'app-teams-form',
@@ -50,7 +51,7 @@ export class TeamsFormComponent implements OnInit {
   selectedUsers: User[] = [];
   teamForm: FormGroup;
 
-  constructor(private TeamService: TeamService, private UserService: UserService, private fb: FormBuilder, private dialog: MatDialog,private router: Router) {
+  constructor(private TeamService: TeamService, private UserService: UserService, private fb: FormBuilder, private dialog: MatDialog,private router: Router,private SnackBarService: SnackbarService) {
     this.teamForm = this.fb.group({
       teamName: ['', Validators.required],
       selectedUser: [[], Validators.required]
@@ -96,7 +97,7 @@ export class TeamsFormComponent implements OnInit {
           }
           // Diese Daten dann an den Server schicken
         } else {
-          window.alert("Sie haben die Teamerstellung abgebrochen")
+         this.SnackBarService.open("Sie haben die Teamerstellung abgebrochen")
         }
       });
     }

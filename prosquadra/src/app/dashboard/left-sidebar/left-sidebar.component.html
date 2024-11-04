@@ -16,7 +16,7 @@
 
       <mat-list-item  *ngIf="user.role==='Admin'" [routerLink]="['admin-panel']">Admin-Panel</mat-list-item>
 
-      <mat-list-item  *ngIf="user.role==='Scrum Master'">Analyse</mat-list-item>
+      <mat-list-item  *ngIf="user.role==='Scrum Master'" [routerLink]="['analyse-board']" >Analyse</mat-list-item>
 
     </mat-expansion-panel>
   </mat-action-list>
