@@ -2,14 +2,18 @@
   <h2>Team Roadmap</h2>
 
   <!-- Horizontal scrollable project list -->
-  <div #projectList class="project-list">
-    <div
-      *ngFor="let project of projects"
-      class="project-box"
-      [class.selected]="project.id === selectedProject?.id"
-      (click)="selectProject(project)"
+  <div #projectList class="project-list" cdkDropList
+       [cdkDropListOrientation]="window.innerWidth > 1000 ? 'horizontal' : 'vertical'"
+       (cdkDropListDropped)="drop($event)">
+    <div cdkDrag
+         *ngFor="let project of projects"
+         class="project-box"
+         cdkDragBoundary=".project-list"
+         [cdkDragLockAxis]="window.innerWidth > 1000 ? 'x' : 'y'"
+         [class.selected]="project.id === selectedProject?.id"
+         (click)="selectProject(project)"
     >
-      {{ project.name }}
+        {{ project.name }}
     </div>
   </div>
 
@@ -23,7 +27,7 @@
     <p><strong>Entwickler:</strong></p>
     <ul>
       <li *ngFor="let developer of selectedProject.developers">
-        {{ developer.vorname + ' ' + developer.nachname}}
+        {{ developer.vorname + ' ' + developer.nachname }}
       </li>
     </ul>
     <p><strong>Team:</strong> {{ selectedProject.team?.name || 'Kein Team zugewiesen' }}</p>
