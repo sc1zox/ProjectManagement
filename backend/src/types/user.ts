@@ -1,4 +1,5 @@
-import {Team} from './team';
+import {Team} from "./team";
+
 
 export interface User {
   role?: UserRole;
@@ -10,9 +11,8 @@ export interface User {
   token?: string;
 }
 export enum UserRole {
-  PO = 'PO',
-  SM = 'SM',
+  PO = 'Product Owner',
+  SM = 'Scrum Master',
   Developer = 'Developer',
   Admin = 'Admin'
 }
-

@@ -20,7 +20,6 @@ export class TeamRoadmapComponent implements AfterViewInit{
   protected readonly window = window;
 
   constructor(private ProjectService: ProjectService) {
-    this.projects= this.ProjectService.getProjects(); // hier mit Team holen um individualisiert anzuzeigen
   }
 
   selectProject(project: Project): void {
@@ -47,7 +46,16 @@ export class TeamRoadmapComponent implements AfterViewInit{
   }
 
   // Lifecycle Hook
-  ngAfterViewInit(): void {
+  async ngAfterViewInit() {
+    try {
+      this.projects = await this.ProjectService.getProjects();
+    }catch (error){
+      console.error('Error while fetching Projects:', error);
+    }finally {
+      console.log('Project fetching finished.');
+    } // hier mit Team holen um individualisiert anzuzeigen
+
+
     this.projectList.nativeElement.addEventListener('wheel', this.onWheelScroll.bind(this));
 
 

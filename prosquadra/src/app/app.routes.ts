@@ -8,6 +8,7 @@ import { TeamRoadmapComponent } from './dashboard/team-roadmap/team-roadmap.comp
 import {AdminPanelComponent} from './dashboard/admin-panel/admin-panel.component';
 import {MitarbeiterFormComponent} from './dashboard/admin-panel/mitarbeiter-form/mitarbeiter-form.component';
 import {TeamsFormComponent} from './dashboard/admin-panel/teams-form/teams-form.component';
+import {AnalyseBoardComponent} from './dashboard/analyse-board/analyse-board.component';
 
 export const routes: Routes = [
   {
@@ -25,6 +26,7 @@ export const routes: Routes = [
       { path: 'admin-panel', component:AdminPanelComponent},
       { path: 'admin-panel/mitarbeiter-form', component:MitarbeiterFormComponent},
       { path: 'admin-panel/teams-form', component: TeamsFormComponent},
+      { path: 'analyse-board', component:AnalyseBoardComponent},
     ]
   },
   {   // Redirekt root to login page

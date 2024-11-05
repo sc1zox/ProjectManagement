@@ -14,6 +14,8 @@ import {User, UserRole} from '../../../../types/user';
 import {UserService} from '../../../../services/user.service';
 import {ConfirmDialogComponent} from './confirm-dialog/confirm-dialog.component';
 import {MatDialog} from '@angular/material/dialog';
+import {SnackbarService} from '../../../../services/snackbar.service';
+import {ApiService} from '../../../../services/api.service';
 
 @Component({
   selector: 'app-mitarbeiter-form',
@@ -39,20 +41,20 @@ import {MatDialog} from '@angular/material/dialog';
   templateUrl: './mitarbeiter-form.component.html',
   styleUrl: './mitarbeiter-form.component.scss'
 })
-export class MitarbeiterFormComponent implements OnInit{
+export class MitarbeiterFormComponent implements OnInit {
 
-  Teams: Team[]=[];
-  user: User={
-    id:0,
-    vorname:'',
-    nachname:'',
+  Teams: Team[] = [];
+  user: User = {
+    id: 0,
+    vorname: '',
+    nachname: '',
     team: [],
   };
   userRoles = Object.values(UserRole).filter(role => role !== UserRole.Admin);
 
   form: FormGroup;
 
-  constructor(private fb: FormBuilder,private TeamService: TeamService,private UserService:UserService,private dialog: MatDialog,private router:Router) {
+  constructor(private fb: FormBuilder, private TeamService: TeamService, private UserService: UserService, private dialog: MatDialog, private router: Router,private SnackBarService: SnackbarService,private ApiSerivce: ApiService) {
     this.form = this.fb.group({
       vorname: ['', Validators.required],
       nachname: ['', Validators.required],
@@ -71,28 +73,34 @@ export class MitarbeiterFormComponent implements OnInit{
 
     if (this.form.valid) {
       const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-        data: { message: 'Wollen Sie diesen Nutzer wirklich erstellen?' }
+        data: {message: 'Wollen Sie diesen Nutzer wirklich erstellen?'}
       });// Open the dialog
 
-      dialogRef.afterClosed().subscribe(result => {
+      dialogRef.afterClosed().subscribe(async result => {
         if (result) {
           if (this.user.id) {
             this.user.id += 1;
           }
 
-          this.user.team = formValue.role === 'Scrum Master' ? formValue.selectedMultipleTeams : [formValue.selectedSingleTeam];
+          this.user.team = formValue.role === 'Scrum Master' ? formValue.selectedMultipleTeams : [formValue.selectedSingleTeam]; //!BUG! Wenn zuerst Scrum Master gewählt wird zur nutzer erstellung, ist die Mitarbeitererstellung ausgegraut
           this.user.role = formValue.role;
           this.user.vorname = formValue.vorname;
           this.user.nachname = formValue.nachname;
 
-          this.UserService.createUser(this.user); // Diese Daten dann an den Server schicken
+          try {
+            await this.UserService.createUser(this.user);
+          }catch (error){
+            console.error('Error while creating user:', error);
+          }
+            finally {
+            console.log('User creation process finished.');
+          }
           this.router.navigate(['/dashboard/admin-panel']);
         } else {
-          window.alert("Sie haben die Nutzererstellung abgebrochen")
+          this.SnackBarService.open("Sie haben die Nutzererstellung abgebrochen");
           console.log('User cancelled the creation of the user.');
         }
       });
     }
   }
-
 }
