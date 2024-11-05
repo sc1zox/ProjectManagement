@@ -1,7 +1,6 @@
-import { AfterViewInit, Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {AfterViewInit, ChangeDetectorRef, Component} from '@angular/core';
+import { FormBuilder, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { ReactiveFormsModule } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
@@ -41,7 +40,8 @@ export class CreateProjectComponent implements AfterViewInit {
     private fb: FormBuilder,
     private projectService: ProjectService,
     private userService: UserService,
-    private teamService: TeamService
+    private teamService: TeamService,
+    private cdref: ChangeDetectorRef
   ) {
     this.projectForm = this.fb.group({
       projectName: ['', [Validators.required, Validators.maxLength(10)]], // Correct maxLength usage
@@ -54,12 +54,13 @@ export class CreateProjectComponent implements AfterViewInit {
   ngAfterViewInit() {
     this.loadUsers();
     this.loadTeams();
+    this.cdref.detectChanges();
   }
 
-  loadUsers() {
-    const users = this.userService.getUsers();
-    this.productOwners = users.filter(user => user.role === 'Product Owner');
-    this.scrummasters = users.filter(user => user.role === 'Scrum Master');
+  async loadUsers() {
+    const users = await this.userService.getUsers();
+    this.productOwners = users.filter(user => user.role === 'PO');
+    this.scrummasters = users.filter(user => user.role === 'SM');
   }
 
   loadTeams() {
@@ -68,32 +69,25 @@ export class CreateProjectComponent implements AfterViewInit {
 
   onSubmit(): void {
     if (this.projectForm.valid) {
-      const selectedTeam = this.teams.find(team => team.id === this.projectForm.value.teamName); // Get the selected team
+      const selectedTeam = this.teams.find(team => team.id === this.projectForm.value.teamName);
 
       const newProject: Project = {
-        backlogItemsDone: 0,
-        backlogItemsTotal: 0,
-        description: '',
-        developers: [],
-        effortEstimation: '',
-        estimationDays: 0,
-        id: 0, // Ensure this is correctly assigned based on your logic
+        id: 0, // Ensure to handle ID assignment correctly
         name: this.projectForm.value.projectName,
-        productOwner: this.projectForm.value.productOwner,
-        scrumMaster: this.projectForm.value.scrumMaster,
-        team: selectedTeam ? { // Ensure this is a valid Team object
-          id: selectedTeam.id,
-          name: selectedTeam.name,
-          members: selectedTeam.members || [] // Make sure to include members if they exist
-        } : undefined // or handle the case where no team is selected
+        description: '',
+        team: selectedTeam, // Pass the selected team object
+        effortEstimation: '',
+        estimationDays: 0
       };
 
       console.log('Form Submitted', newProject);
       this.projectService.setProjects(newProject);
-      this.selectedTeam = selectedTeam; // Set the selected team for rendering
+      this.selectedTeam = selectedTeam; // Update selected team
+      this.cdref.detectChanges(); // Optional, if necessary
       this.projectForm.reset();
     } else {
       console.log('Form is invalid');
     }
   }
 }
+

@@ -58,8 +58,14 @@ export class TeamsFormComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
-    this.Users = this.UserService.getUsers();
+  async ngOnInit() {
+    try {
+      this.Users = await this.UserService.getUsers();
+    }catch (error){
+      console.error('Error while creating Team:', error);
+    }finally {
+      console.log('Team creation process finished.');
+    }
     this.filterUsers()
   }
 

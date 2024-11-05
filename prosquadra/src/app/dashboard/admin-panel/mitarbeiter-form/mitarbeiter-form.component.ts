@@ -15,6 +15,7 @@ import {UserService} from '../../../../services/user.service';
 import {ConfirmDialogComponent} from './confirm-dialog/confirm-dialog.component';
 import {MatDialog} from '@angular/material/dialog';
 import {SnackbarService} from '../../../../services/snackbar.service';
+import {ApiService} from '../../../../services/api.service';
 
 @Component({
   selector: 'app-mitarbeiter-form',
@@ -53,7 +54,7 @@ export class MitarbeiterFormComponent implements OnInit {
 
   form: FormGroup;
 
-  constructor(private fb: FormBuilder, private TeamService: TeamService, private UserService: UserService, private dialog: MatDialog, private router: Router,private SnackBarService: SnackbarService) {
+  constructor(private fb: FormBuilder, private TeamService: TeamService, private UserService: UserService, private dialog: MatDialog, private router: Router,private SnackBarService: SnackbarService,private ApiSerivce: ApiService) {
     this.form = this.fb.group({
       vorname: ['', Validators.required],
       nachname: ['', Validators.required],
@@ -75,7 +76,7 @@ export class MitarbeiterFormComponent implements OnInit {
         data: {message: 'Wollen Sie diesen Nutzer wirklich erstellen?'}
       });// Open the dialog
 
-      dialogRef.afterClosed().subscribe(result => {
+      dialogRef.afterClosed().subscribe(async result => {
         if (result) {
           if (this.user.id) {
             this.user.id += 1;
@@ -86,7 +87,14 @@ export class MitarbeiterFormComponent implements OnInit {
           this.user.vorname = formValue.vorname;
           this.user.nachname = formValue.nachname;
 
-          this.UserService.createUser(this.user); // Diese Daten dann an den Server schicken
+          try {
+            await this.UserService.createUser(this.user);
+          }catch (error){
+            console.error('Error while creating user:', error);
+          }
+            finally {
+            console.log('User creation process finished.');
+          }
           this.router.navigate(['/dashboard/admin-panel']);
         } else {
           this.SnackBarService.open("Sie haben die Nutzererstellung abgebrochen");

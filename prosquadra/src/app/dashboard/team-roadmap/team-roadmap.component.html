@@ -25,14 +25,7 @@
     <p><strong>Aufwandseinschätzung:</strong> {{ selectedProject.effortEstimation }}</p>
     <p><strong>Beschreibung:</strong> {{ selectedProject.description }}</p>
     <p><strong>Entwickler:</strong></p>
-    <ul>
-      <li *ngFor="let developer of selectedProject.developers">
-        {{ developer.vorname + ' ' + developer.nachname }}
-      </li>
-    </ul>
     <p><strong>Team:</strong> {{ selectedProject.team?.name || 'Kein Team zugewiesen' }}</p>
-    <p><strong>Backlog Items Done:</strong> {{ selectedProject.backlogItemsDone }}</p>
-    <p><strong>Backlog Items Total:</strong> {{ selectedProject.backlogItemsTotal }}</p>
     <p><strong>Aufwand in Tagen:</strong> {{ selectedProject.estimationDays }}</p>
   </div>
 </div>

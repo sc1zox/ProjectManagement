@@ -1,4 +1,4 @@
-import { Component, HostListener } from '@angular/core';
+import {Component, HostListener, OnInit} from '@angular/core';
 import { MatActionList, MatListItem, MatNavList } from "@angular/material/list";
 import { RouterLink } from '@angular/router';
 import { MatExpansionPanel, MatExpansionPanelDescription, MatExpansionPanelHeader, MatExpansionPanelTitle } from '@angular/material/expansion';
@@ -24,14 +24,22 @@ import {User} from '../../../types/user';
   templateUrl: './left-sidebar.component.html',
   styleUrls: ['./left-sidebar.component.scss']
 })
-export class LeftSidebarComponent {
+export class LeftSidebarComponent implements OnInit{
   public expanded: boolean = true;
-  public user:User;
+  public user?: User;
 
   constructor(private Userservice: UserService) {
-    this.user = this.Userservice.getUser(2);
   }
 
+  async ngOnInit() {
+    try {
+      this.user = await this.Userservice.getUser(1);
+    }catch (error){
+      console.error('Error while fetching USer:', error);
+    }finally {
+      console.log('User fetch complete.');
+    }
+  }
 
 
   @HostListener('window:resize', ['$event'])

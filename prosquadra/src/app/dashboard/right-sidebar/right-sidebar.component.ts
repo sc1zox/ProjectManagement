@@ -21,10 +21,10 @@ import {NgForOf} from '@angular/common';
 import {MatBadge} from '@angular/material/badge';
 import {Project} from '../../../types/project';
 import {User} from '../../../types/user';
-import {UserService} from '../../../services/user.service';
 import {MatButton} from '@angular/material/button';
 import {RouterLink} from '@angular/router';
 import {NotificationsService} from '../../../services/notifications.service';
+import {ProjectService} from '../../../services/project.service';
 
 export interface ProgrammingLanguage {
   name: string
@@ -65,16 +65,20 @@ export class RightSidebarComponent implements OnInit {
     nachname: 'Right',
   }; // das hier vom Auth service holen
 
-  constructor(private UserService: UserService,private NotificationService: NotificationsService) {
-    if (this.user && this.user.id) {
-      this.userProjects = this.UserService.getUserProjects(this.user.id);
-    }
+  constructor(private ProjectService: ProjectService,private NotificationService: NotificationsService) {
     this.notifications = this.NotificationService.getNotificationAmount();
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     if (this.user) {
       this.userInitials = this.user.vorname.charAt(0).toUpperCase() + this.user.nachname.charAt(0).toUpperCase();
+    }
+    try {
+      this.userProjects = await this.ProjectService.getProjects(); // get with id to get actual project
+    }catch (error){
+      console.error('Error while fetching Projects:', error);
+    }finally {
+      console.log('Project fetch finished.');
     }
   }
 
