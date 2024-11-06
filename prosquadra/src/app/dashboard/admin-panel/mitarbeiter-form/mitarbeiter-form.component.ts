@@ -66,6 +66,36 @@ export class MitarbeiterFormComponent implements OnInit {
 
   ngOnInit() {
     this.Teams = this.TeamService.getTeams();
+
+    // Listen to changes regarding the role
+    this.form.get('role')?.valueChanges.subscribe((role) => {
+      console.log("Role changed:", role);
+      this.adjustTeamSelectionValidators(role);
+    });
+  }
+
+  /**
+   * Adjusts form validation for team selection based on the user's role.
+   * For Scrum Master: sets `selectedMultipleTeams` control as required.
+   * For all others: `selectedSingleTeam` control as required.
+   * @param role 
+   */
+  adjustTeamSelectionValidators(role: string) {
+    const singleTeamControl = this.form.get('selectedSingleTeam');
+    const multipleTeamsControl = this.form.get('selectedMultipleTeams');
+
+    if (role == 'SM') {
+      multipleTeamsControl?.setValidators([Validators.required]);
+      singleTeamControl?.clearValidators();
+      singleTeamControl?.setValue(null);
+    } else {
+      singleTeamControl?.setValidators([Validators.required]);
+      multipleTeamsControl?.clearValidators();
+      multipleTeamsControl?.setValue([]);
+    }
+
+    singleTeamControl?.updateValueAndValidity();
+    multipleTeamsControl?.updateValueAndValidity();
   }
 
   onSubmit() {
@@ -82,7 +112,7 @@ export class MitarbeiterFormComponent implements OnInit {
             this.user.id += 1;
           }
 
-          this.user.team = formValue.role === 'Scrum Master' ? formValue.selectedMultipleTeams : [formValue.selectedSingleTeam]; //!BUG! Wenn zuerst Scrum Master gewählt wird zur nutzer erstellung, ist die Mitarbeitererstellung ausgegraut
+          this.user.team = formValue.role === 'Scrum Master' ? formValue.selectedMultipleTeams : [formValue.selectedSingleTeam];
           this.user.role = formValue.role;
           this.user.vorname = formValue.vorname;
           this.user.nachname = formValue.nachname;
