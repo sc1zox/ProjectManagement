@@ -1,27 +1,26 @@
-.create-project-container {
-    max-width: 400px;
-    margin: 2rem auto;
-    padding: 2rem;
-    background-color: #f0f4f8;  // Light gray-blue background
-    border-radius: 8px;
-    text-align: center;
+#create-project-container {
+  width: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-    h2 {
-      margin-bottom: 1.5rem;
-    }
+.createproject-form {
+  padding: var(--content-padding);
+  max-width: var(--form-maxsize);
 
-    mat-form-field {
-      width: 100%;
-      margin-bottom: 1rem;
-    }
-
-    button {
-      width: 100%;
-      background-color: #f26c3b;
-      color: white;
-
-      &:hover {
-        background-color: #e25b2b;
-      }
-    }
+  .full-width {
+    width: 100%;
   }
+
+  button {
+    margin-top: var(--content-margin);
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .createproject-form {
+    margin-bottom: calc(var(--form-maxsize) / 2.5);
+    margin-top: calc(var(--form-maxsize) / 2.5);
+  }
+}

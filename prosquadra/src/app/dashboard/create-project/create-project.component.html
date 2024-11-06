@@ -1,7 +1,6 @@
-<div class="create-project-container">
-  <h2>Neues Projekt erstellen</h2>
-  <form [formGroup]="projectForm" (ngSubmit)="onSubmit()">
-    <mat-form-field appearance="fill">
+<div id="create-project-container">
+  <form [formGroup]="projectForm" (ngSubmit)="onSubmit()" class="createproject-form">
+    <mat-form-field class="full-width">
       <mat-label>Projekt Name</mat-label>
       <input matInput formControlName="projectName" placeholder="Projekt Name">
       <mat-error *ngIf="projectForm.get('projectName')?.hasError('maxlength')">
@@ -9,32 +8,31 @@
       </mat-error>
     </mat-form-field>
 
-    <mat-form-field appearance="fill">
+    <mat-form-field class="full-width">
       <mat-label>Product Owner</mat-label>
       <mat-select formControlName="productOwner" placeholder="Product Owner" required>
         <mat-option *ngFor="let user of productOwners" [value]="user.id">{{ user.vorname }} {{ user.nachname }}</mat-option>
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field appearance="fill">
+    <mat-form-field class="full-width">
       <mat-label>Scrum Master</mat-label>
       <mat-select formControlName="scrumMaster" placeholder="Scrum Master" required>
         <mat-option *ngFor="let user of scrummasters" [value]="user.id">{{ user.vorname }} {{ user.nachname }}</mat-option>
       </mat-select>
     </mat-form-field>
 
-    <mat-form-field appearance="fill">
+    <mat-form-field class="full-width">
       <mat-label>Team</mat-label>
       <mat-select formControlName="teamName" placeholder="Team" required>
         <mat-option *ngFor="let team of teams" [value]="team.id">{{ team.name }}</mat-option>
       </mat-select>
     </mat-form-field>
 
-    <button mat-raised-button color="primary" type="submit">Erstellen</button> <!-- das hier soll dann den fetch ausführen, bzw. die roadmap laden sonst wird es nicht aktualisiert -->
+    <button mat-raised-button type="submit" [disabled]="projectForm.invalid">Erstellen</button>
   </form>
 </div>
 
-
 <div class="roadmap-container">
-  <app-team-roadmap></app-team-roadmap> <!-- Pass selected team to roadmap -->
+  <app-team-roadmap></app-team-roadmap>
 </div>
