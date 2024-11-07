@@ -39,13 +39,13 @@ export class LoginComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
-
-    this.authService.isAuthenticated().subscribe(isAuthenticated => {
-      if (isAuthenticated) {
-        this.router.navigate(['/dashboard']);
-      }
-    });
+  async ngOnInit(): Promise<void> {
+    // Überprüfen, ob der Benutzer bereits authentifiziert ist
+    const authenticated = await this.authService.isAuthenticated();
+    if (authenticated) {
+      // Benutzer ist authentifiziert, weiter zur Dashboard-Seite
+      this.router.navigate(['/dashboard']);
+    }
   }
 
   onSubmit(): void {
@@ -72,10 +72,7 @@ export class LoginComponent implements OnInit {
       if (response.ok) {
         const data = await response.json();
 
-
         this.authService.setToken(data.token);
-
-
         this.router.navigate(['/dashboard']);
       } else {
         const error = await response.json();

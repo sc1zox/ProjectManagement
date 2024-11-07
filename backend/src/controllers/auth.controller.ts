@@ -49,6 +49,36 @@ class AuthController {
             });
         }
     }
+    async verify(req: Request, res: Response, next: NextFunction): Promise<any> {
+        const token = req.headers['authorization']?.split(' ')[1];
+
+        if (!token) {
+            return res.status(StatusCodes.UNAUTHORIZED).json({
+                message: 'No token provided',
+            });
+        }
+
+        try {
+            const decoded = jwt.verify(token);
+
+            if (!decoded) {
+                return res.status(StatusCodes.UNAUTHORIZED).json({
+                    message: 'Invalid token',
+                });
+            }
+
+
+            res.status(StatusCodes.OK).json({
+                message: 'Token is valid',
+                user: decoded,
+            });
+        } catch (error) {
+            console.error('Token verification error:', error);
+            res.status(StatusCodes.UNAUTHORIZED).json({
+                message: 'Token verification failed',
+            });
+        }
+    }
 }
 
 export default new AuthController();

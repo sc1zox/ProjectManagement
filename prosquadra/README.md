@@ -34,6 +34,10 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - Projekt braucht keine Entwickler, Datepicker bei team-roadmap.
 - Entwickler Arbeitszeit bei Mitarbeiteranlegung
 - Projekterstellen mit Beschreibung
+- backend punkt aufsetzen um token zu verifyen und in login komponente einbinden
+- prisma schema überarbeiten
+- restliche services an backend anbinden 
+- route guards überprüfen
 
 ## Routing
 

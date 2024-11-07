@@ -7,4 +7,6 @@ const authRouter = Router();
 
 authRouter.route('/login').post(rescue(authController.authenticate));
 
+authRouter.get('/verify-token', rescue(authController.verify));
+
 export default authRouter;
