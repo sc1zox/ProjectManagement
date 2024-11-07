@@ -1,12 +1,12 @@
-import {Component} from '@angular/core';
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
-import {Router} from '@angular/router';
-import {ApiService} from '../../services/api.service';
-import {MatButton} from '@angular/material/button';
-import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
-import {MatInput} from '@angular/material/input';
-import {NgIf} from '@angular/common';
-
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
+import { ApiService } from '../../services/api.service';
+import { AuthService } from '../../services/auth.service';
+import { MatButton } from '@angular/material/button';
+import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { NgIf } from '@angular/common';
 
 @Component({
   selector: 'app-login',
@@ -19,22 +19,34 @@ import {NgIf} from '@angular/common';
     ReactiveFormsModule,
     MatFormField,
     NgIf,
-    MatLabel
+    MatLabel,
   ],
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   loginForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private router: Router, private ApiService: ApiService) {
-
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private apiService: ApiService,
+    private authService: AuthService
+  ) {
     this.loginForm = this.fb.group({
       vorname: ['', Validators.required],
       nachname: ['', Validators.required],
-      password: ['', Validators.required]
+      password: ['', Validators.required],
     });
   }
 
+  ngOnInit(): void {
+
+    this.authService.isAuthenticated().subscribe(isAuthenticated => {
+      if (isAuthenticated) {
+        this.router.navigate(['/dashboard']);
+      }
+    });
+  }
 
   onSubmit(): void {
     if (this.loginForm.valid) {
@@ -43,12 +55,11 @@ export class LoginComponent {
     }
   }
 
-
   async login(vorname: string, nachname: string, password: string): Promise<void> {
-    const loginData = {vorname,nachname, password};
+    const loginData = { vorname, nachname, password };
 
     try {
-      const apiUrl = this.ApiService.getLoginUrl();
+      const apiUrl = this.apiService.getLoginUrl();
 
       const response = await fetch(apiUrl, {
         method: 'POST',
@@ -58,22 +69,19 @@ export class LoginComponent {
         body: JSON.stringify(loginData),
       });
 
-
       if (response.ok) {
         const data = await response.json();
 
 
-        localStorage.setItem('authToken', data.token);
+        this.authService.setToken(data.token);
 
 
         this.router.navigate(['/dashboard']);
       } else {
-
         const error = await response.json();
         alert(`Login failed: ${error.message || 'Invalid credentials'}`);
       }
     } catch (error) {
-
       console.error('Login error:', error);
       alert('There was an error with the login request.');
     }
