@@ -20,6 +20,7 @@ export class TeamService {
       id: 1,
       vorname: 'dev1',
       nachname:'devus',
+      password: 'test',
       skills: ['JavaScript', 'Angular'],
       token: undefined
     },
@@ -28,6 +29,7 @@ export class TeamService {
       id: 2,
       vorname: 'design1',
       nachname:'devus',
+      password: 'test',
       skills: ['Figma', 'Photoshop'],
       token: undefined
     },
@@ -36,6 +38,7 @@ export class TeamService {
       id: 3,
       vorname: 'pm1',
       nachname:'devus',
+      password: 'test',
       skills: ['Agile', 'Scrum'],
       token: undefined
     }

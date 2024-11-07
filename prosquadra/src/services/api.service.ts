@@ -7,10 +7,14 @@ import {ApiResponse} from '../types/api-response';
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrl = 'http://localhost:3000/api'; // Basis-URL für die API
+  private apiUrl = 'http://localhost:3000/api';
+  private authUrl: string = 'http://localhost:3000';
 
   constructor() {}
 
+  getLoginUrl(){
+    return this.authUrl+'/auth/login';
+  }
 
   async fetch<T>(endpoint: string): Promise<ApiResponse<T>> {
     const response = await fetch(`${this.apiUrl}${endpoint}`);

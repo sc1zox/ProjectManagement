@@ -1,10 +1,11 @@
 import {Team} from './team';
 
 export interface User {
-  role?: UserRole;
+  role: UserRole;
   id: number | null;
   vorname: string;
   nachname: string;
+  password: string;
   skills?: string[];
   team?: Team[];
   token?: string;

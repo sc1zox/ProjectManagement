@@ -4,8 +4,8 @@ import {
   MatChipGrid,
   MatChipInput,
   MatChipInputEvent,
-  MatChipsModule,
-  MatChipRow
+  MatChipRow,
+  MatChipsModule
 } from '@angular/material/chips';
 import {LiveAnnouncer} from '@angular/cdk/a11y';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
@@ -20,7 +20,7 @@ import {
 import {NgForOf} from '@angular/common';
 import {MatBadge} from '@angular/material/badge';
 import {Project} from '../../../types/project';
-import {User} from '../../../types/user';
+import {User, UserRole} from '../../../types/user';
 import {MatButton} from '@angular/material/button';
 import {RouterLink} from '@angular/router';
 import {NotificationsService} from '../../../services/notifications.service';
@@ -61,8 +61,10 @@ export class RightSidebarComponent implements OnInit {
   userInitials: string = '';
   user?: User = {
     id: 1,
+    role: UserRole.SM,
     vorname: 'TestSidebar',
     nachname: 'Right',
+    password: 'test',
   }; // das hier vom Auth service holen
 
   constructor(private ProjectService: ProjectService,private NotificationService: NotificationsService) {

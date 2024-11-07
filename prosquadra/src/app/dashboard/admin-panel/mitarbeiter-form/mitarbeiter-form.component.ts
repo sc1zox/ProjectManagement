@@ -45,10 +45,11 @@ export class MitarbeiterFormComponent implements OnInit {
 
   Teams: Team[] = [];
   user: User = {
-    id: 0,
-    vorname: '',
-    nachname: '',
-    team: [],
+    id: 10,
+    vorname: "TestSidebar",
+    nachname: "Right",
+    password: "test",
+    role: UserRole.Admin
   };
   userRoles = Object.values(UserRole).filter(role => role !== UserRole.Admin);
 
@@ -59,6 +60,7 @@ export class MitarbeiterFormComponent implements OnInit {
       vorname: ['', Validators.required],
       nachname: ['', Validators.required],
       role: ['', Validators.required],
+      passwort: ['', Validators.required],
       selectedSingleTeam: [''], // For single team selection
       selectedMultipleTeams: [[]] // For multiple team selection
     });
@@ -78,7 +80,7 @@ export class MitarbeiterFormComponent implements OnInit {
    * Adjusts form validation for team selection based on the user's role.
    * For Scrum Master: sets `selectedMultipleTeams` control as required.
    * For all others: `selectedSingleTeam` control as required.
-   * @param role 
+   * @param role
    */
   adjustTeamSelectionValidators(role: string) {
     const singleTeamControl = this.form.get('selectedSingleTeam');
@@ -108,14 +110,11 @@ export class MitarbeiterFormComponent implements OnInit {
 
       dialogRef.afterClosed().subscribe(async result => {
         if (result) {
-          if (this.user.id) {
-            this.user.id += 1;
-          }
-
           this.user.team = formValue.role === 'Scrum Master' ? formValue.selectedMultipleTeams : [formValue.selectedSingleTeam];
           this.user.role = formValue.role;
           this.user.vorname = formValue.vorname;
           this.user.nachname = formValue.nachname;
+          this.user.password = formValue.passwort;
 
           try {
             await this.UserService.createUser(this.user);
