@@ -10,7 +10,8 @@ export enum UserRole {
 
 export interface User {
   id: number | null;
-  username: string;
+  vorname: string;
+  nachname: string;
   role: UserRole;
   teams?: Team[];
   token?: string;

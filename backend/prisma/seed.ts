@@ -19,14 +19,13 @@ async function main() {
         create: { name: 'TypeScript' },
     });
 
-
-
-
+    // Create users with vorname and nachname instead of username
     await prisma.user.upsert({
-        where: { username: 'alice' },
+        where: { vorname_nachname: { vorname: 'Alice', nachname: 'Smith' } }, // Adjust this according to your schema
         update: {},
         create: {
-            username: 'alice',
+            vorname: 'Alice',
+            nachname: 'Smith',
             role: rolePO,
             password: bcrypt.hashSync('password', 8),
             skills: {
@@ -43,10 +42,11 @@ async function main() {
     });
 
     await prisma.user.upsert({
-        where: { username: 'admin' },
+        where: { vorname_nachname: { vorname: 'Admin', nachname: 'User' } }, // Adjust this according to your schema
         update: {},
         create: {
-            username: 'admin',
+            vorname: 'Admin',
+            nachname: 'User',
             role: roleAdmin,
             password: bcrypt.hashSync('password', 8),
             skills: {
@@ -63,10 +63,11 @@ async function main() {
     });
 
     await prisma.user.upsert({
-        where: { username: 'bob' },
+        where: { vorname_nachname: { vorname: 'Bob', nachname: 'Jones' } }, // Adjust this according to your schema
         update: {},
         create: {
-            username: 'bob',
+            vorname: 'Bob',
+            nachname: 'Jones',
             role: roleDeveloper,
             password: bcrypt.hashSync('password', 8),
             skills: {
@@ -83,10 +84,11 @@ async function main() {
     });
 
     await prisma.user.upsert({
-        where: { username: 'carol' },
+        where: { vorname_nachname: { vorname: 'Carol', nachname: 'Johnson' } }, // Adjust this according to your schema
         update: {},
         create: {
-            username: 'carol',
+            vorname: 'Carol',
+            nachname: 'Johnson',
             role: roleSM,
             password: bcrypt.hashSync('password', 8),
             skills: {

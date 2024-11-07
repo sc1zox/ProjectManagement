@@ -8,6 +8,9 @@ const userRouter = Router();
 userRouter.route('/').get(authMiddleware, rescue(userController.getAll));
 
 
+userRouter.post('/', rescue(userController.create));
+
+
 userRouter.route('/:id').get(authMiddleware, rescue(userController.getById));
 
 export default userRouter;

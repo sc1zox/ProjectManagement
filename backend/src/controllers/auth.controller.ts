@@ -5,38 +5,49 @@ import prisma from '../lib/prisma';
 import jwt from '../utils/jwt';
 
 class AuthController {
-    async authenticate(req: Request, res: Response, next: NextFunction): Promise<void> {
-        const { username, password } = req.body;
+    async authenticate(req: Request, res: Response, next: NextFunction): Promise<any> {
+        const { vorname, nachname, password } = req.body;
 
-        if (!username || !password) {
-            res.status(StatusCodes.BAD_REQUEST).json({
-                message: 'Username and password are required',
+
+        if (!vorname || !nachname || !password) {
+            return res.status(StatusCodes.BAD_REQUEST).json({
+                message: 'Vorname, Nachname and password are required',
             });
-            return;
         }
 
-        const user = await prisma.user.findUnique({ where: { username } });
+        try {
 
-        if (!user) {
-            res.status(StatusCodes.NOT_FOUND).json({
-                message: 'User not found',
+            const user = await prisma.user.findUnique({ where: { vorname_nachname: { vorname, nachname } } });
+
+
+            if (!user) {
+                return res.status(StatusCodes.NOT_FOUND).json({
+                    message: 'User not found',
+                });
+            }
+
+
+            const isValidPassword = await bcrypt.compare(password, user.password);
+
+
+            if (!isValidPassword) {
+                return res.status(StatusCodes.UNAUTHORIZED).json({
+                    message: 'Invalid password',
+                });
+            }
+
+
+            const token = jwt.sign({ vorname: user.vorname, nachname: user.nachname });
+
+
+            res.status(StatusCodes.OK).json({ token });
+        } catch (error) {
+
+            console.error('Error during authentication:', error);
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+                message: 'Something went wrong during authentication',
             });
-            return;
         }
-
-        const isValidPassword = await bcrypt.compare(password, user.password);
-
-        if (!isValidPassword) {
-            res.status(StatusCodes.UNAUTHORIZED).json({
-                message: 'Invalid password',
-            });
-            return;
-        }
-
-
-        const token = jwt.sign({ username: user.username });
-
-        res.status(StatusCodes.OK).json({ token });
     }
 }
 
