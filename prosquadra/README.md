@@ -29,6 +29,12 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 # Max's explanation corner
 
+# Christian's explanation corner
+
+- Projekt braucht keine Entwickler, Datepicker bei team-roadmap.
+- Entwickler Arbeitszeit bei Mitarbeiteranlegung
+- Projekterstellen mit Beschreibung
+
 ## Routing
 
 Das Dashboard ist so aufgebaut, dass die linke und rechte Seitenleiste (Sidebar) unverändert bleiben, während nur der mittlere Hauptinhalt bei der Navigation neu geladen wird.
