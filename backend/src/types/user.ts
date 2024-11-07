@@ -1,18 +1,20 @@
-import {Team} from "./team";
+import { Team } from "./team";
 
 
-export interface User {
-  role?: UserRole;
-  id: number | null;
-  vorname: string;
-  nachname: string;
-  skills?: string[];
-  team?: Team[];
-  token?: string;
-}
 export enum UserRole {
   PO = 'Product Owner',
   SM = 'Scrum Master',
   Developer = 'Developer',
   Admin = 'Admin'
+}
+
+export interface User {
+  id: number | null;
+  username: string;
+  role: UserRole;
+  teams?: Team[];
+  token?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
+  password: string;
 }
