@@ -58,6 +58,7 @@ export class MitarbeiterFormComponent implements OnInit {
     this.form = this.fb.group({
       vorname: ['', Validators.required],
       nachname: ['', Validators.required],
+      arbeitszeit: ['', Validators.required],
       role: ['', Validators.required],
       selectedSingleTeam: [''], // For single team selection
       selectedMultipleTeams: [[]] // For multiple team selection
@@ -116,6 +117,7 @@ export class MitarbeiterFormComponent implements OnInit {
           this.user.role = formValue.role;
           this.user.vorname = formValue.vorname;
           this.user.nachname = formValue.nachname;
+          this.user.arbeitszeit = formValue.arbeitszeit;
 
           try {
             await this.UserService.createUser(this.user);
