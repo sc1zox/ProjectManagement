@@ -4,12 +4,26 @@ import {ProjectService} from '../../../services/project.service';
 import {Project} from '../../../types/project';
 import {CdkDrag, CdkDragDrop, CdkDragPlaceholder, CdkDropList, moveItemInArray} from '@angular/cdk/drag-drop';
 
+// Date picker
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
+import { MatInputModule } from '@angular/material/input';
+import { FormControl, FormsModule, FormGroup, FormBuilder, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
+import { UserService } from '../../../services/user.service';
 
 
 @Component({
   selector: 'app-team-roadmap',
   standalone: true,
-  imports: [CommonModule, CdkDropList, CdkDrag, CdkDragPlaceholder],
+  imports: [CommonModule, 
+    CdkDropList, 
+    CdkDrag, 
+    CdkDragPlaceholder,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatInputModule,
+    FormsModule,
+    ReactiveFormsModule],
   templateUrl: './team-roadmap.component.html',
   styleUrls: ['./team-roadmap.component.scss']
 })
@@ -18,12 +32,43 @@ export class TeamRoadmapComponent implements AfterViewInit{
   projects:Project[]=[];
   selectedProject?: Project;
   protected readonly window = window;
+  isScrumMaster = false;
 
-  constructor(private ProjectService: ProjectService) {
+  startDateControl = new FormControl();
+  endDateControl = new FormControl();
+
+  dateForm: FormGroup;
+
+  constructor(private ProjectService: ProjectService, 
+    private UserService: UserService, private fb: FormBuilder) {
+      this.dateForm = this.fb.group({
+        startDate: this.startDateControl,
+        endDate: this.endDateControl,
+      });
+      
+      this.endDateControl.setValidators(this.endDateValidator.bind(this));
+  }
+
+  endDateValidator(control: AbstractControl): ValidationErrors | null {
+    const startDate = this.startDateControl.value;
+    const endDate = control.value;
+
+    if (startDate && endDate && endDate < startDate) {
+      return { endDateInvalid: true }
+    }
+    return null;
+  }
+
+  async ngOnInit() {
+    this.isScrumMaster = (await this.UserService.getCurrentUserRole() === "SM");
   }
 
   selectProject(project: Project): void {
     this.selectedProject = project;
+
+    this.startDateControl.setValue(project.startDate);
+    this.endDateControl.setValue(project.endDate);
+
     if (window.innerWidth < 1000) {
       const projectDetailsElement = document.querySelector('.project-details');
       if (projectDetailsElement) {
