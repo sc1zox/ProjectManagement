@@ -1,4 +1,4 @@
-import {AfterViewInit, ChangeDetectorRef, Component} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Output} from '@angular/core';
 import { FormBuilder, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -30,6 +30,7 @@ import { Team } from '../../../types/team';
   styleUrls: ['./create-project.component.scss']
 })
 export class CreateProjectComponent implements AfterViewInit {
+
   projectForm: FormGroup;
   scrummasters: User[] = [];
   productOwners: User[] = [];
@@ -45,6 +46,7 @@ export class CreateProjectComponent implements AfterViewInit {
   ) {
     this.projectForm = this.fb.group({
       projectName: ['', [Validators.required, Validators.maxLength(10)]], // Correct maxLength usage
+      description: ['', Validators.required],
       productOwner: ['', Validators.required],
       scrumMaster: ['', Validators.required],
       teamName: ['', Validators.required],
@@ -67,21 +69,22 @@ export class CreateProjectComponent implements AfterViewInit {
     this.teams = this.teamService.getTeams();
   }
 
-  onSubmit(): void {
+  async onSubmit(): Promise<void> {
     if (this.projectForm.valid) {
       const selectedTeam = this.teams.find(team => team.id === this.projectForm.value.teamName);
 
       const newProject: Project = {
         id: 0, // Ensure to handle ID assignment correctly
         name: this.projectForm.value.projectName,
-        description: '',
+        description: this.projectForm.value.description,
         team: selectedTeam, // Pass the selected team object
         effortEstimation: '',
         estimationDays: 0
       };
 
+      // Modified to refresh Team-Roadmap Component after submission.
+      await this.projectService.setProjects(newProject);
       console.log('Form Submitted', newProject);
-      this.projectService.setProjects(newProject);
       this.selectedTeam = selectedTeam; // Update selected team
       this.cdref.detectChanges(); // Optional, if necessary
       this.projectForm.reset();

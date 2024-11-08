@@ -61,6 +61,16 @@ export class TeamRoadmapComponent implements AfterViewInit{
 
   async ngOnInit() {
     this.isScrumMaster = (await this.UserService.getCurrentUserRole() === "SM");
+
+    this.loadProjects();
+    // Listen to projectCreated$ event
+    this.ProjectService.projectCreated$.subscribe(() => {
+      this.loadProjects();
+    })
+  }
+
+  async loadProjects() {
+    this.projects = await this.ProjectService.getProjects();
   }
 
   selectProject(project: Project): void {
@@ -119,6 +129,5 @@ export class TeamRoadmapComponent implements AfterViewInit{
       moveItemInArray(this.projects, event.previousIndex, event.currentIndex)
     }
   }
-
 
 }
