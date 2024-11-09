@@ -3,3 +3,9 @@
   padding-left: var(--content-padding);
   color: red;
 }
+.SnackbarContainer{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}

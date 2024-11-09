@@ -7,6 +7,7 @@ import { MatButton } from '@angular/material/button';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { NgIf } from '@angular/common';
+import {SnackbarService} from '../../services/snackbar.service';
 
 @Component({
   selector: 'app-login',
@@ -30,7 +31,8 @@ export class LoginComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private apiService: ApiService,
-    private authService: AuthService
+    private authService: AuthService,
+    private snackbarService: SnackbarService,
   ) {
     this.loginForm = this.fb.group({
       vorname: ['', Validators.required],
@@ -40,10 +42,8 @@ export class LoginComponent implements OnInit {
   }
 
   async ngOnInit(): Promise<void> {
-    // Überprüfen, ob der Benutzer bereits authentifiziert ist
     const authenticated = await this.authService.isAuthenticated();
     if (authenticated) {
-      // Benutzer ist authentifiziert, weiter zur Dashboard-Seite
       this.router.navigate(['/dashboard']);
     }
   }
@@ -76,7 +76,7 @@ export class LoginComponent implements OnInit {
         this.router.navigate(['/dashboard']);
       } else {
         const error = await response.json();
-        alert(`Login failed: ${error.message || 'Invalid credentials'}`);
+        this.snackbarService.open("Invalid credentials")
       }
     } catch (error) {
       console.error('Login error:', error);

@@ -8,12 +8,15 @@ import {ApiResponse} from '../types/api-response';
 })
 export class ApiService {
   private apiUrl = 'http://localhost:3000/api';
-  private authUrl: string = 'http://localhost:3000';
+  private baseUrl: string = 'http://localhost:3000';
 
   constructor() {}
 
   getLoginUrl(){
-    return this.authUrl+'/auth/login';
+    return this.baseUrl+'/auth/login';
+  }
+  getAuthUrl(){
+    return this.baseUrl+'/auth';
   }
 
   async fetch<T>(endpoint: string): Promise<ApiResponse<T>> {

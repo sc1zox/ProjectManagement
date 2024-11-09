@@ -53,7 +53,7 @@ export class MitarbeiterFormComponent implements OnInit {
     arbeitszeit: 0,
     team: [],
   };
-  userRoles = Object.values(UserRole).filter(role => role !== UserRole.Admin);
+  userRoles = Object.values(UserRole) // .filter(role => role !== UserRole.Admin); for testing purposes disabled to create admin acc
 
   form: FormGroup;
 

@@ -33,7 +33,7 @@ export class UserService {
   }
 
   async createUser(user: User): Promise<User> {
-    const response = await this.ApiService.post("/users",user);
+    const response = await this.ApiService.post("/users/create",user);
 
 
     if (response.code !== 201) {

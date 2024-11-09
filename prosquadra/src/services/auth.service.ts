@@ -10,7 +10,7 @@ export class AuthService {
   private apiUrl: string ='';
 
   constructor(private ApiService: ApiService) {
-    this.apiUrl=this.ApiService.getLoginUrl();
+    this.apiUrl=this.ApiService.getAuthUrl();
   }
 
   setToken(token: string): void {
@@ -32,7 +32,7 @@ export class AuthService {
   }
 
   private async verifyToken(token: string): Promise<boolean> {
-    const apiUrl = `${this.apiUrl}/verify-token`;
+    const apiUrl = this.apiUrl + '/verify-token';
 
     try {
       const response = await fetch(apiUrl, {
@@ -43,12 +43,14 @@ export class AuthService {
       });
 
       if (response.ok) {
-        return true;  // Token ist gültig
+        console.log('token gültig')
+        return true;
       } else {
-        return false;  // Token ist ungültig
+        console.log('token ist ungültig')
+        return false;
       }
     } catch (error) {
-      return false;  // Fehler bei der Anfrage
+      return false;
     }
   }
 
