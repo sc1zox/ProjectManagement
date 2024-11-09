@@ -20,8 +20,14 @@ export class ApiService {
   }
 
   async fetch<T>(endpoint: string): Promise<ApiResponse<T>> {
-    const response = await fetch(`${this.apiUrl}${endpoint}`);
-    if (!response.ok) {
+    let response;
+    try {
+      response = await fetch(`${this.apiUrl}${endpoint}`);
+    }
+    catch (error){
+      throw new Error ("api fetch failed" + error)
+    }
+    if (response && !response.ok) {
       const errorData = await response.json();
       throw new Error(`Error: ${errorData.error || 'Unknown error'}`);
     }

@@ -69,8 +69,8 @@ export class MitarbeiterFormComponent implements OnInit {
     });
   }
 
-  ngOnInit() {
-    this.Teams = this.TeamService.getTeams();
+  async ngOnInit() {
+    this.Teams = await this.TeamService.getTeams();
 
     // Listen to changes regarding the role
     this.form.get('role')?.valueChanges.subscribe((role) => {

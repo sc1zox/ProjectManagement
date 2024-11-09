@@ -25,6 +25,7 @@ import {MatButton} from '@angular/material/button';
 import {RouterLink} from '@angular/router';
 import {NotificationsService} from '../../../services/notifications.service';
 import {ProjectService} from '../../../services/project.service';
+import {UserService} from '../../../services/user.service';
 
 export interface ProgrammingLanguage {
   name: string
@@ -56,27 +57,24 @@ export interface ProgrammingLanguage {
 
 export class RightSidebarComponent implements OnInit {
 
-  userProjects: Project[] = []
+  userProject?: Project;
   notifications?: number;
   userInitials: string = '';
-  user?: User = {
-    id: 1,
-    role: UserRole.SM,
-    vorname: 'TestSidebar',
-    nachname: 'Right',
-    password: 'test',
-  }; // das hier vom Auth service holen
+  user?: User;
 
-  constructor(private ProjectService: ProjectService,private NotificationService: NotificationsService) {
+  constructor(private ProjectService: ProjectService,private NotificationService: NotificationsService,private UserService: UserService) {
     this.notifications = this.NotificationService.getNotificationAmount();
+    this.user = this.UserService.getCurrentUser();
   }
 
   async ngOnInit() {
+
+
     if (this.user) {
       this.userInitials = this.user.vorname.charAt(0).toUpperCase() + this.user.nachname.charAt(0).toUpperCase();
     }
     try {
-      this.userProjects = await this.ProjectService.getProjects(); // get with id to get actual project
+      this.userProject = await this.ProjectService.getProjectsById(1); //1 to get the project in the first place of array?
     }catch (error){
       console.error('Error while fetching Projects:', error);
     }finally {

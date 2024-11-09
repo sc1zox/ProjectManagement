@@ -33,7 +33,7 @@ export class LeftSidebarComponent implements OnInit{
 
   async ngOnInit() {
     try {
-      this.user = await this.Userservice.getUser(5); // hardcoded because id 5 is admin in my localdb
+      this.user = await this.Userservice.getUser(2);
     }catch (error){
       console.error('Error while fetching USer:', error);
     }finally {

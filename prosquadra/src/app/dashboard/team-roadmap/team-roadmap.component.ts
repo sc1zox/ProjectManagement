@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, ElementRef, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {ProjectService} from '../../../services/project.service';
 import {Project} from '../../../types/project';
@@ -15,9 +15,9 @@ import { UserService } from '../../../services/user.service';
 @Component({
   selector: 'app-team-roadmap',
   standalone: true,
-  imports: [CommonModule, 
-    CdkDropList, 
-    CdkDrag, 
+  imports: [CommonModule,
+    CdkDropList,
+    CdkDrag,
     CdkDragPlaceholder,
     MatDatepickerModule,
     MatNativeDateModule,
@@ -27,7 +27,7 @@ import { UserService } from '../../../services/user.service';
   templateUrl: './team-roadmap.component.html',
   styleUrls: ['./team-roadmap.component.scss']
 })
-export class TeamRoadmapComponent implements AfterViewInit{
+export class TeamRoadmapComponent implements AfterViewInit,OnInit{
 
   projects:Project[]=[];
   selectedProject?: Project;
@@ -39,13 +39,13 @@ export class TeamRoadmapComponent implements AfterViewInit{
 
   dateForm: FormGroup;
 
-  constructor(private ProjectService: ProjectService, 
+  constructor(private ProjectService: ProjectService,
     private UserService: UserService, private fb: FormBuilder) {
       this.dateForm = this.fb.group({
         startDate: this.startDateControl,
         endDate: this.endDateControl,
       });
-      
+
       this.endDateControl.setValidators(this.endDateValidator.bind(this));
   }
 
@@ -60,7 +60,7 @@ export class TeamRoadmapComponent implements AfterViewInit{
   }
 
   async ngOnInit() {
-    this.isScrumMaster = (await this.UserService.getCurrentUserRole() === "SM");
+    this.isScrumMaster = (this.UserService.getCurrentUser().role === "SM");
 
     this.loadProjects();
     // Listen to projectCreated$ event
@@ -103,7 +103,9 @@ export class TeamRoadmapComponent implements AfterViewInit{
   // Lifecycle Hook
   async ngAfterViewInit() {
     try {
+      console.log("project fetch started")
       this.projects = await this.ProjectService.getProjects();
+      console.log(this.projects);
     }catch (error){
       console.error('Error while fetching Projects:', error);
     }finally {

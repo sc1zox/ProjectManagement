@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ApiService } from './api.service';
+import {UserService} from './user.service';
 
 @Injectable({
   providedIn: 'root',
@@ -9,7 +10,7 @@ export class AuthService {
   private tokenKey = 'authToken';
   private apiUrl: string ='';
 
-  constructor(private ApiService: ApiService) {
+  constructor(private ApiService: ApiService,private UserService: UserService) {
     this.apiUrl=this.ApiService.getAuthUrl();
   }
 
@@ -44,6 +45,8 @@ export class AuthService {
 
       if (response.ok) {
         console.log('token gültig')
+        const data = await response.json();
+        this.UserService.setCurrentUser(data.user);
         return true;
       } else {
         console.log('token ist ungültig')
@@ -53,8 +56,6 @@ export class AuthService {
       return false;
     }
   }
-
-
 
   logout(): void {
     localStorage.removeItem(this.tokenKey);

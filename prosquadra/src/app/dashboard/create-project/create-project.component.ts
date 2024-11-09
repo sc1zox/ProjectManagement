@@ -61,12 +61,13 @@ export class CreateProjectComponent implements AfterViewInit {
 
   async loadUsers() {
     const users = await this.userService.getUsers();
+    console.log(users);
     this.productOwners = users.filter(user => user.role === 'PO');
     this.scrummasters = users.filter(user => user.role === 'SM');
   }
 
-  loadTeams() {
-    this.teams = this.teamService.getTeams();
+  async loadTeams() {
+    this.teams = await this.teamService.getTeams();
   }
 
   async onSubmit(): Promise<void> {

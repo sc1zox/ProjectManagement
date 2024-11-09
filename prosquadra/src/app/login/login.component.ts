@@ -8,6 +8,7 @@ import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { NgIf } from '@angular/common';
 import {SnackbarService} from '../../services/snackbar.service';
+import {UserService} from '../../services/user.service';
 
 @Component({
   selector: 'app-login',
@@ -33,6 +34,7 @@ export class LoginComponent implements OnInit {
     private apiService: ApiService,
     private authService: AuthService,
     private snackbarService: SnackbarService,
+    private userService: UserService,
   ) {
     this.loginForm = this.fb.group({
       vorname: ['', Validators.required],
@@ -56,7 +58,7 @@ export class LoginComponent implements OnInit {
   }
 
   async login(vorname: string, nachname: string, password: string): Promise<void> {
-    const loginData = { vorname, nachname, password };
+    const loginData = { vorname, nachname, password }; // hier einen eigenen Typen verwenden
 
     try {
       const apiUrl = this.apiService.getLoginUrl();
@@ -73,6 +75,8 @@ export class LoginComponent implements OnInit {
         const data = await response.json();
 
         this.authService.setToken(data.token);
+        this.userService.setCurrentUser(data.user);
+
         this.router.navigate(['/dashboard']);
       } else {
         const error = await response.json();
