@@ -2,14 +2,65 @@ import { NextFunction, Request, Response } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import prisma from '../lib/prisma';
 import bcrypt from 'bcryptjs';
-import e from "cors";
 import jwt from "jsonwebtoken";
+import {Project} from "../types/project";
+import {ApiResponse} from "../types/api-response";
+import {User,UserRole} from "../types/user";
+import {Team} from "../types/team";
 
 class UserController {
 
-    async getById(req: Request, res: Response, next: NextFunction): Promise<void> {
-        console.log(res.locals.payload); // Just for debugging, consider removing in production
+    async getProjects(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const projects = await prisma.project.findMany();
 
+            if (projects) {
+                const response: ApiResponse<Project[]> = {
+                    code: StatusCodes.OK,
+                    data: projects,
+                };
+                res.status(StatusCodes.OK).json(response);
+                return;
+            }
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async getProjectById(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const project = await prisma.project.findUnique({
+                where: { id: Number(req.params.id) },
+            });
+
+            if (!project) {
+                return next({ status: StatusCodes.NOT_FOUND, message: 'Project by ID not found' });
+            }
+            const response: ApiResponse<Project> = {
+                code: StatusCodes.OK,
+                data: project,
+            };
+            res.status(StatusCodes.OK).json(response);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async getTeam(req: Request, res:Response, next:NextFunction): Promise<void>{
+        try {
+            const team = await prisma.team.findMany();
+
+            if (!team) {
+                return next({status: StatusCodes.NOT_FOUND, message: 'Team not found'});
+            }
+            const response: ApiResponse<Team>={
+                code: StatusCodes.OK,
+                data = team,
+            }
+        }
+    }
+
+    async getUserById(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const user = await prisma.user.findUnique({
                 where: { id: Number(req.params.id) },
@@ -18,8 +69,15 @@ class UserController {
             if (!user) {
                 return next({ status: StatusCodes.NOT_FOUND, message: 'User not found' });
             }
+            const response: ApiResponse<{ vorname: string; nachname: string }> = {
+                code: StatusCodes.OK,
+                data: {
+                    vorname: user.vorname,
+                    nachname: user.nachname,
 
-            res.status(StatusCodes.OK).json({ vorname: user.vorname,nachname: user.nachname });
+                },
+            };
+            res.status(StatusCodes.OK).json(response);
         } catch (error) {
             next(error);
         }
@@ -29,7 +87,18 @@ class UserController {
     async getAll(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const users = await prisma.user.findMany();
-            res.status(StatusCodes.OK).json(users);
+
+            const mappedUsers: User[] = users.map(user => ({ //das mapping sollte eig überflüssig sein aber ts hat probleme mit dem typ
+                ...user,
+                role: UserRole[user.role]
+            }));
+
+            const response: ApiResponse<User[]> = {
+                code: StatusCodes.OK,
+                data: mappedUsers,
+            };
+
+            res.status(StatusCodes.OK).json(response);
         } catch (error) {
             next(error);
         }
@@ -37,12 +106,12 @@ class UserController {
 
 
     async create(req: Request, res: Response, next: NextFunction): Promise<any> {
-        const { vorname,nachname, password, role } = req.body;
+        const { vorname,nachname, password, role,arbeitszeit } = req.body;
         console.log(req.body);
         
-        if (!vorname || !nachname || !password || !role) {
+        if (!vorname || !nachname || !password || !role || !arbeitszeit) {
             return res.status(StatusCodes.BAD_REQUEST).json({
-                message: 'Alle Felder (username, password, role) sind erforderlich.',
+                message: 'Alle Felder (username, password, role und arbeitszeit) sind erforderlich.',
             });
         }
 
@@ -56,6 +125,7 @@ class UserController {
                     nachname,
                     password: hashedPassword,
                     role,
+                    arbeitszeit,
                 },
             });
 

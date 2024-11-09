@@ -1,5 +1,4 @@
-import { Team } from "./team";
-
+import {Team} from "./team";
 
 export enum UserRole {
   PO = 'Product Owner',
@@ -14,8 +13,9 @@ export interface User {
   nachname: string;
   role: UserRole;
   teams?: Team[];
-  token?: string;
+  token?: string | null;
   createdAt?: Date;
   updatedAt?: Date;
   password: string;
+  arbeitszeit: number;
 }

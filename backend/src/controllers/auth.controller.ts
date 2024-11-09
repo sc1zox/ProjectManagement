@@ -27,10 +27,11 @@ class AuthController {
             }
 
 
-            const isValidPassword = await bcrypt.compare(password, user.password);
+            const isValidPassword = bcrypt.compare(password ,user.password);
 
 
             if (!isValidPassword) {
+                console.log(isValidPassword)
                 return res.status(StatusCodes.UNAUTHORIZED).json({
                     message: 'Invalid password',
                 });
