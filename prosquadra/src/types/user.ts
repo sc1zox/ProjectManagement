@@ -1,15 +1,13 @@
 import {Team} from './team';
 
 export interface User {
+  id: number;
   role: UserRole;
-  id: number | null;
   vorname: string;
   nachname: string;
-  password: string;
-  arbeitszeit?: number; // Muss noch mit backend shema verbunden werden
+  arbeitszeit?: number;
   skills?: string[];
   team?: Team[];
-  token?: string;
 }
 export enum UserRole {
   PO = 'PO',

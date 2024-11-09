@@ -3,8 +3,6 @@ import { CommonModule } from '@angular/common';
 import {ProjectService} from '../../../services/project.service';
 import {Project} from '../../../types/project';
 import {CdkDrag, CdkDragDrop, CdkDragPlaceholder, CdkDropList, moveItemInArray} from '@angular/cdk/drag-drop';
-
-// Date picker
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';

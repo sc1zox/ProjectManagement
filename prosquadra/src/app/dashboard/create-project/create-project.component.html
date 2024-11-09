@@ -14,20 +14,6 @@
     </mat-form-field>
 
     <mat-form-field class="full-width">
-      <mat-label>Product Owner</mat-label>
-      <mat-select formControlName="productOwner" placeholder="Product Owner" required>
-        <mat-option *ngFor="let user of productOwners" [value]="user.id">{{ user.vorname }} {{ user.nachname }}</mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field class="full-width">
-      <mat-label>Scrum Master</mat-label>
-      <mat-select formControlName="scrumMaster" placeholder="Scrum Master" required>
-        <mat-option *ngFor="let user of scrummasters" [value]="user.id">{{ user.vorname }} {{ user.nachname }}</mat-option>
-      </mat-select>
-    </mat-form-field>
-
-    <mat-form-field class="full-width">
       <mat-label>Team</mat-label>
       <mat-select formControlName="teamName" placeholder="Team" required>
         <mat-option *ngFor="let team of teams" [value]="team.id">{{ team.name }}</mat-option>

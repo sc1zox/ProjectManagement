@@ -1,7 +1,8 @@
 import {Injectable} from '@angular/core';
 import { User} from '../types/user';
-import {ProjectService} from './project.service';
 import {ApiService} from './api.service';
+import {ApiResponse} from '../types/api-response';
+import {Login} from '../types/login';
 
 @Injectable({
   providedIn: 'root'
@@ -10,14 +11,14 @@ export class UserService {
 
   private User?: User;
 
-  constructor(private ProjectService: ProjectService,private ApiService: ApiService) {
+  constructor(private ApiService: ApiService) {
   }
 
 
   async getUsers(): Promise<User[]> {
     try {
       console.log("Fetching users from API...");
-      const response = await this.ApiService.fetch("/users");
+      const response:ApiResponse<User[]> = await this.ApiService.fetch("/users");
 
       console.log("Response received:", response);
 
@@ -43,7 +44,7 @@ export class UserService {
 
   async getUser(ID: number): Promise<User> {
 
-    const response = await this.ApiService.fetch(`/users/${ID}`);
+    const response:ApiResponse<User> = await this.ApiService.fetch(`/users/${ID}`);
 
     if (response.code !== 200) {
       throw new Error('Failed to fetch user data for specific id:' + ID);
@@ -53,15 +54,33 @@ export class UserService {
   }
 
   async createUser(user: User): Promise<User> {
-    const response = await this.ApiService.post("/users/create",user);
+    const response: ApiResponse<User> = await this.ApiService.post("/users/create",user);
 
+    if (!response.data) {
+      throw new Error('No response received from the server');
+    }
 
     if (response.code !== 201) {
       throw new Error('Failed to create user');
     }
-
     return <User>response.data;
   }
+
+  async createLogin(Login: Login): Promise<Login> {
+    let LoginUrl = this.ApiService.getAuthUrl()+"/create";
+    const response: ApiResponse<Login> = await this.ApiService.postUrl(LoginUrl,Login);
+
+    if (!response.data) {
+      throw new Error('No response received from the server');
+    }
+
+    if (response.code !== 201) {
+      throw new Error('Failed to create Login');
+    }
+
+    return <Login>response.data;
+  }
+
   setCurrentUser(user: User): void {
     this.User = user;
   }

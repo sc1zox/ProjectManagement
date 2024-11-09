@@ -39,7 +39,7 @@ export class ProjectService {
 
 
   async setProjects(Project: Project): Promise<Project> {
-    const response = await this.ApiService.post("/projects", Project);
+    const response = await this.ApiService.post("/project/create", Project);
     if (response.code !== 201) {
       throw new Error('Failed to create user');
     }

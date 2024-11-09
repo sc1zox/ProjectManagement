@@ -51,4 +51,21 @@ export class ApiService {
 
     return response.json();
   }
+
+  async postUrl<T>(url: string, body: any): Promise<ApiResponse<T>> {
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(body),
+    });
+
+    if (!response.ok) {
+      const errorResponse = await response.json();
+      throw new Error(`Error: ${errorResponse.error}`);
+    }
+
+    return response.json();
+  }
 }

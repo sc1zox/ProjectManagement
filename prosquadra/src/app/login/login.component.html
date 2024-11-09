@@ -6,18 +6,10 @@
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
 
       <mat-form-field appearance="fill">
-        <mat-label>Vorname</mat-label>
-        <input matInput formControlName="vorname" placeholder="Vorname">
-        <mat-error *ngIf="loginForm.get('vorname')?.invalid && loginForm.get('vorname')?.touched">
-          Vorname ist erforderlich.
-        </mat-error>
-      </mat-form-field>
-
-      <mat-form-field appearance="fill">
-        <mat-label>Nachname</mat-label>
-        <input matInput formControlName="nachname" placeholder="Nachname">
-        <mat-error *ngIf="loginForm.get('nachname')?.invalid && loginForm.get('nachname')?.touched">
-          Nachname ist erforderlich.
+        <mat-label>Username</mat-label>
+        <input matInput formControlName="username" placeholder="Username">
+        <mat-error *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched">
+          Username ist erforderlich.
         </mat-error>
       </mat-form-field>
 

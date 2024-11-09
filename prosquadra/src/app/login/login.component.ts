@@ -9,6 +9,7 @@ import { MatInput } from '@angular/material/input';
 import { NgIf } from '@angular/common';
 import {SnackbarService} from '../../services/snackbar.service';
 import {UserService} from '../../services/user.service';
+import {Login} from '../../types/login';
 
 @Component({
   selector: 'app-login',
@@ -37,8 +38,7 @@ export class LoginComponent implements OnInit {
     private userService: UserService,
   ) {
     this.loginForm = this.fb.group({
-      vorname: ['', Validators.required],
-      nachname: ['', Validators.required],
+      username: ['', Validators.required],
       password: ['', Validators.required],
     });
   }
@@ -52,13 +52,13 @@ export class LoginComponent implements OnInit {
 
   onSubmit(): void {
     if (this.loginForm.valid) {
-      const { vorname, nachname, password } = this.loginForm.value;
-      this.login(vorname, nachname, password);
+      const { username, password } = this.loginForm.value;
+      this.login(username, password);
     }
   }
 
-  async login(vorname: string, nachname: string, password: string): Promise<void> {
-    const loginData = { vorname, nachname, password }; // hier einen eigenen Typen verwenden
+  async login(username: string, password: string): Promise<void> {
+    const loginData: Login = { username, password };
 
     try {
       const apiUrl = this.apiService.getLoginUrl();

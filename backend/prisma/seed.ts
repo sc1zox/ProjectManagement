@@ -1,108 +1,104 @@
-import bcrypt from 'bcryptjs';
-import prisma from '../src/lib/prisma'; // Adjust path according to your project structure
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 async function main() {
-    const roleDeveloper = 'Developer';
-    const rolePO = 'PO';
-    const roleSM = 'SM';
-    const roleAdmin = 'Admin';
-
-    const skillJavaScript = await prisma.skill.upsert({
-        where: { name: 'JavaScript' },
-        update: {},
-        create: { name: 'JavaScript' },
+    // Create users
+    const user1 = await prisma.user.create({
+        data: {
+            vorname: 'John',
+            nachname: 'Doe',
+            role: 'Developer',
+            arbeitszeit: 40,
+            login: {
+                create: {
+                    username: 'john.doe',
+                    password: 'password123',
+                },
+            },
+        },
     });
 
-    const skillTypeScript = await prisma.skill.upsert({
-        where: { name: 'TypeScript' },
-        update: {},
-        create: { name: 'TypeScript' },
-    });
-
-    // Create users with vorname and nachname instead of username
-    await prisma.user.upsert({
-        where: { vorname_nachname: { vorname: 'Alice', nachname: 'Smith' } }, // Adjust this according to your schema
-        update: {},
-        create: {
-            vorname: 'Alice',
+    const user2 = await prisma.user.create({
+        data: {
+            vorname: 'Jane',
             nachname: 'Smith',
-            role: rolePO,
-            password: bcrypt.hashSync('password', 8),
-            skills: {
-                connect: [{ id: skillJavaScript.id }, { id: skillTypeScript.id }],
+            role: 'PO',
+            arbeitszeit: 35,
+            login: {
+                create: {
+                    username: 'jane.smith',
+                    password: 'password123',
+                },
             },
-            teams: {
-                connect: [],
-            },
-            projects: {
-                connect: [],
-            },
-            token: null, // or generate a token if required
         },
     });
 
-    await prisma.user.upsert({
-        where: { vorname_nachname: { vorname: 'Admin', nachname: 'User' } }, // Adjust this according to your schema
-        update: {},
-        create: {
-            vorname: 'Admin',
-            nachname: 'User',
-            role: roleAdmin,
-            password: bcrypt.hashSync('password', 8),
-            skills: {
-                connect: [{ id: skillJavaScript.id }, { id: skillTypeScript.id }],
+    const user3 = await prisma.user.create({
+        data: {
+            vorname: 'Master',
+            nachname: 'Scrum',
+            role: 'SM',
+            arbeitszeit: 35,
+            login: {
+                create: {
+                    username: 'sm',
+                    password: 'test',
+                },
             },
-            teams: {
-                connect: [],
+        },
+    });
+    const user4 = await prisma.user.create({
+        data: {
+            vorname: 'admin',
+            nachname: 'test',
+            role: 'Admin',
+            arbeitszeit: 35,
+            login: {
+                create: {
+                    username: 'admin',
+                    password: 'test',
+                },
             },
-            projects: {
-                connect: [],
-            },
-            token: null,
         },
     });
 
-    await prisma.user.upsert({
-        where: { vorname_nachname: { vorname: 'Bob', nachname: 'Jones' } }, // Adjust this according to your schema
-        update: {},
-        create: {
-            vorname: 'Bob',
-            nachname: 'Jones',
-            role: roleDeveloper,
-            password: bcrypt.hashSync('password', 8),
-            skills: {
-                connect: [{ id: skillJavaScript.id }],
+    // Create roadmap
+    const roadmap = await prisma.roadmap.create({
+        data: {},
+    });
+
+    // Create team and link roadmap and users
+    const team = await prisma.team.create({
+        data: {
+            name: 'Development Team',
+            roadmap: {
+                connect: { id: roadmap.id },
             },
-            teams: {
-                connect: [],
+            members: {
+                connect: [{ id: user1.id }, { id: user2.id }],
             },
-            projects: {
-                connect: [],
-            },
-            token: null, // or generate a token if required
         },
     });
 
-    await prisma.user.upsert({
-        where: { vorname_nachname: { vorname: 'Carol', nachname: 'Johnson' } }, // Adjust this according to your schema
-        update: {},
-        create: {
-            vorname: 'Carol',
-            nachname: 'Johnson',
-            role: roleSM,
-            password: bcrypt.hashSync('password', 8),
-            skills: {
-                connect: [{ id: skillTypeScript.id }],
+    // Create project and link to team and roadmap
+    const project = await prisma.project.create({
+        data: {
+            name: 'New Project',
+            description: 'A new project description',
+            estimationDays: 30,
+            startDate: new Date(2020, 11, 20), // December 20, 2020
+            endDate: new Date(2024, 9, 10),    // October 10, 2024
+            team: {
+                connect: { id: team.id },
             },
-            teams: {
-                connect: [],
+            roadmap: {
+                connect: { id: roadmap.id },
             },
-            projects: {
-                connect: [],
-            },
-            token: null, // or generate a token if required
         },
     });
+
+    console.log({ user1, user2,user3,user4, roadmap, team, project });
 }
 
 main()

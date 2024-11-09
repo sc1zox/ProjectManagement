@@ -10,12 +10,25 @@
 .button{
   margin-top: var(--content-margin);
 }
-#form-container{
-  width: auto;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+::ng-deep {
+  #form-container {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #cdk-step-content-0-0,
+  #cdk-step-content-0-1,
+  #cdk-step-content-0-2 {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
+
+
 @media screen and (max-width: 1000px) {
   .mitarbeiter-form {
     margin-bottom: calc(var(--form-maxsize)/2.5);

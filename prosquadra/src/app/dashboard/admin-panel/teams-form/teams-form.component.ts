@@ -62,9 +62,7 @@ export class TeamsFormComponent implements OnInit {
     try {
       this.Users = await this.UserService.getUsers();
     }catch (error){
-      console.error('Error while creating Team:', error);
-    }finally {
-      console.log('Team creation process finished.');
+      console.error('Error while fetching Users:', error);
     }
     this.filterUsers()
   }
@@ -85,19 +83,19 @@ export class TeamsFormComponent implements OnInit {
 
       dialogRef.afterClosed().subscribe(result => {
         if (result) {
-
+          this.selectedUser = formValue.selectedUser;
           if (this.Team) {
-            this.selectedUsers = [];
             if (this.selectedUser) {
               for (const userId of this.selectedUser) {
-                const user = this.Users.find(u => u.id === userId); // Find user by ID
+                const user = this.Users.find(u => u.id === userId);
                 if (user) {
-                  this.selectedUsers.push(user); // Add the found user to selectedUsers
+                  this.selectedUsers.push(user);
                 }
               }
             }
             this.Team.name = formValue.teamName;
             this.Team.members = this.selectedUsers;
+            console.log(this.Team)
             this.TeamService.createTeam(this.Team);
             this.router.navigate(['/dashboard/admin-panel']);
           }

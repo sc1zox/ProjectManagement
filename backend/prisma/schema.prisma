@@ -14,13 +14,10 @@ model User {
   role        UserRole
   skills      Skill[]  @relation("UserSkills")
   teams       Team[]   @relation("TeamMembers")
-  token       String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  password    String
   arbeitszeit Int
-
-  @@unique([vorname, nachname])
+  login       Login?
 }
 
 model Skill {
@@ -32,21 +29,20 @@ model Skill {
 }
 
 model Team {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   name      String
-  members   User[]   @relation("TeamMembers")
-  roadmapId Int?
-  roadmap   Roadmap? @relation("TeamRoadmap", fields: [roadmapId], references: [id])
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  projectId Int?
+  members   User[]    @relation("TeamMembers")
+  roadmapId Int?      @unique
+  roadmap   Roadmap?  @relation(fields: [roadmapId], references: [id])
+  projects  Project[] @relation("TeamProjects")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
 }
 
 model Roadmap {
   id        Int       @id @default(autoincrement())
-  title     String // Added title for clarity
-  projects  Project[] @relation("RoadmapProjects") // Relation with Projects
-  teams     Team[]    @relation("TeamRoadmap") // Relation with Teams
+  projects  Project[] @relation("RoadmapProjects")
+  teams     Team?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
@@ -59,9 +55,19 @@ model Project {
   endDate        DateTime?
   roadmapId      Int?
   roadmap        Roadmap?  @relation("RoadmapProjects", fields: [roadmapId], references: [id])
-  estimationDays Int
+  team           Team?     @relation("TeamProjects", fields: [teamid], references: [id])
+  teamid         Int
+  estimationDays Int?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
+}
+
+model Login {
+  id       Int    @id @default(autoincrement())
+  username String @unique
+  password String
+  userId   Int    @unique
+  user     User   @relation(fields: [userId], references: [id])
 }
 
 enum UserRole {
