@@ -7,14 +7,27 @@ import {ApiResponse} from '../types/api-response';
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrl = 'http://localhost:3000/api'; // Basis-URL für die API
+  private apiUrl = 'http://localhost:3000/api';
+  private baseUrl: string = 'http://localhost:3000';
 
   constructor() {}
 
+  getLoginUrl(){
+    return this.baseUrl+'/auth/login';
+  }
+  getAuthUrl(){
+    return this.baseUrl+'/auth';
+  }
 
   async fetch<T>(endpoint: string): Promise<ApiResponse<T>> {
-    const response = await fetch(`${this.apiUrl}${endpoint}`);
-    if (!response.ok) {
+    let response;
+    try {
+      response = await fetch(`${this.apiUrl}${endpoint}`);
+    }
+    catch (error){
+      throw new Error ("api fetch failed" + error)
+    }
+    if (response && !response.ok) {
       const errorData = await response.json();
       throw new Error(`Error: ${errorData.error || 'Unknown error'}`);
     }

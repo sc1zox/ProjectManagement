@@ -48,9 +48,12 @@ export class MitarbeiterFormComponent implements OnInit {
     id: 0,
     vorname: '',
     nachname: '',
+    password: '',
+    role: UserRole.Admin,
+    arbeitszeit: 0,
     team: [],
   };
-  userRoles = Object.values(UserRole).filter(role => role !== UserRole.Admin);
+  userRoles = Object.values(UserRole) // .filter(role => role !== UserRole.Admin); for testing purposes disabled to create admin acc
 
   form: FormGroup;
 
@@ -60,13 +63,14 @@ export class MitarbeiterFormComponent implements OnInit {
       nachname: ['', Validators.required],
       arbeitszeit: ['', Validators.required],
       role: ['', Validators.required],
+      passwort: ['', Validators.required],
       selectedSingleTeam: [''], // For single team selection
       selectedMultipleTeams: [[]] // For multiple team selection
     });
   }
 
-  ngOnInit() {
-    this.Teams = this.TeamService.getTeams();
+  async ngOnInit() {
+    this.Teams = await this.TeamService.getTeams();
 
     // Listen to changes regarding the role
     this.form.get('role')?.valueChanges.subscribe((role) => {
@@ -79,7 +83,7 @@ export class MitarbeiterFormComponent implements OnInit {
    * Adjusts form validation for team selection based on the user's role.
    * For Scrum Master: sets `selectedMultipleTeams` control as required.
    * For all others: `selectedSingleTeam` control as required.
-   * @param role 
+   * @param role
    */
   adjustTeamSelectionValidators(role: string) {
     const singleTeamControl = this.form.get('selectedSingleTeam');
@@ -109,14 +113,11 @@ export class MitarbeiterFormComponent implements OnInit {
 
       dialogRef.afterClosed().subscribe(async result => {
         if (result) {
-          if (this.user.id) {
-            this.user.id += 1;
-          }
-
           this.user.team = formValue.role === 'Scrum Master' ? formValue.selectedMultipleTeams : [formValue.selectedSingleTeam];
           this.user.role = formValue.role;
           this.user.vorname = formValue.vorname;
           this.user.nachname = formValue.nachname;
+          this.user.password = formValue.passwort;
           this.user.arbeitszeit = formValue.arbeitszeit;
 
           try {

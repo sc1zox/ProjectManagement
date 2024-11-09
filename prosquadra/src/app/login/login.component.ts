@@ -1,41 +1,90 @@
-import { Component } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { CommonModule } from '@angular/common';
+import { ApiService } from '../../services/api.service';
+import { AuthService } from '../../services/auth.service';
+import { MatButton } from '@angular/material/button';
+import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { NgIf } from '@angular/common';
+import {SnackbarService} from '../../services/snackbar.service';
+import {UserService} from '../../services/user.service';
 
 @Component({
   selector: 'app-login',
+  templateUrl: './login.component.html',
   standalone: true,
   imports: [
-    CommonModule,
+    MatButton,
+    MatError,
+    MatInput,
     ReactiveFormsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule
+    MatFormField,
+    NgIf,
+    MatLabel,
   ],
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
+  styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   loginForm: FormGroup;
 
-  constructor(private fb: FormBuilder, private router: Router) {
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private apiService: ApiService,
+    private authService: AuthService,
+    private snackbarService: SnackbarService,
+    private userService: UserService,
+  ) {
     this.loginForm = this.fb.group({
-      username: ['', Validators.required],
-      password: ['', Validators.required]
+      vorname: ['', Validators.required],
+      nachname: ['', Validators.required],
+      password: ['', Validators.required],
     });
+  }
+
+  async ngOnInit(): Promise<void> {
+    const authenticated = await this.authService.isAuthenticated();
+    if (authenticated) {
+      this.router.navigate(['/dashboard']);
+    }
   }
 
   onSubmit(): void {
     if (this.loginForm.valid) {
-      const { username, password } = this.loginForm.value;
-      console.log('Username:', username);
-      console.log('Password:', password);
-      // login logic here
+      const { vorname, nachname, password } = this.loginForm.value;
+      this.login(vorname, nachname, password);
     }
-    this.router.navigate(['/dashboard']);
+  }
+
+  async login(vorname: string, nachname: string, password: string): Promise<void> {
+    const loginData = { vorname, nachname, password }; // hier einen eigenen Typen verwenden
+
+    try {
+      const apiUrl = this.apiService.getLoginUrl();
+
+      const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(loginData),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+
+        this.authService.setToken(data.token);
+        this.userService.setCurrentUser(data.user);
+
+        this.router.navigate(['/dashboard']);
+      } else {
+        const error = await response.json();
+        this.snackbarService.open("Invalid credentials")
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      alert('There was an error with the login request.');
+    }
   }
 }

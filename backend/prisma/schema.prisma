@@ -1,6 +1,3 @@
-// This is your Prisma schema file
-// Learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,37 +8,38 @@ datasource db {
 }
 
 model User {
-  id            Int       @id @default(autoincrement())
-  vorname       String
-  nachname      String
-  role          UserRole
-  skills        Skill[]   @relation("UserSkills") // Many-to-many relation with Skill
-  teams         Team[]    @relation("TeamMembers") // Relation with Team
-  token         String?
-  projects      Project[] @relation("ProjectDevelopers") // Relation with Projects
-  scrumMasters  Project[] @relation("ScrumMaster") // Relation with scrumMaster
-  productOwners Project[] @relation("ProductOwner") // Relation with productOwner
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id          Int      @id @default(autoincrement())
+  vorname     String
+  nachname    String
+  role        UserRole
+  skills      Skill[]  @relation("UserSkills")
+  teams       Team[]   @relation("TeamMembers")
+  token       String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  password    String
+  arbeitszeit Int
+
+  @@unique([vorname, nachname])
 }
 
 model Skill {
   id        Int      @id @default(autoincrement())
   name      String   @unique
-  users     User[]   @relation("UserSkills") // Many-to-many relation with User
+  users     User[]   @relation("UserSkills")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Team {
-  id        Int       @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   name      String
-  members   User[]    @relation("TeamMembers") // Relation with User
-  projects  Project[] @relation("TeamProjects") // Relation with Projects
-  roadmapId Int? // Foreign key for the roadmap
-  roadmap   Roadmap?  @relation("TeamRoadmap", fields: [roadmapId], references: [id]) // Relation with Roadmap
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  members   User[]   @relation("TeamMembers")
+  roadmapId Int?
+  roadmap   Roadmap? @relation("TeamRoadmap", fields: [roadmapId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  projectId Int?
 }
 
 model Roadmap {
@@ -54,24 +52,16 @@ model Roadmap {
 }
 
 model Project {
-  id               Int       @id @default(autoincrement())
-  name             String
-  description      String
-  startDate        DateTime?
-  endDate          DateTime?
-  developers       User[]    @relation("ProjectDevelopers") // Relation with Users
-  scrumMasterId    Int? // Foreign key for scrumMaster
-  scrumMaster      User?     @relation("ScrumMaster", fields: [scrumMasterId], references: [id], onDelete: Cascade) // Relation with User
-  productOwnerId   Int? // Foreign key for productOwner
-  productOwner     User?     @relation("ProductOwner", fields: [productOwnerId], references: [id], onDelete: Cascade) // Relation with User
-  teamId           Int? // Foreign key for Team
-  team             Team?     @relation("TeamProjects", fields: [teamId], references: [id]) // Relation with Team
-  roadmapId        Int? // Foreign key for Roadmap
-  roadmap          Roadmap?  @relation("RoadmapProjects", fields: [roadmapId], references: [id]) // Relation with Roadmap
-  effortEstimation String
-  estimationDays   Int
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+  id             Int       @id @default(autoincrement())
+  name           String
+  description    String
+  startDate      DateTime?
+  endDate        DateTime?
+  roadmapId      Int?
+  roadmap        Roadmap?  @relation("RoadmapProjects", fields: [roadmapId], references: [id])
+  estimationDays Int
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 }
 
 enum UserRole {

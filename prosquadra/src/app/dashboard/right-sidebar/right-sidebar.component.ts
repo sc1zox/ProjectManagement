@@ -4,8 +4,8 @@ import {
   MatChipGrid,
   MatChipInput,
   MatChipInputEvent,
-  MatChipsModule,
-  MatChipRow
+  MatChipRow,
+  MatChipsModule
 } from '@angular/material/chips';
 import {LiveAnnouncer} from '@angular/cdk/a11y';
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
@@ -20,11 +20,12 @@ import {
 import {NgForOf} from '@angular/common';
 import {MatBadge} from '@angular/material/badge';
 import {Project} from '../../../types/project';
-import {User} from '../../../types/user';
+import {User, UserRole} from '../../../types/user';
 import {MatButton} from '@angular/material/button';
 import {RouterLink} from '@angular/router';
 import {NotificationsService} from '../../../services/notifications.service';
 import {ProjectService} from '../../../services/project.service';
+import {UserService} from '../../../services/user.service';
 
 export interface ProgrammingLanguage {
   name: string
@@ -56,25 +57,24 @@ export interface ProgrammingLanguage {
 
 export class RightSidebarComponent implements OnInit {
 
-  userProjects: Project[] = []
+  userProject?: Project;
   notifications?: number;
   userInitials: string = '';
-  user?: User = {
-    id: 1,
-    vorname: 'TestSidebar',
-    nachname: 'Right',
-  }; // das hier vom Auth service holen
+  user?: User;
 
-  constructor(private ProjectService: ProjectService,private NotificationService: NotificationsService) {
+  constructor(private ProjectService: ProjectService,private NotificationService: NotificationsService,private UserService: UserService) {
     this.notifications = this.NotificationService.getNotificationAmount();
+    this.user = this.UserService.getCurrentUser();
   }
 
   async ngOnInit() {
+
+
     if (this.user) {
       this.userInitials = this.user.vorname.charAt(0).toUpperCase() + this.user.nachname.charAt(0).toUpperCase();
     }
     try {
-      this.userProjects = await this.ProjectService.getProjects(); // get with id to get actual project
+      this.userProject = await this.ProjectService.getProjectsById(1); //1 to get the project in the first place of array?
     }catch (error){
       console.error('Error while fetching Projects:', error);
     }finally {

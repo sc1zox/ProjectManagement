@@ -17,16 +17,16 @@
       </mat-expansion-panel-header>
 
 
-      <div *ngFor="let proj of userProjects">
+      <div>
         <mat-expansion-panel class="project">
           <mat-expansion-panel-header>
-            <mat-panel-title>{{ proj.name }}</mat-panel-title>
+            <mat-panel-title>{{ userProject?.name }}</mat-panel-title>
           </mat-expansion-panel-header>
-          <p>{{ proj.description }}</p>
+          <p>{{ userProject?.description }}</p>
           <p class="bold">Start Date:</p>
-          <p>{{proj.startDate}}</p>
+          <p>{{userProject?.startDate}}</p>
           <p class="bold">End Date:</p>
-          <p>{{proj.endDate}}</p>
+          <p>{{userProject?.endDate}}</p>
           <button mat-raised-button [routerLink]="['home']" class="button">Zum Projekt</button> <!-- ProjektSeite fehlt noch -->
         </mat-expansion-panel>
       </div>

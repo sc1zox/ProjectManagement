@@ -1,10 +1,11 @@
 import {Team} from './team';
 
 export interface User {
-  role?: UserRole;
+  role: UserRole;
   id: number | null;
   vorname: string;
   nachname: string;
+  password: string;
   arbeitszeit?: number; // Muss noch mit backend shema verbunden werden
   skills?: string[];
   team?: Team[];

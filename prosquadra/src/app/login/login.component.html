@@ -1,20 +1,37 @@
 <div class="login-container">
   <div class="login-card">
-    <img src="/assets/logo.png" alt="ProSquadra Logo" class="logo" />
+    <img src="/assets/logo.png" alt="ProSquadra Logo" class="logo"/>
     <h2>ProSquadra</h2>
 
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
       <mat-form-field appearance="fill">
-        <mat-label>Benutzername</mat-label>
-        <input matInput formControlName="username" placeholder="Benutzername">
+        <mat-label>Vorname</mat-label>
+        <input matInput formControlName="vorname" placeholder="Vorname">
+        <mat-error *ngIf="loginForm.get('vorname')?.invalid && loginForm.get('vorname')?.touched">
+          Vorname ist erforderlich.
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="fill">
+        <mat-label>Nachname</mat-label>
+        <input matInput formControlName="nachname" placeholder="Nachname">
+        <mat-error *ngIf="loginForm.get('nachname')?.invalid && loginForm.get('nachname')?.touched">
+          Nachname ist erforderlich.
+        </mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="fill">
         <mat-label>Passwort</mat-label>
         <input matInput formControlName="password" placeholder="Passwort" type="password">
+        <mat-error *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
+          Passwort ist erforderlich.
+        </mat-error>
       </mat-form-field>
 
-      <button mat-raised-button color="primary" type="submit">Anmelden</button>
+      <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid">
+        Anmelden
+      </button>
     </form>
   </div>
 </div>
