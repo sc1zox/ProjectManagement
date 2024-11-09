@@ -1,21 +1,18 @@
 import {Team} from "./team";
+import { UserRole as PrismaUserRole } from '@prisma/client';
+import {Login} from "./login";
 
-export enum UserRole {
-  PO = 'Product Owner',
-  SM = 'Scrum Master',
-  Developer = 'Developer',
-  Admin = 'Admin'
-}
+
+export type UserRole = PrismaUserRole; // import the Enum from prisma to avoid type mismatch
 
 export interface User {
-  id: number | null;
+  id: number;
   vorname: string;
   nachname: string;
   role: UserRole;
   teams?: Team[];
-  token?: string | null;
-  createdAt?: Date;
-  updatedAt?: Date;
-  password: string;
+  createdAt: Date;
+  updatedAt: Date;
   arbeitszeit: number;
+  login?: Login;
 }

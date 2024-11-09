@@ -1,5 +1,6 @@
 import {Project} from './project';
 
 export interface Roadmap {
-    projekte: Project[]
+    id: number;
+    projekte: Project[];
 }

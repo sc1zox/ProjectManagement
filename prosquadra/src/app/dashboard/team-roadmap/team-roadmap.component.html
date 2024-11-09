@@ -23,7 +23,7 @@
         <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
         <mat-datepicker #startPicker></mat-datepicker>
       </mat-form-field>
-    
+
       <!-- End Date with Datepicker -->
       <mat-form-field appearance="fill">
         <mat-label>End Date</mat-label>
@@ -33,7 +33,7 @@
         <mat-error *ngIf="endDateControl.hasError('endDateInvalid')">End date cannot be before Start date!</mat-error>
       </mat-form-field>
     </div>
-    
+
     <!-- Display dates as text for non-SM users -->
     <ng-template #showDates>
       <p><strong>Start:</strong> {{ startDateControl.value | date: 'shortDate' }}</p>

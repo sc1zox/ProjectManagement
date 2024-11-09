@@ -39,6 +39,9 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - restliche services an backend anbinden -> mostly done
 - route guards überprüfen -> works
 - Projektanordnung in Roadmap über PrioAttribut regeln?
+- Username bei Accerstellung muss unique sein
+- 2 Schritte Nutzererstellung, erst den Nutzer erstellen und danach das Login erstellen als Form also username+password
+- Fehlermeldung bei anmeldung mit falschen Kriterien schöner machen
 
 ## Routing
 
