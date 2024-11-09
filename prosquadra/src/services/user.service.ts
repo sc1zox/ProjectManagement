@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {User} from '../types/user';
+import { User, UserRole } from '../types/user';
 import {ProjectService} from './project.service';
 import {ApiService} from './api.service';
 import {Project} from '../types/project';
@@ -40,8 +40,13 @@ export class UserService {
       throw new Error('Failed to create user');
     }
 
-
     return <User>response.data;
+  }
+
+  async getCurrentUserRole(): Promise<string> {
+    const currentUserId = 2; // Hardcoded weil 2 in meiner DB role: SM hat. Spaeter mit AuthToken??
+    const user = await this.getUser(currentUserId);
+    return user.role ?? ''; // Warum ist die rolle in den user type nicht verpflichtend?
   }
 
 }

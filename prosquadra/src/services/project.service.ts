@@ -2,6 +2,7 @@ import {Injectable} from '@angular/core';
 import {Team} from '../types/team';
 import {Project} from '../types/project';
 import {ApiService} from './api.service';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -11,9 +12,9 @@ export class ProjectService {
   constructor(private ApiService: ApiService) {
   }
 
-
   projects: Project[] = [];
-
+  private projectCreatedSource = new Subject<void>();
+  projectCreated$ = this.projectCreatedSource.asObservable();
 
   async getProjects(): Promise<Project[]> {
     const response = await this.ApiService.fetch("/projects");
@@ -39,7 +40,13 @@ export class ProjectService {
       throw new Error('Failed to create user');
     }
 
+    // Creation of projectCreated$ event
+    this.notifyProjectCreated();
     return <Project>response.data;
+  }
+
+  notifyProjectCreated(): void {
+    this.projectCreatedSource.next();
   }
 
 }

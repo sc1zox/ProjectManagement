@@ -34,6 +34,12 @@
       <mat-error *ngIf="form.get('role')?.hasError('required')">Rolle wird benötigt.</mat-error>
     </mat-form-field>
 
+    <mat-form-field class="full-width">
+      <mat-label>Arbeitszeit</mat-label>
+      <input matInput type="number" formControlName="arbeitszeit" required>
+      <mat-error *ngIf="form.get('arbeitszeit')?.hasError('required')">Arbeitszeit wird benötigt.</mat-error>
+    </mat-form-field>
+
     <!-- Single selection for non-Scrum Masters -->
     <div *ngIf="form.get('role')?.value !== 'SM'">
       <mat-form-field class="full-width">

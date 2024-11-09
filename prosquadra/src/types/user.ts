@@ -6,6 +6,7 @@ export interface User {
   vorname: string;
   nachname: string;
   password: string;
+  arbeitszeit?: number; // Muss noch mit backend shema verbunden werden
   skills?: string[];
   team?: Team[];
   token?: string;

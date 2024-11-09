@@ -3,25 +3,43 @@
 
   <!-- Horizontal scrollable project list -->
   <div #projectList class="project-list" cdkDropList
-       [cdkDropListOrientation]="window.innerWidth > 1000 ? 'horizontal' : 'vertical'"
-       (cdkDropListDropped)="drop($event)">
-    <div cdkDrag
-         *ngFor="let project of projects"
-         class="project-box"
-         cdkDragBoundary=".project-list"
-         [cdkDragLockAxis]="window.innerWidth > 1000 ? 'x' : 'y'"
-         [class.selected]="project.id === selectedProject?.id"
-         (click)="selectProject(project)"
-    >
-        {{ project.name }}
+    [cdkDropListOrientation]="window.innerWidth > 1000 ? 'horizontal' : 'vertical'" (cdkDropListDropped)="drop($event)">
+    <div cdkDrag *ngFor="let project of projects" class="project-box" cdkDragBoundary=".project-list"
+      [cdkDragLockAxis]="window.innerWidth > 1000 ? 'x' : 'y'" [class.selected]="project.id === selectedProject?.id"
+      (click)="selectProject(project)">
+      {{ project.name }}
     </div>
   </div>
 
   <!-- Selected project details -->
   <div *ngIf="selectedProject" class="project-details">
     <h3>{{ selectedProject.name }}</h3>
-    <p><strong>Start:</strong> {{ selectedProject.startDate | date: 'shortDate' }}</p>
-    <p><strong>End:</strong> {{ selectedProject.endDate | date: 'shortDate' }}</p>
+
+    <div *ngIf="isScrumMaster; else showDates">
+      <!-- Start Date with Datepicker -->
+      <mat-form-field appearance="fill">
+        <mat-label>Start Date</mat-label>
+        <input matInput [matDatepicker]="startPicker" [formControl]="startDateControl">
+        <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+        <mat-datepicker #startPicker></mat-datepicker>
+      </mat-form-field>
+    
+      <!-- End Date with Datepicker -->
+      <mat-form-field appearance="fill">
+        <mat-label>End Date</mat-label>
+        <input matInput [matDatepicker]="endPicker" [formControl]="endDateControl">
+        <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+        <mat-datepicker #endPicker></mat-datepicker>
+        <mat-error *ngIf="endDateControl.hasError('endDateInvalid')">End date cannot be before Start date!</mat-error>
+      </mat-form-field>
+    </div>
+    
+    <!-- Display dates as text for non-SM users -->
+    <ng-template #showDates>
+      <p><strong>Start:</strong> {{ startDateControl.value | date: 'shortDate' }}</p>
+      <p><strong>End:</strong> {{ endDateControl.value | date: 'shortDate' }}</p>
+    </ng-template>
+
     <p><strong>Aufwandseinschätzung:</strong> {{ selectedProject.effortEstimation }}</p>
     <p><strong>Beschreibung:</strong> {{ selectedProject.description }}</p>
     <p><strong>Entwickler:</strong></p>

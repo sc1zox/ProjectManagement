@@ -9,6 +9,11 @@
     </mat-form-field>
 
     <mat-form-field class="full-width">
+      <mat-label>Projekt Beschreibung</mat-label>
+      <textarea matInput formControlName="description" placeholder="Projekt Beschreibung"></textarea>
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
       <mat-label>Product Owner</mat-label>
       <mat-select formControlName="productOwner" placeholder="Product Owner" required>
         <mat-option *ngFor="let user of productOwners" [value]="user.id">{{ user.vorname }} {{ user.nachname }}</mat-option>

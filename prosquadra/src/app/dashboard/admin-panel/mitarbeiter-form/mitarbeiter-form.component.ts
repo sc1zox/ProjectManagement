@@ -45,11 +45,13 @@ export class MitarbeiterFormComponent implements OnInit {
 
   Teams: Team[] = [];
   user: User = {
-    id: 10,
-    vorname: "TestSidebar",
-    nachname: "Right",
-    password: "test",
-    role: UserRole.Admin
+    id: 0,
+    vorname: '',
+    nachname: '',
+    password: '',
+    role: UserRole.Admin,
+    arbeitszeit: 0,
+    team: [],
   };
   userRoles = Object.values(UserRole).filter(role => role !== UserRole.Admin);
 
@@ -59,6 +61,7 @@ export class MitarbeiterFormComponent implements OnInit {
     this.form = this.fb.group({
       vorname: ['', Validators.required],
       nachname: ['', Validators.required],
+      arbeitszeit: ['', Validators.required],
       role: ['', Validators.required],
       passwort: ['', Validators.required],
       selectedSingleTeam: [''], // For single team selection
@@ -115,6 +118,7 @@ export class MitarbeiterFormComponent implements OnInit {
           this.user.vorname = formValue.vorname;
           this.user.nachname = formValue.nachname;
           this.user.password = formValue.passwort;
+          this.user.arbeitszeit = formValue.arbeitszeit;
 
           try {
             await this.UserService.createUser(this.user);
