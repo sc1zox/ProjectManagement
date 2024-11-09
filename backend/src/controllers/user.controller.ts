@@ -46,17 +46,38 @@ class UserController {
         }
     }
 
-    async getTeam(req: Request, res:Response, next:NextFunction): Promise<void>{
+    async getTeams(req: Request, res:Response, next:NextFunction): Promise<void>{
         try {
-            const team = await prisma.team.findMany();
+            const teams: Team[] = await prisma.team.findMany();
+
+            if (!teams) {
+                return next({status: StatusCodes.NOT_FOUND, message: 'Teams not found'});
+            }
+            const response: ApiResponse<Team[]>={
+                code: StatusCodes.OK,
+                data: teams,
+            }
+            res.status(StatusCodes.OK).json(response)
+        }catch (error){
+            next(error)
+        }
+    }
+    async getTeamByID(req: Request, res:Response, next:NextFunction): Promise<void>{
+        try {
+            const team = await prisma.team.findUnique({
+                where: { id: Number(req.params.id) },
+            });
 
             if (!team) {
                 return next({status: StatusCodes.NOT_FOUND, message: 'Team not found'});
             }
             const response: ApiResponse<Team>={
                 code: StatusCodes.OK,
-                data = team,
+                data: team,
             }
+            res.status(StatusCodes.OK).json(response)
+        }catch (error){
+            next(error)
         }
     }
 

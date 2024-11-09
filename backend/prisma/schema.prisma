@@ -34,13 +34,12 @@ model Skill {
 model Team {
   id        Int      @id @default(autoincrement())
   name      String
-  members   User?    @relation("TeamMembers", fields: [userId], references: [id])
-  projects  Project? @relation("TeamProjects")
+  members   User[]   @relation("TeamMembers")
   roadmapId Int?
   roadmap   Roadmap? @relation("TeamRoadmap", fields: [roadmapId], references: [id])
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  userId    Int?
+  projectId Int?
 }
 
 model Roadmap {
@@ -58,8 +57,6 @@ model Project {
   description    String
   startDate      DateTime?
   endDate        DateTime?
-  teamId         Int?      @unique
-  team           Team?     @relation("TeamProjects", fields: [teamId], references: [id])
   roadmapId      Int?
   roadmap        Roadmap?  @relation("RoadmapProjects", fields: [roadmapId], references: [id])
   estimationDays Int
