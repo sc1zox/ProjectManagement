@@ -82,6 +82,13 @@
       align-items: center;
       justify-content: center;
     }
+    #submitProject { // this should be centered aswell too lazy right now for it
+      align-self: center;
+      justify-self: center;
+      position: relative;
+      padding: var(--content-padding);
+      margin: var(--content-margin);
+    }
   }
 
 }
@@ -112,5 +119,6 @@
   position: absolute;
   bottom: 0;
   right: 0;
-  margin: 2rem;
+  padding: var(--content-padding);
+  margin: calc(var(--content-margin)*3);
 }

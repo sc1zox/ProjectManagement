@@ -1,15 +1,15 @@
 import {AfterViewInit, ChangeDetectorRef, Component} from '@angular/core';
-import { FormBuilder, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
-import { CommonModule } from '@angular/common';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatSelect, MatOption } from '@angular/material/select';
-import { TeamRoadmapComponent } from '../team-roadmap/team-roadmap.component';
-import { ProjectService } from '../../../services/project.service';
-import { TeamService } from '../../../services/team.service';
-import { Project } from '../../../types/project';
-import { Team } from '../../../types/team';
+import {FormBuilder, FormGroup, Validators, ReactiveFormsModule} from '@angular/forms';
+import {CommonModule} from '@angular/common';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatInputModule} from '@angular/material/input';
+import {MatButtonModule} from '@angular/material/button';
+import {MatSelect, MatOption} from '@angular/material/select';
+import {TeamRoadmapComponent} from '../team-roadmap/team-roadmap.component';
+import {ProjectService} from '../../../services/project.service';
+import {TeamService} from '../../../services/team.service';
+import {Project} from '../../../types/project';
+import {Team} from '../../../types/team';
 import {Roadmap} from '../../../types/roadmap';
 
 @Component({
@@ -35,6 +35,7 @@ export class CreateProjectComponent implements AfterViewInit {
   selectedTeam?: Team; // Variable to hold the selected team
   roadmap?: Roadmap;
   currentTeam?: Team;
+  position: number = 0;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -62,31 +63,40 @@ export class CreateProjectComponent implements AfterViewInit {
   async onSubmit(): Promise<void> {
     if (this.projectForm.valid) {
       const selectedTeam = this.teams.find(team => team.id === this.projectForm.value.teamName);
+      if (selectedTeam) {
+        const existingProjects = await this.projectService.getProjectsByTeamId(selectedTeam.id);
 
-      const newProject: Project = {
-        id: 0,
-        name: this.projectForm.value.projectName,
-        description: this.projectForm.value.description,
-        team: selectedTeam,
-        estimationDays: 0
-      };
+        const maxPriorityPosition = existingProjects.length > 0
+          ? Math.max(...existingProjects.map(project => project.PriorityPosition || 0))
+          : 0;
+        const newPriorityPosition = maxPriorityPosition + 1;
 
-      // Modified to refresh Team-Roadmap Component after submission.
-      await this.projectService.setProjects(newProject);
-      console.log('Form Submitted', newProject);
-      this.selectedTeam = selectedTeam;
-      if(selectedTeam) {
-        this.currentTeam = await this.TeamService.getTeamByID(selectedTeam.id)
-        this.roadmap = this.currentTeam?.roadmap;
+
+        const newProject: Project = {
+          id: 0,
+          name: this.projectForm.value.projectName,
+          description: this.projectForm.value.description,
+          team: selectedTeam,
+          estimationDays: 0,
+          PriorityPosition: newPriorityPosition,
+        };
+
+        // Modified to refresh Team-Roadmap Component after submission.
+        await this.projectService.setProjects(newProject);
+        console.log('Form Submitted', newProject);
+        this.selectedTeam = selectedTeam;
+        if (selectedTeam) {
+          this.currentTeam = await this.TeamService.getTeamByID(selectedTeam.id)
+          this.roadmap = this.currentTeam?.roadmap;
+        }
+
+        this.cdref.detectChanges();
+
+        this.projectForm.reset();
+      } else {
+        console.log('Form is invalid');
       }
 
-      this.cdref.detectChanges();
-
-      this.projectForm.reset();
-    } else {
-      console.log('Form is invalid');
     }
-
   }
 }
-

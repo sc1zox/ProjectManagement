@@ -27,5 +27,7 @@ userRouter.get('/team/user/:id',rescue(TeamController.getTeamByUserID))
 
 
 userRouter.get('/roadmaps', rescue(RoadmapController.getAllRoadmaps));
+userRouter.get('/roadmaps/:id',rescue(RoadmapController.getRoadmapById))
+userRouter.put('/roadmaps/update',rescue(RoadmapController.updateProjectsPriority))
 
 export default userRouter;

@@ -1,5 +1,5 @@
 import {
-  AfterViewInit,
+  AfterViewInit, ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -9,18 +9,27 @@ import {
   SimpleChanges,
   ViewChild
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {CommonModule} from '@angular/common';
 import {ProjectService} from '../../../services/project.service';
 import {Project} from '../../../types/project';
 import {CdkDrag, CdkDragDrop, CdkDragPlaceholder, CdkDropList, moveItemInArray} from '@angular/cdk/drag-drop';
-import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
-import { MatInputModule } from '@angular/material/input';
-import { FormControl, FormsModule, FormGroup, FormBuilder, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
-import { UserService } from '../../../services/user.service';
+import {MatDatepickerModule} from '@angular/material/datepicker';
+import {MatNativeDateModule} from '@angular/material/core';
+import {MatInputModule} from '@angular/material/input';
+import {
+  FormControl,
+  FormsModule,
+  FormGroup,
+  FormBuilder,
+  ReactiveFormsModule,
+  AbstractControl,
+  ValidationErrors
+} from '@angular/forms';
+import {UserService} from '../../../services/user.service';
 import {MatButton, MatIconButton} from '@angular/material/button';
 import {Roadmap} from '../../../types/roadmap';
 import {User, UserRole} from '../../../types/user';
+import {RoadmapService} from '../../../services/roadmap.service';
 
 
 @Component({
@@ -38,11 +47,11 @@ import {User, UserRole} from '../../../types/user';
   templateUrl: './team-roadmap.component.html',
   styleUrls: ['./team-roadmap.component.scss']
 })
-export class TeamRoadmapComponent implements AfterViewInit,OnInit,OnChanges{
+export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
 
   @Input() roadmap?: Roadmap;
   @Input() user?: User;
-  projects:Project[]=[];
+  projects: Project[] = [];
   selectedProject?: Project;
   protected readonly window = window;
   isScrumMaster = false;
@@ -54,13 +63,14 @@ export class TeamRoadmapComponent implements AfterViewInit,OnInit,OnChanges{
   dateForm: FormGroup;
 
   constructor(private readonly ProjectService: ProjectService,
-    private readonly UserService: UserService, private readonly fb: FormBuilder) {
-      this.dateForm = this.fb.group({
-        startDate: this.startDateControl,
-        endDate: this.endDateControl,
-      });
+              private readonly UserService: UserService, private readonly fb: FormBuilder,
+              private readonly RoadmapService: RoadmapService, private cdr: ChangeDetectorRef) {
+    this.dateForm = this.fb.group({
+      startDate: this.startDateControl,
+      endDate: this.endDateControl,
+    });
 
-      this.endDateControl.setValidators(this.endDateValidator.bind(this));
+    this.endDateControl.setValidators(this.endDateValidator.bind(this));
   }
 
   endDateValidator(control: AbstractControl): ValidationErrors | null {
@@ -68,7 +78,7 @@ export class TeamRoadmapComponent implements AfterViewInit,OnInit,OnChanges{
     const endDate = control.value;
 
     if (startDate && endDate && endDate < startDate) {
-      return { endDateInvalid: true }
+      return {endDateInvalid: true}
     }
     return null;
   }
@@ -79,11 +89,17 @@ export class TeamRoadmapComponent implements AfterViewInit,OnInit,OnChanges{
     } else {
       this.isScrumMaster = false;
     }
-    if(!this.user){
-      this.user= await this.UserService.getCurrentUser();
+    if (!this.user) {
+      this.user = await this.UserService.getCurrentUser();
     }
     if (this.roadmap) {
       this.extractProjectsFromRoadmaps();
+      // sort projects after prioposition and if undefined set very high value to put at the end but this should not be able to happen anyway as prio is set on frontend
+      this.roadmap.projects.sort((a, b) => {
+        const priorityA = a.PriorityPosition ?? Number.MAX_VALUE;
+        const priorityB = b.PriorityPosition ?? Number.MAX_VALUE;
+        return priorityA - priorityB;
+      });
     }
     this.selectInitialProject();
   }
@@ -94,7 +110,7 @@ export class TeamRoadmapComponent implements AfterViewInit,OnInit,OnChanges{
       this.extractProjectsFromRoadmaps();
       this.selectInitialProject();
     }
-    console.log("Aktueller User",this.user)
+    console.log("Aktueller User", this.user)
   }
 
   extractProjectsFromRoadmaps() {
@@ -133,9 +149,18 @@ export class TeamRoadmapComponent implements AfterViewInit,OnInit,OnChanges{
       this.selectProject(this.projects[0]);
     }
   }
+
   drop(event: CdkDragDrop<Project[]>) {
     if (this.projects) {
       moveItemInArray(this.projects, event.previousIndex, event.currentIndex)
+
+      this.projects.forEach((project, index) => {
+        project.PriorityPosition = index + 1;
+      });
+
+      if (this.roadmap) {
+        this.roadmap.projects = [...this.projects];
+      }
     }
   }
 
@@ -149,6 +174,11 @@ export class TeamRoadmapComponent implements AfterViewInit,OnInit,OnChanges{
 
       try {
         await this.ProjectService.updateProject(updatedProject);
+        if (this.roadmap) {
+          await this.RoadmapService.updateRoadmap(this.roadmap);
+          await this.refreshProjectOrder();
+        }
+
         this.dataUpdated.emit();
       } catch (error) {
         console.error('Error updating project roadmap:', error);
@@ -156,6 +186,12 @@ export class TeamRoadmapComponent implements AfterViewInit,OnInit,OnChanges{
     }
   }
 
+  async refreshProjectOrder() {
+    if (this.roadmap) {
+      this.roadmap = await this.RoadmapService.getRoadmapById(this.roadmap.id);
+      this.projects = [...this.roadmap.projects];
+    }
+  }
 
   protected readonly UserRole = UserRole;
 }

@@ -26,6 +26,7 @@ import {RouterLink} from '@angular/router';
 import {NotificationsService} from '../../../services/notifications.service';
 import {ProjectService} from '../../../services/project.service';
 import {UserService} from '../../../services/user.service';
+import {AuthService} from '../../../services/auth.service';
 
 export interface ProgrammingLanguage {
   name: string
@@ -62,7 +63,7 @@ export class RightSidebarComponent implements OnInit {
   userInitials: string = '';
   user?: User;
 
-  constructor(private readonly ProjectService: ProjectService,private readonly NotificationService: NotificationsService,private readonly UserService: UserService) {
+  constructor(private readonly ProjectService: ProjectService,private readonly NotificationService: NotificationsService,private readonly UserService: UserService,private readonly AuthService: AuthService) {
     this.notifications = this.NotificationService.getNotificationAmount();
   }
 
@@ -133,5 +134,9 @@ export class RightSidebarComponent implements OnInit {
       }
       return pls;
     });
+  }
+  triggerLogout(){
+    this.AuthService.logout();
+    window.location.reload();
   }
 }

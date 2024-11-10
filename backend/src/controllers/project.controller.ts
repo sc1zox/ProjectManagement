@@ -6,7 +6,7 @@ import {Project} from "../types/project";
 
 class ProjectController {
     async createProject(req: Request, res: Response, next: NextFunction): Promise<any> {
-        const {name, description, team} = req.body;
+        const {name, description, team,PriorityPosition } = req.body;
 
         if (!name || !description || !team || !team.id || !team.roadmapId) {
             return res.status(StatusCodes.BAD_REQUEST).json({
@@ -35,7 +35,8 @@ class ProjectController {
                         connect: {
                             id: team.roadmapId
                         }
-                    }
+                    },
+                    PriorityPosition: PriorityPosition,
                 },
             });
 

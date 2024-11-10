@@ -53,6 +53,7 @@ CREATE TABLE `Project` (
     `roadmapId` INTEGER NULL,
     `teamid` INTEGER NOT NULL,
     `estimationDays` INTEGER NULL,
+    `PriorityPosition` INTEGER NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
