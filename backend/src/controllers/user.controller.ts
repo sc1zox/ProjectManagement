@@ -48,13 +48,16 @@ class UserController {
 
 
     async createUser(req: Request, res: Response, next: NextFunction): Promise<any> {
-        const { vorname, nachname, role, arbeitszeit } = req.body;
+        console.log(req.body)
+        const { vorname, nachname, role, arbeitszeit, team} = req.body;
 
-        if (!vorname || !nachname || !role || !arbeitszeit) {
+        if (!vorname || !nachname || !role || !arbeitszeit || !team) {
             return res.status(StatusCodes.BAD_REQUEST).json({
-                message: 'Alle Felder (vorname, nachname, role, arbeitszeit) sind erforderlich.',
+                message: 'Alle Felder (vorname, nachname, role, arbeitszeit, teamID) sind erforderlich.',
             });
         }
+
+
 
         try {
             const newUser = await prisma.user.create({
@@ -63,6 +66,9 @@ class UserController {
                     nachname,
                     role,
                     arbeitszeit,
+                    teams: {
+                        connect: team.map((teamId: number) => ({ id: teamId }))
+                    }
                 },
             });
 

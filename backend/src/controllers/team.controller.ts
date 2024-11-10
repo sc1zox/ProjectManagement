@@ -80,6 +80,7 @@ class TeamController {
     async createTeam(req: Request, res: Response, next: NextFunction): Promise<any> {
         const { name, members } = req.body;
 
+
         if (!name || !members || members.length === 0) {
             return res.status(StatusCodes.BAD_REQUEST).json({
                 message: 'Alle Felder (name, members) müssen ausgefüllt sein',
@@ -87,6 +88,12 @@ class TeamController {
         }
 
         try {
+            const newRoadmap = await prisma.roadmap.create({
+                data: {
+                    projects: { create: [] },
+                },
+            });
+
             const memberIds = members.map((member: { id: number }) => ({ id: member.id }));
 
             const newTeam = await prisma.team.create({
@@ -95,9 +102,11 @@ class TeamController {
                     members: {
                         connect: memberIds,
                     },
+                    roadmap: {
+                        connect: { id: newRoadmap.id },
+                    },
                 },
             });
-
 
             res.status(StatusCodes.CREATED).json({
                 code: StatusCodes.CREATED,
@@ -107,6 +116,7 @@ class TeamController {
             next(error);
         }
     }
+
 
 }
 export default new TeamController();

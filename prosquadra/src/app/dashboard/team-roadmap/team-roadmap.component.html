@@ -44,7 +44,6 @@
     <p><strong>Entwickler:</strong></p>
     <p><strong>Team:</strong> {{ selectedProject.team?.name || 'Kein Team zugewiesen' }}</p>
     <p><strong>Aufwand in Tagen:</strong> {{ selectedProject.estimationDays }}</p>
-    <p><strong>Priority Position:</strong> {{ selectedProject.PriorityPosition }}</p> <!-- debugging only -->
 
     <div *ngIf="user?.role === UserRole.Admin || user?.role===UserRole.SM" class="submitContainer">
     <button mat-raised-button id="submitProject" (click)=onSubmit()>Safe Project</button>
