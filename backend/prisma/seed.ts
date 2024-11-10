@@ -3,7 +3,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-    // Create users
+
     const user1 = await prisma.user.create({
         data: {
             vorname: 'John',
@@ -48,6 +48,7 @@ async function main() {
             },
         },
     });
+
     const user4 = await prisma.user.create({
         data: {
             vorname: 'admin',
@@ -63,42 +64,186 @@ async function main() {
         },
     });
 
-    // Create roadmap
-    const roadmap = await prisma.roadmap.create({
-        data: {},
+    const user5 = await prisma.user.create({
+        data: {
+            vorname: 'Alice',
+            nachname: 'Wonderland',
+            role: 'Developer',
+            arbeitszeit: 40,
+            login: {
+                create: {
+                    username: 'alice.wonderland',
+                    password: 'alice123',
+                },
+            },
+        },
     });
 
-    // Create team and link roadmap and users
-    const team = await prisma.team.create({
+    const user6 = await prisma.user.create({
+        data: {
+            vorname: 'Bob',
+            nachname: 'Builder',
+            role: 'Developer',
+            arbeitszeit: 42,
+            login: {
+                create: {
+                    username: 'bob.builder',
+                    password: 'bob123',
+                },
+            },
+        },
+    });
+
+
+    const roadmap1 = await prisma.roadmap.create({ data: {} });
+    const roadmap2 = await prisma.roadmap.create({ data: {} });
+    const roadmap3 = await prisma.roadmap.create({ data: {} });
+    const roadmap4 = await prisma.roadmap.create({ data: {} });
+    const roadmap5 = await prisma.roadmap.create({ data: {} });
+
+
+    const team1 = await prisma.team.create({
         data: {
             name: 'Development Team',
             roadmap: {
-                connect: { id: roadmap.id },
+                connect: { id: roadmap1.id },
             },
             members: {
-                connect: [{ id: user1.id }, { id: user2.id }],
+                connect: [{ id: user1.id }, { id: user2.id }, { id: user5.id }],
             },
         },
     });
 
-    // Create project and link to team and roadmap
-    const project = await prisma.project.create({
+    const team2 = await prisma.team.create({
         data: {
-            name: 'New Project',
-            description: 'A new project description',
+            name: 'QA Team',
+            roadmap: {
+                connect: { id: roadmap2.id },
+            },
+            members: {
+                connect: [{ id: user3.id }, { id: user4.id }, { id: user6.id }],
+            },
+        },
+    });
+
+    const team3 = await prisma.team.create({
+        data: {
+            name: 'Design Team',
+            roadmap: {
+                connect: { id: roadmap3.id },
+            },
+            members: {
+                connect: [{ id: user3.id }],
+            },
+        },
+    });
+
+    const team4 = await prisma.team.create({
+        data: {
+            name: 'Product Team',
+            roadmap: {
+                connect: { id: roadmap4.id },
+            },
+            members: {
+                connect: [{ id: user3.id },],
+            },
+        },
+    });
+
+    const team5 = await prisma.team.create({
+        data: {
+            name: 'Marketing Team',
+            roadmap: {
+                connect: { id: roadmap5.id },
+            },
+            members: {
+                connect: [{ id: user3.id }],
+            },
+        },
+    });
+
+
+    const project1 = await prisma.project.create({
+        data: {
+            name: 'New Development Project',
+            description: 'A new project for development team',
             estimationDays: 30,
-            startDate: new Date(2020, 11, 20), // December 20, 2020
-            endDate: new Date(2024, 9, 10),    // October 10, 2024
+            startDate: new Date(2023, 4, 1),
+            endDate: new Date(2023, 9, 1),
             team: {
-                connect: { id: team.id },
+                connect: { id: team1.id },
             },
             roadmap: {
-                connect: { id: roadmap.id },
+                connect: { id: roadmap1.id },
             },
         },
     });
 
-    console.log({ user1, user2,user3,user4, roadmap, team, project });
+    const project2 = await prisma.project.create({
+        data: {
+            name: 'QA Testing Project',
+            description: 'A project for quality assurance testing',
+            estimationDays: 45,
+            startDate: new Date(2023, 5, 15),  // June 15, 2023
+            endDate: new Date(2023, 10, 15),   // October 15, 2023
+            team: {
+                connect: { id: team2.id },
+            },
+            roadmap: {
+                connect: { id: roadmap2.id },
+            },
+        },
+    });
+
+    const project3 = await prisma.project.create({
+        data: {
+            name: 'Design Overhaul Project',
+            description: 'A design-focused project for UI/UX improvements',
+            estimationDays: 60,
+            startDate: new Date(2023, 6, 1),  // July 1, 2023
+            endDate: new Date(2023, 12, 31),   // December 31, 2023
+            team: {
+                connect: { id: team3.id },
+            },
+            roadmap: {
+                connect: { id: roadmap3.id },
+            },
+        },
+    });
+
+    const project4 = await prisma.project.create({
+        data: {
+            name: 'Product Launch Project',
+            description: 'A project focused on the next product launch',
+            estimationDays: 90,
+            startDate: new Date(2023, 7, 1),  // August 1, 2023
+            endDate: new Date(2024, 3, 1),    // April 1, 2024
+            team: {
+                connect: { id: team4.id },
+            },
+            roadmap: {
+                connect: { id: roadmap4.id },
+            },
+        },
+    });
+
+    const project5 = await prisma.project.create({
+        data: {
+            name: 'Marketing Campaign Project',
+            description: 'A marketing campaign project for the upcoming season',
+            estimationDays: 50,
+            startDate: new Date(2023, 8, 1),  // September 1, 2023
+            endDate: new Date(2023, 12, 31),   // December 31, 2023
+            team: {
+                connect: { id: team5.id },
+            },
+            roadmap: {
+                connect: { id: roadmap5.id },
+            },
+        },
+    });
+
+    console.log({ user1, user2, user3, user4, user5, user6, roadmap1, roadmap2, roadmap3, roadmap4, roadmap5, team1, team2, team3, team4, team5, project1, project2, project3, project4, project5 });
 }
 
 main()

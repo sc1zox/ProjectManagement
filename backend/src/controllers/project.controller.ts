@@ -4,19 +4,19 @@ import prisma from "../lib/prisma";
 import {ApiResponse} from "../types/api-response";
 import {Project} from "../types/project";
 
-class ProjectController{
+class ProjectController {
     async createProject(req: Request, res: Response, next: NextFunction): Promise<any> {
-        const { name, description, team } = req.body;
+        const {name, description, team} = req.body;
 
-        if (!name || !description || !team || !team.id) {
+        if (!name || !description || !team || !team.id || !team.roadmapId) {
             return res.status(StatusCodes.BAD_REQUEST).json({
-                message: 'Alle Felder (name, description, team) sind erforderlich und Team-ID muss vorhanden sein.',
+                message: 'Alle Felder (name, description, team, teamid, team.roadmapId) sind erforderlich.',
             });
         }
 
         try {
             const existingTeam = await prisma.team.findUnique({
-                where: { id: team.id },
+                where: {id: team.id},
             });
 
             if (!existingTeam) {
@@ -29,14 +29,19 @@ class ProjectController{
                     name,
                     description,
                     team: {
-                        connect: { id: team.id }
+                        connect: {id: team.id}
+                    },
+                    roadmap: {
+                        connect: {
+                            id: team.roadmapId
+                        }
                     }
                 },
             });
 
             res.status(StatusCodes.CREATED).json({
                 code: StatusCodes.CREATED,
-                data: { ...newProject },
+                data: {...newProject},
             });
         } catch (error) {
             next(error);
@@ -60,14 +65,52 @@ class ProjectController{
         }
     }
 
+    async getProjectsByTeam(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const teamId = Number(req.params.id);
+            if (isNaN(teamId)) {
+                res.status(StatusCodes.BAD_REQUEST).json({
+                    code: StatusCodes.BAD_REQUEST,
+                    message: 'Invalid team ID provided',
+                });
+                return;
+            }
+
+            const teamWithProjects = await prisma.team.findUnique({
+                where: {id: teamId},
+                include: {
+                    projects: true,
+                },
+            });
+
+            if (!teamWithProjects) {
+                res.status(StatusCodes.NOT_FOUND).json({
+                    code: StatusCodes.NOT_FOUND,
+                    message: 'Team not found',
+                });
+                return;
+            }
+
+            const projects = teamWithProjects.projects;
+
+            const response: ApiResponse<Project[]> = {
+                code: StatusCodes.OK,
+                data: projects,
+            };
+            res.status(StatusCodes.OK).json(response);
+        } catch (error) {
+            next(error);
+        }
+    }
+
     async getProjectById(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const project = await prisma.project.findUnique({
-                where: { id: Number(req.params.id) },
+                where: {id: Number(req.params.id)},
             });
 
             if (!project) {
-                return next({ status: StatusCodes.NOT_FOUND, message: 'Project by ID not found' });
+                return next({status: StatusCodes.NOT_FOUND, message: 'Project by ID not found'});
             }
             const response: ApiResponse<Project> = {
                 code: StatusCodes.OK,
@@ -80,11 +123,11 @@ class ProjectController{
     }
 
     async updateProject(req: Request, res: Response, next: NextFunction): Promise<any> {
-        const { id, name, description, teamid, startDate, endDate } = req.body;
+        const {id, name, description, teamid, startDate, endDate} = req.body;
 
         try {
             const existingProject = await prisma.project.findUnique({
-                where: { id: Number(id) },
+                where: {id: Number(id)},
             });
 
             if (!existingProject) {
@@ -94,7 +137,7 @@ class ProjectController{
             }
 
             const existingTeam = await prisma.team.findUnique({
-                where: { id: teamid },
+                where: {id: teamid},
             });
 
             if (!existingTeam) {
@@ -104,12 +147,12 @@ class ProjectController{
             }
 
             const updatedProject = await prisma.project.update({
-                where: { id: Number(id) },
+                where: {id: Number(id)},
                 data: {
                     name,
                     description,
                     team: {
-                        connect: { id: teamid },
+                        connect: {id: teamid},
                     },
                     startDate,
                     endDate,
@@ -127,4 +170,5 @@ class ProjectController{
 
 
 }
+
 export default new ProjectController();

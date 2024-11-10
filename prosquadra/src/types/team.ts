@@ -5,7 +5,7 @@ import {Project} from './project';
 export interface Team {
   id: number;
   name: string;
-  members: User[];
+  members?: User[];
   roadmap?: Roadmap;
   projects?: Project[];
 }

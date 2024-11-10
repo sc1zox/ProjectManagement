@@ -3,8 +3,11 @@ import { MatCardModule } from '@angular/material/card';
 import { CommonModule } from '@angular/common';
 import {RouterLink} from '@angular/router';
 import {MatAnchor} from '@angular/material/button';
-import {Project} from '../../../types/project';
-import {ProjectService} from '../../../services/project.service';
+import {RoadmapService} from '../../../services/roadmap.service';
+import {Roadmap} from '../../../types/roadmap';
+import {TeamRoadmapComponent} from '../team-roadmap/team-roadmap.component';
+import {UserService} from '../../../services/user.service';
+import {User} from '../../../types/user';
 
 
 @Component({
@@ -15,24 +18,32 @@ import {ProjectService} from '../../../services/project.service';
     CommonModule,
     RouterLink,
     MatAnchor,
+    TeamRoadmapComponent,
   ],
   templateUrl: './dashboard-home.component.html',
   styleUrl: './dashboard-home.component.scss'
 })
 export class DashboardHomeComponent implements OnInit{
 
-  public projects?:Project[];
+  public roadmaps:Roadmap[]=[];
+  public user?: User;
 
-  constructor(private ProjectService:ProjectService) {
+  constructor(private readonly RoadmapService: RoadmapService,private readonly UserService:UserService) {
   }
 
   async ngOnInit() {
     try {
-      this.projects = await this.ProjectService.getProjects();
+      this.user = await this.UserService.getCurrentUser();
+      this.roadmaps = await this.RoadmapService.getRoadmaps()
     }catch (error){
-      console.error('Error while fetching Projects:', error);
-    }finally {
-      console.log('Project fetch finished.');
+      console.error('Error while fetching Roadmaps:', error);
+    }
+  }
+  public async refetch() {
+    try {
+      this.roadmaps = await this.RoadmapService.getRoadmaps();
+    } catch (error) {
+      console.error('Error refetching roadmaps:', error);
     }
   }
 }

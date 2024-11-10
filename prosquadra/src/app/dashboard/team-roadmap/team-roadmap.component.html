@@ -1,5 +1,5 @@
-<div class="team-roadmap">
-  <h2>Team Roadmap</h2>
+<div class="team-roadmap" *ngIf="roadmap; else noRoadmap">
+  <h2>Team Name here</h2>
 
   <!-- Horizontal scrollable project list -->
   <div #projectList class="project-list" cdkDropList
@@ -45,6 +45,12 @@
     <p><strong>Team:</strong> {{ selectedProject.team?.name || 'Kein Team zugewiesen' }}</p>
     <p><strong>Aufwand in Tagen:</strong> {{ selectedProject.estimationDays }}</p>
 
+    <div *ngIf="user?.role === UserRole.Admin || user?.role===UserRole.SM">
     <button mat-button id="submitProject" (click)=onSubmit()>Safe Project</button>
   </div>
 </div>
+</div>
+
+
+<ng-template #noRoadmap>
+</ng-template>

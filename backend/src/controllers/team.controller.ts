@@ -26,21 +26,57 @@ class TeamController {
     async getTeamByID(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const team = await prisma.team.findUnique({
-                where: {id: Number(req.params.id)},
+                where: { id: Number(req.params.id) },
+                include: {
+                    roadmap: {
+                        include: {
+                            projects: true,
+                        },
+                    },
+                },
             });
 
             if (!team) {
-                return next({status: StatusCodes.NOT_FOUND, message: 'Team not found'});
+                return next({ status: StatusCodes.NOT_FOUND, message: 'Team not found' });
             }
+
             const response: ApiResponse<Team> = {
                 code: StatusCodes.OK,
                 data: team,
-            }
-            res.status(StatusCodes.OK).json(response)
+            };
+
+            res.status(StatusCodes.OK).json(response);
         } catch (error) {
-            next(error)
+            next(error);
         }
     }
+
+    async getTeamByUserID(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const user = await prisma.user.findUnique({
+                where: { id: Number(req.params.id) },
+                include: {
+                    teams: true,
+                },
+            });
+
+            if (!user) {
+                return next({ status: StatusCodes.NOT_FOUND, message: 'User not found' });
+            }
+
+            const TeamsOfUser = user.teams;
+            const response: ApiResponse<Team[]> = {
+                code: StatusCodes.OK,
+                data: TeamsOfUser,
+            };
+
+            res.status(StatusCodes.OK).json(response);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+
     async createTeam(req: Request, res: Response, next: NextFunction): Promise<any> {
         const { name, members } = req.body;
 

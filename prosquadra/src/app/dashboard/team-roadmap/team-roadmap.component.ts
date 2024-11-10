@@ -1,4 +1,14 @@
-import {AfterViewInit, Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input, OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+  ViewChild
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {ProjectService} from '../../../services/project.service';
 import {Project} from '../../../types/project';
@@ -9,6 +19,8 @@ import { MatInputModule } from '@angular/material/input';
 import { FormControl, FormsModule, FormGroup, FormBuilder, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { UserService } from '../../../services/user.service';
 import {MatButton, MatIconButton} from '@angular/material/button';
+import {Roadmap} from '../../../types/roadmap';
+import {User, UserRole} from '../../../types/user';
 
 
 @Component({
@@ -26,12 +38,15 @@ import {MatButton, MatIconButton} from '@angular/material/button';
   templateUrl: './team-roadmap.component.html',
   styleUrls: ['./team-roadmap.component.scss']
 })
-export class TeamRoadmapComponent implements AfterViewInit,OnInit{
+export class TeamRoadmapComponent implements AfterViewInit,OnInit,OnChanges{
 
+  @Input() roadmap?: Roadmap;
+  @Input() user?: User;
   projects:Project[]=[];
   selectedProject?: Project;
   protected readonly window = window;
   isScrumMaster = false;
+  @Output() dataUpdated = new EventEmitter<void>()
 
   startDateControl = new FormControl();
   endDateControl = new FormControl();
@@ -59,23 +74,33 @@ export class TeamRoadmapComponent implements AfterViewInit,OnInit{
   }
 
   async ngOnInit() {
-    const user = await this.UserService.getCurrentUser();
-    if (user && user.role === 'SM') {
+    if (this.user && this.user.role === 'SM') {
       this.isScrumMaster = true;
     } else {
       this.isScrumMaster = false;
     }
-
-    await this.loadProjects();
-    // Listen to projectCreated$ event
-    this.ProjectService.projectCreated$.subscribe(() => {
-      this.loadProjects();
-    })
+    if(!this.user){
+      this.user= await this.UserService.getCurrentUser();
+    }
+    if (this.roadmap) {
+      this.extractProjectsFromRoadmaps();
+    }
     this.selectInitialProject();
   }
 
-  async loadProjects() {
-    this.projects = await this.ProjectService.getProjects(); //hier sollten alle von dem aktuellen Team kommen.
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['roadmap'] && this.roadmap) {
+      console.log('Received updated roadmap:', this.roadmap);
+      this.extractProjectsFromRoadmaps();
+      this.selectInitialProject();
+    }
+    console.log("Aktueller User",this.user)
+  }
+
+  extractProjectsFromRoadmaps() {
+    if (this.roadmap) {
+      this.projects = this.roadmap.projects;
+    }
   }
 
   selectProject(project: Project): void {
@@ -83,13 +108,6 @@ export class TeamRoadmapComponent implements AfterViewInit,OnInit{
 
     this.startDateControl.setValue(project.startDate);
     this.endDateControl.setValue(project.endDate);
-
-    if (window.innerWidth < 1000) {
-      const projectDetailsElement = document.querySelector('.project-details');
-      if (projectDetailsElement) {
-        projectDetailsElement.scrollIntoView({behavior: 'smooth'});
-      }
-    }
   }
 
 
@@ -99,7 +117,7 @@ export class TeamRoadmapComponent implements AfterViewInit,OnInit{
   // Block default scroll, enable horizontal scroll
   // Inspired by https://stackoverflow.com/questions/59468926/horizontal-scroll-in-typescript
   onWheelScroll(event: WheelEvent): void {
-    if (window.innerWidth > 1000) {
+    if (window.innerWidth > 1000 && this.projectList) {
       event.preventDefault();
       this.projectList.nativeElement.scrollLeft += event.deltaY;
     }
@@ -131,7 +149,7 @@ export class TeamRoadmapComponent implements AfterViewInit,OnInit{
 
       try {
         await this.ProjectService.updateProject(updatedProject);
-        await this.loadProjects(); //refetch to display changes
+        this.dataUpdated.emit();
       } catch (error) {
         console.error('Error updating project roadmap:', error);
       }
@@ -139,5 +157,5 @@ export class TeamRoadmapComponent implements AfterViewInit,OnInit{
   }
 
 
-
+  protected readonly UserRole = UserRole;
 }

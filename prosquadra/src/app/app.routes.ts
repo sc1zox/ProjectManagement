@@ -10,6 +10,7 @@ import { MitarbeiterFormComponent } from './dashboard/admin-panel/mitarbeiter-fo
 import { TeamsFormComponent } from './dashboard/admin-panel/teams-form/teams-form.component';
 import { AnalyseBoardComponent } from './dashboard/analyse-board/analyse-board.component';
 import { AuthGuard } from '../auth/auth.guard';
+import {MyTeamRoadmapComponent} from './dashboard/my-team-roadmap/my-team-roadmap.component';
 
 export const routes: Routes = [
   {
@@ -23,7 +24,7 @@ export const routes: Routes = [
       { path: '', component: DashboardHomeComponent },
       { path: 'home', component: DashboardHomeComponent },
       { path: 'create-project', component: CreateProjectComponent },
-      { path: 'team-roadmap', component: TeamRoadmapComponent },
+      { path: 'team-roadmap', component: MyTeamRoadmapComponent },
       { path: 'more-information', component: MoreInformationComponent },
       { path: 'admin-panel', component: AdminPanelComponent },
       { path: 'admin-panel/mitarbeiter-form', component: MitarbeiterFormComponent },
