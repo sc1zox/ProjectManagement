@@ -1,4 +1,4 @@
-import {AfterContentChecked, Component, inject, OnInit, signal} from '@angular/core';
+import {AfterContentChecked, Component, inject, OnDestroy, OnInit, signal} from '@angular/core';
 import {
   MatChipEditedEvent,
   MatChipGrid,
@@ -56,12 +56,13 @@ export interface ProgrammingLanguage {
   standalone: true,
 })
 
-export class RightSidebarComponent implements OnInit {
+export class RightSidebarComponent implements OnInit,OnDestroy  {
 
   userProject?: Project;
   notifications?: number;
   userInitials: string = '';
   user?: User;
+  private projectPollingInterval: any;
 
   constructor(private readonly ProjectService: ProjectService,private readonly NotificationService: NotificationsService,private readonly UserService: UserService,private readonly AuthService: AuthService) {
     this.notifications = this.NotificationService.getNotificationAmount();
@@ -73,12 +74,27 @@ export class RightSidebarComponent implements OnInit {
       if (this.user) {
         console.log('Der aktuelle Nutzer',this.user)
         this.userInitials = this.user.vorname.charAt(0).toUpperCase() + this.user.nachname.charAt(0).toUpperCase();
-        this.userProject = await this.ProjectService.getProjectWithLowestPriorityByUserId(this.user.id);
+        await this.fetchProject();
+
+
+        this.projectPollingInterval = setInterval(() => {
+          this.fetchProject();
+        }, 10000); // fetch current project every 10 seconds
       }
     } catch (error) {
       console.error('Error while fetching user or project:', error);
     } finally {
       console.log('Project fetch finished.');
+    }
+  }
+
+  async fetchProject() {
+    try {
+      if (this.user) {
+        this.userProject = await this.ProjectService.getProjectWithLowestPriorityByUserId(this.user.id);
+      }
+    } catch (error) {
+      console.error('Error fetching project:', error);
     }
   }
 
@@ -134,6 +150,12 @@ export class RightSidebarComponent implements OnInit {
       return pls;
     });
   }
+  ngOnDestroy() {
+    if (this.projectPollingInterval) {
+      clearInterval(this.projectPollingInterval);
+    }
+  }
+
   triggerLogout(){
     this.AuthService.logout();
     window.location.reload();
