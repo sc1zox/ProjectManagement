@@ -28,12 +28,12 @@ export class LeftSidebarComponent implements OnInit{
   public expanded: boolean = true;
   public user?: User;
 
-  constructor(private Userservice: UserService) {
+  constructor(private readonly Userservice: UserService) {
   }
 
   async ngOnInit() {
     try {
-      this.user = await this.Userservice.getUser(2);
+      this.user = await this.Userservice.getCurrentUser();
     }catch (error){
       console.error('Error while fetching USer:', error);
     }finally {

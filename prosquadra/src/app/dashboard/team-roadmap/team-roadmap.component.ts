@@ -58,7 +58,12 @@ export class TeamRoadmapComponent implements AfterViewInit,OnInit{
   }
 
   async ngOnInit() {
-    this.isScrumMaster = (this.UserService.getCurrentUser().role === "SM");
+    const user = await this.UserService.getCurrentUser();
+    if (user && user.role === 'SM') {
+      this.isScrumMaster = true;
+    } else {
+      this.isScrumMaster = false;
+    }
 
     this.loadProjects();
     // Listen to projectCreated$ event

@@ -30,11 +30,11 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
 
   constructor(
-    private fb: FormBuilder,
-    private router: Router,
-    private apiService: ApiService,
-    private authService: AuthService,
-    private snackbarService: SnackbarService,
+    private readonly fb: FormBuilder,
+    private readonly router: Router,
+    private readonly apiService: ApiService,
+    private readonly authService: AuthService,
+    private readonly snackbarService: SnackbarService,
     private userService: UserService,
   ) {
     this.loginForm = this.fb.group({
@@ -46,7 +46,7 @@ export class LoginComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     const authenticated = await this.authService.isAuthenticated();
     if (authenticated) {
-      this.router.navigate(['/dashboard']);
+      await this.router.navigate(['/dashboard']);
     }
   }
 
@@ -59,6 +59,8 @@ export class LoginComponent implements OnInit {
 
   async login(username: string, password: string): Promise<void> {
     const loginData: Login = { username, password };
+
+    await this.userService.setCurrentUser(loginData)
 
     try {
       const apiUrl = this.apiService.getLoginUrl();
@@ -75,11 +77,9 @@ export class LoginComponent implements OnInit {
         const data = await response.json();
 
         this.authService.setToken(data.token);
-        this.userService.setCurrentUser(data.user);
-
         this.router.navigate(['/dashboard']);
       } else {
-        const error = await response.json();
+        await response.json();
         this.snackbarService.open("Invalid credentials")
       }
     } catch (error) {

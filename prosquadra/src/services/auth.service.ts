@@ -7,10 +7,10 @@ import {UserService} from './user.service';
 })
 export class AuthService {
 
-  private tokenKey = 'authToken';
-  private apiUrl: string ='';
+  private readonly tokenKey = 'authToken';
+  private readonly apiUrl: string ='';
 
-  constructor(private ApiService: ApiService,private UserService: UserService) {
+  constructor(private readonly ApiService: ApiService,private readonly UserService: UserService) {
     this.apiUrl=this.ApiService.getAuthUrl();
   }
 
@@ -46,7 +46,7 @@ export class AuthService {
       if (response.ok) {
         console.log('token gültig')
         const data = await response.json();
-        this.UserService.setCurrentUser(data.user);
+        await this.UserService.setCurrentUser(data.user);
         return true;
       } else {
         console.log('token ist ungültig')
