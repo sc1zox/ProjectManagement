@@ -58,6 +58,7 @@ model Project {
   team             Team?     @relation("TeamProjects", fields: [teamid], references: [id])
   teamid           Int
   estimationDays   Int?
+  estimationHours  Int?
   PriorityPosition Int?
   createdAt        DateTime  @default(now())
   updatedAt        DateTime  @updatedAt

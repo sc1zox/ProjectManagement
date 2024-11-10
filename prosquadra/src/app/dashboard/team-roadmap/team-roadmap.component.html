@@ -3,10 +3,11 @@
 
   <!-- Horizontal scrollable project list -->
   <div #projectList class="project-list" cdkDropList
-    [cdkDropListOrientation]="window.innerWidth > 1000 ? 'horizontal' : 'vertical'" (cdkDropListDropped)="drop($event)">
+       [cdkDropListOrientation]="window.innerWidth > 1000 ? 'horizontal' : 'vertical'"
+       (cdkDropListDropped)="drop($event)">
     <div cdkDrag *ngFor="let project of projects" class="project-box" cdkDragBoundary=".project-list"
-      [cdkDragLockAxis]="window.innerWidth > 1000 ? 'x' : 'y'" [class.selected]="project.id === selectedProject?.id"
-      (click)="selectProject(project)">
+         [cdkDragLockAxis]="window.innerWidth > 1000 ? 'x' : 'y'" [class.selected]="project.id === selectedProject?.id"
+         (click)="selectProject(project)">
       {{ project.name }}
     </div>
   </div>
@@ -44,11 +45,24 @@
     <p><strong>Entwickler:</strong></p>
     <p><strong>Team:</strong> {{ selectedProject.team?.name || 'Kein Team zugewiesen' }}</p>
     <p><strong>Aufwand in Tagen:</strong> {{ selectedProject.estimationDays }}</p>
+    <p><strong>Aufwand in Tagen:</strong> {{ selectedProject.estimationHours }}</p>
 
-    <div *ngIf="user?.role === UserRole.Admin || user?.role===UserRole.SM" class="submitContainer">
-    <button mat-raised-button id="submitProject" (click)=onSubmit()>Safe Project</button>
+
+    <div class="devTimeEstimate" *ngIf="user?.role === UserRole.Developer">
+    <mat-form-field appearance="fill">
+      <mat-label>Tage</mat-label>
+      <input matInput type="number" placeholder="Tage" [(ngModel)]="days" min="0">
+    </mat-form-field>
+
+    <mat-form-field appearance="fill">
+      <mat-label>Stunden</mat-label>
+      <input matInput type="number" placeholder="Stunden" [(ngModel)]="hours" min="1">
+    </mat-form-field>
+    </div>
+    <div *ngIf="user?.role === UserRole.Admin || user?.role===UserRole.SM || user?.role===UserRole.Developer" class="submitContainer">
+      <button mat-raised-button id="submitProject" (click)=onSubmit()>Safe Project</button>
+    </div>
   </div>
-</div>
 </div>
 
 
