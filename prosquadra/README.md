@@ -31,11 +31,9 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 # Christian's explanation corner
 
-- Projektanordnung in Roadmap über PrioAttribut regeln?
-- TeamRoadmap sollte nur die Projekte des aktuellen Teams halten
-- TeamRoadmap muss ebenso prio ans backend schicken. Wie? Ein Array von Prios? Array aller Projects mit attribut prio?
 - safe project button in team roadmap nur verfügbar für sm oder po ?
 - skills an backend schicken(skill.service aufsetzen)
+- current project wird momentan gepolled also alle 5 sekunden gefetched. Funktioniert aber ist das gut?
 
 ## Routing
 
