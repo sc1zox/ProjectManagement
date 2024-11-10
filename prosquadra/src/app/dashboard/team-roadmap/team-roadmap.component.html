@@ -4,7 +4,8 @@
   <!-- Horizontal scrollable project list -->
   <div #projectList class="project-list" cdkDropList
        [cdkDropListOrientation]="window.innerWidth > 1000 ? 'horizontal' : 'vertical'"
-       (cdkDropListDropped)="drop($event)">
+       (cdkDropListDropped)="drop($event)"
+       [cdkDropListDisabled]="!enableDragDrop">
     <div cdkDrag *ngFor="let project of projects" class="project-box" cdkDragBoundary=".project-list"
          [cdkDragLockAxis]="window.innerWidth > 1000 ? 'x' : 'y'" [class.selected]="project.id === selectedProject?.id"
          (click)="selectProject(project)">
@@ -16,7 +17,7 @@
   <div *ngIf="selectedProject" class="project-details">
     <h3>{{ selectedProject.name }}</h3>
 
-    <div *ngIf="isScrumMaster">
+    <div *ngIf="setTimeScrum">
       <!-- Start Date with Datepicker -->
       <mat-form-field appearance="fill">
         <mat-label>Start Date</mat-label>
@@ -42,13 +43,11 @@
     </div>
 
     <p><strong>Beschreibung:</strong> {{ selectedProject.description }}</p>
-    <p><strong>Entwickler:</strong></p>
-    <p><strong>Team:</strong> {{ selectedProject.team?.name || 'Kein Team zugewiesen' }}</p>
     <p><strong>Aufwand in Tagen:</strong> {{ selectedProject.estimationDays }}</p>
-    <p><strong>Aufwand in Tagen:</strong> {{ selectedProject.estimationHours }}</p>
+    <p><strong>Aufwand in Stunden:</strong> {{ selectedProject.estimationHours }}</p>
 
-
-    <div class="devTimeEstimate" *ngIf="user?.role === UserRole.Developer">
+    <div class="timeButtonContainer">
+    <div class="devTimeEstimate" *ngIf="user?.role === UserRole.Developer && estimatableDEV">
     <mat-form-field appearance="fill">
       <mat-label>Tage</mat-label>
       <input matInput type="number" placeholder="Tage" [(ngModel)]="days" min="0">
@@ -56,12 +55,13 @@
 
     <mat-form-field appearance="fill">
       <mat-label>Stunden</mat-label>
-      <input matInput type="number" placeholder="Stunden" [(ngModel)]="hours" min="1">
+      <input matInput type="number" placeholder="Stunden" [(ngModel)]="hours" min="0">
     </mat-form-field>
     </div>
-    <div *ngIf="user?.role === UserRole.Admin || user?.role===UserRole.SM || user?.role===UserRole.Developer" class="submitContainer">
+    <div class="submitContainer">
       <button mat-raised-button id="submitProject" (click)=onSubmit()>Safe Project</button>
     </div>
+  </div>
   </div>
 </div>
 
