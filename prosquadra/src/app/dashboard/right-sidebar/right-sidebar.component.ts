@@ -69,7 +69,6 @@ export class RightSidebarComponent implements OnInit {
   async ngOnInit() {
     try {
       this.user = await this.UserService.getCurrentUser();
-      console.log("hallo",this.user)
       if (this.user) {
         this.userInitials = this.user.vorname.charAt(0).toUpperCase() + this.user.nachname.charAt(0).toUpperCase();
       }

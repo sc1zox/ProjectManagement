@@ -3,7 +3,6 @@ import rescue from 'express-rescue';
 import userController from '../controllers/user.controller';
 import ProjectController from '../controllers/project.controller';
 import TeamController from "../controllers/team.controller";
-import teamController from "../controllers/team.controller";
 
 const userRouter = Router();
 
@@ -17,7 +16,8 @@ userRouter.route('/teams').get(rescue(TeamController.getTeams));
 userRouter.route('/teams/:id').get(rescue(TeamController.getTeamByID));
 
 userRouter.post('/users/create', rescue(userController.createUser));
-userRouter.post('/team/create', rescue(teamController.createTeam));
+userRouter.post('/team/create', rescue(TeamController.createTeam));
 userRouter.post('/project/create', rescue(ProjectController.createProject));
+userRouter.put('/project/update', rescue(ProjectController.updateProject));
 
 export default userRouter;

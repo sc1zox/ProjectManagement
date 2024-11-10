@@ -36,10 +36,10 @@ export class CreateProjectComponent implements AfterViewInit {
   selectedTeam?: Team; // Variable to hold the selected team
 
   constructor(
-    private fb: FormBuilder,
-    private projectService: ProjectService,
-    private teamService: TeamService,
-    private cdref: ChangeDetectorRef
+    private readonly fb: FormBuilder,
+    private readonly projectService: ProjectService,
+    private readonly teamService: TeamService,
+    private readonly cdref: ChangeDetectorRef
   ) {
     this.projectForm = this.fb.group({
       projectName: ['', [Validators.required, Validators.maxLength(10)]], // Correct maxLength usage

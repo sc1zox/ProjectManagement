@@ -8,6 +8,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatInputModule } from '@angular/material/input';
 import { FormControl, FormsModule, FormGroup, FormBuilder, ReactiveFormsModule, AbstractControl, ValidationErrors } from '@angular/forms';
 import { UserService } from '../../../services/user.service';
+import {MatButton, MatIconButton} from '@angular/material/button';
 
 
 @Component({
@@ -21,7 +22,7 @@ import { UserService } from '../../../services/user.service';
     MatNativeDateModule,
     MatInputModule,
     FormsModule,
-    ReactiveFormsModule],
+    ReactiveFormsModule, MatIconButton, MatButton],
   templateUrl: './team-roadmap.component.html',
   styleUrls: ['./team-roadmap.component.scss']
 })
@@ -37,8 +38,8 @@ export class TeamRoadmapComponent implements AfterViewInit,OnInit{
 
   dateForm: FormGroup;
 
-  constructor(private ProjectService: ProjectService,
-    private UserService: UserService, private fb: FormBuilder) {
+  constructor(private readonly ProjectService: ProjectService,
+    private readonly UserService: UserService, private readonly fb: FormBuilder) {
       this.dateForm = this.fb.group({
         startDate: this.startDateControl,
         endDate: this.endDateControl,
@@ -73,7 +74,7 @@ export class TeamRoadmapComponent implements AfterViewInit,OnInit{
   }
 
   async loadProjects() {
-    this.projects = await this.ProjectService.getProjects();
+    this.projects = await this.ProjectService.getProjects(); //hier sollten alle von dem aktuellen Team kommen.
   }
 
   selectProject(project: Project): void {
@@ -113,7 +114,7 @@ export class TeamRoadmapComponent implements AfterViewInit,OnInit{
       console.error('Error while fetching Projects:', error);
     }finally {
       console.log('Project fetching finished.');
-    } // hier mit Team holen um individualisiert anzuzeigen
+    }
 
 
     this.projectList.nativeElement.addEventListener('wheel', this.onWheelScroll.bind(this));
@@ -134,5 +135,23 @@ export class TeamRoadmapComponent implements AfterViewInit,OnInit{
       moveItemInArray(this.projects, event.previousIndex, event.currentIndex)
     }
   }
+
+  async onSubmit() {
+    if (this.selectedProject) {
+      const updatedProject = {
+        ...this.selectedProject,
+        startDate: this.startDateControl.value,
+        endDate: this.endDateControl.value,
+      };
+
+      try {
+        await this.ProjectService.updateProject(updatedProject);
+      } catch (error) {
+        console.error('Error updating project roadmap:', error);
+      }
+    }
+  }
+
+
 
 }

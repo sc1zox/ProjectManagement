@@ -8,7 +8,7 @@ import {UserService} from './user.service';
 export class AuthService {
 
   private readonly tokenKey = 'authToken';
-  private readonly apiUrl: string ='';
+  private apiUrl: string ='';
 
   constructor(private readonly ApiService: ApiService,private readonly UserService: UserService) {
     this.apiUrl=this.ApiService.getAuthUrl();

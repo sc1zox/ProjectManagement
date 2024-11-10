@@ -78,5 +78,53 @@ class ProjectController{
             next(error);
         }
     }
+
+    async updateProject(req: Request, res: Response, next: NextFunction): Promise<any> {
+        const { id, name, description, teamid, startDate, endDate } = req.body;
+
+        try {
+            const existingProject = await prisma.project.findUnique({
+                where: { id: Number(id) },
+            });
+
+            if (!existingProject) {
+                return res.status(StatusCodes.NOT_FOUND).json({
+                    message: 'Das Projekt wurde nicht gefunden.',
+                });
+            }
+
+            const existingTeam = await prisma.team.findUnique({
+                where: { id: teamid },
+            });
+
+            if (!existingTeam) {
+                return res.status(StatusCodes.NOT_FOUND).json({
+                    message: 'Das Team wurde nicht gefunden.',
+                });
+            }
+
+            const updatedProject = await prisma.project.update({
+                where: { id: Number(id) },
+                data: {
+                    name,
+                    description,
+                    team: {
+                        connect: { id: teamid },
+                    },
+                    startDate,
+                    endDate,
+                },
+            });
+
+            res.status(StatusCodes.OK).json({
+                code: StatusCodes.OK,
+                data: updatedProject,
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+
 }
 export default new ProjectController();

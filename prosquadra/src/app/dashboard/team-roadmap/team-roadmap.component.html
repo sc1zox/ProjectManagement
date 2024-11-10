@@ -15,7 +15,7 @@
   <div *ngIf="selectedProject" class="project-details">
     <h3>{{ selectedProject.name }}</h3>
 
-    <div *ngIf="isScrumMaster; else showDates">
+    <div *ngIf="isScrumMaster">
       <!-- Start Date with Datepicker -->
       <mat-form-field appearance="fill">
         <mat-label>Start Date</mat-label>
@@ -34,15 +34,17 @@
       </mat-form-field>
     </div>
 
-    <!-- Display dates as text for non-SM users -->
-    <ng-template #showDates>
+    <!-- Display dates as text for all users -->
+    <div>
       <p><strong>Start:</strong> {{ startDateControl.value | date: 'shortDate' }}</p>
       <p><strong>End:</strong> {{ endDateControl.value | date: 'shortDate' }}</p>
-    </ng-template>
+    </div>
 
     <p><strong>Beschreibung:</strong> {{ selectedProject.description }}</p>
     <p><strong>Entwickler:</strong></p>
     <p><strong>Team:</strong> {{ selectedProject.team?.name || 'Kein Team zugewiesen' }}</p>
     <p><strong>Aufwand in Tagen:</strong> {{ selectedProject.estimationDays }}</p>
+
+    <button mat-button id="submitProject" (click)=onSubmit()>Safe Project</button>
   </div>
 </div>

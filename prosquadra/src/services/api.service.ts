@@ -1,14 +1,15 @@
 // api.service.ts
 import {Injectable} from '@angular/core';
 import {ApiResponse} from '../types/api-response';
+import {AuthService} from './auth.service';
 
 
 @Injectable({
   providedIn: 'root'
 })
 export class ApiService {
-  private apiUrl = 'http://localhost:3000/api';
-  private baseUrl: string = 'http://localhost:3000';
+  private readonly apiUrl = 'http://localhost:3000/api';
+  private readonly baseUrl: string = 'http://localhost:3000';
 
   constructor() {}
 
@@ -17,6 +18,9 @@ export class ApiService {
   }
   getAuthUrl(){
     return this.baseUrl+'/auth';
+  }
+  getBaseUrl(): string{
+    return this.baseUrl;
   }
 
   async fetch<T>(endpoint: string): Promise<ApiResponse<T>> {
