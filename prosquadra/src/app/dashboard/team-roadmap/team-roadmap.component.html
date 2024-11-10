@@ -1,4 +1,4 @@
-<div class="team-roadmap" *ngIf="roadmap; else noRoadmap">
+<div class="team-roadmap" *ngIf="roadmap && roadmap.projects.length>0; else noRoadmap">
   <h2>Team Name here</h2>
 
   <!-- Horizontal scrollable project list -->

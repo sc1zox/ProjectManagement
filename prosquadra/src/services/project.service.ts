@@ -70,5 +70,14 @@ export class ProjectService implements OnInit{
       console.error('Error updating project:', error);
     }
   }
+  async getProjectWithLowestPriorityByUserId(ID: number): Promise<Project>{
+    const response: ApiResponse<Project> = await this.ApiService.fetch('/project/current/'+ID);
+
+    if (response.code !== 200) {
+      throw new Error('Failed to fetch projects for specific Team id:' + ID);
+    }
+
+    return response.data;
+  }
 
 }

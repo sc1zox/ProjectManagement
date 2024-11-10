@@ -66,16 +66,15 @@ export class RightSidebarComponent implements OnInit {
   constructor(private readonly ProjectService: ProjectService,private readonly NotificationService: NotificationsService,private readonly UserService: UserService,private readonly AuthService: AuthService) {
     this.notifications = this.NotificationService.getNotificationAmount();
   }
-
+  // the current project fetch only works for roles other then SM as SM can have multiple teams. Maybe display something else for SM here
   async ngOnInit() {
     try {
       this.user = await this.UserService.getCurrentUser();
       if (this.user) {
+        console.log('Der aktuelle Nutzer',this.user)
         this.userInitials = this.user.vorname.charAt(0).toUpperCase() + this.user.nachname.charAt(0).toUpperCase();
+        this.userProject = await this.ProjectService.getProjectWithLowestPriorityByUserId(this.user.id);
       }
-
-      // Fetch user project
-      this.userProject = await this.ProjectService.getProjectsById(1);
     } catch (error) {
       console.error('Error while fetching user or project:', error);
     } finally {
