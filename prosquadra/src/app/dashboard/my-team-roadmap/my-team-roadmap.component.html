@@ -1,1 +1,8 @@
-<app-team-roadmap *ngIf="roadmap" [roadmap]="roadmap"></app-team-roadmap>
+<div>
+<app-team-roadmap *ngIf="roadmap" [roadmap]="roadmap"  (dataUpdated)="refetch()" [estimatableDEV]="true" [enableDragDrop]="isPo"></app-team-roadmap>
+</div>
+<div *ngIf="roadmaps.length > 0">
+  <div *ngFor="let roadmap of roadmaps">
+    <app-team-roadmap *ngIf="roadmap" [roadmap]="roadmap" (dataUpdated)="refetch()" [setTimeScrum]="true"></app-team-roadmap>
+  </div>
+</div>

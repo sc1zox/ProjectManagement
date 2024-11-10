@@ -30,6 +30,7 @@ import {MatButton, MatIconButton} from '@angular/material/button';
 import {Roadmap} from '../../../types/roadmap';
 import {User, UserRole} from '../../../types/user';
 import {RoadmapService} from '../../../services/roadmap.service';
+import {SnackbarService} from '../../../services/snackbar.service';
 
 
 @Component({
@@ -51,10 +52,14 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
 
   @Input() roadmap?: Roadmap;
   @Input() user?: User;
+  @Input() estimatableDEV: boolean=false;
+  @Input() setTimeScrum: boolean=false;
+  @Input() enableDragDrop: boolean=false;
+
   projects: Project[] = [];
   selectedProject?: Project;
+  teamname: string = ''; // get Team name to display
   protected readonly window = window;
-  isScrumMaster = false;
   @Output() dataUpdated = new EventEmitter<void>()
   hours?: number;
   days?: number;
@@ -66,12 +71,11 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
 
   constructor(private readonly ProjectService: ProjectService,
               private readonly UserService: UserService, private readonly fb: FormBuilder,
-              private readonly RoadmapService: RoadmapService, private cdr: ChangeDetectorRef) {
+              private readonly RoadmapService: RoadmapService, private SnackBarSerivce: SnackbarService) {
     this.dateForm = this.fb.group({
       startDate: this.startDateControl,
       endDate: this.endDateControl,
     });
-
     this.endDateControl.setValidators(this.endDateValidator.bind(this));
   }
 
@@ -86,11 +90,6 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   }
 
   async ngOnInit() {
-    if (this.user && this.user.role === 'SM') {
-      this.isScrumMaster = true;
-    } else {
-      this.isScrumMaster = false;
-    }
     if (!this.user) {
       this.user = await this.UserService.getCurrentUser();
     }
@@ -167,6 +166,10 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   }
 
   async onSubmit() {
+    if (this.days === 0 && this.hours === 0) {
+      this.SnackBarSerivce.open("Die Dauer darf nicht 0 Stunden und 0 Tage sein")
+      return;
+    }
     if (this.selectedProject) {
       const updatedProject = {
         ...this.selectedProject,
@@ -182,7 +185,8 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
           await this.RoadmapService.updateRoadmap(this.roadmap);
           await this.refreshProjectOrder();
         }
-
+        this.hours = 0;
+        this.days = 0;
         this.dataUpdated.emit();
       } catch (error) {
         console.error('Error updating project roadmap:', error);

@@ -1,13 +1,13 @@
 import {Component, OnInit} from '@angular/core';
-import { MatCardModule } from '@angular/material/card';
-import { CommonModule } from '@angular/common';
+import {MatCardModule} from '@angular/material/card';
+import {CommonModule} from '@angular/common';
 import {RouterLink} from '@angular/router';
 import {MatAnchor} from '@angular/material/button';
 import {RoadmapService} from '../../../services/roadmap.service';
 import {Roadmap} from '../../../types/roadmap';
 import {TeamRoadmapComponent} from '../team-roadmap/team-roadmap.component';
 import {UserService} from '../../../services/user.service';
-import {User} from '../../../types/user';
+import {User, UserRole} from '../../../types/user';
 
 
 @Component({
@@ -27,6 +27,7 @@ export class DashboardHomeComponent implements OnInit{
 
   public roadmaps:Roadmap[]=[];
   public user?: User;
+  isPo: boolean = false;
 
   constructor(private readonly RoadmapService: RoadmapService,private readonly UserService:UserService) {
   }
@@ -34,6 +35,9 @@ export class DashboardHomeComponent implements OnInit{
   async ngOnInit() {
     try {
       this.user = await this.UserService.getCurrentUser();
+      if(this.user && this.user.role === UserRole.PO){
+        this.isPo = true;
+      }
       this.roadmaps = await this.RoadmapService.getRoadmaps()
     }catch (error){
       console.error('Error while fetching Roadmaps:', error);

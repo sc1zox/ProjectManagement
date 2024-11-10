@@ -4,7 +4,7 @@ import { RouterLink } from '@angular/router';
 import { MatExpansionPanel, MatExpansionPanelDescription, MatExpansionPanelHeader, MatExpansionPanelTitle } from '@angular/material/expansion';
 import { NgIf } from '@angular/common';
 import {UserService} from '../../../services/user.service';
-import {User} from '../../../types/user';
+import {User, UserRole} from '../../../types/user';
 
 
 @Component({
@@ -47,4 +47,6 @@ export class LeftSidebarComponent implements OnInit{
     const width = window.innerWidth;
     this.expanded = width >= 1000;
   }
+
+  protected readonly UserRole = UserRole;
 }

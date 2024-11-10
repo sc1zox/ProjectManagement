@@ -79,7 +79,7 @@ export class RightSidebarComponent implements OnInit,OnDestroy  {
 
         this.projectPollingInterval = setInterval(() => {
           this.fetchProject();
-        }, 10000); // fetch current project every 10 seconds
+        }, 30000); // fetch current project every 30 seconds
       }
     } catch (error) {
       console.error('Error while fetching user or project:', error);
