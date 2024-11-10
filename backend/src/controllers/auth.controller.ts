@@ -5,6 +5,8 @@ import prisma from '../lib/prisma';
 import jwt from '../utils/jwt';
 import {Login} from "../types/login";
 
+// https://github.com/rafaelmfranca/express-prisma-jwt-auth/tree/main
+
 class AuthController {
     async authenticate(req: Request, res: Response, next: NextFunction): Promise<any> {
         const { username, password }: Login = req.body;

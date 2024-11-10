@@ -1,4 +1,4 @@
-import {Component, inject, OnInit, signal} from '@angular/core';
+import {AfterContentChecked, Component, inject, OnInit, signal} from '@angular/core';
 import {
   MatChipEditedEvent,
   MatChipGrid,
@@ -62,25 +62,26 @@ export class RightSidebarComponent implements OnInit {
   userInitials: string = '';
   user?: User;
 
-  constructor(private ProjectService: ProjectService,private NotificationService: NotificationsService,private UserService: UserService) {
+  constructor(private readonly ProjectService: ProjectService,private readonly NotificationService: NotificationsService,private readonly UserService: UserService) {
     this.notifications = this.NotificationService.getNotificationAmount();
-    this.user = this.UserService.getCurrentUser();
   }
 
   async ngOnInit() {
-
-
-    if (this.user) {
-      this.userInitials = this.user.vorname.charAt(0).toUpperCase() + this.user.nachname.charAt(0).toUpperCase();
-    }
     try {
-      this.userProject = await this.ProjectService.getProjectsById(1); //1 to get the project in the first place of array?
-    }catch (error){
-      console.error('Error while fetching Projects:', error);
-    }finally {
+      this.user = await this.UserService.getCurrentUser();
+      if (this.user) {
+        this.userInitials = this.user.vorname.charAt(0).toUpperCase() + this.user.nachname.charAt(0).toUpperCase();
+      }
+
+      // Fetch user project
+      this.userProject = await this.ProjectService.getProjectsById(1);
+    } catch (error) {
+      console.error('Error while fetching user or project:', error);
+    } finally {
       console.log('Project fetch finished.');
     }
   }
+
 
   // Source https://material.angular.io/components/chips/examples
 

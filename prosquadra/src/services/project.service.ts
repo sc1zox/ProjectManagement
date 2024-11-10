@@ -1,20 +1,25 @@
-import {Injectable} from '@angular/core';
-import {Team} from '../types/team';
+import {Injectable, OnInit} from '@angular/core';
 import {Project} from '../types/project';
 import {ApiService} from './api.service';
-import { Subject } from 'rxjs';
+import {Subject} from 'rxjs';
+import {AuthService} from './auth.service';
 
 @Injectable({
   providedIn: 'root'
 })
-export class ProjectService {
+export class ProjectService implements OnInit{
 
-  constructor(private ApiService: ApiService) {
+  constructor(private readonly ApiService: ApiService,private readonly AuthService: AuthService) {
   }
 
   projects: Project[] = [];
 
-  private projectCreatedSource = new Subject<void>();
+  async ngOnInit() {
+    this.projects = await this.getProjects();
+    console.log("proj service:" , this.projects)
+  }
+
+  private readonly projectCreatedSource = new Subject<void>();
   projectCreated$ = this.projectCreatedSource.asObservable();
 
   async getProjects(): Promise<Project[]> {
@@ -45,4 +50,40 @@ export class ProjectService {
     }
     return <Project>response.data;
   }
+
+  async updateProject(updatedProject: Project) {
+    try {
+      await this.updateResource('/api/project/update', updatedProject);
+    } catch (error) {
+      console.error('Error updating project:', error);
+    }
+  }
+
+
+  // Helper function for API calls weil in api service mit token circular dependencies entstanden
+  async updateResource(endpoint: string, data: any): Promise<any> {
+    const token = this.AuthService.getToken();
+    if (!token) {
+      throw new Error('User is not authenticated');
+    }
+
+    const apiUrl = this.ApiService.getBaseUrl() + endpoint;
+
+    try {
+      await fetch(apiUrl, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+    } catch (error) {
+      console.error('Error updating resource:', error);
+      throw error;
+    }
+  }
+
+
+
 }

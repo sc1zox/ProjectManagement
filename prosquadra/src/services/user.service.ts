@@ -10,8 +10,9 @@ import {Login} from '../types/login';
 export class UserService {
 
   private User?: User;
+  private userPromise?: Promise<User>;
 
-  constructor(private ApiService: ApiService) {
+  constructor(private readonly ApiService: ApiService) {
   }
 
 
@@ -34,7 +35,7 @@ export class UserService {
         throw new Error("Network response was not ok while fetching all users");
       }
 
-      return <User[]>response.data;
+      return response.data;
     } catch (error) {
       console.error("Error in getUsers:", error);
       throw new Error("Network error occurred while fetching users: " + error);
@@ -50,7 +51,7 @@ export class UserService {
       throw new Error('Failed to fetch user data for specific id:' + ID);
     }
 
-    return <User>response.data;
+    return response.data;
   }
 
   async createUser(user: User): Promise<User> {
@@ -63,7 +64,7 @@ export class UserService {
     if (response.code !== 201) {
       throw new Error('Failed to create user');
     }
-    return <User>response.data;
+    return response.data;
   }
 
   async createLogin(Login: Login): Promise<Login> {
@@ -78,17 +79,39 @@ export class UserService {
       throw new Error('Failed to create Login');
     }
 
-    return <Login>response.data;
+    return response.data;
   }
 
-  setCurrentUser(user: User): void {
-    this.User = user;
-  }
-  getCurrentUser(): User {
-    if (this.User !== undefined) {
-      return this.User;
-    } else {
-      throw new Error('No user is currently set');
+  async setCurrentUser(login: Login): Promise<void> {
+    console.log("setCurrentUserFunc: ", login);
+
+    try {
+      const users = await this.getUsers();
+      const foundUser = users.find(user => user.id === login.userId);
+
+      if (foundUser) {
+        console.log("User found:", foundUser);
+        this.User = foundUser;
+      } else {
+        console.log("User not found with userId:", login.userId);
+      }
+    } catch (error) {
+      console.error("Error fetching users:", error);
     }
   }
+
+  async getCurrentUser(): Promise<User | undefined> {
+    if (this.User) {
+      console.log("Returning cached user:", this.User);
+      return this.User;
+    }
+    if (this.userPromise) {
+      console.log("Waiting for the user to be fetched...");
+      return this.userPromise;
+    }
+
+    console.log("No cached user found and no fetch in progress.");
+    return undefined;
+  }
+
 }
