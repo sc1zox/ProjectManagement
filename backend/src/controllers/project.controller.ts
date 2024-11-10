@@ -124,7 +124,7 @@ class ProjectController {
     }
 
     async getProjectWithLowestPriorityByUserId(req: Request, res: Response, next: NextFunction): Promise<any> {
-        console.log(req.params)
+        console.log("This function gets polled with ",req.params)
         try {
             const userId = Number(req.params.id);
 
@@ -181,7 +181,7 @@ class ProjectController {
 
 
     async updateProject(req: Request, res: Response, next: NextFunction): Promise<any> {
-        const {id, name, description, teamid, startDate, endDate} = req.body;
+        const {id, name, description, teamid, startDate, endDate, estimationDays, estimationHours} = req.body;
 
         try {
             const existingProject = await prisma.project.findUnique({
@@ -214,6 +214,8 @@ class ProjectController {
                     },
                     startDate,
                     endDate,
+                    estimationDays,
+                    estimationHours,
                 },
             });
 

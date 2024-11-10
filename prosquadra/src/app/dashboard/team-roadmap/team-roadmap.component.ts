@@ -56,6 +56,8 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   protected readonly window = window;
   isScrumMaster = false;
   @Output() dataUpdated = new EventEmitter<void>()
+  hours?: number;
+  days?: number;
 
   startDateControl = new FormControl();
   endDateControl = new FormControl();
@@ -170,6 +172,8 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
         ...this.selectedProject,
         startDate: this.startDateControl.value,
         endDate: this.endDateControl.value,
+        estimationDays: this.days,
+        estimationHours: this.hours,
       };
 
       try {
