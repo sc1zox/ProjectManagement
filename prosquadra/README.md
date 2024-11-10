@@ -32,9 +32,9 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 # Christian's explanation corner
 
 - Projektanordnung in Roadmap über PrioAttribut regeln?
-- Fehlermeldung bei anmeldung mit falschen Kriterien schöner machen
 - TeamRoadmap sollte nur die Projekte des aktuellen Teams halten
 - TeamRoadmap muss ebenso prio ans backend schicken. Wie? Ein Array von Prios? Array aller Porjects mit attribut prio?
+- safe project button in team roadmap nur verfügbar für sm oder po ?
 
 ## Routing
 

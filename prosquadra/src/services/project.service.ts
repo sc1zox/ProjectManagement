@@ -3,6 +3,7 @@ import {Project} from '../types/project';
 import {ApiService} from './api.service';
 import {Subject} from 'rxjs';
 import {AuthService} from './auth.service';
+import {ApiResponse} from '../types/api-response';
 
 @Injectable({
   providedIn: 'root'
@@ -23,23 +24,23 @@ export class ProjectService implements OnInit{
   projectCreated$ = this.projectCreatedSource.asObservable();
 
   async getProjects(): Promise<Project[]> {
-    const response = await this.ApiService.fetch("/projects");
+    const response:ApiResponse<Project[]> = await this.ApiService.fetch("/projects");
     console.log("Project Fetch "+ response.data)
     if (response.code !== 200) {
       throw new Error('Network response was not ok');
     }
-    return <Project[]>response.data
+    return response.data
   }
 
   async getProjectsById(ID: number): Promise<Project> {
 
-    const response = await this.ApiService.fetch(`/projects/${ID}`);
+    const response: ApiResponse<Project> = await this.ApiService.fetch('/projects/'+ID);
 
     if (response.code !== 200) {
       throw new Error('Failed to fetch user data for specific id:' + ID);
     }
 
-    return <Project>response.data;
+    return response.data;
   }
 
 

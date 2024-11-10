@@ -1,4 +1,4 @@
-import {AfterViewInit, ChangeDetectorRef, Component, EventEmitter, Output} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component} from '@angular/core';
 import { FormBuilder, FormGroup, Validators,ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -7,11 +7,10 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatSelect, MatOption } from '@angular/material/select';
 import { TeamRoadmapComponent } from '../team-roadmap/team-roadmap.component';
 import { ProjectService } from '../../../services/project.service';
-import { UserService } from '../../../services/user.service';
 import { TeamService } from '../../../services/team.service';
 import { Project } from '../../../types/project';
-import { User } from '../../../types/user';
 import { Team } from '../../../types/team';
+import {Roadmap} from '../../../types/roadmap';
 
 @Component({
   selector: 'app-create-project',
@@ -34,12 +33,15 @@ export class CreateProjectComponent implements AfterViewInit {
   projectForm: FormGroup;
   teams: Team[] = [];
   selectedTeam?: Team; // Variable to hold the selected team
+  roadmap?: Roadmap;
+  currentTeam?: Team;
 
   constructor(
     private readonly fb: FormBuilder,
     private readonly projectService: ProjectService,
     private readonly teamService: TeamService,
-    private readonly cdref: ChangeDetectorRef
+    private readonly cdref: ChangeDetectorRef,
+    private readonly TeamService: TeamService,
   ) {
     this.projectForm = this.fb.group({
       projectName: ['', [Validators.required, Validators.maxLength(10)]], // Correct maxLength usage
@@ -48,8 +50,8 @@ export class CreateProjectComponent implements AfterViewInit {
     });
   }
 
-  ngAfterViewInit() {
-    this.loadTeams();
+  async ngAfterViewInit() {
+    await this.loadTeams();
     this.cdref.detectChanges();
   }
 
@@ -73,11 +75,18 @@ export class CreateProjectComponent implements AfterViewInit {
       await this.projectService.setProjects(newProject);
       console.log('Form Submitted', newProject);
       this.selectedTeam = selectedTeam;
+      if(selectedTeam) {
+        this.currentTeam = await this.TeamService.getTeamByID(selectedTeam.id)
+        this.roadmap = this.currentTeam?.roadmap;
+      }
+
       this.cdref.detectChanges();
+
       this.projectForm.reset();
     } else {
       console.log('Form is invalid');
     }
+
   }
 }
 
