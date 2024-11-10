@@ -35,11 +35,11 @@ class RoadmapController {
             if (!roadmap) {
                 return next({status: StatusCodes.NOT_FOUND, message: 'Roadmap by ID not found'});
             }
-
+            // front end already sorts but to make sure this is sorted aswell.
             if (roadmap.projects) {
                 roadmap.projects.sort((a, b) => {
                     const priorityA = a.PriorityPosition ?? Number.MAX_VALUE;
-                    const priorityB = b.PriorityPosition ?? Number.MAX_VALUE; 
+                    const priorityB = b.PriorityPosition ?? Number.MAX_VALUE;
 
                     return priorityA - priorityB;
                 });

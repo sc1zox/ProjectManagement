@@ -33,7 +33,7 @@ export class RoadmapService {
     }
   }
 
-  async getRoadmapById(ID: number): Promise<Roadmap> {
+  async getRoadmapById(ID: number | undefined): Promise<Roadmap> {
 
     const response: ApiResponse<Roadmap> = await this.ApiService.fetch('/roadmaps/'+ID);
 

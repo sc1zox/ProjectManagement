@@ -15,6 +15,7 @@ import {User, UserRole} from '../../../../types/user';
 import {ConfirmDialogComponent} from '../mitarbeiter-form/confirm-dialog/confirm-dialog.component';
 import {MatDialog} from '@angular/material/dialog';
 import {SnackbarService} from '../../../../services/snackbar.service';
+import {Roadmap} from '../../../../types/roadmap';
 
 @Component({
   selector: 'app-teams-form',

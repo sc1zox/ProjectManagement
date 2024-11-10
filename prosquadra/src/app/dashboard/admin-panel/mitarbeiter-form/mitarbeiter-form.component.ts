@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnChanges, OnInit} from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog } from '@angular/material/dialog';
 import {Router, RouterLink} from '@angular/router';
@@ -48,7 +48,7 @@ import {Login} from '../../../../types/login';
   templateUrl: './mitarbeiter-form.component.html',
   styleUrl: './mitarbeiter-form.component.scss'
 })
-export class MitarbeiterFormComponent implements OnInit {
+export class MitarbeiterFormComponent implements OnInit,OnChanges {
 
   Teams: Team[] = [];
   user: User = {
@@ -91,6 +91,10 @@ export class MitarbeiterFormComponent implements OnInit {
     this.firstFormGroup.get('role')?.valueChanges.subscribe((role) => {
       this.adjustTeamSelectionValidators(role);
     });
+  }
+
+  async ngOnChanges(){
+    this.Teams = await this.TeamService.getTeams();
   }
 
   adjustTeamSelectionValidators(role: string) {
