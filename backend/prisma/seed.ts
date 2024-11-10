@@ -3,7 +3,6 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 async function main() {
-
     const user1 = await prisma.user.create({
         data: {
             vorname: 'John',
@@ -94,14 +93,13 @@ async function main() {
         },
     });
 
-
     const roadmap1 = await prisma.roadmap.create({ data: {} });
     const roadmap2 = await prisma.roadmap.create({ data: {} });
     const roadmap3 = await prisma.roadmap.create({ data: {} });
     const roadmap4 = await prisma.roadmap.create({ data: {} });
     const roadmap5 = await prisma.roadmap.create({ data: {} });
 
-
+    // Creating teams
     const team1 = await prisma.team.create({
         data: {
             name: 'Development Team',
@@ -133,7 +131,7 @@ async function main() {
                 connect: { id: roadmap3.id },
             },
             members: {
-                connect: [{ id: user3.id }],
+                connect: { id: user3.id },
             },
         },
     });
@@ -145,7 +143,7 @@ async function main() {
                 connect: { id: roadmap4.id },
             },
             members: {
-                connect: [{ id: user3.id },],
+                connect: { id: user3.id },
             },
         },
     });
@@ -157,12 +155,12 @@ async function main() {
                 connect: { id: roadmap5.id },
             },
             members: {
-                connect: [{ id: user3.id }],
+                connect: { id: user3.id },
             },
         },
     });
 
-
+    // Create projects with assigned PriorityPosition
     const project1 = await prisma.project.create({
         data: {
             name: 'New Development Project',
@@ -176,6 +174,7 @@ async function main() {
             roadmap: {
                 connect: { id: roadmap1.id },
             },
+            PriorityPosition: 1,  // First project in this roadmap
         },
     });
 
@@ -184,14 +183,15 @@ async function main() {
             name: 'QA Testing Project',
             description: 'A project for quality assurance testing',
             estimationDays: 45,
-            startDate: new Date(2023, 5, 15),  // June 15, 2023
-            endDate: new Date(2023, 10, 15),   // October 15, 2023
+            startDate: new Date(2023, 5, 15),
+            endDate: new Date(2023, 10, 15),
             team: {
                 connect: { id: team2.id },
             },
             roadmap: {
                 connect: { id: roadmap2.id },
             },
+            PriorityPosition: 1,  // First project in this roadmap
         },
     });
 
@@ -200,14 +200,15 @@ async function main() {
             name: 'Design Overhaul Project',
             description: 'A design-focused project for UI/UX improvements',
             estimationDays: 60,
-            startDate: new Date(2023, 6, 1),  // July 1, 2023
-            endDate: new Date(2023, 12, 31),   // December 31, 2023
+            startDate: new Date(2023, 6, 1),
+            endDate: new Date(2023, 12, 31),
             team: {
                 connect: { id: team3.id },
             },
             roadmap: {
                 connect: { id: roadmap3.id },
             },
+            PriorityPosition: 1,  // First project in this roadmap
         },
     });
 
@@ -216,14 +217,15 @@ async function main() {
             name: 'Product Launch Project',
             description: 'A project focused on the next product launch',
             estimationDays: 90,
-            startDate: new Date(2023, 7, 1),  // August 1, 2023
-            endDate: new Date(2024, 3, 1),    // April 1, 2024
+            startDate: new Date(2023, 7, 1),
+            endDate: new Date(2024, 3, 1),
             team: {
                 connect: { id: team4.id },
             },
             roadmap: {
                 connect: { id: roadmap4.id },
             },
+            PriorityPosition: 1,  // First project in this roadmap
         },
     });
 
@@ -232,14 +234,15 @@ async function main() {
             name: 'Marketing Campaign Project',
             description: 'A marketing campaign project for the upcoming season',
             estimationDays: 50,
-            startDate: new Date(2023, 8, 1),  // September 1, 2023
-            endDate: new Date(2023, 12, 31),   // December 31, 2023
+            startDate: new Date(2023, 8, 1),
+            endDate: new Date(2023, 12, 31),
             team: {
                 connect: { id: team5.id },
             },
             roadmap: {
                 connect: { id: roadmap5.id },
             },
+            PriorityPosition: 1,  // First project in this roadmap
         },
     });
 

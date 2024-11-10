@@ -8,5 +8,6 @@ export interface Project {
   endDate?: Date;
   team?: Team;
   estimationDays?: number;
+  PriorityPosition?: number;
 }
 

@@ -2,6 +2,9 @@ import {Injectable} from '@angular/core';
 import {ApiService} from './api.service';
 import {ApiResponse} from '../types/api-response';
 import {Roadmap} from '../types/roadmap';
+import {AuthService} from './auth.service';
+import {UpdateService} from './update.service';
+import {Project} from '../types/project';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +13,7 @@ export class RoadmapService {
 
   private roadmaps: Roadmap[] = [];
 
-  constructor(private readonly ApiService: ApiService) {
+  constructor(private readonly ApiService: ApiService,private readonly UpdateService:UpdateService) {
   }
 
   public async getRoadmaps(): Promise<Roadmap[]> {
@@ -22,20 +25,22 @@ export class RoadmapService {
     return response.data;
   }
 
-  public getStaticRoadmaps() {
-    if (this.roadmaps) {
-      return this.roadmaps;
-    } else {
-      this.getRoadmaps();
+  public async updateRoadmap(roadmap: Roadmap){
+    try {
+      await this.UpdateService.updateResource('/api/roadmaps/update', roadmap);
+    } catch (error) {
+      console.error('Error updating project:', error);
     }
-    return this.roadmaps;
   }
 
-  public async getRoadmapsbyTeamID(id: number): Promise<Roadmap | undefined> {
+  async getRoadmapById(ID: number): Promise<Roadmap> {
 
-    await this.getRoadmaps();
+    const response: ApiResponse<Roadmap> = await this.ApiService.fetch('/roadmaps/'+ID);
 
-    return this.roadmaps.find(roadmap => roadmap.id === id);
+    if (response.code !== 200) {
+      throw new Error('Failed to fetch roadmap for specific id:' + ID);
+    }
+
+    return response.data;
   }
-
 }

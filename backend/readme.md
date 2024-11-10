@@ -38,4 +38,8 @@ When you want to use prisma migrate dev or prisma migrate reset without seeding,
 
 - Will ich einen check beim Login erstellen machen welche Rolle der authentifizierte Benutzer hat? -> nur admin? Frontend könnte dies vermutlich auch regeln
 - Swagger UI benutzen?
+
+# ToDos
 - Check all types for ? operator as its used to ease compiling
+- Skills impl
+- ProjektPrio impl

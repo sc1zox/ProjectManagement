@@ -4,13 +4,14 @@ import {ApiService} from './api.service';
 import {Subject} from 'rxjs';
 import {AuthService} from './auth.service';
 import {ApiResponse} from '../types/api-response';
+import {UpdateService} from './update.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProjectService implements OnInit{
 
-  constructor(private readonly ApiService: ApiService,private readonly AuthService: AuthService) {
+  constructor(private readonly ApiService: ApiService,private readonly UpdateService: UpdateService) {
   }
 
   projects: Project[] = [];
@@ -37,7 +38,17 @@ export class ProjectService implements OnInit{
     const response: ApiResponse<Project> = await this.ApiService.fetch('/projects/'+ID);
 
     if (response.code !== 200) {
-      throw new Error('Failed to fetch user data for specific id:' + ID);
+      throw new Error('Failed to fetch projects for specific id:' + ID);
+    }
+
+    return response.data;
+  }
+  async getProjectsByTeamId(ID: number): Promise<Project[]> {
+
+    const response: ApiResponse<Project[]> = await this.ApiService.fetch('/team/projects/'+ID);
+
+    if (response.code !== 200) {
+      throw new Error('Failed to fetch projects for specific Team id:' + ID);
     }
 
     return response.data;
@@ -54,37 +65,10 @@ export class ProjectService implements OnInit{
 
   async updateProject(updatedProject: Project) {
     try {
-      await this.updateResource('/api/project/update', updatedProject);
+      await this.UpdateService.updateResource('/api/project/update', updatedProject);
     } catch (error) {
       console.error('Error updating project:', error);
     }
   }
-
-
-  // Helper function for API calls weil in api service mit token circular dependencies entstanden
-  async updateResource(endpoint: string, data: any): Promise<any> {
-    const token = this.AuthService.getToken();
-    if (!token) {
-      throw new Error('User is not authenticated');
-    }
-
-    const apiUrl = this.ApiService.getBaseUrl() + endpoint;
-
-    try {
-      await fetch(apiUrl, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-      });
-    } catch (error) {
-      console.error('Error updating resource:', error);
-      throw error;
-    }
-  }
-
-
 
 }

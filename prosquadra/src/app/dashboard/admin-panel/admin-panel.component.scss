@@ -15,3 +15,9 @@
   margin: var(--content-margin);
   padding: calc(var(--content-padding)*1.5);
 }
+@media screen and (max-width: 1000px) {
+  .button-box{
+    flex-direction: column;
+    margin-bottom: var(--content-margin);
+  }
+}
