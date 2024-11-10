@@ -66,11 +66,12 @@ export class TeamRoadmapComponent implements AfterViewInit,OnInit{
       this.isScrumMaster = false;
     }
 
-    this.loadProjects();
+    await this.loadProjects();
     // Listen to projectCreated$ event
     this.ProjectService.projectCreated$.subscribe(() => {
       this.loadProjects();
     })
+    this.selectInitialProject();
   }
 
   async loadProjects() {
@@ -106,23 +107,7 @@ export class TeamRoadmapComponent implements AfterViewInit,OnInit{
 
   // Lifecycle Hook
   async ngAfterViewInit() {
-    try {
-      console.log("project fetch started")
-      this.projects = await this.ProjectService.getProjects();
-      console.log(this.projects);
-    }catch (error){
-      console.error('Error while fetching Projects:', error);
-    }finally {
-      console.log('Project fetching finished.');
-    }
-
-
     this.projectList.nativeElement.addEventListener('wheel', this.onWheelScroll.bind(this));
-
-
-    setTimeout(() => {
-      this.selectInitialProject(); // timeout to avoid angular error during lifecycle method
-    });
   }
 
   selectInitialProject(): void {
@@ -146,6 +131,7 @@ export class TeamRoadmapComponent implements AfterViewInit,OnInit{
 
       try {
         await this.ProjectService.updateProject(updatedProject);
+        await this.loadProjects(); //refetch to display changes
       } catch (error) {
         console.error('Error updating project roadmap:', error);
       }

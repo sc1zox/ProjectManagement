@@ -31,17 +31,10 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 # Christian's explanation corner
 
-- Projekt braucht keine Entwickler, Datepicker bei team-roadmap.
-- Entwickler Arbeitszeit bei Mitarbeiteranlegung
-- Projekterstellen mit Beschreibung
-- backend punkt aufsetzen um token zu verifyen und in login komponente einbinden -> works
-- prisma schema überarbeiten -> ?
-- restliche services an backend anbinden -> mostly done
-- route guards überprüfen -> works
 - Projektanordnung in Roadmap über PrioAttribut regeln?
-- Username bei Accerstellung muss unique sein
-- 2 Schritte Nutzererstellung, erst den Nutzer erstellen und danach das Login erstellen als Form also username+password
 - Fehlermeldung bei anmeldung mit falschen Kriterien schöner machen
+- TeamRoadmap sollte nur die Projekte des aktuellen Teams halten
+- TeamRoadmap muss ebenso prio ans backend schicken. Wie? Ein Array von Prios? Array aller Porjects mit attribut prio?
 
 ## Routing
 
