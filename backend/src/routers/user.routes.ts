@@ -18,6 +18,7 @@ userRouter.get('/projects/:id', rescue(ProjectController.getProjectById));
 userRouter.get('/team/projects/:id', rescue(ProjectController.getProjectsByTeam));
 userRouter.post('/project/create', rescue(ProjectController.createProject));
 userRouter.put('/project/update', rescue(ProjectController.updateProject));
+userRouter.get('/project/current/:id',rescue(ProjectController.getProjectWithLowestPriorityByUserId));
 
 
 userRouter.get('/team', rescue(TeamController.getTeams));

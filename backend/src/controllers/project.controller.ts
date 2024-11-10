@@ -123,6 +123,63 @@ class ProjectController {
         }
     }
 
+    async getProjectWithLowestPriorityByUserId(req: Request, res: Response, next: NextFunction): Promise<any> {
+        console.log(req.params)
+        try {
+            const userId = Number(req.params.id);
+
+            if (isNaN(userId)) {
+                return res.status(StatusCodes.BAD_REQUEST).json({
+                    message: 'Invalid user ID provided',
+                });
+            }
+
+            const user = await prisma.user.findUnique({
+                where: { id: userId },
+                include: {
+                    teams: {
+                        include: {
+                            roadmap: true,
+                        },
+                    },
+                },
+            });
+
+            if (!user || user.teams.length === 0) {
+                return res.status(StatusCodes.NOT_FOUND).json({
+                    message: 'User or associated teams not found',
+                });
+            }
+
+            const team = user.teams[0]; // If user can have multiple teams, adjust accordingly
+
+
+            const project = await prisma.project.findFirst({
+                where: {
+                    teamid: team.id,
+                    roadmapId: team.roadmapId,
+                    PriorityPosition: 1,
+                },
+            });
+
+            if (!project) {
+                return res.status(StatusCodes.NOT_FOUND).json({
+                    message: 'No project found with the lowest priority for the team and roadmap',
+                });
+            }
+            const response: ApiResponse<Project> = {
+                code: StatusCodes.OK,
+                data: project,
+            };
+            res.status(StatusCodes.OK).json(response);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+
+
+
     async updateProject(req: Request, res: Response, next: NextFunction): Promise<any> {
         const {id, name, description, teamid, startDate, endDate} = req.body;
 
