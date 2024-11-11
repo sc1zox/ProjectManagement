@@ -42,6 +42,8 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - BUG: sm plant projekt ein und submitted. Datepicker verschwindet.+ fehlermeldung "Die Dauer darf nicht 0 Stunden und 0 Tage sein" aber erstes datumsetzen funktioniert und ab fresh wieder
 - Idee: Bilder einfügbar machen für projektboxen in roadmap
 - darkmode? sollte nicht zu aufwendig sein
+- BUG: bei projekt erstellen. Wenn ich ein projekt erstelle und danach die reihenfolge anpasse und dann nochmal ein projekt erstelle resetted sich die reihenfolge. Im backend stimmt es also muss das frontend vermutlich neu pullen oder so.
+- 
 ## Routing
 
 Das Dashboard ist so aufgebaut, dass die linke und rechte Seitenleiste (Sidebar) unverändert bleiben, während nur der mittlere Hauptinhalt bei der Navigation neu geladen wird.
