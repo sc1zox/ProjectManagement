@@ -36,7 +36,10 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - current project wird momentan gepolled also alle 5 sekunden gefetched. Funktioniert aber ist das gut?
 - arbeitszeit verarbeiten uns ans backend schicken + eingabe
 - git pushup alias setzen
-- 
+- momentan ist es nicht möglich einen User ohne Team zu erstellen und ein Team ohne User/oder das nachträgliche ändern, hinzufügen. How to do?
+- Projekt löschen impl
+- BUG: sm plant projekt ein und submitted. Datepicker verschwindet.+ fehlermeldung "Die Dauer darf nicht 0 Stunden und 0 Tage sein" aber erstes datumsetzen funktioniert und ab fresh wieder
+- Idee: Bilder einfügbar machen für projektboxen in roadmap
 ## Routing
 
 Das Dashboard ist so aufgebaut, dass die linke und rechte Seitenleiste (Sidebar) unverändert bleiben, während nur der mittlere Hauptinhalt bei der Navigation neu geladen wird.
