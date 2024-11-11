@@ -32,9 +32,16 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 # Christian's explanation corner
 
 - safe project button in team roadmap nur verfügbar für sm oder po ?
+- projekt icon läd langsam. icon datei vllt besser? zugroß?
 - skills an backend schicken(skill.service aufsetzen)
 - current project wird momentan gepolled also alle 5 sekunden gefetched. Funktioniert aber ist das gut?
-
+- arbeitszeit verarbeiten uns ans backend schicken + eingabe
+- git pushup alias setzen
+- momentan ist es nicht möglich einen User ohne Team zu erstellen und ein Team ohne User/oder das nachträgliche ändern, hinzufügen. How to do?
+- Projekt löschen impl
+- BUG: sm plant projekt ein und submitted. Datepicker verschwindet.+ fehlermeldung "Die Dauer darf nicht 0 Stunden und 0 Tage sein" aber erstes datumsetzen funktioniert und ab fresh wieder
+- Idee: Bilder einfügbar machen für projektboxen in roadmap
+- darkmode? sollte nicht zu aufwendig sein
 ## Routing
 
 Das Dashboard ist so aufgebaut, dass die linke und rechte Seitenleiste (Sidebar) unverändert bleiben, während nur der mittlere Hauptinhalt bei der Navigation neu geladen wird.

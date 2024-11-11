@@ -166,6 +166,7 @@ async function main() {
             name: 'New Development Project',
             description: 'A new project for development team',
             estimationDays: 30,
+            estimationHours: 45,
             startDate: new Date(2023, 4, 1),
             endDate: new Date(2023, 9, 1),
             team: {
@@ -183,6 +184,7 @@ async function main() {
             name: 'QA Testing Project',
             description: 'A project for quality assurance testing',
             estimationDays: 45,
+            estimationHours: 19,
             startDate: new Date(2023, 5, 15),
             endDate: new Date(2023, 10, 15),
             team: {
@@ -200,6 +202,7 @@ async function main() {
             name: 'Design Overhaul Project',
             description: 'A design-focused project for UI/UX improvements',
             estimationDays: 60,
+            estimationHours: 15,
             startDate: new Date(2023, 6, 1),
             endDate: new Date(2023, 12, 31),
             team: {
@@ -217,6 +220,7 @@ async function main() {
             name: 'Product Launch Project',
             description: 'A project focused on the next product launch',
             estimationDays: 90,
+            estimationHours: 10,
             startDate: new Date(2023, 7, 1),
             endDate: new Date(2024, 3, 1),
             team: {
@@ -234,6 +238,7 @@ async function main() {
             name: 'Marketing Campaign Project',
             description: 'A marketing campaign project for the upcoming season',
             estimationDays: 50,
+            estimationHours: 0,
             startDate: new Date(2023, 8, 1),
             endDate: new Date(2023, 12, 31),
             team: {
