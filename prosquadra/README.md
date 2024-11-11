@@ -34,7 +34,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - safe project button in team roadmap nur verfügbar für sm oder po ?
 - skills an backend schicken(skill.service aufsetzen)
 - current project wird momentan gepolled also alle 5 sekunden gefetched. Funktioniert aber ist das gut?
-
+- arbeitszeit verarbeiten uns ans backend schicken + eingabe
 ## Routing
 
 Das Dashboard ist so aufgebaut, dass die linke und rechte Seitenleiste (Sidebar) unverändert bleiben, während nur der mittlere Hauptinhalt bei der Navigation neu geladen wird.
