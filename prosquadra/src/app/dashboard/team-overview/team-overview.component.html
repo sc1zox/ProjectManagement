@@ -1,0 +1,44 @@
+<p>Hier muss die Arbeitszeit, Skills und Teamzusammensetzung angezeigt werden. Die Teamzusammenstellung als eigenen Komponente machen und nur SM zugriff geben?</p>
+<div id="UserTable">
+<table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+  <ng-container matColumnDef="userVorname">
+    <th mat-header-cell *matHeaderCellDef> Vorname</th>
+    <td mat-cell *matCellDef="let user">
+      {{user.vorname}}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="userNachname">
+    <th mat-header-cell *matHeaderCellDef> Nachname</th>
+    <td mat-cell *matCellDef="let user">
+      {{user.nachname}}
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="skills">
+    <th mat-header-cell *matHeaderCellDef> Skills </th>
+    <td mat-cell *matCellDef="let user">
+      <app-skill-overview [userID]="user.id"></app-skill-overview>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="workHours">
+    <th mat-header-cell *matHeaderCellDef> Arbeitszeit </th>
+    <td mat-cell *matCellDef="let user">
+      <app-arbeitszeit-overview [arbeitszeit]="user.arbeitszeit"></app-arbeitszeit-overview>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="teamPlanning">
+    <th mat-header-cell *matHeaderCellDef> Team</th>
+    <td mat-cell *matCellDef="let user">
+      <app-team-planung [user]="user"></app-team-planung>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+</table>
+</div>
+

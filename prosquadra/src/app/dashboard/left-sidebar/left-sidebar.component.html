@@ -12,7 +12,7 @@
 
       <mat-list-item [routerLink]="['team-roadmap']">Team Roadmap</mat-list-item>
 
-      <mat-list-item>Teamplanung</mat-list-item>
+      <mat-list-item [routerLink]="['team-overview']">Teamübersicht</mat-list-item>
 
       <mat-list-item *ngIf="user?.role===UserRole.Admin" [routerLink]="['admin-panel']">Admin-Panel</mat-list-item>
 
