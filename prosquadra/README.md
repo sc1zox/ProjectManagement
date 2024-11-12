@@ -43,6 +43,9 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - Idee: Bilder einfügbar machen für projektboxen in roadmap
 - darkmode? sollte nicht zu aufwendig sein
 - BUG: bei projekt erstellen. Wenn ich ein projekt erstelle und danach die reihenfolge anpasse und dann nochmal ein projekt erstelle resetted sich die reihenfolge. Im backend stimmt es also muss das frontend vermutlich neu pullen oder so.
+- BUG: wenn ich einen Nutzer erstellen will und als rolle sm auswähle aber ihm nur ein Team zuweise wird null and backend geschickt bei Team. Somit schlägt die erstellung fehl. 
+- FIX: Fehlerabfangen damit es nicht zu prisma error kommt aber es sollte auch kein null ans backend geschickt werden :D 
+- pflegen der arbeitszeit über die rechte Sidebar? Quasi wie skills als profile ?
 - 
 ## Routing
 
