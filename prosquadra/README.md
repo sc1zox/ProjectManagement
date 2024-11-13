@@ -32,20 +32,17 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 # Christian's explanation corner
 
 - safe project button in team roadmap nur verfügbar für sm oder po ?
-- projekt icon läd langsam. icon datei vllt besser? zugroß?
 - current project wird momentan gepolled also alle 30 sekunden gefetched. Funktioniert aber ist das gut?
-- arbeitszeit verarbeiten uns ans backend schicken + eingabe
 - momentan ist es nicht möglich einen User ohne Team zu erstellen und ein Team ohne User/oder das nachträgliche ändern, hinzufügen. How to do?
 - Projekt löschen impl
 - BUG: sm plant projekt ein und submitted. Datepicker verschwindet.+ fehlermeldung "Die Dauer darf nicht 0 Stunden und 0 Tage sein" aber erstes datumsetzen funktioniert und ab fresh wieder
-- Idee: Bilder einfügbar machen für projektboxen in roadmap
-- darkmode? sollte nicht zu aufwendig sein
 - BUG: bei projekt erstellen. Wenn ich ein projekt erstelle und danach die reihenfolge anpasse und dann nochmal ein projekt erstelle resetted sich die reihenfolge. Im backend stimmt es also muss das frontend vermutlich neu pullen oder so.
 - BUG: wenn ich einen Nutzer erstellen will und als rolle sm auswähle aber ihm nur ein Team(scheinbar egal) zuweise wird null and backend geschickt bei Team. Somit schlägt die erstellung fehl. 
 - BUG: wenn ich als sm neue Daten eintrage erscheint danach die erste Roadmap nochmal? Bei refresh stimmt es wieder. bzw. wenn ich nochmal welche eingeben will kommt der snackbar error ?
 - FIX: Fehlerabfangen damit es nicht zu prisma error kommt aber es sollte auch kein null ans backend geschickt werden :D 
-- pflegen der arbeitszeit über die rechte Sidebar? Quasi wie skills als profile ?
 - breakpoints sind momentan bei 1000px.
+- Bereichsleiter fehlt noch als Rolle und bei Berechtigungen
+- Gantt diagramm für analyse SM einbauen
 
 ### perspektivisch
 - calc(var()) durch neue variable ersetzen?
@@ -54,6 +51,8 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - unimportant bug: ERROR TypeError: this.projectList is undefined beheben
 - modals einbauen zur Informationsbestätigung?
 - services refaktorieren für eine gute auth und api struktur
+- Idee: Bilder einfügbar machen für projektboxen in roadmap
+- darkmode? sollte nicht zu aufwendig sein
 
 ### Fragen
 - Was heißt Arbeitszeit? Stunden von dann bis dann? Oder maximale Stunden/Woche oder gearbeitete Zeit?
