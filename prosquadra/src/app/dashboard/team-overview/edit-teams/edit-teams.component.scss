@@ -1,0 +1,20 @@
+.team-list {
+  width: 300px;
+  float: left;
+}
+
+mat-list-item {
+  cursor: pointer;
+}
+
+mat-dialog-content {
+  display: flex;
+  flex-direction: column;
+}
+
+mat-form-field {
+  width: 100%;
+}
+.team-overview{
+  margin: calc(var(--content-margin)*2);
+}

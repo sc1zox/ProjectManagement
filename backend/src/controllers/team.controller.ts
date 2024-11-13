@@ -8,7 +8,11 @@ class TeamController {
 
     async getTeams(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const teams: Team[] = await prisma.team.findMany();
+            const teams: Team[] = await prisma.team.findMany({
+                include: {
+                    members: true,
+                }
+            });
 
             if (!teams) {
                 return next({status: StatusCodes.NOT_FOUND, message: 'Teams not found'});

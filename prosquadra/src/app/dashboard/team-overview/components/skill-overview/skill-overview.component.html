@@ -1,1 +1,7 @@
-<p>Skills will come here for userID: {{userID}}</p>
+<ng-container *ngFor="let skill of userSkills">
+  <ul>
+    <li>
+      {{skill.name}}
+    </li>
+  </ul>
+</ng-container>

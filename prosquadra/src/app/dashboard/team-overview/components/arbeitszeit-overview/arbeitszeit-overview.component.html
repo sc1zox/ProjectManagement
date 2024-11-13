@@ -1,1 +1,15 @@
-<p>{{arbeitszeit}}</p>
+<ng-container *ngIf="currentUser?.role===UserRole.Admin && user?.role===UserRole.Developer">
+<label for="arbeitszeit">Arbeitszeit (in Stunden):</label>
+<input
+  id="arbeitszeit"
+  type="number"
+  [(ngModel)]="arbeitszeit"
+  name="arbeitszeit"
+  min="0"
+  max="168"
+placeholder="Arbeitszeit in Stunden eingeben"
+  (change)="updateArbeitszeit()"
+/>
+</ng-container>
+
+<p>{{user?.arbeitszeit}}</p>

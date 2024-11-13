@@ -6,7 +6,7 @@ import { AuthService } from '../../services/auth.service';
 import { MatButton } from '@angular/material/button';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { NgIf } from '@angular/common';
+import {NgIf, NgOptimizedImage} from '@angular/common';
 import {SnackbarService} from '../../services/snackbar.service';
 import {UserService} from '../../services/user.service';
 import {Login} from '../../types/login';
@@ -23,6 +23,7 @@ import {Login} from '../../types/login';
     MatFormField,
     NgIf,
     MatLabel,
+    NgOptimizedImage,
   ],
   styleUrls: ['./login.component.scss'],
 })

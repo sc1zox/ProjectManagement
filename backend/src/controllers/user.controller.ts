@@ -30,9 +30,13 @@ class UserController {
     }
 
 
-    async getAll(req: Request, res: Response, next: NextFunction): Promise<void> {
+    async getAllUser(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const users = await prisma.user.findMany();
+            const users = await prisma.user.findMany({
+                include: {
+                    skills: true,
+                },
+            });
 
             const response: ApiResponse<User[]> = {
                 code: StatusCodes.OK,
@@ -47,14 +51,15 @@ class UserController {
 
 
 
-    async createUser(req: Request, res: Response, next: NextFunction): Promise<any> {
+    async createUser(req: Request, res: Response, next: NextFunction): Promise<void> {
         console.log(req.body)
-        const { vorname, nachname, role, arbeitszeit, team} = req.body;
+        const { vorname, nachname, role, arbeitszeit, team, urlaubstage} = req.body;
 
         if (!vorname || !nachname || !role || !arbeitszeit || !team) {
-            return res.status(StatusCodes.BAD_REQUEST).json({
+            res.status(StatusCodes.BAD_REQUEST).json({
                 message: 'Alle Felder (vorname, nachname, role, arbeitszeit, teamID) sind erforderlich.',
             });
+            return;
         }
 
 
@@ -66,6 +71,7 @@ class UserController {
                     nachname,
                     role,
                     arbeitszeit,
+                    urlaubstage,
                     teams: {
                         connect: team.map((teamId: number) => ({ id: teamId }))
                     }
@@ -80,6 +86,33 @@ class UserController {
             next(error);
         }
     }
+    async updateArbeitszeit(req: Request, res: Response, next: NextFunction): Promise<void> {
+        const { userID, arbeitszeit } = req.body;
+
+        if (!userID || arbeitszeit === undefined) {
+            res.status(StatusCodes.BAD_REQUEST).json({
+                message: 'userID und arbeitszeit sind erforderlich.',
+            });
+            return;
+        }
+
+        try {
+            const updatedUser = await prisma.user.update({
+                where: { id: Number(userID) },
+                data: { arbeitszeit },
+            });
+
+            const response: ApiResponse<{ arbeitszeit: number }> = {
+                code: StatusCodes.OK,
+                data: { arbeitszeit: updatedUser.arbeitszeit },
+            };
+
+            res.status(StatusCodes.OK).json(response);
+        } catch (error) {
+            next(error);
+        }
+    }
+
 }
 
 export default new UserController();

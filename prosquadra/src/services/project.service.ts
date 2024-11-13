@@ -21,9 +21,6 @@ export class ProjectService implements OnInit{
     console.log("proj service:" , this.projects)
   }
 
-  private readonly projectCreatedSource = new Subject<void>();
-  projectCreated$ = this.projectCreatedSource.asObservable();
-
   async getProjects(): Promise<Project[]> {
     const response:ApiResponse<Project[]> = await this.ApiService.fetch("/projects");
     console.log("Project Fetch "+ response.data)
@@ -56,11 +53,11 @@ export class ProjectService implements OnInit{
 
 
   async setProjects(Project: Project): Promise<Project> {
-    const response = await this.ApiService.post("/project/create", Project);
+    const response:ApiResponse<Project> = await this.ApiService.post("/project/create", Project);
     if (response.code !== 201) {
-      throw new Error('Failed to create user');
+      throw new Error('Failed to create project');
     }
-    return <Project>response.data;
+    return response.data;
   }
 
   async updateProject(updatedProject: Project) {

@@ -4,14 +4,16 @@ import userController from '../controllers/user.controller';
 import ProjectController from '../controllers/project.controller';
 import TeamController from "../controllers/team.controller";
 import RoadmapController from "../controllers/roadmap.controller";
+import SkillsController from "../controllers/skills.controller";
+import UserController from "../controllers/user.controller";
 
 const userRouter = Router();
 
 
-userRouter.get('/users', rescue(userController.getAll));
+userRouter.get('/users', rescue(userController.getAllUser));
 userRouter.get('/users/:id', rescue(userController.getUserById));
 userRouter.post('/users/create', rescue(userController.createUser));
-
+userRouter.put('/users/update/arbeitszeit', rescue(UserController.updateArbeitszeit));
 
 userRouter.get('/projects', rescue(ProjectController.getProjects));
 userRouter.get('/projects/:id', rescue(ProjectController.getProjectById));
@@ -20,15 +22,16 @@ userRouter.post('/project/create', rescue(ProjectController.createProject));
 userRouter.put('/project/update', rescue(ProjectController.updateProject));
 userRouter.get('/project/current/:id',rescue(ProjectController.getProjectWithLowestPriorityByUserId));
 
-
 userRouter.get('/team', rescue(TeamController.getTeams));
 userRouter.get('/team/:id', rescue(TeamController.getTeamByID));
 userRouter.post('/team/create', rescue(TeamController.createTeam));
 userRouter.get('/team/user/:id',rescue(TeamController.getTeamByUserID))
 
-
 userRouter.get('/roadmaps', rescue(RoadmapController.getAllRoadmaps));
 userRouter.get('/roadmaps/:id',rescue(RoadmapController.getRoadmapById))
 userRouter.put('/roadmaps/update',rescue(RoadmapController.updateProjectsPriority))
+
+userRouter.post('/skills/add',rescue(SkillsController.addOrCreateSkillToUser))
+userRouter.get('/skills/:id', rescue(SkillsController.getUserSkills))
 
 export default userRouter;

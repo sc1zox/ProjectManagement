@@ -74,6 +74,7 @@ export class MitarbeiterFormComponent implements OnInit,OnChanges {
       nachname: ['', Validators.required],
       arbeitszeit: ['', Validators.required],
       role: ['', Validators.required],
+      urlaubstage: [''],
       selectedSingleTeam: [''],
       selectedMultipleTeams: [[]]
     });
@@ -131,14 +132,20 @@ export class MitarbeiterFormComponent implements OnInit,OnChanges {
           this.user.vorname = formValueUser.vorname;
           this.user.nachname = formValueUser.nachname;
           this.user.arbeitszeit = formValueUser.arbeitszeit;
-
+          if(formValueUser.urlaubstage) {
+            this.user.urlaubstage = formValueUser.urlaubstage;
+          }else{
+            this.user.urlaubstage = 0;
+          }
           this.Login.username = formValueLogin.username;
           this.Login.password = formValueLogin.password;
 
           try {
-            let response = await this.UserService.createUser(this.user);
-            this.Login.userId = response.id;
-            await this.UserService.createLogin(this.Login);
+            let responseLogin = await this.UserService.createLogin(this.Login);
+            if(responseLogin) {
+              let responseUser = await this.UserService.createUser(this.user);
+              this.Login.userId = responseUser.id;
+            }
           } catch (error) {
             console.error('Error while creating user:', error);
           } finally {

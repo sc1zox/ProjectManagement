@@ -17,6 +17,7 @@ model User {
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   arbeitszeit Int
+  urlaubstage Int
   login       Login?
 }
 

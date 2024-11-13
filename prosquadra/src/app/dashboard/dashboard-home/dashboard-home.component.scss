@@ -4,8 +4,7 @@
     background-color: #f5f9ff;
   }
 .main-content{
-  padding: var(--content-padding);
-  width: 80%;
+  width: 100%;
 }
 .dashboard-home{
   display: flex;
@@ -13,6 +12,4 @@
   align-items: center;
   justify-content: center;
 }
-.link-button{
-  margin-top: var(--content-margin);
-}
+

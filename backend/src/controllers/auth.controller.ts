@@ -91,6 +91,11 @@ class AuthController {
                 data: {login: newLogin},
             });
         } catch (error) {
+            if(error.code === 'P2002'){
+                return res.status(StatusCodes.CONFLICT).json({
+                    message: 'Der Benutzername existiert bereits.',
+                });
+            }
             next(error);
         }
     }

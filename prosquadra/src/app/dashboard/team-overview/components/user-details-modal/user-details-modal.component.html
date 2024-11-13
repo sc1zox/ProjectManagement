@@ -1,0 +1,32 @@
+<div class="modal">
+<h2>{{ user.vorname }} {{ user.nachname }}</h2>
+<div><strong>Skills:</strong>
+<ul>
+  <li>
+    <ng-container *ngFor="let skill of user.skills">
+      <p>{{skill.name}}</p>
+    </ng-container>
+
+  </li>
+</ul></div>
+  <ng-container *ngIf="currentUser?.role===UserRole.Admin && user?.role===UserRole.Developer">
+    <label for="arbeitszeit">Arbeitszeit (in Stunden):</label>
+    <input
+      id="arbeitszeit"
+      type="number"
+      [(ngModel)]="arbeitszeit"
+      name="arbeitszeit"
+      min="0"
+      max="168"
+      placeholder="Arbeitszeit in Stunden eingeben"
+    />
+  </ng-container>
+<p><strong>Arbeitszeit:</strong> {{ user.arbeitszeit }} Stunden</p>
+<p><strong>Teams:</strong></p>
+<ul>
+  <li *ngFor="let team of teams">
+    {{ team.name }}
+  </li>
+</ul>
+<button (click)="closeModal()">Schließen</button>
+</div>
