@@ -12,6 +12,8 @@
     overflow-y: hidden;
     width: 100%;
     box-sizing: border-box;
+    margin: calc(var(--content-margin)*2);
+
 
     // Custom Scrollbar Styles
     scrollbar-width: thin; // Firefox
@@ -43,5 +45,10 @@
 @media screen and (max-width: 1000px) {
   .dashboard-container {
     flex-direction: column; /* Stack children vertically */
+
+    .main-content{
+      margin: calc(var(--content-margin) * 2) calc(var(--content-margin) / 2);
+    }
   }
+
 }

@@ -22,6 +22,6 @@ export class TeamPlanungComponent implements OnInit{
 
   async ngOnInit(){
     if(this.user)
-    this.teams = await this.TeamService.getTeamByUserID(this.user.id)
+      this.teams = await this.TeamService.getTeamByUserID(this.user.id)
   }
 }

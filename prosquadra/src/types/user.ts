@@ -1,4 +1,5 @@
 import {Team} from './team';
+import {Skill} from './skill';
 
 export interface User {
   id: number;
@@ -6,8 +7,9 @@ export interface User {
   vorname: string;
   nachname: string;
   arbeitszeit?: number;
-  skills?: string[];
+  skills?: Skill[];
   team?: Team[];
+  urlaubstage?: number;
 }
 export enum UserRole {
   PO = 'PO',

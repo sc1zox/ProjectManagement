@@ -38,6 +38,11 @@
         <mat-error *ngIf="firstFormGroup.get('arbeitszeit')?.hasError('required')">Arbeitszeit wird benötigt.</mat-error>
       </mat-form-field>
 
+      <mat-form-field class="full-width">
+        <mat-label>Urlaubstage</mat-label>
+        <input matInput type="number" formControlName="urlaubstage">
+      </mat-form-field>
+
       <!-- Single selection for non-Scrum Masters -->
       <div *ngIf="firstFormGroup.get('role')?.value !== 'SM'">
         <mat-form-field class="full-width">

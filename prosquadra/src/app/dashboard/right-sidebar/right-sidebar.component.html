@@ -20,7 +20,7 @@
           <p>{{userProject?.startDate}}</p>
           <p class="bold">End Date:</p>
           <p>{{userProject?.endDate}}</p>
-          <button mat-raised-button [routerLink]="['home']" class="button">Zum Projekt</button> <!-- ProjektSeite fehlt noch -->
+          <button mat-raised-button [routerLink]="['home']" class="button">Zur Projektübersicht</button>
         </mat-expansion-panel>
       </div>
   </mat-accordion>
@@ -30,23 +30,23 @@
       <mat-label>My Skills:</mat-label>
       <mat-chip-grid #chipGrid aria-label="Enter programming languages">
         <mat-chip-row
-          *ngFor="let pl of result()"
-          (removed)="remove(pl)"
+          *ngFor="let skill of result()"
+          (removed)="remove(skill)"
           [removable]="true"
           [editable]="true"
-          (edited)="edit(pl, $event)"
+          (edited)="edit(skill, $event)"
         >
-          {{ pl.name }}
+          {{ skill }}
           <button matChipRemove>
             <mat-icon>close</mat-icon>
           </button>
         </mat-chip-row>
         <input
-          placeholder="New language..."
+          placeholder="New language/Skill..."
           [matChipInputFor]="chipGrid"
           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
           [matChipInputAddOnBlur]="addOnBlur"
-          (matChipInputTokenEnd)="add($event)"
+          (matChipInputTokenEnd)="addSkill($event)"
         />
       </mat-chip-grid>
     </mat-form-field>

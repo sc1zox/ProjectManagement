@@ -1,0 +1,52 @@
+<div id="UserTable">
+  <h2>Team Übersicht</h2>
+  <table mat-table [dataSource]="user" class="mat-elevation-z10">
+
+    <ng-container matColumnDef="userVorname">
+      <th mat-header-cell *matHeaderCellDef> Vorname</th>
+      <td mat-cell *matCellDef="let user">
+        {{user.vorname}}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="userNachname">
+      <th mat-header-cell *matHeaderCellDef> Nachname</th>
+      <td mat-cell *matCellDef="let user">
+        {{user.nachname}}
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="skills">
+      <th mat-header-cell *matHeaderCellDef> Skills </th>
+      <td mat-cell *matCellDef="let user">
+        <app-skill-overview [userSkills]="user.skills"></app-skill-overview>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="workHours">
+      <th mat-header-cell *matHeaderCellDef> Arbeitszeit </th>
+      <td mat-cell *matCellDef="let user">
+        <app-arbeitszeit-overview [user]="user" [currentUser]="currentUser"></app-arbeitszeit-overview>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="teamPlanning">
+      <th mat-header-cell *matHeaderCellDef> Team</th>
+      <td mat-cell *matCellDef="let user">
+        <app-team-planung [user]="user"></app-team-planung>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="modal">
+      <th mat-header-cell *matHeaderCellDef> Details anzeigen </th>
+      <td mat-cell *matCellDef="let user">
+        <button mat-button (click)="openModal(user,currentUser)">Details anzeigen</button>
+      </td>
+    </ng-container>
+
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</div>
+
+

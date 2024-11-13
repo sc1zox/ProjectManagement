@@ -1,55 +1,31 @@
 import {Component, OnInit} from '@angular/core';
-import {ArbeitszeitOverviewComponent} from './components/arbeitszeit-overview/arbeitszeit-overview.component';
-import {SkillOverviewComponent} from './components/skill-overview/skill-overview.component';
-import {TeamPlanungComponent} from './components/team-planung/team-planung.component';
-import {
-  MatCell,
-  MatCellDef,
-  MatColumnDef,
-  MatHeaderCell,
-  MatHeaderCellDef,
-  MatHeaderRow, MatHeaderRowDef, MatRow, MatRowDef,
-  MatTable
-} from '@angular/material/table';
+import {UserTableComponent} from './user-table/user-table.component';
 import {User} from '../../../types/user';
 import {UserService} from '../../../services/user.service';
+import {TeamService} from '../../../services/team.service';
+import {EditTeamsComponent} from './edit-teams/edit-teams.component';
+import {Team} from '../../../types/team';
 
 @Component({
   selector: 'app-team-overview',
   standalone: true,
   imports: [
-    ArbeitszeitOverviewComponent,
-    SkillOverviewComponent,
-    TeamPlanungComponent,
-    MatTable,
-    MatColumnDef,
-    MatHeaderCell,
-    MatCell,
-    MatHeaderCellDef,
-    MatCellDef,
-    MatHeaderRow,
-    MatRow,
-    MatRowDef,
-    MatHeaderRowDef,
+    UserTableComponent,
+    EditTeamsComponent
   ],
   templateUrl: './team-overview.component.html',
   styleUrl: './team-overview.component.scss'
 })
 export class TeamOverviewComponent implements OnInit{
-  constructor(private readonly UserService: UserService) {
+  user: User[]=[];
+  teams: Team[]=[];
+  constructor(private readonly UserService:UserService,private readonly TeamService:TeamService) {
+
   }
-  displayedColumns: string[] = [];
-  dataSource: User[] = [];
 
   async ngOnInit() {
-    // Berechtigungsbasierte Spaltenanzeige
-    this.displayedColumns.push('userVorname')
-    this.displayedColumns.push('userNachname')
-    this.displayedColumns.push('skills');
-    this.displayedColumns.push('workHours');
-    this.displayedColumns.push('teamPlanning');
-
-    // Daten holen
-    this.dataSource = await this.UserService.getUsers();
+    this.user = await this.UserService.getUsers();
+    this.teams = await this.TeamService.getTeams();
   }
+
 }
