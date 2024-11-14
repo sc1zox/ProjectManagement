@@ -122,6 +122,63 @@ class TeamController {
         }
     }
 
+    async removeUserFromTeam(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const { teamId, userId } = req.body;
+
+            if (!teamId || !userId) {
+                res.status(StatusCodes.BAD_REQUEST).json({
+                    message: 'Alle Felder (teamID, userID) müssen ausgefüllt sein',
+                });
+                return;
+            }
+
+            const updatedTeam = await prisma.team.update({
+                where: { id: Number(teamId) },
+                data: {
+                    members: {
+                        disconnect: { id: Number(userId) },
+                    },
+                },
+            });
+
+            res.status(StatusCodes.OK).json({
+                code: StatusCodes.OK,
+                data: updatedTeam,
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async addUserToTeam(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const { teamId,userId } = req.body;
+
+            if (!teamId || !userId) {
+                res.status(StatusCodes.BAD_REQUEST).json({
+                    message: 'Both teamId and userId must be provided',
+                });
+                return;
+            }
+
+            const updatedTeam = await prisma.team.update({
+                where: { id: Number(teamId) },
+                data: {
+                    members: {
+                        connect: { id: Number(userId) },
+                    },
+                },
+            });
+
+            res.status(StatusCodes.OK).json({
+                code: StatusCodes.OK,
+                data: updatedTeam,
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
 
 }
 export default new TeamController();

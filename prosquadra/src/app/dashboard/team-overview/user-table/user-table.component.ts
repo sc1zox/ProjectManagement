@@ -48,6 +48,7 @@ export class UserTableComponent implements OnInit{
   displayedColumns: string[] = [];
   @Input() user: User[] = [];
   currentUser?: User;
+  protected readonly UserRole = UserRole;
 
   async ngOnInit() {
     this.currentUser = await this.UserService.getCurrentUser();
@@ -58,14 +59,13 @@ export class UserTableComponent implements OnInit{
     this.displayedColumns.push('workHours');
     this.displayedColumns.push('teamPlanning');
     this.displayedColumns.push('modal')
-
   }
 
   openModal(user: User,currentUser: User | undefined) {
     this.dialog.open(UserDetailsModalComponent, {
-      data: user,
+      data: {user,currentUser},
     });
   }
 
-  protected readonly UserRole = UserRole;
+
 }

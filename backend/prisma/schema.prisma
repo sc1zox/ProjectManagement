@@ -78,4 +78,5 @@ enum UserRole {
   SM
   Developer
   Admin
+  Bereichsleiter
 }

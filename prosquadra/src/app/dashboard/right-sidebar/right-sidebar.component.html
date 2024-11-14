@@ -25,32 +25,7 @@
       </div>
   </mat-accordion>
 
-  <div class="user-skills">
-    <mat-form-field>
-      <mat-label>My Skills:</mat-label>
-      <mat-chip-grid #chipGrid aria-label="Enter programming languages">
-        <mat-chip-row
-          *ngFor="let skill of result()"
-          (removed)="remove(skill)"
-          [removable]="true"
-          [editable]="true"
-          (edited)="edit(skill, $event)"
-        >
-          {{ skill }}
-          <button matChipRemove>
-            <mat-icon>close</mat-icon>
-          </button>
-        </mat-chip-row>
-        <input
-          placeholder="New language/Skill..."
-          [matChipInputFor]="chipGrid"
-          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-          [matChipInputAddOnBlur]="addOnBlur"
-          (matChipInputTokenEnd)="addSkill($event)"
-        />
-      </mat-chip-grid>
-    </mat-form-field>
-  </div>
+  <app-user-skills [user]="user"></app-user-skills>
 
 <button mat-raised-button (click)="triggerLogout()">Logout</button>
 </div>

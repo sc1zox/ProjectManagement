@@ -21,6 +21,7 @@ export class TeamPlanungComponent implements OnInit{
 
 
   async ngOnInit(){
+// überlegung user object mit teams direkt als input zu geben?
     if(this.user)
       this.teams = await this.TeamService.getTeamByUserID(this.user.id)
   }

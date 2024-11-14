@@ -59,7 +59,7 @@ export class EditTeamsComponent {
   displayedColumns: string[] = ['Name', 'AnzahlTeammitglieder', 'edit'];
   @Input() teams: Team[] = [];
 
-  constructor(public dialog: MatDialog) {
+  constructor(public dialog: MatDialog,private readonly TeamService: TeamService) {
     this.teams.forEach(team => {
       if (!team.members) {
         team.members = [];
@@ -67,15 +67,17 @@ export class EditTeamsComponent {
     });
   }
 
-  openMemberDialog(team: Team): void {
+  openMemberDialog(team: Team) {
     const dialogRef = this.dialog.open(AddMemberComponent, {
-      data: { team }
+      data: { team },
     });
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result) {
-        team.members = result;
-      }
+    dialogRef.componentInstance.memberRefreshed.subscribe(() => {
+      this.reloadTeamData();
     });
+  }
+
+  async reloadTeamData() {
+    this.teams = await this.TeamService.getTeams();
   }
 }

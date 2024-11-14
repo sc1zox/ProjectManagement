@@ -14,14 +14,13 @@
   <mat-list>
     <mat-list-item *ngFor="let member of data.team.members">
       {{ member.vorname }} {{member.nachname}}
-      <button mat-icon-button (click)="removeMember(member)">
+      <button mat-icon-button (click)="removeMember(member.id,data.team.id)">
         <mat-icon>delete</mat-icon>
       </button>
     </mat-list-item>
   </mat-list>
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="onSave()">Speichern</button>
   <button mat-button (click)="onCancel()">Abbrechen</button>
 </div>
 
