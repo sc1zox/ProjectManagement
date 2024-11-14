@@ -42,7 +42,9 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - FIX: Fehlerabfangen damit es nicht zu prisma error kommt aber es sollte auch kein null ans backend geschickt werden :D 
 - breakpoints sind momentan bei 1000px.
 - Bereichsleiter fehlt noch als Rolle und bei Berechtigungen
-- Gantt diagramm für analyse SM einbauen
+- Gantt diagramm für analyse SM einbauen -> Backend für update nachziehen und dann im FE aktualisieren
+- Skill impl schreibt bis jetzt nur auf BE. 
+- Teamübersicht zeigt momentan auch nur an. 
 
 ### perspektivisch
 - calc(var()) durch neue variable ersetzen?
