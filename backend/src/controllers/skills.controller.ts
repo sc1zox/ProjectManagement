@@ -9,7 +9,7 @@ class SkillsController {
 
     async getUserSkills(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const userId = Number(req.params.userId);
+            const userId = Number(req.params.id);
             const user = await prisma.user.findUnique({
                 where: { id: userId },
                 include: { skills: true },
@@ -68,10 +68,10 @@ class SkillsController {
     }
 
     async removeSkillFromUser(req: Request, res: Response, next: NextFunction): Promise<void> {
-        const { userId, skillId } = req.body;
+        const { userId, skillName } = req.body;
 
-        if (!userId || !skillId) {
-            return next({ status: StatusCodes.BAD_REQUEST, message: 'userId und skillId sind erforderlich' });
+        if (!userId || !skillName) {
+            return next({ status: StatusCodes.BAD_REQUEST, message: 'userId und skill Name sind erforderlich' });
         }
 
         try {
@@ -79,7 +79,7 @@ class SkillsController {
                 where: { id: userId },
                 data: {
                     skills: {
-                        disconnect: { id: skillId },
+                        disconnect: { name: skillName },
                     },
                 },
                 include: { skills: true },

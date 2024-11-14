@@ -228,6 +228,30 @@ class ProjectController {
         }
     }
 
+    async deleteProject(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const projectId = Number(req.params.id);
+
+            if (isNaN(projectId)) {
+                res.status(StatusCodes.BAD_REQUEST).json({
+                    message: 'Invalid project ID provided',
+                });
+                return;
+            }
+
+            const deletedProject = await prisma.project.delete({
+                where: { id: projectId },
+            });
+
+            res.status(StatusCodes.OK).json({
+                code: StatusCodes.OK,
+                data: deletedProject,
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
 
 }
 

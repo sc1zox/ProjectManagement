@@ -31,9 +31,9 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 # Christian's explanation corner
 
-- safe project button in team roadmap nur verfügbar für sm oder po ?
-- current project wird momentan gepolled also alle 30 sekunden gefetched. Funktioniert aber ist das gut?
-- momentan ist es nicht möglich einen User ohne Team zu erstellen und ein Team ohne User/oder das nachträgliche ändern, hinzufügen. How to do?
+- safe project button in team roadmap nur verfügbar für sm oder po ? -> ne für alle aber nicht alle dürfen editieren
+- current project in der rechten sidebar wird momentan gepolled also alle 30 sekunden gefetched. Funktioniert aber ist das gut?
+- momentan ist es nicht möglich einen User ohne Team zu erstellen und ein Team ohne User/oder das nachträgliche ändern, hinzufügen. How to do? -> nachträglich geht nun also passt? 
 - Projekt löschen impl
 - BUG: sm plant projekt ein und submitted. Datepicker verschwindet.+ fehlermeldung "Die Dauer darf nicht 0 Stunden und 0 Tage sein" aber erstes datumsetzen funktioniert und ab fresh wieder
 - BUG: bei projekt erstellen. Wenn ich ein projekt erstelle und danach die reihenfolge anpasse und dann nochmal ein projekt erstelle resetted sich die reihenfolge. Im backend stimmt es also muss das frontend vermutlich neu pullen oder so.
@@ -42,14 +42,15 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - FIX: Fehlerabfangen damit es nicht zu prisma error kommt aber es sollte auch kein null ans backend geschickt werden :D 
 - breakpoints sind momentan bei 1000px.
 - Bereichsleiter fehlt noch als Rolle und bei Berechtigungen
-- Gantt diagramm für analyse SM einbauen -> Backend für update nachziehen und dann im FE aktualisieren
-- Skill impl schreibt bis jetzt nur auf BE. 
-- Teamübersicht zeigt momentan auch nur an. 
+- Gantt diagramm für analyse SM einbauen -> Backend für update nachziehen und dann im FE aktualisieren (sollen hier projekte bearbeitet werden können ? also verschieben auf der zeitleiste)
+- Teamübersicht visual bug bei kleinerem Screen (kann momentan vernachlässigt werden, da wir uns auf mobile oder desktop screensize fokussieren und nicht dazwischen)
+- Teamraodmap hat bei den projekten den mauszeiger auf drag and drop obwohl die rolle dafür nicht gegeben ist. (Klasse dynamisch setzen?)
+- generell Berechtigungen überprüfen, wer darf wo was sehen bearbeiten usw.
 
 ### perspektivisch
 - calc(var()) durch neue variable ersetzen?
 - PRIO: app-init-service aufsetzen und dort die fetches gestalten, bzw. aufjedenfall die fetches reduzieren.
-- roadmap scrolling horizontal erst ab overflow?
+- roadmap scrolling horizontal erst ab overflow? damit vertikales scrollen nicht gefangen wird und man dadurch nicht horizontal scrollen kann 
 - unimportant bug: ERROR TypeError: this.projectList is undefined beheben
 - modals einbauen zur Informationsbestätigung?
 - services refaktorieren für eine gute auth und api struktur

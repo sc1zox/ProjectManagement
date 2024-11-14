@@ -1,15 +1,16 @@
 <div class="modal">
-<h2>{{ user.vorname }} {{ user.nachname }}</h2>
+<h2>{{ user?.vorname }} {{ user?.nachname }}</h2>
+  <strong>Role:</strong><p>{{user?.role}}</p>
 <div><strong>Skills:</strong>
 <ul>
   <li>
-    <ng-container *ngFor="let skill of user.skills">
+    <ng-container *ngFor="let skill of user?.skills">
       <p>{{skill.name}}</p>
     </ng-container>
 
   </li>
 </ul></div>
-  <ng-container *ngIf="currentUser?.role===UserRole.Admin && user?.role===UserRole.Developer">
+  <ng-container *ngIf="isAdmin && user?.role===UserRole.Developer">
     <label for="arbeitszeit">Arbeitszeit (in Stunden):</label>
     <input
       id="arbeitszeit"
@@ -21,12 +22,14 @@
       placeholder="Arbeitszeit in Stunden eingeben"
     />
   </ng-container>
-<p><strong>Arbeitszeit:</strong> {{ user.arbeitszeit }} Stunden</p>
+<p><strong>Arbeitszeit:</strong> {{ user?.arbeitszeit }} Stunden</p>
 <p><strong>Teams:</strong></p>
 <ul>
   <li *ngFor="let team of teams">
     {{ team.name }}
   </li>
 </ul>
-<button (click)="closeModal()">Schließen</button>
+  <div id="modalButton">
+<button mat-raised-button (click)="closeModal()">Schließen</button>
+  </div>
 </div>

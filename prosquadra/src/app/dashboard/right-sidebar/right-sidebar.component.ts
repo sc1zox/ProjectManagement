@@ -21,6 +21,7 @@ import { UserService } from '../../../services/user.service';
 import { AuthService } from '../../../services/auth.service';
 import { Skill } from '../../../types/skill';
 import { SkillService } from '../../../services/skill.service';
+import {UserSkillsComponent} from './user-skills/user-skills.component';
 
 @Component({
   selector: 'app-right-sidebar',
@@ -40,6 +41,7 @@ import { SkillService } from '../../../services/skill.service';
     MatChipsModule,
     MatButton,
     RouterLink,
+    UserSkillsComponent,
   ],
   standalone: true,
 })
@@ -51,15 +53,13 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
   user?: User;
   private projectPollingInterval: any;
 
-  readonly result = signal<string[]>([]);
-  readonly announcer = inject(LiveAnnouncer);
+
 
   constructor(
     private readonly ProjectService: ProjectService,
     private readonly NotificationService: NotificationsService,
     private readonly UserService: UserService,
     private readonly AuthService: AuthService,
-    private readonly SkillService: SkillService
   ) {
     this.notifications = this.NotificationService.getNotificationAmount();
   }
@@ -91,47 +91,6 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
     } catch (error) {
       console.error('Error fetching project:', error);
     }
-  }
-
-  // Source https://material.angular.io/components/chips/examples
-
-  readonly addOnBlur = true;
-  readonly separatorKeysCodes = [ENTER, COMMA] as const;
-
-  addSkill(event: MatChipInputEvent): void {
-    const value = (event.value || '').trim();
-    if (this.user && value) {
-        this.SkillService.addSkill(value, this.user.id);
-    }
-    event.chipInput!.clear();
-  }
-
-  remove(skillName: string): void {
-    this.result.update(skillNames => {
-      const index = skillNames.indexOf(skillName);
-      if (index < 0) {
-        return skillNames;
-      }
-      skillNames.splice(index, 1);
-      this.announcer.announce(`Removed ${skillName}`);
-      return [...skillNames];
-    });
-  }
-
-  edit(skillName: string, event: MatChipEditedEvent): void {
-    const value = event.value.trim();
-    if (!value) {
-      this.remove(skillName);
-      return;
-    }
-    this.result.update(skillNames => {
-      const index = skillNames.indexOf(skillName);
-      if (index >= 0) {
-        skillNames[index] = value;
-        return [...skillNames];
-      }
-      return skillNames;
-    });
   }
 
   ngOnDestroy() {

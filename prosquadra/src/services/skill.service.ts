@@ -8,29 +8,40 @@ import {ApiResponse} from '../types/api-response';
 })
 export class SkillService {
 
-  constructor(private readonly ApiService: ApiService) { }
+  constructor(private readonly ApiService: ApiService) {
+  }
 
   async addSkill(skillName: string, userId: number): Promise<Skill[]> {
-    let body = {userId: userId,skillName: skillName}
-    const response:ApiResponse<Skill[]> = await this.ApiService.post("/skills/add", body );
+    let body = {userId: userId, skillName: skillName}
+    const response: ApiResponse<Skill[]> = await this.ApiService.post("/skills/add", body);
     if (response.code !== 200) {
       throw new Error('Failed to create skill');
     }
     return response.data;
   }
 
-  async getSkill(userId: number): Promise<Skill> {
-    const response:ApiResponse<Skill> = await this.ApiService.post("/skills/add", userId );
-    if (response.code !== 201) {
+  async getSkill(userId: number): Promise<Skill[]> {
+    const response: ApiResponse<Skill[]> = await this.ApiService.fetch("/skills/" + userId);
+    console.log("RESPONSE:", response)
+    if (response.code !== 200) {
       throw new Error('Failed to fetch skills');
     }
     return response.data;
   }
 
   async getAllSkills(): Promise<Skill[]> {
-    const response:ApiResponse<Skill[]> = await this.ApiService.fetch("/skills/all");
+    const response: ApiResponse<Skill[]> = await this.ApiService.fetch("/skills/all");
     if (response.code !== 201) {
       throw new Error('Failed to fetch skills');
+    }
+    return response.data;
+  }
+
+  async removeSkill(skillName: string, userId: number): Promise<Skill[]> {
+    let body = { userId: userId, skillName: skillName };
+    const response: ApiResponse<Skill[]> = await this.ApiService.post("/skills/remove", body);
+    if (response.code !== 200) {
+      throw new Error('Failed to remove skill');
     }
     return response.data;
   }

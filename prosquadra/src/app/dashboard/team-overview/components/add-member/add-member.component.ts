@@ -1,4 +1,4 @@
-import {Component, Inject, OnInit} from '@angular/core';
+import {Component, EventEmitter, Inject, OnInit, Output} from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialogActions,
@@ -17,6 +17,7 @@ import {Team} from '../../../../../types/team';
 import {User} from '../../../../../types/user';
 import {MatAutocomplete, MatAutocompleteTrigger, MatOption} from '@angular/material/autocomplete';
 import {UserService} from '../../../../../services/user.service';
+import {TeamService} from '../../../../../services/team.service';
 
 @Component({
   selector: 'app-add-member',
@@ -45,27 +46,33 @@ import {UserService} from '../../../../../services/user.service';
 export class AddMemberComponent implements OnInit{
   newMemberName: string = '';
   options?: string[];
+  user: User[] = [];
+  selectedUser?: User;
+  @Output() memberRefreshed = new EventEmitter<void>();
 
   constructor(
     public dialogRef: MatDialogRef<AddMemberComponent>,
     @Inject(MAT_DIALOG_DATA) public data: { team: Team },
     private readonly UserService:UserService,
+    private readonly TeamService: TeamService,
   ) {}
 
   async ngOnInit() {
-    let users: User[] = await this.UserService.getUsers();
-    this.options = users.map(member => member.vorname + ' ' + member.nachname)
+    this.user = await this.UserService.getUsers();
+    this.options = this.user.map(member => member.vorname + ' ' + member.nachname)
   }
 
-  addMember(): void {
+  async addMember(): Promise<void> {
+    this.selectedUser = this.user.find(user => user.vorname+' '+user.nachname  === this.newMemberName);
+    if(this.selectedUser){
+      await this.TeamService.addUserToTeam(this.selectedUser?.id,this.data.team.id)
+      this.memberRefreshed.emit();
+    }
   }
 
-  removeMember(member: User): void {
-
-  }
-
-  onSave(): void {
-    this.dialogRef.close(this.data.team.members);
+  async removeMember(userID: number,teamID: number): Promise<void> {
+    await this.TeamService.removeUserFromTeam(userID,teamID)
+    this.memberRefreshed.emit();
   }
 
   onCancel(): void {

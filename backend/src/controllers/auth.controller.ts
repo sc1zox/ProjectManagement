@@ -8,14 +8,15 @@ import {Login} from "../types/login";
 // https://github.com/rafaelmfranca/express-prisma-jwt-auth/tree/main
 
 class AuthController {
-    async authenticate(req: Request, res: Response, next: NextFunction): Promise<any> {
+    async authenticate(req: Request, res: Response, next: NextFunction): Promise<void> {
         const { username, password }: Login = req.body;
 
 
         if (!username || !password) {
-            return res.status(StatusCodes.BAD_REQUEST).json({
+             res.status(StatusCodes.BAD_REQUEST).json({
                 message: 'Vorname, Nachname and password are required',
             });
+            return
         }
 
         try {
@@ -24,9 +25,10 @@ class AuthController {
 
 
             if (!login) {
-                return res.status(StatusCodes.NOT_FOUND).json({
+                 res.status(StatusCodes.NOT_FOUND).json({
                     message: 'User not found',
                 });
+                return
             }
 
 
@@ -35,9 +37,10 @@ class AuthController {
 
             if (!isValidPassword) {
                 console.log(isValidPassword)
-                return res.status(StatusCodes.UNAUTHORIZED).json({
+                 res.status(StatusCodes.UNAUTHORIZED).json({
                     message: 'Invalid password',
                 });
+                return
             }
 
 
@@ -54,13 +57,14 @@ class AuthController {
         }
     }
 
-    async createLogin(req: Request, res: Response, next: NextFunction): Promise<any> {
+    async createLogin(req: Request, res: Response, next: NextFunction): Promise<void> {
         const { username, password, userId }:Login = req.body;
 
         if (!username || !password || !userId) {
-            return res.status(StatusCodes.BAD_REQUEST).json({
+             res.status(StatusCodes.BAD_REQUEST).json({
                 message: 'Benutzername, Passwort und UserID sind erforderlich.',
             });
+            return
         }
 
         try {
@@ -81,9 +85,10 @@ class AuthController {
             });
 
             if (!user) {
-                return res.status(StatusCodes.NOT_FOUND).json({
+                 res.status(StatusCodes.NOT_FOUND).json({
                     message: 'Benutzer nicht gefunden.',
                 });
+                return
             }
 
             res.status(StatusCodes.CREATED).json({
@@ -92,30 +97,33 @@ class AuthController {
             });
         } catch (error) {
             if(error.code === 'P2002'){
-                return res.status(StatusCodes.CONFLICT).json({
+                 res.status(StatusCodes.CONFLICT).json({
                     message: 'Der Benutzername existiert bereits.',
                 });
+                return
             }
             next(error);
         }
     }
 
-    async verify(req: Request, res: Response, next: NextFunction): Promise<any> {
+    async verify(req: Request, res: Response, next: NextFunction): Promise<void> {
         const token = req.headers['authorization']?.split(' ')[1];
 
         if (!token) {
-            return res.status(StatusCodes.UNAUTHORIZED).json({
+            res.status(StatusCodes.UNAUTHORIZED).json({
                 message: 'No token provided',
             });
+            return
         }
 
         try {
             const decoded = jwt.verify(token);
 
             if (!decoded) {
-                return res.status(StatusCodes.UNAUTHORIZED).json({
+                res.status(StatusCodes.UNAUTHORIZED).json({
                     message: 'Invalid token',
                 });
+                return
             }
 
 

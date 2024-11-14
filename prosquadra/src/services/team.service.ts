@@ -47,4 +47,22 @@ export class TeamService {
 
     return response.data;
   }
+
+  async removeUserFromTeam(userId: number, teamId: number): Promise<void> {
+    const body = { userId, teamId };
+    const response: ApiResponse<void> = await this.apiService.post("/team/user/delete", body);
+
+    if (response.code !== 200) {
+      throw new Error('Failed to remove user from team');
+    }
+  }
+
+  async addUserToTeam(userId: number, teamId: number): Promise<void> {
+    const body = { userId, teamId };
+    const response: ApiResponse<void> = await this.apiService.post("/team/user/add", body);
+
+    if (response.code !== 200) {
+      throw new Error('Failed to add user from team');
+    }
+  }
 }

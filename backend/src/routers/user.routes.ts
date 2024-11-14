@@ -17,6 +17,7 @@ userRouter.put('/users/update/arbeitszeit', rescue(UserController.updateArbeitsz
 
 userRouter.get('/projects', rescue(ProjectController.getProjects));
 userRouter.get('/projects/:id', rescue(ProjectController.getProjectById));
+userRouter.post('/project/delete/:id', rescue(ProjectController.deleteProject));
 userRouter.get('/team/projects/:id', rescue(ProjectController.getProjectsByTeam));
 userRouter.post('/project/create', rescue(ProjectController.createProject));
 userRouter.put('/project/update', rescue(ProjectController.updateProject));
@@ -25,13 +26,16 @@ userRouter.get('/project/current/:id',rescue(ProjectController.getProjectWithLow
 userRouter.get('/team', rescue(TeamController.getTeams));
 userRouter.get('/team/:id', rescue(TeamController.getTeamByID));
 userRouter.post('/team/create', rescue(TeamController.createTeam));
-userRouter.get('/team/user/:id',rescue(TeamController.getTeamByUserID))
+userRouter.get('/team/user/:id',rescue(TeamController.getTeamByUserID));
+userRouter.post('/team/user/delete', rescue(TeamController.removeUserFromTeam));
+userRouter.post('/team/user/add', rescue(TeamController.addUserToTeam));
 
 userRouter.get('/roadmaps', rescue(RoadmapController.getAllRoadmaps));
-userRouter.get('/roadmaps/:id',rescue(RoadmapController.getRoadmapById))
-userRouter.put('/roadmaps/update',rescue(RoadmapController.updateProjectsPriority))
+userRouter.get('/roadmaps/:id',rescue(RoadmapController.getRoadmapById));
+userRouter.put('/roadmaps/update',rescue(RoadmapController.updateProjectsPriority));
 
-userRouter.post('/skills/add',rescue(SkillsController.addOrCreateSkillToUser))
-userRouter.get('/skills/:id', rescue(SkillsController.getUserSkills))
+userRouter.post('/skills/add',rescue(SkillsController.addOrCreateSkillToUser));
+userRouter.get('/skills/:id', rescue(SkillsController.getUserSkills));
+userRouter.post('/skills/remove', rescue(SkillsController.removeSkillFromUser));
 
 export default userRouter;
