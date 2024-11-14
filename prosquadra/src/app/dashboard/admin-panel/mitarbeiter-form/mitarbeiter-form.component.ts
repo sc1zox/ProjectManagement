@@ -13,7 +13,6 @@ import { User, UserRole } from '../../../../types/user';
 import { UserService } from '../../../../services/user.service';
 import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
 import { SnackbarService } from '../../../../services/snackbar.service';
-import { ApiService } from '../../../../services/api.service';
 import {TeamService} from '../../../../services/team.service';
 import {Team} from '../../../../types/team';
 import {MatStep, MatStepLabel, MatStepper, MatStepperNext, MatStepperPrevious} from '@angular/material/stepper';

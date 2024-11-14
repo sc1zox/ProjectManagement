@@ -11,6 +11,7 @@ class TeamController {
             const teams: Team[] = await prisma.team.findMany({
                 include: {
                     members: true,
+                    projects: true,
                 }
             });
 
