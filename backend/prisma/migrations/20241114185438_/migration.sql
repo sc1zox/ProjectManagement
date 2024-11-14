@@ -3,7 +3,7 @@ CREATE TABLE `User` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `vorname` VARCHAR(191) NOT NULL,
     `nachname` VARCHAR(191) NOT NULL,
-    `role` ENUM('PO', 'SM', 'Developer', 'Admin') NOT NULL,
+    `role` ENUM('PO', 'SM', 'Developer', 'Admin', 'Bereichsleiter') NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
     `arbeitszeit` INTEGER NOT NULL,
