@@ -18,3 +18,15 @@ mat-form-field {
 .team-overview{
   margin: calc(var(--content-margin)*2);
 }
+.centerCell{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.customPadding{
+  padding-left: var(--content-padding);
+}
+mat-cell{
+  padding: var(--content-padding);
+}

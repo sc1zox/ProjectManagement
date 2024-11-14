@@ -1,30 +1,30 @@
 <div class="team-overview">
   <h1>Team Bearbeitung</h1>
 
-  <table mat-table [dataSource]="teams" class="mat-elevation-z10">
+  <mat-table [dataSource]="teams" class="mat-elevation-z10">
     <ng-container matColumnDef="Name">
-      <th mat-header-cell *matHeaderCellDef>Teamname</th>
-      <td mat-cell *matCellDef="let team">{{ team.name }}</td>
+      <mat-header-cell *matHeaderCellDef>Teamname</mat-header-cell>
+      <mat-cell *matCellDef="let team">{{ team.name }}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="AnzahlTeammitglieder">
-      <th mat-header-cell *matHeaderCellDef>Anzahl Mitglieder</th>
-      <td mat-cell *matCellDef="let team">
+      <mat-header-cell *matHeaderCellDef>Anzahl Mitglieder</mat-header-cell>
+      <mat-cell *matCellDef="let team" class="customPadding">
         <ng-container *ngIf="team.members && team.members.length > 0; else noMembers">
           {{ team.members.length }}
         </ng-container>
         <ng-template #noMembers>0</ng-template>
-      </td>
+      </mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="edit">
-      <th mat-header-cell *matHeaderCellDef>Edit</th>
-      <td mat-cell *matCellDef="let team">
+      <mat-header-cell *matHeaderCellDef class="centerCell">Edit</mat-header-cell>
+      <mat-cell *matCellDef="let team" class="centerCell">
         <button mat-button (click)="openMemberDialog(team)">Mitglieder bearbeiten</button>
-      </td>
+      </mat-cell>
     </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-  </table>
+    <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+    <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+  </mat-table>
 </div>

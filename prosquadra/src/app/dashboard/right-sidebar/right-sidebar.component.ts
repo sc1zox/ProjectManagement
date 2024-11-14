@@ -9,7 +9,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { MatAccordion, MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle } from '@angular/material/expansion';
-import { NgForOf } from '@angular/common';
+import {DatePipe, NgForOf} from '@angular/common';
 import { MatBadge } from '@angular/material/badge';
 import { Project } from '../../../types/project';
 import { User, UserRole } from '../../../types/user';
@@ -42,6 +42,7 @@ import {UserSkillsComponent} from './user-skills/user-skills.component';
     MatButton,
     RouterLink,
     UserSkillsComponent,
+    DatePipe,
   ],
   standalone: true,
 })

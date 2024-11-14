@@ -6,7 +6,7 @@
         *ngFor="let skill of result()"
         (removed)="remove(skill)"
         [removable]="true"
-        [editable]="true"
+        [editable]="false"
       >
         {{ skill }}
         <button matChipRemove>

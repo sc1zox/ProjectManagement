@@ -64,14 +64,3 @@
   padding: calc(var(--content-padding)/2);
   margin: var(--content-margin);
 }
-
-.user-skills{
-  padding: var(--content-padding);
-}
-::ng-deep .mdc-evolution-chip{
-  background: var(--primary-blue) !important;
-}
-::ng-deep .mat-mdc-standard-chip{
-  color: white !important;
-}
-
