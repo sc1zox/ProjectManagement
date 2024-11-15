@@ -140,11 +140,9 @@ export class MitarbeiterFormComponent implements OnInit,OnChanges {
           this.Login.password = formValueLogin.password;
 
           try {
-            let responseLogin = await this.UserService.createLogin(this.Login);
-            if(responseLogin) {
               let responseUser = await this.UserService.createUser(this.user);
               this.Login.userId = responseUser.id;
-            }
+              await this.UserService.createLogin(this.Login);
           } catch (error) {
             console.error('Error while creating user:', error);
           } finally {
