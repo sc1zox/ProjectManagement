@@ -1,5 +1,7 @@
 <div class="sidebar-right">
-  <mat-icon matBadge="{{ notifications }}" id="notification">notifications</mat-icon> <!-- notifications should be fetched by a service aswell and be clickable -->
+  <button mat-icon-button (click)="showNotifications()" id="notification">
+    <mat-icon matBadge="{{ notificationsAmount }}">notifications</mat-icon>
+  </button>
 
   <div class="user-info">
     <p>Benutzer</p>

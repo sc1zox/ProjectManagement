@@ -1,6 +1,7 @@
 export interface Notification {
-  id: number;
+  id?: number;
   message: string;
-  timestamp: Date;
+  timestamp?: Date;
   isRead: boolean;
+  userId?: number;
 }

@@ -12,8 +12,8 @@ export interface User {
   urlaubstage?: number;
 }
 export enum UserRole {
-  PO = 'Product Owner',
-  SM = 'Scrum Master',
+  PO = 'PO',
+  SM = 'SM',
   Developer = 'Developer',
   Admin = 'Admin',
   Bereichsleiter = 'Bereichsleiter'

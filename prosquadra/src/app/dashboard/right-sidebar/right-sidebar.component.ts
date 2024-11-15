@@ -1,27 +1,28 @@
-import { AfterContentChecked, Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {
-  MatChipEditedEvent, MatChipInput,
-  MatChipInputEvent,
+ MatChipInput,
   MatChipsModule
 } from '@angular/material/chips';
-import { LiveAnnouncer } from '@angular/cdk/a11y';
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatIcon } from '@angular/material/icon';
-import { MatAccordion, MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle } from '@angular/material/expansion';
+import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatIcon} from '@angular/material/icon';
+import {
+  MatAccordion,
+  MatExpansionPanel,
+  MatExpansionPanelHeader,
+  MatExpansionPanelTitle
+} from '@angular/material/expansion';
 import {DatePipe, NgForOf} from '@angular/common';
-import { MatBadge } from '@angular/material/badge';
-import { Project } from '../../../types/project';
-import { User, UserRole } from '../../../types/user';
-import { MatButton } from '@angular/material/button';
-import { RouterLink } from '@angular/router';
-import { NotificationsService } from '../../../services/notifications.service';
-import { ProjectService } from '../../../services/project.service';
-import { UserService } from '../../../services/user.service';
-import { AuthService } from '../../../services/auth.service';
-import { Skill } from '../../../types/skill';
-import { SkillService } from '../../../services/skill.service';
+import {MatBadge} from '@angular/material/badge';
+import {Project} from '../../../types/project';
+import {User} from '../../../types/user';
+import {MatButton, MatIconButton} from '@angular/material/button';
+import {RouterLink} from '@angular/router';
+import {NotificationsService} from '../../../services/notifications.service';
+import {ProjectService} from '../../../services/project.service';
+import {UserService} from '../../../services/user.service';
+import {AuthService} from '../../../services/auth.service';
 import {UserSkillsComponent} from './user-skills/user-skills.component';
+import {Notification} from '../../../types/Notifications';
 
 @Component({
   selector: 'app-right-sidebar',
@@ -43,17 +44,18 @@ import {UserSkillsComponent} from './user-skills/user-skills.component';
     RouterLink,
     UserSkillsComponent,
     DatePipe,
+    MatIconButton,
   ],
   standalone: true,
 })
 
 export class RightSidebarComponent implements OnInit, OnDestroy {
   userProject?: Project;
-  notifications?: number;
+  notificationsAmount?: number;
+  notifications: Notification[] = [];
   userInitials: string = '';
   user?: User;
   private projectPollingInterval: any;
-
 
 
   constructor(
@@ -62,8 +64,9 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
     private readonly UserService: UserService,
     private readonly AuthService: AuthService,
   ) {
-    this.notifications = this.NotificationService.getNotificationAmount();
+
   }
+
 // the current project fetch only works for roles other then SM as SM can have multiple teams. Maybe display something else for SM here
   async ngOnInit() {
     try {
@@ -81,6 +84,10 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
       console.error('Error while fetching user or project:', error);
     } finally {
       console.log('Project fetch finished.');
+    }
+    if (this.user) {
+      this.notifications = await this.NotificationService.getNotificationsByUserId(this.user?.id)
+      this.notificationsAmount = this.notifications.length;
     }
   }
 
@@ -103,5 +110,12 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
   triggerLogout() {
     this.AuthService.logout();
     window.location.reload();
+  }
+
+  showNotifications() {
+    if (this.notifications)
+      this.notifications.forEach((notification) => {
+        this.NotificationService.showNotificationPermanent(notification);
+      });
   }
 }

@@ -11,6 +11,7 @@ import {TeamService} from '../../../services/team.service';
 import {Project} from '../../../types/project';
 import {Team} from '../../../types/team';
 import {Roadmap} from '../../../types/roadmap';
+import {NotificationsService} from '../../../services/notifications.service';
 
 @Component({
   selector: 'app-create-project',
@@ -81,9 +82,7 @@ export class CreateProjectComponent implements AfterViewInit {
           PriorityPosition: newPriorityPosition,
         };
 
-        // Modified to refresh Team-Roadmap Component after submission.
         await this.projectService.setProjects(newProject);
-        console.log('Form Submitted', newProject);
         this.selectedTeam = selectedTeam;
         if (selectedTeam) {
           this.currentTeam = await this.TeamService.getTeamByID(selectedTeam.id)

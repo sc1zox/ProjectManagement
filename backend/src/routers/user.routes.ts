@@ -6,6 +6,7 @@ import TeamController from "../controllers/team.controller";
 import RoadmapController from "../controllers/roadmap.controller";
 import SkillsController from "../controllers/skills.controller";
 import UserController from "../controllers/user.controller";
+import NotificationsController from "../controllers/notifications.controller";
 
 const userRouter = Router();
 
@@ -37,5 +38,11 @@ userRouter.put('/roadmaps/update',rescue(RoadmapController.updateProjectsPriorit
 userRouter.post('/skills/add',rescue(SkillsController.addOrCreateSkillToUser));
 userRouter.get('/skills/:id', rescue(SkillsController.getUserSkills));
 userRouter.post('/skills/remove', rescue(SkillsController.removeSkillFromUser));
+
+userRouter.get('/notifications/:id', rescue(NotificationsController.getNotificationsByUserId));
+userRouter.post('/notifications', rescue(NotificationsController.setNotification));
+userRouter.post('/notifications/read/:id', rescue(NotificationsController.markNotificationAsRead));
+userRouter.post('/notifications/delete/:id', rescue(NotificationsController.deleteNotification));
+userRouter.post('/notifications/create', rescue(NotificationsController.createNotification));
 
 export default userRouter;

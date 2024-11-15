@@ -8,17 +8,27 @@ datasource db {
 }
 
 model User {
-  id          Int      @id @default(autoincrement())
-  vorname     String
-  nachname    String
-  role        UserRole
-  skills      Skill[]  @relation("UserSkills")
-  teams       Team[]   @relation("TeamMembers")
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  arbeitszeit Int
-  urlaubstage Int
-  login       Login?
+  id            Int             @id @default(autoincrement())
+  vorname       String
+  nachname      String
+  role          UserRole
+  skills        Skill[]         @relation("UserSkills")
+  teams         Team[]          @relation("TeamMembers")
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  arbeitszeit   Int
+  urlaubstage   Int
+  login         Login?
+  notifications Notifications[] @relation("UserNotifications")
+}
+
+model Notifications {
+  id        Int      @id @default(autoincrement())
+  message   String
+  createdAt DateTime @default(now())
+  isRead    Boolean
+  userId    Int
+  user      User     @relation("UserNotifications", fields: [userId], references: [id])
 }
 
 model Skill {
