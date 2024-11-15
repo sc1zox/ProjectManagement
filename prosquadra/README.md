@@ -37,7 +37,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - Projekt löschen impl
 - FIX: Fehlerabfangen damit es nicht zu prisma error kommt aber es sollte auch kein null ans backend geschickt werden :D 
 - breakpoints sind momentan bei 1000px.
-- Bereichsleiter fehlt noch als Rolle und bei Berechtigungen
+- Bereichsleiter fehlt bei Berechtigungen
 - Gantt diagramm für analyse SM einbauen -> Backend für update nachziehen und dann im FE aktualisieren (sollen hier projekte bearbeitet werden können ? also verschieben auf der zeitleiste)
 - Teamübersicht visual bug bei kleinerem Screen (kann momentan vernachlässigt werden, da wir uns auf mobile oder desktop screensize fokussieren und nicht dazwischen)
 - Teamraodmap hat bei den projekten den mauszeiger auf drag and drop obwohl die rolle dafür nicht gegeben ist. (Klasse dynamisch setzen?)
@@ -61,6 +61,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - services refaktorieren für eine gute auth und api struktur
 - Idee: Bilder einfügbar machen für projektboxen in roadmap
 - darkmode? sollte nicht zu aufwendig sein
+- Websockets??
 
 ### Fragen
 - Was heißt Arbeitszeit? Stunden von dann bis dann? Oder maximale Stunden/Woche oder gearbeitete Zeit?

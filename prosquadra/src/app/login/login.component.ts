@@ -84,8 +84,7 @@ export class LoginComponent implements OnInit {
         this.snackbarService.open("Invalid credentials")
       }
     } catch (error) {
-      console.error('Login error:', error);
-      alert('There was an error with the login request.');
+      this.snackbarService.open("Server ist momentan nicht erreichbar")
     }
   }
 }
