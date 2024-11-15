@@ -1,10 +1,12 @@
 <div class="sidebar-right">
-  <mat-icon matBadge="{{ notifications }}" id="notification">notifications</mat-icon> <!-- notifications should be fetched by a service aswell and be clickable -->
+  <button mat-icon-button (click)="showNotifications()" id="notification">
+    <mat-icon matBadge="{{ notificationsAmount }}">notifications</mat-icon>
+  </button>
 
   <div class="user-info">
     <p>Benutzer</p>
     <div class="user-avatar">
-      <div class="name">{{userInitials}}</div> <!-- this should be fetched by the username -->
+      <div class="name">{{userInitials}}</div>
     </div>
   </div>
 
@@ -17,9 +19,9 @@
           </mat-expansion-panel-header>
           <p>{{ userProject?.description }}</p>
           <p class="bold">Start Date:</p>
-          <p>{{userProject?.startDate}}</p>
+          <p>{{userProject?.startDate | date }}</p>
           <p class="bold">End Date:</p>
-          <p>{{userProject?.endDate}}</p>
+          <p>{{userProject?.endDate | date}}</p>
           <button mat-raised-button [routerLink]="['home']" class="button">Zur Projektübersicht</button>
         </mat-expansion-panel>
       </div>

@@ -22,16 +22,6 @@ export class UserService {
       console.log("Fetching users from API...");
       const response:ApiResponse<User[]> = await this.ApiService.fetch("/users");
 
-      console.log("Response received:", response);
-
-      if (typeof response !== 'object' || response === null) {
-        throw new Error("Response is not a valid object");
-      }
-
-      if (!response.data) {
-        throw new Error("Response structure is invalid");
-      }
-
       if (response.code !== 200) {
         throw new Error("Network response was not ok while fetching all users");
       }

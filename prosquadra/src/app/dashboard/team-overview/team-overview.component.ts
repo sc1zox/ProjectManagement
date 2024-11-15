@@ -28,4 +28,5 @@ export class TeamOverviewComponent implements OnInit{
     this.teams = await this.TeamService.getTeams();
   }
 
+
 }

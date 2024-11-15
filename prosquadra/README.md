@@ -46,6 +46,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - Teamübersicht visual bug bei kleinerem Screen (kann momentan vernachlässigt werden, da wir uns auf mobile oder desktop screensize fokussieren und nicht dazwischen)
 - Teamraodmap hat bei den projekten den mauszeiger auf drag and drop obwohl die rolle dafür nicht gegeben ist. (Klasse dynamisch setzen?)
 - generell Berechtigungen überprüfen, wer darf wo was sehen bearbeiten usw.
+- Notifications für projekt rausschicken
 
 ### perspektivisch
 - calc(var()) durch neue variable ersetzen?

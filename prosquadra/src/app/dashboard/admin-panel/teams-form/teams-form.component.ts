@@ -15,7 +15,7 @@ import {User, UserRole} from '../../../../types/user';
 import {ConfirmDialogComponent} from '../mitarbeiter-form/confirm-dialog/confirm-dialog.component';
 import {MatDialog} from '@angular/material/dialog';
 import {SnackbarService} from '../../../../services/snackbar.service';
-import {Roadmap} from '../../../../types/roadmap';
+import {NotificationsService} from '../../../../services/notifications.service';
 
 @Component({
   selector: 'app-teams-form',
@@ -52,7 +52,7 @@ export class TeamsFormComponent implements OnInit {
   selectedUsers: User[] = [];
   teamForm: FormGroup;
 
-  constructor(private TeamService: TeamService, private UserService: UserService, private fb: FormBuilder, private dialog: MatDialog,private router: Router,private SnackBarService: SnackbarService) {
+  constructor(private TeamService: TeamService, private UserService: UserService, private fb: FormBuilder, private dialog: MatDialog,private router: Router,private SnackBarService: SnackbarService,private readonly NotificationService: NotificationsService) {
     this.teamForm = this.fb.group({
       teamName: ['', Validators.required],
       selectedUser: [[], Validators.required]
@@ -66,11 +66,12 @@ export class TeamsFormComponent implements OnInit {
       console.error('Error while fetching Users:', error);
     }
     this.filterUsers()
+    console.log(this.filteredUsers,this.Users)
   }
 
   private filterUsers() {
     this.filteredUsers = this.Users.filter(user => {
-      return user.role === UserRole.SM || (user.team && user.team.length === 0);
+      return user.role === UserRole.SM || (user.team && user.team.length > 0);
     });
   }
 
@@ -96,8 +97,10 @@ export class TeamsFormComponent implements OnInit {
             }
             this.Team.name = formValue.teamName;
             this.Team.members = this.selectedUsers;
-            console.log(this.Team)
             this.TeamService.createTeam(this.Team);
+            this.selectedUser?.forEach((user) => {
+              this.NotificationService.createNotification('Du wurdest einem neuen Team hinzugefügt',user)
+            })
             this.router.navigate(['/dashboard/admin-panel']);
           }
           // Diese Daten dann an den Server schicken
