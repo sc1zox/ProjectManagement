@@ -61,6 +61,9 @@
     <div class="submitContainer">
       <button mat-raised-button id="submitProject" (click)=onSubmit()>Safe Project</button>
     </div>
+      <div class="deleteContainer" *ngIf="this.user?.role === UserRole.PO">
+        <button mat-raised-button id="deleteProject" (click)=onDelete()>Delete Project</button>
+      </div>
   </div>
   </div>
 </div>
