@@ -107,7 +107,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['roadmap'] && this.roadmap) {
+    if (changes['roadmap'] && this.roadmap || changes['roadmap.projects']) {
       console.log('Received updated roadmap:', this.roadmap);
       this.extractProjectsFromRoadmaps();
       this.selectInitialProject();
@@ -194,10 +194,28 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     }
   }
 
-  onDelete(){
-    if(this.selectedProject?.id)
-    this.ProjectService.deleteProjectById(this.selectedProject?.id)
+  async onDelete() {
+    if (this.selectedProject?.id) {
+      try {
+        await this.ProjectService.deleteProjectById(this.selectedProject.id);
+        this.projects = this.projects.filter(project => project.id !== this.selectedProject?.id);
+
+        if (this.roadmap) {
+          this.roadmap.projects = [...this.projects];
+        }
+
+        this.selectedProject = undefined;
+
+        this.dataUpdated.emit();
+
+        this.SnackBarSerivce.open('Projekt erfolgreich gelöscht');
+      } catch (error) {
+        console.error('Error deleting project:', error);
+        this.SnackBarSerivce.open('Fehler beim Löschen des Projekts');
+      }
+    }
   }
+
 
   async refreshProjectOrder() {
     if (this.roadmap) {
