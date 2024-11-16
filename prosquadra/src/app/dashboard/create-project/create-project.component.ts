@@ -44,6 +44,7 @@ export class CreateProjectComponent implements AfterViewInit {
     private readonly teamService: TeamService,
     private readonly cdref: ChangeDetectorRef,
     private readonly TeamService: TeamService,
+    private readonly NotificationService: NotificationsService,
   ) {
     this.projectForm = this.fb.group({
       projectName: ['', [Validators.required, Validators.maxLength(10)]], // Correct maxLength usage
@@ -88,6 +89,9 @@ export class CreateProjectComponent implements AfterViewInit {
           this.currentTeam = await this.TeamService.getTeamByID(selectedTeam.id)
           this.roadmap = this.currentTeam?.roadmap;
         }
+        this.selectedTeam.members?.forEach((member) => {
+          this.NotificationService.createNotification('Deinem Team wurde ein Projekt hinzugefügt',member.id);
+        })
 
         this.cdref.detectChanges();
 

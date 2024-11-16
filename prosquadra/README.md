@@ -42,7 +42,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - Teamübersicht visual bug bei kleinerem Screen (kann momentan vernachlässigt werden, da wir uns auf mobile oder desktop screensize fokussieren und nicht dazwischen)
 - Teamraodmap hat bei den projekten den mauszeiger auf drag and drop obwohl die rolle dafür nicht gegeben ist. (Klasse dynamisch setzen?)
 - generell Berechtigungen überprüfen, wer darf wo was sehen bearbeiten usw.
-- Notifications für projekt rausschicken
+- Notifications aktualisieren mit event emitter
 
 
 ### BUGS
@@ -52,6 +52,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - BUG: wenn ich einen Nutzer erstellen will und als rolle sm auswähle aber ihm nur ein Team(scheinbar egal) zuweise wird null and backend geschickt bei Team. Somit schlägt die erstellung fehl.
 - BUG: wenn ich als sm neue Daten eintrage erscheint danach die erste Roadmap nochmal? Bei refresh stimmt es wieder. bzw. wenn ich nochmal welche eingeben will kommt der snackbar error ?
 - PO: kann momentan Projekte erstellen für alle Teams und die Roadmap aller Teams bearbeiten. Bei Team-Roadmap sieht er nur die seines Teams. Wie ist hier das gewünschte Verhalten?
+- Wenn ich das letzte Projekt in einer Roadmap lösche ist die Roadmap leer. Darf das sein? Wenn ja Fehlerabfragen!
 
 ### perspektivisch
 - calc(var()) durch neue variable ersetzen?
