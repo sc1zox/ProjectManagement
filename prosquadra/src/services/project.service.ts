@@ -5,6 +5,7 @@ import {Subject} from 'rxjs';
 import {AuthService} from './auth.service';
 import {ApiResponse} from '../types/api-response';
 import {UpdateService} from './update.service';
+import {Skill} from '../types/skill';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,6 @@ export class ProjectService implements OnInit{
 
   async ngOnInit() {
     this.projects = await this.getProjects();
-    console.log("proj service:" , this.projects)
   }
 
   async getProjects(): Promise<Project[]> {
@@ -75,6 +75,14 @@ export class ProjectService implements OnInit{
     }
 
     return response.data;
+  }
+  async deleteProjectById(projectId: number): Promise<void>{
+    const response: ApiResponse<void> = await this.ApiService.post('/project/delete/' + projectId, {
+      method: 'DELETE',
+    })
+    if(response.code !== 200){
+      throw new Error('Failed to delete project with Id: ' + projectId);
+    }
   }
 
 }

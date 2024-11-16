@@ -1,9 +1,10 @@
 import {
-  AfterViewInit, ChangeDetectorRef,
+  AfterViewInit,
   Component,
   ElementRef,
   EventEmitter,
-  Input, OnChanges,
+  Input,
+  OnChanges,
   OnInit,
   Output,
   SimpleChanges,
@@ -17,12 +18,12 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
 import {MatInputModule} from '@angular/material/input';
 import {
-  FormControl,
-  FormsModule,
-  FormGroup,
-  FormBuilder,
-  ReactiveFormsModule,
   AbstractControl,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
   ValidationErrors
 } from '@angular/forms';
 import {UserService} from '../../../services/user.service';
@@ -95,7 +96,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     }
     if (this.roadmap) {
       this.extractProjectsFromRoadmaps();
-      // sort projects after prioposition and if undefined set very high value to put at the end but this should not be able to happen anyway as prio is set on frontend
+      // sort projects after prioposition and if undefined set very high value to put at the end but this should not be able to happen anyway as prio is always set on frontend
       this.roadmap.projects.sort((a, b) => {
         const priorityA = a.PriorityPosition ?? Number.MAX_VALUE;
         const priorityB = b.PriorityPosition ?? Number.MAX_VALUE;
@@ -111,7 +112,6 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
       this.extractProjectsFromRoadmaps();
       this.selectInitialProject();
     }
-    console.log("Aktueller User", this.user)
   }
 
   extractProjectsFromRoadmaps() {
@@ -166,7 +166,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   }
 
   async onSubmit() {
-    if (this.days === 0 && this.hours === 0) {
+    if (this.days === 0 && this.hours === 0 && this.user?.role === UserRole.Developer) {
       this.SnackBarSerivce.open("Die Dauer darf nicht 0 Stunden und 0 Tage sein")
       return;
     }
@@ -192,6 +192,11 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
         console.error('Error updating project roadmap:', error);
       }
     }
+  }
+
+  onDelete(){
+    if(this.selectedProject?.id)
+    this.ProjectService.deleteProjectById(this.selectedProject?.id)
   }
 
   async refreshProjectOrder() {

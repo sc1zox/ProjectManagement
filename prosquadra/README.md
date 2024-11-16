@@ -51,6 +51,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - BUG: bei projekt erstellen. Wenn ich ein projekt erstelle und danach die reihenfolge anpasse und dann nochmal ein projekt erstelle resetted sich die reihenfolge. Im backend stimmt es also muss das frontend vermutlich neu pullen oder so.
 - BUG: wenn ich einen Nutzer erstellen will und als rolle sm auswähle aber ihm nur ein Team(scheinbar egal) zuweise wird null and backend geschickt bei Team. Somit schlägt die erstellung fehl.
 - BUG: wenn ich als sm neue Daten eintrage erscheint danach die erste Roadmap nochmal? Bei refresh stimmt es wieder. bzw. wenn ich nochmal welche eingeben will kommt der snackbar error ?
+- PO: kann momentan Projekte erstellen für alle Teams und die Roadmap aller Teams bearbeiten. Bei Team-Roadmap sieht er nur die seines Teams. Wie ist hier das gewünschte Verhalten?
 
 ### perspektivisch
 - calc(var()) durch neue variable ersetzen?
