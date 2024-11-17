@@ -54,9 +54,9 @@ class UserController {
 
     async createUser(req: Request, res: Response, next: NextFunction): Promise<void> {
         console.log(req.body)
-        const { vorname, nachname, role, arbeitszeit, team, urlaubstage} = req.body;
+        const { vorname, nachname, role, arbeitszeit, teams, urlaubstage} = req.body;
 
-        if (!vorname || !nachname || !role || !arbeitszeit || !team) {
+        if (!vorname || !nachname || !role || !arbeitszeit || !teams) {
             res.status(StatusCodes.BAD_REQUEST).json({
                 message: 'Alle Felder (vorname, nachname, role, arbeitszeit, teamID) sind erforderlich.',
             });
@@ -74,7 +74,7 @@ class UserController {
                     arbeitszeit,
                     urlaubstage,
                     teams: {
-                        connect: team.map((teamId: number) => ({ id: teamId }))
+                        connect: teams.map((teamId: number) => ({ id: teamId }))
                     }
                 },
             });

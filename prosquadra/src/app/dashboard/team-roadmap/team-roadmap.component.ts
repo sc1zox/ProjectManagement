@@ -53,7 +53,6 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
 
   @Input() roadmap?: Roadmap;
   @Input() user?: User;
-  @Input() estimatableDEV: boolean=false;
   @Input() setTimeScrum: boolean=false;
   @Input() enableDragDrop: boolean=false;
 
@@ -188,8 +187,9 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
         }
         this.hours = 0;
         this.days = 0;
-        // this.dataUpdated.emit(); das hier verursacht ein doppeltes rendern der ersten roadmap. Unsicher ob es weggelassen werden kann für andere Updates.Scheint mir momentan nicht essenziell zu sein
-      } catch (error) {
+        if(this.user?.role === UserRole.Developer){
+        this.dataUpdated.emit(); // das hier verursacht ein doppeltes rendern der ersten roadmap. Unsicher ob es weggelassen werden kann für andere Updates.Scheint mir momentan nicht essenziell zu sein. Doch wenn es fehlt wird für Dev die Zeit nicht aktualisiert deshalb die if clause
+      }} catch (error) {
         console.error('Error updating project roadmap:', error);
       }
     }

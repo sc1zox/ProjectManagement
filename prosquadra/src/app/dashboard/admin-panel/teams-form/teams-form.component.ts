@@ -71,7 +71,7 @@ export class TeamsFormComponent implements OnInit {
 
   private filterUsers() {
     this.filteredUsers = this.Users.filter(user => {
-      return user.role === UserRole.SM || (user.teams && user.teams.length > 0);
+      return user.role === UserRole.SM || (user.teams && user.teams.length === 0);
     });
   }
 
