@@ -21,6 +21,7 @@ export class MyTeamRoadmapComponent implements OnInit {
   teams: Team[] = [];
   firstTeam?: Team;
   isPo: boolean = false;
+  isScrum: boolean = false;
 
   constructor(
     private readonly TeamService: TeamService,
@@ -51,6 +52,9 @@ export class MyTeamRoadmapComponent implements OnInit {
     }
     if(user && user.role === UserRole.PO){
       this.isPo = true;
+    }
+    if(user && user.role === UserRole.SM){
+      this.isScrum = true;
     }
   }
 

@@ -3,12 +3,14 @@ import { AppComponent } from './app/app.component';
 import { provideRouter } from '@angular/router';
 import { routes } from './app/app.routes';
 import {provideAnimations} from '@angular/platform-browser/animations';
-import {provideToastr} from 'ngx-toastr';
+import {provideToastr, ToastrModule} from 'ngx-toastr';
 
 bootstrapApplication(AppComponent, {
   providers: [
     provideRouter(routes),
     provideAnimations(),
-    provideToastr(),
+    provideToastr({
+      maxOpened: 10,
+    }),
   ]
 }).catch(err => console.error(err));

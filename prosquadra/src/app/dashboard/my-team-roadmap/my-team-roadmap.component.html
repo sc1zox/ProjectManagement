@@ -3,6 +3,6 @@
 </div>
 <div *ngIf="roadmaps.length > 0">
   <div *ngFor="let roadmap of roadmaps">
-    <app-team-roadmap *ngIf="roadmap" [roadmap]="roadmap" (dataUpdated)="refetch()" [setTimeScrum]="true"></app-team-roadmap>
+    <app-team-roadmap *ngIf="roadmap" [roadmap]="roadmap" (dataUpdated)="refetch()" [setTimeScrum]="isScrum"></app-team-roadmap>
   </div>
 </div>

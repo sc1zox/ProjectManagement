@@ -14,7 +14,7 @@
   <mat-list>
     <mat-list-item *ngFor="let member of data.team.members">
       {{ member.vorname }} {{member.nachname}}
-      <button mat-icon-button (click)="removeMember(member.id,data.team.id)">
+      <button mat-icon-button (click)="removeMember(member.id)">
         <mat-icon>delete</mat-icon>
       </button>
     </mat-list-item>
