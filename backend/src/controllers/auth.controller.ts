@@ -11,10 +11,12 @@ class AuthController {
     async authenticate(req: Request, res: Response, next: NextFunction): Promise<void> {
         const { username, password }: Login = req.body;
 
+        console.log(req.body);
+
 
         if (!username || !password) {
              res.status(StatusCodes.BAD_REQUEST).json({
-                message: 'Vorname, Nachname and password are required',
+                message: 'Username and password are required',
             });
             return
         }
@@ -31,8 +33,9 @@ class AuthController {
                 return
             }
 
-
-            const isValidPassword = bcrypt.compare(password ,login.password);
+            console.log(login.password,password);
+            const isValidPassword = await bcrypt.compare(password ,login.password);
+            console.log(isValidPassword);
 
 
             if (!isValidPassword) {
