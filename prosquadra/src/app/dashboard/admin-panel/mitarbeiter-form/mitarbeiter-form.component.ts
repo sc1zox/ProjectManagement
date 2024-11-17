@@ -56,7 +56,7 @@ export class MitarbeiterFormComponent implements OnInit,OnChanges {
     nachname: '',
     role: UserRole.Admin,
     arbeitszeit: 0,
-    team: [],
+    teams: [],
   };
   Login: Login = {
     password: '',
@@ -126,7 +126,7 @@ export class MitarbeiterFormComponent implements OnInit,OnChanges {
 
       dialogRef.afterClosed().subscribe(async result => {
         if (result) {
-          this.user.team = formValueUser.role === 'Scrum Master' ? formValueUser.selectedMultipleTeams : [formValueUser.selectedSingleTeam];
+          this.user.teams = formValueUser.role === 'Scrum Master' ? formValueUser.selectedMultipleTeams : [formValueUser.selectedSingleTeam];
           this.user.role = formValueUser.role;
           this.user.vorname = formValueUser.vorname;
           this.user.nachname = formValueUser.nachname;

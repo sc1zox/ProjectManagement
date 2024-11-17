@@ -24,6 +24,7 @@ import {
   MatTable
 } from '@angular/material/table';
 import {AddMemberComponent} from '../components/add-member/add-member.component';
+import {User} from '../../../../types/user';
 
 @Component({
   selector: 'app-edit-teams',
@@ -58,6 +59,7 @@ import {AddMemberComponent} from '../components/add-member/add-member.component'
 export class EditTeamsComponent {
   displayedColumns: string[] = ['Name', 'AnzahlTeammitglieder', 'edit'];
   @Input() teams: Team[] = [];
+  @Input() user: User[] = [];
 
   constructor(public dialog: MatDialog,private readonly TeamService: TeamService) {
     this.teams.forEach(team => {
@@ -67,9 +69,9 @@ export class EditTeamsComponent {
     });
   }
 
-  openMemberDialog(team: Team) {
+  openMemberDialog(team: Team,user: User[]) {
     const dialogRef = this.dialog.open(AddMemberComponent, {
-      data: { team },
+      data: { team, user },
     });
 
     dialogRef.componentInstance.memberRefreshed.subscribe(() => {
