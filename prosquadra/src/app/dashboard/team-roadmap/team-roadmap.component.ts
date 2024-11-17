@@ -188,7 +188,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
         }
         this.hours = 0;
         this.days = 0;
-        this.dataUpdated.emit();
+        // this.dataUpdated.emit(); das hier verursacht ein doppeltes rendern der ersten roadmap. Unsicher ob es weggelassen werden kann für andere Updates.Scheint mir momentan nicht essenziell zu sein
       } catch (error) {
         console.error('Error updating project roadmap:', error);
       }
