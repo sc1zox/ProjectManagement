@@ -44,8 +44,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - Teamroadmap hat bei den projekten den mauszeiger auf drag and drop obwohl die rolle dafür nicht gegeben ist. (Klasse dynamisch setzen?)
 - generell Berechtigungen überprüfen, wer darf wo was sehen bearbeiten usw.
 - Team-overview Wenn ich die Arbeitszeit ändere soll die UI- updaten, bzw auch Skills zb
-- Projekt darf von sm nicht eingeplant werden, so dass es sich überschneidet 
-- Bei Teamzusammenstellung muss überprüft werden ob, teammitglieder schon ein Team haben
+- Projekt darf von sm nicht eingeplant werden, so dass es sich überschneidet
 - Teamübersicht darf nur von Admin SM und BL eingesehen werden, für die restlichen Mitarbeiter muss es ausgeblendet werden
 
 
@@ -57,12 +56,11 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - BUG: wenn ich als sm neue Daten eintrage erscheint danach die erste Roadmap nochmal? Bei refresh stimmt es wieder. bzw. wenn ich nochmal welche eingeben will kommt der snackbar error ? -> **i think this is solved**
 - PO: kann momentan Projekte erstellen für alle Teams und die Roadmap aller Teams bearbeiten. Bei Team-Roadmap sieht er nur die seines Teams. Wie ist hier das gewünschte Verhalten?
 - Wenn ich das letzte Projekt in einer Roadmap lösche ist die Roadmap leer. Darf das sein? Wenn ja Fehlerabfragen! -> **i think this is solved**
-- BUG: bei notifications, wenn ich schnell lösche ? kommt prisma error -> überprüfen
-- BUG: wenn ich ein Projekt hinzufüge erscheint es zweimal? Einmal mit keinem Wert für Aufwand einmal mit 0. Aber nur in der create projekt Übersicht. -> Eventuell überlegen feature zu killen und prio nur über dashboard zu regeln?
-- BUG: Team-Roadmap: wenn ich ein Projekt lösche, wird die roadmap des zu löschenden Projektes dupliziert?
+- BUG: bei notifications, wenn ich schnell lösche ? kommt prisma error -> überprüfen (konnte nicht reproduzieren)
+- BUG: wenn ich ein Projekt hinzufüge erscheint es zweimal? Einmal mit keinem Wert für Aufwand einmal mit 0. Aber nur in der create projekt Übersicht. -> Eventuell überlegen feature zu killen und prio nur über dashboard/team-roadmap zu regeln?
+- BUG: Team-Roadmap: wenn ich ein Projekt lösche, wird die roadmap des zu löschenden Projektes dupliziert? Scheint edge case zu sein konnte nicht 100% reproduzieren
 - BUG: Analyse chart soll nur die Teams anzeigen, in denen der SM Teil von ist
 - Unsicher ob Notifications die Push in realtime anzeigt aber momentan ist es glaube ich zufriedenstellend da es on Login/Buttonclick aufjedenfall geht
-- BUG: anmeldedaten mit richtigen nutzenamen und falschen passwort überprüfen
 
 ### perspektivisch
 - Projekt einschätzungen und ähnlich sollten auf 0 initialisert sein und nicht auf null um Probleme zu vermeiden

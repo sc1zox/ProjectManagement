@@ -8,7 +8,7 @@ export interface User {
   nachname: string;
   arbeitszeit?: number;
   skills?: Skill[];
-  team?: Team[];
+  teams?: Team[];
   urlaubstage?: number;
 }
 export enum UserRole {
