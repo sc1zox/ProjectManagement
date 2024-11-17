@@ -57,6 +57,7 @@ class AuthController {
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
                 message: 'Something went wrong during authentication',
             });
+            next(error)
         }
     }
 
@@ -139,6 +140,7 @@ class AuthController {
             res.status(StatusCodes.UNAUTHORIZED).json({
                 message: 'Token verification failed',
             });
+            next(error)
         }
     }
 }

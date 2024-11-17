@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import bcrypt from "bcryptjs";
 
 const prisma = new PrismaClient();
 
@@ -10,6 +11,8 @@ async function main() {
     const skill4 = await prisma.skill.create({ data: { name: 'Node.js' } });
     const skill5 = await prisma.skill.create({ data: { name: 'GraphQL' } });
 
+    const hashedpw1 = await bcrypt.hash('test',10);
+
     // Erstelle Benutzer
     const user1 = await prisma.user.create({
         data: {
@@ -17,7 +20,7 @@ async function main() {
             nachname: 'Doe',
             role: 'Developer',
             arbeitszeit: 40,
-            login: { create: { username: 'john.doe', password: 'password123' } },
+            login: { create: { username: 'dev', password: hashedpw1 } },
             skills: { connect: [{ id: skill1.id }, { id: skill2.id }] },
             urlaubstage: 35,
         },
@@ -29,7 +32,7 @@ async function main() {
             nachname: 'Smith',
             role: 'PO',
             arbeitszeit: 35,
-            login: { create: { username: 'jane.smith', password: 'password123' } },
+            login: { create: { username: 'po', password: hashedpw1 } },
             skills: { connect: [{ id: skill3.id }, { id: skill4.id }] },
             urlaubstage: 15,
         },
@@ -41,7 +44,7 @@ async function main() {
             nachname: 'Scrum',
             role: 'SM',
             arbeitszeit: 35,
-            login: { create: { username: 'sm', password: 'test' } },
+            login: { create: { username: 'sm', password: hashedpw1 } },
             skills: { connect: [{ id: skill1.id }, { id: skill5.id }] },
             urlaubstage: 0,
         },
@@ -53,7 +56,7 @@ async function main() {
             nachname: 'test',
             role: 'Admin',
             arbeitszeit: 35,
-            login: { create: { username: 'admin', password: 'test' } },
+            login: { create: { username: 'admin', password: hashedpw1 } },
             skills: { connect: [{ id: skill2.id }, { id: skill4.id }] },
             urlaubstage: 50,
         },
@@ -65,7 +68,7 @@ async function main() {
             nachname: 'Wonderland',
             role: 'Developer',
             arbeitszeit: 40,
-            login: { create: { username: 'alice.wonderland', password: 'alice123' } },
+            login: { create: { username: 'alice.wonderland', password: hashedpw1 } },
             skills: { connect: [{ id: skill3.id }, { id: skill5.id }] },
             urlaubstage: 20,
         },
@@ -75,9 +78,9 @@ async function main() {
         data: {
             vorname: 'Bob',
             nachname: 'Builder',
-            role: 'Developer',
+            role: 'Bereichsleiter',
             arbeitszeit: 42,
-            login: { create: { username: 'bob.builder', password: 'bob123' } },
+            login: { create: { username: 'bob.builder', password: hashedpw1 } },
             skills: { connect: [{ id: skill1.id }, { id: skill4.id }] },
             urlaubstage: 10,
         },
