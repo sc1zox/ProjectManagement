@@ -18,7 +18,7 @@
         <mat-label>Mitglieder hinzufügen</mat-label>
         <mat-select formControlName="selectedUser" [multiple]="true" required>
           <mat-option *ngFor="let user of filteredUsers" [value]="user.id">
-            {{ user.vorname }}
+            {{ user.vorname }} {{user.nachname}}
           </mat-option>
         </mat-select>
         <mat-error *ngIf="teamForm.get('selectedUser')?.hasError('required')">Ein Teammitglied muss mindestens

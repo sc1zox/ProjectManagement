@@ -47,7 +47,7 @@
     <p><strong>Aufwand in Stunden:</strong> {{ selectedProject.estimationHours }}</p>
 
     <div class="timeButtonContainer">
-    <div class="devTimeEstimate" *ngIf="user?.role === UserRole.Developer && estimatableDEV">
+    <div class="devTimeEstimate" *ngIf="user?.role === UserRole.Developer ">
     <mat-form-field appearance="fill">
       <mat-label>Tage</mat-label>
       <input matInput type="number" placeholder="Tage" [(ngModel)]="days" min="0">
