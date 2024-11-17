@@ -32,6 +32,7 @@ import {Roadmap} from '../../../types/roadmap';
 import {User, UserRole} from '../../../types/user';
 import {RoadmapService} from '../../../services/roadmap.service';
 import {SnackbarService} from '../../../services/snackbar.service';
+import {Team} from '../../../types/team';
 
 
 @Component({
@@ -53,6 +54,8 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
 
   @Input() roadmap?: Roadmap;
   @Input() user?: User;
+  @Input() teams?: Team;
+  @Input() estimatableDEV: boolean = false;
   @Input() setTimeScrum: boolean=false;
   @Input() enableDragDrop: boolean=false;
 

@@ -38,7 +38,8 @@ export class DashboardHomeComponent implements OnInit{
       if(this.user && this.user.role === UserRole.PO){
         this.isPo = true;
       }
-      this.roadmaps = await this.RoadmapService.getRoadmaps()
+      this.roadmaps = await this.RoadmapService.getRoadmaps();
+      console.log('ROADMAPS',this.roadmaps)
     }catch (error){
       console.error('Error while fetching Roadmaps:', error);
     }

@@ -46,7 +46,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - Team-overview Wenn ich die Arbeitszeit ändere soll die UI- updaten, bzw auch Skills zb
 - Projekt darf von sm nicht eingeplant werden, so dass es sich überschneidet
 - Teamübersicht darf nur von Admin SM und BL eingesehen werden, für die restlichen Mitarbeiter muss es ausgeblendet werden
-- 
+- Ich denke ein Team sollte erstellt werden können ohne User. Danach muss ich jedoch sicher stellen, dass mindestens ein SM, PO und DEV zugeordnet werden. Sonst kann PO zb keine roadmap + projekte anlegen wenn im Team kein PO exisitiert
 
 
 ### BUGS

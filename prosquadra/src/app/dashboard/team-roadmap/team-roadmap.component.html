@@ -1,5 +1,5 @@
 <div class="team-roadmap" *ngIf="roadmap && roadmap.projects.length>0; else noRoadmap">
-  <h2>Team Name here</h2>
+  <h2>{{ teams?.name }}</h2>
 
   <!-- Horizontal scrollable project list -->
   <div #projectList class="project-list" cdkDropList
@@ -47,7 +47,7 @@
     <p><strong>Aufwand in Stunden:</strong> {{ selectedProject.estimationHours }}</p>
 
     <div class="timeButtonContainer">
-    <div class="devTimeEstimate" *ngIf="user?.role === UserRole.Developer ">
+    <div class="devTimeEstimate" *ngIf="user?.role === UserRole.Developer && estimatableDEV">
     <mat-form-field appearance="fill">
       <mat-label>Tage</mat-label>
       <input matInput type="number" placeholder="Tage" [(ngModel)]="days" min="0">
