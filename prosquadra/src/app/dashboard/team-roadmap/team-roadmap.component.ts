@@ -128,8 +128,8 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   }
 
 
-  // Access projectList from team-roadmap.ts.component.html
-  @ViewChild('projectList') projectList!: ElementRef;
+
+  @ViewChild('projectList') projectList?: ElementRef;
 
   // Block default scroll, enable horizontal scroll
   // Inspired by https://stackoverflow.com/questions/59468926/horizontal-scroll-in-typescript
@@ -142,6 +142,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
 
   // Lifecycle Hook
   async ngAfterViewInit() {
+    if(this.projectList)
     this.projectList.nativeElement.addEventListener('wheel', this.onWheelScroll.bind(this));
   }
 
@@ -195,6 +196,10 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   }
 
   async onDelete() {
+    if(this.roadmap?.projects && !(this.roadmap?.projects.length>1)){
+      this.SnackBarSerivce.open('Löschen fehlgeschlagen! Die Roadmap enthält nur ein Projekt')
+      return;
+    }
     if (this.selectedProject?.id) {
       try {
         await this.ProjectService.deleteProjectById(this.selectedProject.id);

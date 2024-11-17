@@ -19,12 +19,18 @@ export class NotificationsService {
   }
 
   showNotification(notification: Notification) {
-    this.toastr.info(notification.message, 'Neue Benachrichtigung', {
+    const toast: ActiveToast<any> = this.toastr.info(notification.message, 'Neue Benachrichtigung', {
       timeOut: 5000,
       positionClass: 'toast-bottom-right',
       closeButton: true,
       progressBar: true,
       newestOnTop: true,
+    });
+
+    toast.onHidden.subscribe(() => {
+      if (notification.id) {
+        this.markNotificationAsRead(notification.id);
+      }
     });
   }
 
@@ -47,7 +53,7 @@ export class NotificationsService {
       toast.onHidden.subscribe(() => {
         const notificationId = this.activeToasts[toast.toastId];
         if (notificationId) {
-          this.markNotificationAsRead(notificationId);
+          this.deleteNotification(notificationId);
           delete this.activeToasts[toast.toastId];
         }
       });

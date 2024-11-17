@@ -78,7 +78,8 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
 
         this.projectPollingInterval = setInterval(() => {
           this.fetchProject();
-        }, 30000); // fetch current project every 30 seconds
+          this.fetchNotifications();
+        }, 10000); // fetch current project + unread notifications every 10 seconds
       }
     } catch (error) {
       console.error('Error while fetching user or project:', error);
@@ -98,6 +99,22 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
       }
     } catch (error) {
       console.error('Error fetching project:', error);
+    }
+  }
+
+  async fetchNotifications(){
+    try{
+      if(this.user){
+        this.notifications = await this.NotificationService.getNotificationsByUserId(this.user.id);
+        this.notificationsAmount = this.notifications.length;
+        this.notifications.forEach((notification) => {
+          if(!notification.isRead) {
+            this.NotificationService.showNotification(notification);
+          }
+        });
+      }
+    } catch (error){
+      console.log("error fetching notifications")
     }
   }
 

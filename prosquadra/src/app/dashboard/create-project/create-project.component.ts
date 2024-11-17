@@ -42,7 +42,6 @@ export class CreateProjectComponent implements AfterViewInit {
     private readonly fb: FormBuilder,
     private readonly projectService: ProjectService,
     private readonly teamService: TeamService,
-    private readonly cdref: ChangeDetectorRef,
     private readonly TeamService: TeamService,
     private readonly NotificationService: NotificationsService,
   ) {
@@ -55,7 +54,6 @@ export class CreateProjectComponent implements AfterViewInit {
 
   async ngAfterViewInit() {
     await this.loadTeams();
-    this.cdref.detectChanges();
   }
 
   async loadTeams() {
@@ -73,7 +71,6 @@ export class CreateProjectComponent implements AfterViewInit {
           : 0;
         const newPriorityPosition = maxPriorityPosition + 1;
 
-
         const newProject: Project = {
           id: 0,
           name: this.projectForm.value.projectName,
@@ -82,24 +79,30 @@ export class CreateProjectComponent implements AfterViewInit {
           estimationDays: 0,
           PriorityPosition: newPriorityPosition,
         };
-
         await this.projectService.setProjects(newProject);
         this.selectedTeam = selectedTeam;
         if (selectedTeam) {
-          this.currentTeam = await this.TeamService.getTeamByID(selectedTeam.id)
+          this.currentTeam = await this.TeamService.getTeamByID(selectedTeam.id);
           this.roadmap = this.currentTeam?.roadmap;
+
+          if (this.roadmap) {
+            this.roadmap = {
+              ...this.roadmap,
+              projects: [
+                ...this.roadmap.projects,
+                newProject,
+              ].sort((a, b) => (a.PriorityPosition ?? 0) - (b.PriorityPosition ?? 0)) //chatgpt, sortiere hier nach priority
+            };
+          }
         }
         this.selectedTeam.members?.forEach((member) => {
-          this.NotificationService.createNotification('Deinem Team wurde ein Projekt hinzugefügt',member.id);
-        })
-
-        this.cdref.detectChanges();
-
+          this.NotificationService.createNotification('Deinem Team wurde ein Projekt hinzugefügt', member.id);
+        });
         this.projectForm.reset();
       } else {
         console.log('Form is invalid');
       }
-
     }
   }
+
 }
