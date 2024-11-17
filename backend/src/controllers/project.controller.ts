@@ -238,19 +238,42 @@ class ProjectController {
                 });
                 return;
             }
-
-            const deletedProject = await prisma.project.delete({
+            const projectToDelete = await prisma.project.findUnique({
                 where: { id: projectId },
             });
 
+            if (!projectToDelete) {
+                res.status(StatusCodes.NOT_FOUND).json({
+                    message: 'Project not found',
+                });
+                return;
+            }
+            await prisma.project.delete({
+                where: { id: projectId },
+            });
+            const remainingProjects = await prisma.project.findMany({
+                where: {
+                    teamid: projectToDelete.teamid,
+                    roadmapId: projectToDelete.roadmapId,
+                },
+                orderBy: { PriorityPosition: 'asc' },
+            });
+            for (let i = 0; i < remainingProjects.length; i++) {
+                await prisma.project.update({
+                    where: { id: remainingProjects[i].id },
+                    data: { PriorityPosition: i + 1 },
+                });
+            }
+
             res.status(StatusCodes.OK).json({
                 code: StatusCodes.OK,
-                data: deletedProject,
+                message: 'Project deleted and priorities updated successfully',
             });
         } catch (error) {
             next(error);
         }
     }
+
 
 
 }
