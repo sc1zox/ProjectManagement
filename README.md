@@ -19,4 +19,9 @@ Für sowohl MySQL als auch Web-Server <br>
 Nutzer: wip2425_g1 <br>
 Passwort: TW4gc9p9<br>
 
+<h3>Docker Config</h3>
+set up .env file with db connection
+use vpn to connect to mysql
+RUN Docker: "docker compose up --build" to build docker container and run / use docker desktop
+
 
