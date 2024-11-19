@@ -211,8 +211,10 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
         if (this.user?.role === UserRole.Developer) {
           this.dataUpdated.emit(); // das hier verursacht ein doppeltes rendern der ersten roadmap. Unsicher ob es weggelassen werden kann für andere Updates.Scheint mir momentan nicht essenziell zu sein. Doch wenn es fehlt wird für Dev die Zeit nicht aktualisiert deshalb die if clause
         }
+        this.SnackBarSerivce.open('Projekt wurde erfolgreich erstellt')
       } catch (error) {
         console.error('Error updating project roadmap:', error);
+        this.SnackBarSerivce.open('Bei der Projekterstellung ist ein Fehler aufgetreten')
       }
     }
   }
