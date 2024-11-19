@@ -30,7 +30,9 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 # Christian's explanation corner
 
-- Safe project Button führt 5 network requests aus auch ohne Änderungen weil er alle roadmaps neu pulled -> unnötig. Entweder gar keine ohen changes oder nur die affected Roadmap neu pullen
+### TODO:
+
+- Safe project Button führt 5 network requests aus auch ohne Änderungen weil er alle roadmaps neu pulled -> unnötig. Entweder gar keine ohen changes oder nur die affected Roadmap neu pullen 
 - Bei Projekterstellung sollte PO nur sein Team als Auswahl bekommen
 - safe project button in team roadmap nur verfügbar für sm oder po ? -> ne für alle aber nicht alle dürfen editieren
 - current project in der rechten sidebar wird momentan gepolled also alle 30 sekunden gefetched. Funktioniert aber ist das gut?
@@ -68,7 +70,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - Projekt einschätzungen und ähnlich sollten auf 0 initialisert sein und nicht auf null um Probleme zu vermeiden
 - RESPONSIVE UI: falls es zu viel Probleme macht -> Seite neu laden ist auch eine Option beim abschicken von Daten o.ä. um einen Teil der Bugs zu umgehen oder falls es performance lastig probleme gibt
 - calc(var()) durch neue variable ersetzen?
-- PRIO: app-init-service aufsetzen und dort die fetches gestalten, bzw. aufjedenfall die fetches reduzieren.
+- PRIO: app-init-service aufsetzen und dort die fetches gestalten, bzw. aufjedenfall die fetches reduzieren. Überlegen ob es möglich ist, bei initalisierung einmal alle daten zu fetchen und dann only on update?
 - roadmap scrolling horizontal erst ab overflow? damit vertikales scrollen nicht gefangen wird und man dadurch nicht horizontal scrollen kann
 - modals einbauen zur Informationsbestätigung?
 - services refaktorieren für eine gute auth und api struktur
