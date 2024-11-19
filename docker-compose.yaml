@@ -1,0 +1,14 @@
+version: "3.7"
+services:
+  prosquadra_frontend:
+    container_name: prosquadra_frontend
+    restart: always
+    build: ./prosquadra
+    ports:
+      - "4200:4200"
+  prosquadra_backend:
+    container_name: prosquadra_backend
+    restart: always
+    build: ./backend
+    ports:
+      - "3000:3000"
