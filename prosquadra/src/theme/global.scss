@@ -12,15 +12,21 @@
 
 }
 
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+html, body {
+  height: 100%;
+}
 
-.bold{
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.bold {
   font-weight: bolder;
 }
 
-.button{
-  padding:var(--content-padding) !important;
+.button {
+  padding: var(--content-padding) !important;
 }
 
 

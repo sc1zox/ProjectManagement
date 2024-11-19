@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { Router } from '@angular/router';
-import { ApiService } from '../../services/api.service';
-import { AuthService } from '../../services/auth.service';
-import { MatButton } from '@angular/material/button';
-import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
+import {Component, OnInit} from '@angular/core';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {Router} from '@angular/router';
+import {ApiService} from '../../services/api.service';
+import {AuthService} from '../../services/auth.service';
+import {MatButton} from '@angular/material/button';
+import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatInput} from '@angular/material/input';
 import {NgIf, NgOptimizedImage} from '@angular/common';
 import {SnackbarService} from '../../services/snackbar.service';
 import {UserService} from '../../services/user.service';
@@ -53,13 +53,13 @@ export class LoginComponent implements OnInit {
 
   onSubmit(): void {
     if (this.loginForm.valid) {
-      const { username, password } = this.loginForm.value;
+      const {username, password} = this.loginForm.value;
       this.login(username, password);
     }
   }
 
   async login(username: string, password: string): Promise<void> {
-    const loginData: Login = { username, password };
+    const loginData: Login = {username, password};
 
     await this.userService.setCurrentUser(loginData)
 

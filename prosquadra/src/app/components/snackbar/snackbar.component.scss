@@ -1,9 +1,10 @@
-#snackbarButton{
+#snackbarButton {
   font-size: smaller;
   padding-left: var(--content-padding);
   color: red;
 }
-.SnackbarContainer{
+
+.SnackbarContainer {
   display: flex;
   flex-direction: row;
   align-items: center;

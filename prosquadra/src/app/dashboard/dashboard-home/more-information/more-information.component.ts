@@ -1,5 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { ProjectService } from '../../../../services/project.service';
+import {Component, OnInit} from '@angular/core';
+import {ProjectService} from '../../../../services/project.service';
 import {MatIcon} from '@angular/material/icon';
 import {RouterLink} from '@angular/router';
 import {MatIconButton} from '@angular/material/button';
@@ -16,7 +16,7 @@ import {MatIconButton} from '@angular/material/button';
   styleUrls: ['./more-information.component.scss'],
 })
 export class MoreInformationComponent implements OnInit {
-  public InformationContent: string="";
+  public InformationContent: string = "";
 
   constructor(private projectService: ProjectService) {
 

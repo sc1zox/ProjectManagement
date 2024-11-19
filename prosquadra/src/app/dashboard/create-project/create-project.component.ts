@@ -1,10 +1,10 @@
-import {AfterViewInit, ChangeDetectorRef, Component} from '@angular/core';
-import {FormBuilder, FormGroup, Validators, ReactiveFormsModule} from '@angular/forms';
+import {AfterViewInit, Component} from '@angular/core';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
-import {MatSelect, MatOption} from '@angular/material/select';
+import {MatOption, MatSelect} from '@angular/material/select';
 import {TeamRoadmapComponent} from '../team-roadmap/team-roadmap.component';
 import {ProjectService} from '../../../services/project.service';
 import {TeamService} from '../../../services/team.service';

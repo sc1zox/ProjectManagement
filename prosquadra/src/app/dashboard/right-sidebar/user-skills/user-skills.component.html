@@ -3,10 +3,10 @@
     <mat-label>My Skills:</mat-label>
     <mat-chip-grid #chipGrid aria-label="Enter programming languages">
       <mat-chip-row
-        *ngFor="let skill of result()"
         (removed)="remove(skill)"
-        [removable]="true"
+        *ngFor="let skill of result()"
         [editable]="false"
+        [removable]="true"
       >
         {{ skill }}
         <button matChipRemove>
@@ -14,11 +14,11 @@
         </button>
       </mat-chip-row>
       <input
-        placeholder="New language/Skill..."
+        (matChipInputTokenEnd)="addSkill($event)"
+        [matChipInputAddOnBlur]="addOnBlur"
         [matChipInputFor]="chipGrid"
         [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-        [matChipInputAddOnBlur]="addOnBlur"
-        (matChipInputTokenEnd)="addSkill($event)"
+        placeholder="New language/Skill..."
       />
     </mat-chip-grid>
   </mat-form-field>

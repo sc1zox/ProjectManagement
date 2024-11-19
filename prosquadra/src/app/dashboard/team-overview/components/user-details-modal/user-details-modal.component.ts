@@ -1,5 +1,4 @@
-import {Component, Inject, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {SkillOverviewComponent} from '../skill-overview/skill-overview.component';
+import {Component, Inject, OnInit} from '@angular/core';
 import {User, UserRole} from '../../../../../types/user';
 import {MAT_DIALOG_DATA, MatDialogRef} from '@angular/material/dialog';
 import {NgForOf, NgIf} from '@angular/common';
@@ -12,7 +11,6 @@ import {MatButton} from '@angular/material/button';
   selector: 'app-user-details-modal',
   standalone: true,
   imports: [
-    SkillOverviewComponent,
     NgForOf,
     FormsModule,
     NgIf,
@@ -21,16 +19,17 @@ import {MatButton} from '@angular/material/button';
   templateUrl: './user-details-modal.component.html',
   styleUrl: './user-details-modal.component.scss'
 })
-export class UserDetailsModalComponent implements OnInit{
+export class UserDetailsModalComponent implements OnInit {
 
-  teams: Team[]=[];
+  teams: Team[] = [];
   arbeitszeit?: number;
   currentUser?: User;
   user?: User;
-  isAdmin: boolean=false;
+  isAdmin: boolean = false;
+  protected readonly UserRole = UserRole;
 
-  constructor(@Inject(MAT_DIALOG_DATA) public data: { user:User,currentUser: User },
-              private readonly dialogRef: MatDialogRef<UserDetailsModalComponent>,private readonly TeamService:TeamService) {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: { user: User, currentUser: User },
+              private readonly dialogRef: MatDialogRef<UserDetailsModalComponent>, private readonly TeamService: TeamService) {
     this.user = data.user;
     this.currentUser = data.currentUser;
   }
@@ -38,7 +37,7 @@ export class UserDetailsModalComponent implements OnInit{
   async ngOnInit() {
     this.user = this.data.user;
     this.currentUser = this.data.currentUser;
-    if(this.currentUser) {
+    if (this.currentUser) {
       this.teams = await this.TeamService.getTeamByUserID(this.currentUser.id)
     }
 
@@ -50,6 +49,4 @@ export class UserDetailsModalComponent implements OnInit{
   closeModal() {
     this.dialogRef.close();
   }
-
-    protected readonly UserRole = UserRole;
 }

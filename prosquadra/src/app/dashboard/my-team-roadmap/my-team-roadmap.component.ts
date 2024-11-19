@@ -26,7 +26,8 @@ export class MyTeamRoadmapComponent implements OnInit {
   constructor(
     private readonly TeamService: TeamService,
     private readonly UserService: UserService
-  ) {}
+  ) {
+  }
 
   async ngOnInit() {
     const user = await this.UserService.getCurrentUser();
@@ -45,23 +46,23 @@ export class MyTeamRoadmapComponent implements OnInit {
     }
 
     this.firstTeam = this.teams[0];
-    if(this.teams.length===1) {
+    if (this.teams.length === 1) {
       await this.fetchRoadmapForTeam(this.firstTeam.id);
-    }else{
+    } else {
       await this.fetchRoadmapsForTeams(this.teams)
     }
-    if(user && user.role === UserRole.PO){
+    if (user && user.role === UserRole.PO) {
       this.isPo = true;
     }
-    if(user && user.role === UserRole.SM){
+    if (user && user.role === UserRole.SM) {
       this.isScrum = true;
     }
   }
 
   public async refetch() {
     try {
-      if(this.firstTeam)
-      await this.fetchRoadmapForTeam(this.firstTeam.id);
+      if (this.firstTeam)
+        await this.fetchRoadmapForTeam(this.firstTeam.id);
     } catch (error) {
       console.error('Error refetching roadmap:', error);
     }
@@ -72,11 +73,12 @@ export class MyTeamRoadmapComponent implements OnInit {
     this.currentTeam = await this.TeamService.getTeamByID(teamId);
     this.roadmap = this.currentTeam?.roadmap;
   }
+
   private async fetchRoadmapsForTeams(teams: Team[]) {
     try {
       for (const team of teams) {
         const teamDetails = await this.TeamService.getTeamByID(team.id);
-        console.log("---------------",teamDetails)
+        console.log("---------------", teamDetails)
         if (teamDetails && teamDetails.roadmap) {
           this.roadmaps.push(teamDetails.roadmap);
         }

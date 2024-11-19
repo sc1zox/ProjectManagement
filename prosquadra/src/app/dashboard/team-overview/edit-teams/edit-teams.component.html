@@ -20,7 +20,7 @@
     <ng-container matColumnDef="edit">
       <mat-header-cell *matHeaderCellDef class="centerCell">Edit</mat-header-cell>
       <mat-cell *matCellDef="let team" class="centerCell">
-        <button mat-button (click)="openMemberDialog(team,user)">Mitglieder bearbeiten</button>
+        <button (click)="openMemberDialog(team,user)" mat-button>Mitglieder bearbeiten</button>
       </mat-cell>
     </ng-container>
 

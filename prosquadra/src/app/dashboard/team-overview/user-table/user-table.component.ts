@@ -7,12 +7,14 @@ import {
   MatColumnDef,
   MatHeaderCell,
   MatHeaderCellDef,
-  MatHeaderRow, MatHeaderRowDef, MatRow, MatRowDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow,
+  MatRowDef,
   MatTable
 } from '@angular/material/table';
 import {User, UserRole} from '../../../../types/user';
 import {UserDetailsModalComponent} from '../components/user-details-modal/user-details-modal.component';
-import {NgIf} from '@angular/common';
 import {MatDialog} from '@angular/material/dialog';
 import {MatButton} from '@angular/material/button';
 import {TeamPlanungComponent} from '../components/team-planung/team-planung.component';
@@ -34,21 +36,20 @@ import {UserService} from '../../../../services/user.service';
     MatRow,
     MatRowDef,
     MatHeaderRowDef,
-    UserDetailsModalComponent,
-    NgIf,
     MatButton,
     TeamPlanungComponent,
   ],
   templateUrl: './user-table.component.html',
   styleUrl: './user-table.component.scss'
 })
-export class UserTableComponent implements OnInit{
-  constructor(private readonly dialog: MatDialog,private readonly UserService: UserService) {
-  }
+export class UserTableComponent implements OnInit {
   displayedColumns: string[] = [];
   @Input() user: User[] = [];
   currentUser?: User;
   protected readonly UserRole = UserRole;
+
+  constructor(private readonly dialog: MatDialog, private readonly UserService: UserService) {
+  }
 
   async ngOnInit() {
     this.currentUser = await this.UserService.getCurrentUser();
@@ -61,9 +62,9 @@ export class UserTableComponent implements OnInit{
     this.displayedColumns.push('modal')
   }
 
-  openModal(user: User,currentUser: User | undefined) {
+  openModal(user: User, currentUser: User | undefined) {
     this.dialog.open(UserDetailsModalComponent, {
-      data: {user,currentUser},
+      data: {user, currentUser},
     });
   }
 

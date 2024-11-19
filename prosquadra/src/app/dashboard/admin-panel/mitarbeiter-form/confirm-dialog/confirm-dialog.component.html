@@ -3,6 +3,6 @@
   <p>{{ data.message }}</p>
 </div>
 <div mat-dialog-actions>
-  <button mat-button (click)="onNoClick()">Nein</button>
-  <button mat-button (click)="onYesClick()">Ja</button>
+  <button (click)="onNoClick()" mat-button>Nein</button>
+  <button (click)="onYesClick()" mat-button>Ja</button>
 </div>

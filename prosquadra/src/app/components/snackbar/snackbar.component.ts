@@ -13,7 +13,8 @@ import {MatButton} from '@angular/material/button';
 })
 export class SnackbarComponent {
   constructor(@Inject(MAT_SNACK_BAR_DATA) public data: { message: string },
-  private snackBarRef: MatSnackBarRef<SnackbarComponent>) {}
+              private snackBarRef: MatSnackBarRef<SnackbarComponent>) {
+  }
 
   close() {
     this.snackBarRef.dismiss();

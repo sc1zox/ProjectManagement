@@ -1,8 +1,8 @@
 <div id="create-project-container">
-  <form [formGroup]="projectForm" (ngSubmit)="onSubmit()" class="createproject-form">
+  <form (ngSubmit)="onSubmit()" [formGroup]="projectForm" class="createproject-form">
     <mat-form-field class="full-width">
       <mat-label>Projekt Name</mat-label>
-      <input matInput formControlName="projectName" placeholder="Projekt Name">
+      <input formControlName="projectName" matInput placeholder="Projekt Name">
       <mat-error *ngIf="projectForm.get('projectName')?.hasError('maxlength')">
         Maximal 10 Zeichen erlaubt.
       </mat-error>
@@ -10,7 +10,7 @@
 
     <mat-form-field class="full-width">
       <mat-label>Projekt Beschreibung</mat-label>
-      <textarea matInput formControlName="description" placeholder="Projekt Beschreibung"></textarea>
+      <textarea formControlName="description" matInput placeholder="Projekt Beschreibung"></textarea>
     </mat-form-field>
 
     <mat-form-field class="full-width">
@@ -20,10 +20,10 @@
       </mat-select>
     </mat-form-field>
 
-    <button mat-raised-button type="submit" [disabled]="projectForm.invalid">Erstellen</button>
+    <button [disabled]="projectForm.invalid" mat-raised-button type="submit">Erstellen</button>
   </form>
 </div>
 
 <div class="roadmap-container">
-  <app-team-roadmap [roadmap]="roadmap" [enableDragDrop]="true"></app-team-roadmap>
+  <app-team-roadmap [enableDragDrop]="true" [roadmap]="roadmap"></app-team-roadmap>
 </div>

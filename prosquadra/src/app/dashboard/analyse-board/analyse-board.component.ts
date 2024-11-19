@@ -1,14 +1,14 @@
-import { Component, OnInit } from '@angular/core';
-import {NgForOf, NgIf} from '@angular/common';
-import { MatGridListModule } from '@angular/material/grid-list';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
-import { TeamService } from '../../../services/team.service';
-import { Team } from '../../../types/team';
-import { GanttChartComponent } from './gantt-chart/gantt-chart.component';
-import { getEarliestStartDate } from '../../../helper/projectHelper';
+import {Component, OnInit} from '@angular/core';
+import {NgIf} from '@angular/common';
+import {MatGridListModule} from '@angular/material/grid-list';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatIconModule} from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
+import {MatCardModule} from '@angular/material/card';
+import {TeamService} from '../../../services/team.service';
+import {Team} from '../../../types/team';
+import {GanttChartComponent} from './gantt-chart/gantt-chart.component';
+import {getEarliestStartDate} from '../../../helper/projectHelper';
 import {GanttDate} from '@worktile/gantt';
 
 @Component({
@@ -22,7 +22,6 @@ import {GanttDate} from '@worktile/gantt';
     MatIconModule,
     MatButtonModule,
     MatCardModule,
-    NgForOf,
     GanttChartComponent,
     NgIf,
   ],
@@ -30,13 +29,13 @@ import {GanttDate} from '@worktile/gantt';
 export class AnalyseBoardComponent implements OnInit {
   teams: Team[] = [];
   startDate: GanttDate = new GanttDate();
+  protected readonly getEarliestStartDate = getEarliestStartDate;
 
-  constructor(private readonly teamService: TeamService) {}
+  constructor(private readonly teamService: TeamService) {
+  }
 
   async ngOnInit() {
     this.teams = await this.teamService.getTeams();
     this.startDate = getEarliestStartDate(this.teams);
   }
-
-  protected readonly getEarliestStartDate = getEarliestStartDate;
 }

@@ -51,7 +51,7 @@ export class AddMemberComponent implements OnInit {
 
   constructor(
     public dialogRef: MatDialogRef<AddMemberComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: { team: Team,user: User[] },
+    @Inject(MAT_DIALOG_DATA) public data: { team: Team, user: User[] },
     private readonly TeamService: TeamService,
     private cdr: ChangeDetectorRef,
     private readonly SnackbarService: SnackbarService
@@ -70,7 +70,7 @@ export class AddMemberComponent implements OnInit {
     this.selectedUser = this.data.user.find(
       (user) => user.vorname + ' ' + user.nachname === this.newMemberName
     );
-    if(!this.selectedUser){
+    if (!this.selectedUser) {
       this.SnackbarService.open('Benutzer wurde nicht gefunden!');
       return;
     }
@@ -84,7 +84,7 @@ export class AddMemberComponent implements OnInit {
         return;
       }
     }
-    if(this.selectedUser.teams!.length > 0 || this.selectedUser.role === UserRole.SM){
+    if (this.selectedUser.teams!.length > 0 || this.selectedUser.role === UserRole.SM) {
       this.SnackbarService.open('Benutzer ist bereits in einem Team!');
       return;
     }

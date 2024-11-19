@@ -1,18 +1,17 @@
 import {Component, OnChanges, OnInit} from '@angular/core';
-import { FormBuilder, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialog } from '@angular/material/dialog';
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from '@angular/forms';
+import {MatDialog} from '@angular/material/dialog';
 import {Router, RouterLink} from '@angular/router';
-import { MatIcon } from '@angular/material/icon';
-import { MatButton, MatIconButton } from '@angular/material/button';
-import { MatError, MatFormField, MatHint, MatLabel } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
-import { MatOption, MatSelect } from '@angular/material/select';
-import { CdkTextareaAutosize } from '@angular/cdk/text-field';
-import { NgForOf, NgIf } from '@angular/common';
-import { User, UserRole } from '../../../../types/user';
-import { UserService } from '../../../../services/user.service';
-import { ConfirmDialogComponent } from './confirm-dialog/confirm-dialog.component';
-import { SnackbarService } from '../../../../services/snackbar.service';
+import {MatIcon} from '@angular/material/icon';
+import {MatButton, MatIconButton} from '@angular/material/button';
+import {MatError, MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatInput} from '@angular/material/input';
+import {MatOption, MatSelect} from '@angular/material/select';
+import {NgForOf, NgIf} from '@angular/common';
+import {User, UserRole} from '../../../../types/user';
+import {UserService} from '../../../../services/user.service';
+import {ConfirmDialogComponent} from './confirm-dialog/confirm-dialog.component';
+import {SnackbarService} from '../../../../services/snackbar.service';
 import {TeamService} from '../../../../services/team.service';
 import {Team} from '../../../../types/team';
 import {MatStep, MatStepLabel, MatStepper, MatStepperNext, MatStepperPrevious} from '@angular/material/stepper';
@@ -27,8 +26,6 @@ import {Login} from '../../../../types/login';
     MatFormField,
     MatLabel,
     MatInput,
-    MatHint,
-    CdkTextareaAutosize,
     MatSelect,
     MatOption,
     FormsModule,
@@ -47,7 +44,7 @@ import {Login} from '../../../../types/login';
   templateUrl: './mitarbeiter-form.component.html',
   styleUrl: './mitarbeiter-form.component.scss'
 })
-export class MitarbeiterFormComponent implements OnInit,OnChanges {
+export class MitarbeiterFormComponent implements OnInit, OnChanges {
 
   Teams: Team[] = [];
   user: User = {
@@ -93,7 +90,7 @@ export class MitarbeiterFormComponent implements OnInit,OnChanges {
     });
   }
 
-  async ngOnChanges(){
+  async ngOnChanges() {
     this.Teams = await this.TeamService.getTeams();
   }
 
@@ -121,7 +118,7 @@ export class MitarbeiterFormComponent implements OnInit,OnChanges {
 
     if (this.firstFormGroup.valid) {
       const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-        data: { message: 'Wollen Sie diesen Nutzer wirklich erstellen?' }
+        data: {message: 'Wollen Sie diesen Nutzer wirklich erstellen?'}
       });
 
       dialogRef.afterClosed().subscribe(async result => {
@@ -131,18 +128,18 @@ export class MitarbeiterFormComponent implements OnInit,OnChanges {
           this.user.vorname = formValueUser.vorname;
           this.user.nachname = formValueUser.nachname;
           this.user.arbeitszeit = formValueUser.arbeitszeit;
-          if(formValueUser.urlaubstage) {
+          if (formValueUser.urlaubstage) {
             this.user.urlaubstage = formValueUser.urlaubstage;
-          }else{
+          } else {
             this.user.urlaubstage = 0;
           }
           this.Login.username = formValueLogin.username;
           this.Login.password = formValueLogin.password;
 
           try {
-              let responseUser = await this.UserService.createUser(this.user);
-              this.Login.userId = responseUser.id;
-              await this.UserService.createLogin(this.Login);
+            let responseUser = await this.UserService.createUser(this.user);
+            this.Login.userId = responseUser.id;
+            await this.UserService.createLogin(this.Login);
           } catch (error) {
             console.error('Error while creating user:', error);
           } finally {

@@ -1,13 +1,13 @@
 <div class="login-container">
   <div class="login-card">
-    <img ngSrc="/assets/logo.png" alt="ProSquadra Logo" class="logo" height="800" width="800" priority/>
+    <img alt="ProSquadra Logo" class="logo" height="800" ngSrc="/assets/logo.png" priority width="800"/>
     <h2>ProSquadra</h2>
 
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+    <form (ngSubmit)="onSubmit()" [formGroup]="loginForm">
 
       <mat-form-field appearance="fill">
         <mat-label>Username</mat-label>
-        <input matInput formControlName="username" placeholder="Username">
+        <input formControlName="username" matInput placeholder="Username">
         <mat-error *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched">
           Username ist erforderlich.
         </mat-error>
@@ -15,13 +15,13 @@
 
       <mat-form-field appearance="fill">
         <mat-label>Passwort</mat-label>
-        <input matInput formControlName="password" placeholder="Passwort" type="password">
+        <input formControlName="password" matInput placeholder="Passwort" type="password">
         <mat-error *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
           Passwort ist erforderlich.
         </mat-error>
       </mat-form-field>
 
-      <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid">
+      <button [disabled]="loginForm.invalid" color="primary" mat-raised-button type="submit">
         Anmelden
       </button>
     </form>

@@ -1,8 +1,8 @@
-import { Routes } from '@angular/router';
-import { LoginComponent } from './login/login.component';
-import { DashboardComponent } from './dashboard/dashboard.component';
-import { AuthGuard } from '../auth/auth.guard';
-import { DashboardHomeComponent } from './dashboard/dashboard-home/dashboard-home.component';
+import {Routes} from '@angular/router';
+import {LoginComponent} from './login/login.component';
+import {DashboardComponent} from './dashboard/dashboard.component';
+import {AuthGuard} from '../auth/auth.guard';
+import {DashboardHomeComponent} from './dashboard/dashboard-home/dashboard-home.component';
 
 export const routes: Routes = [
   {
@@ -13,8 +13,8 @@ export const routes: Routes = [
     component: DashboardComponent,
     canActivate: [AuthGuard],
     children: [
-      { path: '', component: DashboardHomeComponent }, // Diese Route ohne Lazy Loading
-      { path: 'home', component: DashboardHomeComponent },
+      {path: '', component: DashboardHomeComponent}, // Diese Route ohne Lazy Loading
+      {path: 'home', component: DashboardHomeComponent},
       {
         path: 'create-project',
         loadComponent: () => import('./dashboard/create-project/create-project.component').then(m => m.CreateProjectComponent)
