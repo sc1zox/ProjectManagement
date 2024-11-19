@@ -11,6 +11,7 @@ export interface User {
   teams?: Team[];
   urlaubstage?: number;
 }
+
 export enum UserRole {
   PO = 'PO',
   SM = 'SM',

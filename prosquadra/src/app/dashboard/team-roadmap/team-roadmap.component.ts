@@ -13,7 +13,7 @@ import {
 import {CommonModule} from '@angular/common';
 import {ProjectService} from '../../../services/project.service';
 import {Project} from '../../../types/project';
-import {CdkDrag, CdkDragDrop, CdkDragPlaceholder, CdkDropList, moveItemInArray} from '@angular/cdk/drag-drop';
+import {CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray} from '@angular/cdk/drag-drop';
 import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatNativeDateModule} from '@angular/material/core';
 import {MatInputModule} from '@angular/material/input';
@@ -27,12 +27,23 @@ import {
   ValidationErrors
 } from '@angular/forms';
 import {UserService} from '../../../services/user.service';
-import {MatButton, MatIconButton} from '@angular/material/button';
+import {MatButton} from '@angular/material/button';
 import {Roadmap} from '../../../types/roadmap';
 import {User, UserRole} from '../../../types/user';
 import {RoadmapService} from '../../../services/roadmap.service';
 import {SnackbarService} from '../../../services/snackbar.service';
 import {Team} from '../../../types/team';
+import {parseProjects} from '../../../mapper/projectDatesToDate';
+
+
+const isStartDateInRange = (projects: Project[], startDate: Date): boolean => {
+  const projectsMapped = parseProjects(projects);
+  const result = projectsMapped
+    .filter(project => (project.startDate !== null && project.endDate !== null))
+  const boolresult = result.some(range => startDate >= (range.startDate as Date) && startDate <= (range.endDate as Date));
+
+  return boolresult;
+};
 
 
 @Component({
@@ -41,12 +52,11 @@ import {Team} from '../../../types/team';
   imports: [CommonModule,
     CdkDropList,
     CdkDrag,
-    CdkDragPlaceholder,
     MatDatepickerModule,
     MatNativeDateModule,
     MatInputModule,
     FormsModule,
-    ReactiveFormsModule, MatIconButton, MatButton],
+    ReactiveFormsModule, MatButton],
   templateUrl: './team-roadmap.component.html',
   styleUrls: ['./team-roadmap.component.scss']
 })
@@ -56,21 +66,21 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   @Input() user?: User;
   @Input() teams?: Team;
   @Input() estimatableDEV: boolean = false;
-  @Input() setTimeScrum: boolean=false;
-  @Input() enableDragDrop: boolean=false;
+  @Input() setTimeScrum: boolean = false;
+  @Input() enableDragDrop: boolean = false;
 
   projects: Project[] = [];
   selectedProject?: Project;
   teamname: string = ''; // get Team name to display
-  protected readonly window = window;
   @Output() dataUpdated = new EventEmitter<void>()
   hours?: number;
   days?: number;
-
   startDateControl = new FormControl();
   endDateControl = new FormControl();
-
   dateForm: FormGroup;
+  @ViewChild('projectList') projectList?: ElementRef;
+  protected readonly window = window;
+  protected readonly UserRole = UserRole;
 
   constructor(private readonly ProjectService: ProjectService,
               private readonly UserService: UserService, private readonly fb: FormBuilder,
@@ -79,7 +89,18 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
       startDate: this.startDateControl,
       endDate: this.endDateControl,
     });
+    this.startDateControl.setValidators(this.startDateValidator.bind(this));
     this.endDateControl.setValidators(this.endDateValidator.bind(this));
+  }
+
+  startDateValidator(control: AbstractControl): ValidationErrors | null {
+    const startDate = control.value;
+    console.log(this.projects);
+    if (isStartDateInRange(this.projects, startDate) && startDate !== null) {
+      this.SnackBarSerivce.open('Das Startdatum darf sich nicht mit einem Projekt überschneiden')
+      return {startDateInvalid: true}
+    }
+    return null;
   }
 
   endDateValidator(control: AbstractControl): ValidationErrors | null {
@@ -122,6 +143,8 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     }
   }
 
+  // Block default scroll, enable horizontal scroll
+
   selectProject(project: Project): void {
     this.selectedProject = project;
 
@@ -129,11 +152,6 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     this.endDateControl.setValue(project.endDate);
   }
 
-
-
-  @ViewChild('projectList') projectList?: ElementRef;
-
-  // Block default scroll, enable horizontal scroll
   // Inspired by https://stackoverflow.com/questions/59468926/horizontal-scroll-in-typescript
   onWheelScroll(event: WheelEvent): void {
     if (window.innerWidth > 1000 && this.projectList) {
@@ -144,8 +162,8 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
 
   // Lifecycle Hook
   async ngAfterViewInit() {
-    if(this.projectList)
-    this.projectList.nativeElement.addEventListener('wheel', this.onWheelScroll.bind(this));
+    if (this.projectList)
+      this.projectList.nativeElement.addEventListener('wheel', this.onWheelScroll.bind(this));
   }
 
   selectInitialProject(): void {
@@ -190,16 +208,17 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
         }
         this.hours = 0;
         this.days = 0;
-        if(this.user?.role === UserRole.Developer){
-        this.dataUpdated.emit(); // das hier verursacht ein doppeltes rendern der ersten roadmap. Unsicher ob es weggelassen werden kann für andere Updates.Scheint mir momentan nicht essenziell zu sein. Doch wenn es fehlt wird für Dev die Zeit nicht aktualisiert deshalb die if clause
-      }} catch (error) {
+        if (this.user?.role === UserRole.Developer) {
+          this.dataUpdated.emit(); // das hier verursacht ein doppeltes rendern der ersten roadmap. Unsicher ob es weggelassen werden kann für andere Updates.Scheint mir momentan nicht essenziell zu sein. Doch wenn es fehlt wird für Dev die Zeit nicht aktualisiert deshalb die if clause
+        }
+      } catch (error) {
         console.error('Error updating project roadmap:', error);
       }
     }
   }
 
   async onDelete() {
-    if(this.roadmap?.projects && !(this.roadmap?.projects.length>1)){
+    if (this.roadmap?.projects && !(this.roadmap?.projects.length > 1)) {
       this.SnackBarSerivce.open('Löschen fehlgeschlagen! Die Roadmap enthält nur ein Projekt')
       return;
     }
@@ -224,13 +243,10 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     }
   }
 
-
   async refreshProjectOrder() {
     if (this.roadmap) {
       this.roadmap = await this.RoadmapService.getRoadmapById(this.roadmap.id);
       this.projects = [...this.roadmap.projects];
     }
   }
-
-  protected readonly UserRole = UserRole;
 }

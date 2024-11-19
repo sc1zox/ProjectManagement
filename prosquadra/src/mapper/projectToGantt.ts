@@ -1,5 +1,5 @@
-import { Project } from '../types/project';
-import { GanttItem, GanttDate } from '@worktile/gantt';
+import {Project} from '../types/project';
+import {GanttDate, GanttItem} from '@worktile/gantt';
 
 export function projectToGantt(source: Project, teamId: string): GanttItem {
   return {

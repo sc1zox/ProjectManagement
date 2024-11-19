@@ -1,12 +1,5 @@
-import { Component, inject, Input, OnChanges, signal, SimpleChanges} from '@angular/core';
-import {
-  MatChipEditedEvent,
-  MatChipGrid,
-  MatChipInput,
-  MatChipInputEvent,
-  MatChipRemove,
-  MatChipRow
-} from "@angular/material/chips";
+import {Component, inject, Input, OnChanges, signal, SimpleChanges} from '@angular/core';
+import {MatChipGrid, MatChipInput, MatChipInputEvent, MatChipRemove, MatChipRow} from "@angular/material/chips";
 import {MatFormField, MatLabel} from "@angular/material/form-field";
 import {MatIcon} from "@angular/material/icon";
 import {NgForOf} from "@angular/common";
@@ -19,22 +12,29 @@ import {Skill} from '../../../../types/skill';
 @Component({
   selector: 'app-user-skills',
   standalone: true,
-    imports: [
-        MatChipGrid,
-        MatChipInput,
-        MatChipRemove,
-        MatChipRow,
-        MatFormField,
-        MatIcon,
-        MatLabel,
-        NgForOf
-    ],
+  imports: [
+    MatChipGrid,
+    MatChipInput,
+    MatChipRemove,
+    MatChipRow,
+    MatFormField,
+    MatIcon,
+    MatLabel,
+    NgForOf
+  ],
   templateUrl: './user-skills.component.html',
   styleUrl: './user-skills.component.scss'
 })
-export class UserSkillsComponent implements OnChanges{
+export class UserSkillsComponent implements OnChanges {
   @Input() user?: User;
   skills: Skill[] = [];
+  readonly result = signal<string[]>(['test']);
+  readonly announcer = inject(LiveAnnouncer);
+  readonly addOnBlur = true;
+  readonly separatorKeysCodes = [ENTER, COMMA] as const;
+
+  // Source https://material.angular.io/components/chips/examples
+
   constructor(private readonly SkillService: SkillService) {
   }
 
@@ -44,14 +44,6 @@ export class UserSkillsComponent implements OnChanges{
       this.result.set(this.skills.map(skill => skill.name));
     }
   }
-
-  readonly result = signal<string[]>(['test']);
-  readonly announcer = inject(LiveAnnouncer);
-
-  // Source https://material.angular.io/components/chips/examples
-
-  readonly addOnBlur = true;
-  readonly separatorKeysCodes = [ENTER, COMMA] as const;
 
   addSkill(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();

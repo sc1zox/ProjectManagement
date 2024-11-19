@@ -17,7 +17,7 @@
 
 @media screen and (max-width: 1000px) {
   .team-form {
-    margin-bottom: calc(var(--form-maxsize)/2.5);
-    margin-top: calc(var(--form-maxsize)/2.5);
+    margin-bottom: calc(var(--form-maxsize) / 2.5);
+    margin-top: calc(var(--form-maxsize) / 2.5);
   }
 }

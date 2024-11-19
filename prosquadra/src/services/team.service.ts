@@ -1,6 +1,6 @@
-import { Injectable } from '@angular/core';
-import { Team } from '../types/team';
-import { ApiService } from './api.service';
+import {Injectable} from '@angular/core';
+import {Team} from '../types/team';
+import {ApiService} from './api.service';
 import {ApiResponse} from '../types/api-response';
 
 
@@ -9,7 +9,8 @@ import {ApiResponse} from '../types/api-response';
 })
 export class TeamService {
 
-  constructor(private readonly apiService: ApiService) {}
+  constructor(private readonly apiService: ApiService) {
+  }
 
   public async getTeams(): Promise<Team[]> {
     const response: ApiResponse<Team[]> = await this.apiService.fetch('/team');
@@ -20,7 +21,7 @@ export class TeamService {
   }
 
   public async createTeam(team: Team): Promise<Team> {
-    const response:ApiResponse<Team> = await this.apiService.post('/team/create', team);
+    const response: ApiResponse<Team> = await this.apiService.post('/team/create', team);
     if (response.code !== 201) {
       throw new Error('Failed to create team');
     }
@@ -29,7 +30,7 @@ export class TeamService {
 
   async getTeamByID(ID: number): Promise<Team> {
 
-    const response:ApiResponse<Team> = await this.apiService.fetch('/team/'+ID);
+    const response: ApiResponse<Team> = await this.apiService.fetch('/team/' + ID);
 
     if (response.code !== 200) {
       throw new Error('Failed to fetch team data for specific id:' + ID);
@@ -38,8 +39,8 @@ export class TeamService {
     return response.data;
   }
 
-  async getTeamByUserID(ID: number): Promise<Team[]>{
-    const response: ApiResponse<Team[]> = await this.apiService.fetch('/team/user/'+ID);
+  async getTeamByUserID(ID: number): Promise<Team[]> {
+    const response: ApiResponse<Team[]> = await this.apiService.fetch('/team/user/' + ID);
 
     if (response.code !== 200) {
       throw new Error('Failed to fetch team data for specific id:' + ID);
@@ -49,7 +50,7 @@ export class TeamService {
   }
 
   async removeUserFromTeam(userId: number, teamId: number): Promise<void> {
-    const body = { userId, teamId };
+    const body = {userId, teamId};
     const response: ApiResponse<void> = await this.apiService.post("/team/user/delete", body);
 
     if (response.code !== 200) {
@@ -58,7 +59,7 @@ export class TeamService {
   }
 
   async addUserToTeam(userId: number, teamId: number): Promise<void> {
-    const body = { userId, teamId };
+    const body = {userId, teamId};
     const response: ApiResponse<void> = await this.apiService.post("/team/user/add", body);
 
     if (response.code !== 200) {

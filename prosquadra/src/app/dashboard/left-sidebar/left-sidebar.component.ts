@@ -1,8 +1,8 @@
 import {Component, HostListener, OnInit} from '@angular/core';
-import { MatActionList, MatListItem, MatNavList } from "@angular/material/list";
-import { RouterLink } from '@angular/router';
-import { MatExpansionPanel, MatExpansionPanelDescription, MatExpansionPanelHeader, MatExpansionPanelTitle } from '@angular/material/expansion';
-import { NgIf } from '@angular/common';
+import {MatActionList, MatListItem} from "@angular/material/list";
+import {RouterLink} from '@angular/router';
+import {MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle} from '@angular/material/expansion';
+import {NgIf} from '@angular/common';
 import {UserService} from '../../../services/user.service';
 import {User, UserRole} from '../../../types/user';
 
@@ -12,21 +12,20 @@ import {User, UserRole} from '../../../types/user';
   standalone: true,
   imports: [
     MatListItem,
-    MatNavList,
     RouterLink,
     MatActionList,
     MatExpansionPanelHeader,
     MatExpansionPanel,
     MatExpansionPanelTitle,
-    MatExpansionPanelDescription,
     NgIf
   ],
   templateUrl: './left-sidebar.component.html',
   styleUrls: ['./left-sidebar.component.scss']
 })
-export class LeftSidebarComponent implements OnInit{
+export class LeftSidebarComponent implements OnInit {
   public expanded: boolean = true;
   public user?: User;
+  protected readonly UserRole = UserRole;
 
   constructor(private readonly Userservice: UserService) {
   }
@@ -34,19 +33,16 @@ export class LeftSidebarComponent implements OnInit{
   async ngOnInit() {
     try {
       this.user = await this.Userservice.getCurrentUser();
-    }catch (error){
+    } catch (error) {
       console.error('Error while fetching USer:', error);
-    }finally {
+    } finally {
       console.log('User fetch complete.');
     }
   }
-
 
   @HostListener('window:resize', ['$event'])
   onResize(event: Window) {
     const width = window.innerWidth;
     this.expanded = width >= 1000;
   }
-
-  protected readonly UserRole = UserRole;
 }

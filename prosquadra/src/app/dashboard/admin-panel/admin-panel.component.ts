@@ -1,7 +1,4 @@
-import { Component } from '@angular/core';
-import {MatActionList, MatListItem} from "@angular/material/list";
-import {MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle} from "@angular/material/expansion";
-import {NgIf} from "@angular/common";
+import {Component} from '@angular/core';
 import {RouterLink} from '@angular/router';
 import {MatButton} from '@angular/material/button';
 
@@ -9,12 +6,6 @@ import {MatButton} from '@angular/material/button';
   selector: 'app-admin-panel',
   standalone: true,
   imports: [
-    MatActionList,
-    MatExpansionPanel,
-    MatExpansionPanelHeader,
-    MatExpansionPanelTitle,
-    MatListItem,
-    NgIf,
     RouterLink,
     MatButton
   ],

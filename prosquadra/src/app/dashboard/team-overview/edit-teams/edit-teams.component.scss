@@ -15,18 +15,22 @@ mat-dialog-content {
 mat-form-field {
   width: 100%;
 }
-.team-overview{
-  margin: calc(var(--content-margin)*2);
+
+.team-overview {
+  margin: calc(var(--content-margin) * 2);
 }
-.centerCell{
+
+.centerCell {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
-.customPadding{
+
+.customPadding {
   padding-left: var(--content-padding);
 }
-mat-cell{
+
+mat-cell {
   padding: var(--content-padding);
 }

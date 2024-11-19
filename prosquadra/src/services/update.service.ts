@@ -1,15 +1,15 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {ApiService} from './api.service';
 import {AuthService} from './auth.service';
 import {ApiResponse} from '../types/api-response';
-import {Login} from '../types/login';
 
 @Injectable({
   providedIn: 'root'
 })
 export class UpdateService {
 
-  constructor(private readonly ApiService: ApiService,private readonly AuthService:AuthService) { }
+  constructor(private readonly ApiService: ApiService, private readonly AuthService: AuthService) {
+  }
 
   async updateResource(endpoint: string, data: any): Promise<any> {
     const token = this.AuthService.getToken();
@@ -20,7 +20,7 @@ export class UpdateService {
     const apiUrl = this.ApiService.getBaseUrl() + endpoint;
 
     try {
-      const response =  await fetch(apiUrl, {
+      const response = await fetch(apiUrl, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -34,14 +34,15 @@ export class UpdateService {
       throw error;
     }
   }
-  async updateArbeitszeit(userID: number,arbeitszeit: number){
 
-    if(!userID || !arbeitszeit){
+  async updateArbeitszeit(userID: number, arbeitszeit: number) {
+
+    if (!userID || !arbeitszeit) {
       console.log("error beim updaten der arbeitszeit im service");
       return;
     }
-      let body = {userID,arbeitszeit}
-      const response: ApiResponse<number> = await this.updateResource('/api/users/update/arbeitszeit',body);
+    let body = {userID, arbeitszeit}
+    const response: ApiResponse<number> = await this.updateResource('/api/users/update/arbeitszeit', body);
 
     if (!response.data) {
       throw new Error('No response received from the server');

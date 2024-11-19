@@ -52,7 +52,7 @@ export class TeamsFormComponent implements OnInit {
   selectedUsers: User[] = [];
   teamForm: FormGroup;
 
-  constructor(private TeamService: TeamService, private UserService: UserService, private fb: FormBuilder, private dialog: MatDialog,private router: Router,private SnackBarService: SnackbarService,private readonly NotificationService: NotificationsService) {
+  constructor(private TeamService: TeamService, private UserService: UserService, private fb: FormBuilder, private dialog: MatDialog, private router: Router, private SnackBarService: SnackbarService, private readonly NotificationService: NotificationsService) {
     this.teamForm = this.fb.group({
       teamName: ['', Validators.required],
       selectedUser: [[], Validators.required]
@@ -62,17 +62,11 @@ export class TeamsFormComponent implements OnInit {
   async ngOnInit() {
     try {
       this.Users = await this.UserService.getUsers();
-    }catch (error){
+    } catch (error) {
       console.error('Error while fetching Users:', error);
     }
     this.filterUsers()
-    console.log(this.filteredUsers,this.Users)
-  }
-
-  private filterUsers() {
-    this.filteredUsers = this.Users.filter(user => {
-      return user.role === UserRole.SM || (user.teams && user.teams.length === 0);
-    });
+    console.log(this.filteredUsers, this.Users)
   }
 
   onSubmit() {
@@ -80,7 +74,7 @@ export class TeamsFormComponent implements OnInit {
 
     if (this.teamForm.valid) {
       const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-        data: { message: 'Wollen Sie dieses Team wirklich anlegen?' }
+        data: {message: 'Wollen Sie dieses Team wirklich anlegen?'}
       });
 
       dialogRef.afterClosed().subscribe(result => {
@@ -99,15 +93,21 @@ export class TeamsFormComponent implements OnInit {
             this.Team.members = this.selectedUsers;
             this.TeamService.createTeam(this.Team);
             this.selectedUser?.forEach((user) => {
-              this.NotificationService.createNotification('Du wurdest einem neuen Team hinzugefügt',user)
+              this.NotificationService.createNotification('Du wurdest einem neuen Team hinzugefügt', user)
             })
             this.router.navigate(['/dashboard/admin-panel']);
           }
           // Diese Daten dann an den Server schicken
         } else {
-         this.SnackBarService.open("Sie haben die Teamerstellung abgebrochen")
+          this.SnackBarService.open("Sie haben die Teamerstellung abgebrochen")
         }
       });
     }
+  }
+
+  private filterUsers() {
+    this.filteredUsers = this.Users.filter(user => {
+      return user.role === UserRole.SM || (user.teams && user.teams.length === 0);
+    });
   }
 }

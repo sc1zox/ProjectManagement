@@ -1,7 +1,6 @@
 // api.service.ts
 import {Injectable} from '@angular/core';
 import {ApiResponse} from '../types/api-response';
-import {AuthService} from './auth.service';
 
 
 @Injectable({
@@ -11,15 +10,18 @@ export class ApiService {
   private readonly apiUrl = 'http://localhost:3000/api';
   private readonly baseUrl: string = 'http://localhost:3000';
 
-  constructor() {}
+  constructor() {
+  }
 
-  getLoginUrl(){
-    return this.baseUrl+'/auth/login';
+  getLoginUrl() {
+    return this.baseUrl + '/auth/login';
   }
-  getAuthUrl(){
-    return this.baseUrl+'/auth';
+
+  getAuthUrl() {
+    return this.baseUrl + '/auth';
   }
-  getBaseUrl(): string{
+
+  getBaseUrl(): string {
     return this.baseUrl;
   }
 
@@ -27,9 +29,8 @@ export class ApiService {
     let response;
     try {
       response = await fetch(`${this.apiUrl}${endpoint}`);
-    }
-    catch (error){
-      throw new Error ("api fetch failed" + error)
+    } catch (error) {
+      throw new Error("api fetch failed" + error)
     }
     if (response && !response.ok) {
       const errorData = await response.json();

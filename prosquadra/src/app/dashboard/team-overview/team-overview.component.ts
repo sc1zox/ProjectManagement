@@ -16,10 +16,11 @@ import {Team} from '../../../types/team';
   templateUrl: './team-overview.component.html',
   styleUrl: './team-overview.component.scss'
 })
-export class TeamOverviewComponent implements OnInit{
-  user: User[]=[];
-  teams: Team[]=[];
-  constructor(private readonly UserService:UserService,private readonly TeamService:TeamService) {
+export class TeamOverviewComponent implements OnInit {
+  user: User[] = [];
+  teams: Team[] = [];
+
+  constructor(private readonly UserService: UserService, private readonly TeamService: TeamService) {
 
   }
 

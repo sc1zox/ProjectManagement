@@ -1,9 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {
- MatChipInput,
-  MatChipsModule
-} from '@angular/material/chips';
-import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatChipsModule} from '@angular/material/chips';
 import {MatIcon} from '@angular/material/icon';
 import {
   MatAccordion,
@@ -11,7 +7,7 @@ import {
   MatExpansionPanelHeader,
   MatExpansionPanelTitle
 } from '@angular/material/expansion';
-import {DatePipe, NgForOf} from '@angular/common';
+import {DatePipe} from '@angular/common';
 import {MatBadge} from '@angular/material/badge';
 import {Project} from '../../../types/project';
 import {User} from '../../../types/user';
@@ -29,15 +25,11 @@ import {Notification} from '../../../types/Notifications';
   templateUrl: './right-sidebar.component.html',
   styleUrl: './right-sidebar.component.scss',
   imports: [
-    MatLabel,
-    MatChipInput,
-    MatFormField,
     MatIcon,
     MatExpansionPanel,
     MatExpansionPanelTitle,
     MatExpansionPanelHeader,
     MatAccordion,
-    NgForOf,
     MatBadge,
     MatChipsModule,
     MatButton,
@@ -102,18 +94,18 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
     }
   }
 
-  async fetchNotifications(){
-    try{
-      if(this.user){
+  async fetchNotifications() {
+    try {
+      if (this.user) {
         this.notifications = await this.NotificationService.getNotificationsByUserId(this.user.id);
         this.notificationsAmount = this.notifications.length;
         this.notifications.forEach((notification) => {
-          if(!notification.isRead) {
+          if (!notification.isRead) {
             this.NotificationService.showNotification(notification);
           }
         });
       }
-    } catch (error){
+    } catch (error) {
       console.log("error fetching notifications")
     }
   }

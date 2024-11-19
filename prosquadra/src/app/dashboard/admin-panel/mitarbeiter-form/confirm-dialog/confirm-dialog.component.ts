@@ -21,7 +21,10 @@ import {
   styleUrl: './confirm-dialog.component.scss'
 })
 export class ConfirmDialogComponent {
-  constructor(public dialogRef: MatDialogRef<ConfirmDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: { message: string }) {}
+  constructor(public dialogRef: MatDialogRef<ConfirmDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: {
+    message: string
+  }) {
+  }
 
   onNoClick(): void {
     this.dialogRef.close(false);

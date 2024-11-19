@@ -1,15 +1,15 @@
-import { Injectable } from '@angular/core';
-import { Notification } from '../types/Notifications';
+import {Injectable} from '@angular/core';
+import {Notification} from '../types/Notifications';
 import {ActiveToast, ToastrService} from 'ngx-toastr';
-import { ApiService } from './api.service';
+import {ApiService} from './api.service';
 import {ApiResponse} from '../types/api-response';
 
 @Injectable({
   providedIn: 'root'
 })
 export class NotificationsService {
-  private activeToasts: { [toastId: number]: number } = {}; //chatgpt.com
   isMobile: boolean = false;
+  private activeToasts: { [toastId: number]: number } = {}; //chatgpt.com
 
   constructor(
     private toastr: ToastrService,
@@ -100,7 +100,7 @@ export class NotificationsService {
       userId: userId,
     };
 
-    const response: ApiResponse<any> = await this.apiService.post('/notifications/create',notification);
+    const response: ApiResponse<any> = await this.apiService.post('/notifications/create', notification);
 
     if (response.code !== 201) {
       throw new Error('Failed to create notification');

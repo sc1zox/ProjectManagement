@@ -1,52 +1,52 @@
 .login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    padding: var(--content-padding);
-    background-color: var(--main-color); // Use the orange color from the sketch
-    box-sizing: border-box; // Hides the scrollbar
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  padding: var(--content-padding);
+  background-color: var(--main-color); // Use the orange color from the sketch
+  box-sizing: border-box; // Hides the scrollbar
+}
 
-  .login-card {
-    background-color: var(--main-background);
-    padding: var(--content-padding);
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    text-align: center;
-  }
+.login-card {
+  background-color: var(--main-background);
+  padding: var(--content-padding);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  text-align: center;
+}
 
-  h2 {
-    font-size: 1.2rem;
-    font-weight: bold;
-    margin-bottom: calc(var(--content-margin)/2);
-  }
+h2 {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: calc(var(--content-margin) / 2);
+}
 
-  .logo {
-    font-size: 1.5rem;
-    font-weight: bold;
-    margin-bottom: var(--content-margin);
-  }
+.logo {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: var(--content-margin);
+}
 
-  mat-form-field {
-    width: 100%;
-    margin-bottom: calc(var(--content-margin)/2);
-  }
+mat-form-field {
+  width: 100%;
+  margin-bottom: calc(var(--content-margin) / 2);
+}
 
-  button {
-    width: 100%;
-    background-color: #f26c3b;
-    color: var(--main-background);
+button {
+  width: 100%;
+  background-color: #f26c3b;
+  color: var(--main-background);
 
-    &:hover {
-      background-color: #e25b2b;
-    }
+  &:hover {
+    background-color: #e25b2b;
   }
+}
 
-  .logo {
-    width: 120px;
-    height: auto;
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-  }
+.logo {
+  width: 120px;
+  height: auto;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}

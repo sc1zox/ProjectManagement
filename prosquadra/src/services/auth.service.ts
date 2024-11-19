@@ -1,5 +1,5 @@
-import { Injectable } from '@angular/core';
-import { ApiService } from './api.service';
+import {Injectable} from '@angular/core';
+import {ApiService} from './api.service';
 import {UserService} from './user.service';
 
 @Injectable({
@@ -8,10 +8,10 @@ import {UserService} from './user.service';
 export class AuthService {
 
   private readonly tokenKey = 'authToken';
-  private apiUrl: string ='';
+  private apiUrl: string = '';
 
-  constructor(private readonly ApiService: ApiService,private readonly UserService: UserService) {
-    this.apiUrl=this.ApiService.getAuthUrl();
+  constructor(private readonly ApiService: ApiService, private readonly UserService: UserService) {
+    this.apiUrl = this.ApiService.getAuthUrl();
   }
 
   setToken(token: string): void {
@@ -30,6 +30,10 @@ export class AuthService {
     }
 
     return this.verifyToken(token);
+  }
+
+  logout(): void {
+    localStorage.removeItem(this.tokenKey);
   }
 
   private async verifyToken(token: string): Promise<boolean> {
@@ -55,9 +59,5 @@ export class AuthService {
     } catch (error) {
       return false;
     }
-  }
-
-  logout(): void {
-    localStorage.removeItem(this.tokenKey);
   }
 }

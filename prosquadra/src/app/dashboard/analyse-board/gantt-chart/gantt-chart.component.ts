@@ -1,22 +1,23 @@
 import {AfterViewInit, Component, Input, OnInit, ViewChild} from '@angular/core';
-import { NgForOf } from '@angular/common';
-import { MatGridListModule } from '@angular/material/grid-list';
-import { MatMenuModule } from '@angular/material/menu';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatCardModule } from '@angular/material/card';
+import {MatGridListModule} from '@angular/material/grid-list';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatIconModule} from '@angular/material/icon';
+import {MatButtonModule} from '@angular/material/button';
+import {MatCardModule} from '@angular/material/card';
 import {
+  GANTT_GLOBAL_CONFIG,
+  GanttDate,
+  GanttGroup,
   GanttItem,
+  GanttPrintService,
+  GanttViewOptions,
   NgxGanttComponent,
   NgxGanttTableColumnComponent,
   NgxGanttTableComponent,
-  GANTT_GLOBAL_CONFIG,
-  GanttViewOptions,
-  GanttGroup, GanttDate, GanttPrintService,
 } from '@worktile/gantt';
-import { de } from 'date-fns/locale';
-import { Team } from '../../../../types/team';
-import { projectToGantt } from '../../../../mapper/projectToGantt';
+import {de} from 'date-fns/locale';
+import {Team} from '../../../../types/team';
+import {projectToGantt} from '../../../../mapper/projectToGantt';
 
 @Component({
   selector: 'app-gantt-chart',
@@ -29,7 +30,6 @@ import { projectToGantt } from '../../../../mapper/projectToGantt';
     MatIconModule,
     MatButtonModule,
     MatCardModule,
-    NgForOf,
     NgxGanttComponent,
     NgxGanttTableComponent,
     NgxGanttTableColumnComponent,
@@ -45,7 +45,7 @@ import { projectToGantt } from '../../../../mapper/projectToGantt';
     },
   ],
 })
-export class GanttChartComponent implements OnInit,AfterViewInit{
+export class GanttChartComponent implements OnInit, AfterViewInit {
   @Input() teams: Team[] = [];
   @Input() startDate!: GanttDate;
 
@@ -63,9 +63,9 @@ export class GanttChartComponent implements OnInit,AfterViewInit{
   };
 
 
-ngOnInit() {
-  this.populateItems();
-}
+  ngOnInit() {
+    this.populateItems();
+  }
 
   ngAfterViewInit() {
     setTimeout(() => {
@@ -75,6 +75,10 @@ ngOnInit() {
     });
   }
 
+  jumptoFirstDate() {
+    const start = this.startDate || new GanttDate(new Date());
+    this.ganttComponent.scrollToDate(start);
+  }
 
   private populateItems() {
     this.groups = this.teams.map((team) => ({
@@ -94,11 +98,6 @@ ngOnInit() {
     }
 
     console.log('Items:', this.items);
-  }
-
-  jumptoFirstDate() {
-    const start = this.startDate || new GanttDate(new Date());
-    this.ganttComponent.scrollToDate(start);
   }
 
 }

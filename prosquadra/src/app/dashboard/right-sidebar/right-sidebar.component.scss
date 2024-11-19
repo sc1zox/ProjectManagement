@@ -34,11 +34,12 @@
     background-color: #a3a3a3; // Darker color on hover for the thumb */
   }
 }
-#notification{
+
+#notification {
   align-self: end;
 }
 
-.user-avatar{
+.user-avatar {
   height: 60px;
   width: 60px;
   border: 2px solid black;
@@ -52,15 +53,16 @@
   justify-content: center;
   align-items: center;
 
-  .name{
+  .name {
     font-size: 30px;
   }
 }
 
-.ProjectListContainer{
+.ProjectListContainer {
   padding: var(--content-padding);
 }
-.currentProject{
-  padding: calc(var(--content-padding)/2);
+
+.currentProject {
+  padding: calc(var(--content-padding) / 2);
   margin: var(--content-margin);
 }

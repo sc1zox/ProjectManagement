@@ -1,5 +1,6 @@
 <div class="dashboard-home">
-  <main class="main-content" *ngFor="let roadmap of roadmaps">
-    <app-team-roadmap [roadmap]="roadmap" [user]="user" [teams]="roadmap.teams" (dataUpdated)="refetch()" [enableDragDrop]="isPo"></app-team-roadmap>
+  <main *ngFor="let roadmap of roadmaps" class="main-content">
+    <app-team-roadmap (dataUpdated)="refetch()" [enableDragDrop]="isPo" [roadmap]="roadmap" [teams]="roadmap.teams"
+                      [user]="user"></app-team-roadmap>
   </main>
 </div>

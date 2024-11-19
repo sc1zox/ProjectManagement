@@ -1,12 +1,14 @@
 .roadmap-card {
-    margin-bottom: calc(var(--content-margin)*2);
-    padding: calc(var(--content-padding)/2);
-    background-color: #f5f9ff;
-  }
-.main-content{
+  margin-bottom: calc(var(--content-margin) * 2);
+  padding: calc(var(--content-padding) / 2);
+  background-color: #f5f9ff;
+}
+
+.main-content {
   width: 100%;
 }
-.dashboard-home{
+
+.dashboard-home {
   display: flex;
   flex-direction: column;
   align-items: center;

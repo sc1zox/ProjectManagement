@@ -1,21 +1,22 @@
-#UserTable{
-  margin: calc(var(--content-margin)*2);
+#UserTable {
+  margin: calc(var(--content-margin) * 2);
 }
-.mat-column-modal{
+
+.mat-column-modal {
   display: none;
 }
+
 // damit auf mobile die Tabelle nicht zu breit ist. Ich würde hier stattdessen auf 2 Tabellen gehen und die 2. nur rendern on mobile
 @media (max-width: 1200px) {
   .mat-column-skills,
   .mat-column-teamPlanning,
-  .mat-column-workHours
-  {
+  .mat-column-workHours {
     display: none;
   }
-  .mat-column-modal{
+  .mat-column-modal {
     display: table-cell;
   }
-  #modalButton{
+  #modalButton {
     padding: var(--content-padding);
   }
 }

@@ -7,9 +7,10 @@
   width: 100%;
 }
 
-.button{
+.button {
   margin-top: var(--content-margin);
 }
+
 ::ng-deep {
   #form-container {
     width: 100%;
@@ -31,7 +32,7 @@
 
 @media screen and (max-width: 1000px) {
   .mitarbeiter-form {
-    margin-bottom: calc(var(--form-maxsize)/2.5);
-    margin-top: calc(var(--form-maxsize)/2.5);
+    margin-bottom: calc(var(--form-maxsize) / 2.5);
+    margin-top: calc(var(--form-maxsize) / 2.5);
   }
 }

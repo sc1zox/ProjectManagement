@@ -1,9 +1,8 @@
 import {Injectable} from '@angular/core';
-import { User} from '../types/user';
+import {User} from '../types/user';
 import {ApiService} from './api.service';
 import {ApiResponse} from '../types/api-response';
 import {Login} from '../types/login';
-import {UpdateService} from './update.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +19,7 @@ export class UserService {
   async getUsers(): Promise<User[]> {
     try {
       console.log("Fetching users from API...");
-      const response:ApiResponse<User[]> = await this.ApiService.fetch("/users");
+      const response: ApiResponse<User[]> = await this.ApiService.fetch("/users");
 
       if (response.code !== 200) {
         throw new Error("Network response was not ok while fetching all users");
@@ -36,7 +35,7 @@ export class UserService {
 
   async getUser(ID: number): Promise<User> {
 
-    const response:ApiResponse<User> = await this.ApiService.fetch(`/users/${ID}`);
+    const response: ApiResponse<User> = await this.ApiService.fetch(`/users/${ID}`);
 
     if (response.code !== 200) {
       throw new Error('Failed to fetch user data for specific id:' + ID);
@@ -46,7 +45,7 @@ export class UserService {
   }
 
   async createUser(user: User): Promise<User> {
-    const response: ApiResponse<User> = await this.ApiService.post("/users/create",user);
+    const response: ApiResponse<User> = await this.ApiService.post("/users/create", user);
 
     if (!response.data) {
       throw new Error('No response received from the server');
@@ -59,8 +58,8 @@ export class UserService {
   }
 
   async createLogin(Login: Login): Promise<Login> {
-    let LoginUrl = this.ApiService.getAuthUrl()+"/create";
-    const response: ApiResponse<Login> = await this.ApiService.postUrl(LoginUrl,Login);
+    let LoginUrl = this.ApiService.getAuthUrl() + "/create";
+    const response: ApiResponse<Login> = await this.ApiService.postUrl(LoginUrl, Login);
 
     if (!response.data) {
       throw new Error('No response received from the server');

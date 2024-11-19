@@ -13,16 +13,17 @@ import {Team} from '../../../../../types/team';
   templateUrl: './team-planung.component.html',
   styleUrl: './team-planung.component.scss'
 })
-export class TeamPlanungComponent implements OnInit{
-  teams: Team[]=[];
+export class TeamPlanungComponent implements OnInit {
+  teams: Team[] = [];
   @Input() user?: User;
-  constructor(private readonly TeamService:TeamService) {
+
+  constructor(private readonly TeamService: TeamService) {
   }
 
 
-  async ngOnInit(){
+  async ngOnInit() {
 // überlegung user object mit teams direkt als input zu geben?
-    if(this.user)
+    if (this.user)
       this.teams = await this.TeamService.getTeamByUserID(this.user.id)
   }
 }

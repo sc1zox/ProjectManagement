@@ -1,14 +1,14 @@
-<div class="team-roadmap" *ngIf="roadmap && roadmap.projects.length>0; else noRoadmap">
+<div *ngIf="roadmap && roadmap.projects.length>0; else noRoadmap" class="team-roadmap">
   <h2>{{ teams?.name }}</h2>
 
   <!-- Horizontal scrollable project list -->
-  <div #projectList class="project-list" cdkDropList
+  <div #projectList (cdkDropListDropped)="drop($event)" [cdkDropListDisabled]="!enableDragDrop"
        [cdkDropListOrientation]="window.innerWidth > 1000 ? 'horizontal' : 'vertical'"
-       (cdkDropListDropped)="drop($event)"
-       [cdkDropListDisabled]="!enableDragDrop">
-    <div cdkDrag *ngFor="let project of projects" class="project-box" cdkDragBoundary=".project-list"
-         [cdkDragLockAxis]="window.innerWidth > 1000 ? 'x' : 'y'" [class.selected]="project.id === selectedProject?.id"
-         (click)="selectProject(project)">
+       cdkDropList
+       class="project-list">
+    <div (click)="selectProject(project)" *ngFor="let project of projects" [cdkDragLockAxis]="window.innerWidth > 1000 ? 'x' : 'y'" [class.selected]="project.id === selectedProject?.id"
+         cdkDrag cdkDragBoundary=".project-list"
+         class="project-box">
       {{ project.name }}
     </div>
   </div>
@@ -21,16 +21,16 @@
       <!-- Start Date with Datepicker -->
       <mat-form-field appearance="fill">
         <mat-label>Start Date</mat-label>
-        <input matInput [matDatepicker]="startPicker" [formControl]="startDateControl">
-        <mat-datepicker-toggle matSuffix [for]="startPicker"></mat-datepicker-toggle>
+        <input [formControl]="startDateControl" [matDatepicker]="startPicker" matInput>
+        <mat-datepicker-toggle [for]="startPicker" matSuffix></mat-datepicker-toggle>
         <mat-datepicker #startPicker></mat-datepicker>
       </mat-form-field>
 
       <!-- End Date with Datepicker -->
       <mat-form-field appearance="fill">
         <mat-label>End Date</mat-label>
-        <input matInput [matDatepicker]="endPicker" [formControl]="endDateControl">
-        <mat-datepicker-toggle matSuffix [for]="endPicker"></mat-datepicker-toggle>
+        <input [formControl]="endDateControl" [matDatepicker]="endPicker" matInput>
+        <mat-datepicker-toggle [for]="endPicker" matSuffix></mat-datepicker-toggle>
         <mat-datepicker #endPicker></mat-datepicker>
         <mat-error *ngIf="endDateControl.hasError('endDateInvalid')">End date cannot be before Start date!</mat-error>
       </mat-form-field>
@@ -47,24 +47,24 @@
     <p><strong>Aufwand in Stunden:</strong> {{ selectedProject.estimationHours }}</p>
 
     <div class="timeButtonContainer">
-    <div class="devTimeEstimate" *ngIf="user?.role === UserRole.Developer && estimatableDEV">
-    <mat-form-field appearance="fill">
-      <mat-label>Tage</mat-label>
-      <input matInput type="number" placeholder="Tage" [(ngModel)]="days" min="0">
-    </mat-form-field>
+      <div *ngIf="user?.role === UserRole.Developer && estimatableDEV" class="devTimeEstimate">
+        <mat-form-field appearance="fill">
+          <mat-label>Tage</mat-label>
+          <input [(ngModel)]="days" matInput min="0" placeholder="Tage" type="number">
+        </mat-form-field>
 
-    <mat-form-field appearance="fill">
-      <mat-label>Stunden</mat-label>
-      <input matInput type="number" placeholder="Stunden" [(ngModel)]="hours" min="0">
-    </mat-form-field>
-    </div>
-    <div class="submitContainer">
-      <button mat-raised-button id="submitProject" (click)=onSubmit()>Safe Project</button>
-    </div>
-      <div class="deleteContainer" *ngIf="this.user?.role === UserRole.PO">
-        <button mat-raised-button id="deleteProject" (click)=onDelete()>Delete Project</button>
+        <mat-form-field appearance="fill">
+          <mat-label>Stunden</mat-label>
+          <input [(ngModel)]="hours" matInput min="0" placeholder="Stunden" type="number">
+        </mat-form-field>
       </div>
-  </div>
+      <div class="submitContainer">
+        <button (click)=onSubmit() id="submitProject" mat-raised-button>Safe Project</button>
+      </div>
+      <div *ngIf="this.user?.role === UserRole.PO" class="deleteContainer">
+        <button (click)=onDelete() id="deleteProject" mat-raised-button>Delete Project</button>
+      </div>
+    </div>
   </div>
 </div>
 

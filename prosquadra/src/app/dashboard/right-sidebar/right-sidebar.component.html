@@ -1,33 +1,33 @@
 <div class="sidebar-right">
-  <button mat-icon-button (click)="showNotifications()" id="notification">
+  <button (click)="showNotifications()" id="notification" mat-icon-button>
     <mat-icon matBadge="{{ notificationsAmount }}">notifications</mat-icon>
   </button>
 
   <div class="user-info">
     <p>Benutzer</p>
     <div class="user-avatar">
-      <div class="name">{{userInitials}}</div>
+      <div class="name">{{ userInitials }}</div>
     </div>
   </div>
 
 
   <mat-accordion class="ProjectListContainer">
-      <div>
-        <mat-expansion-panel class="currentProject">
-          <mat-expansion-panel-header>
-            <mat-panel-title>{{ userProject?.name }}</mat-panel-title>
-          </mat-expansion-panel-header>
-          <p>{{ userProject?.description }}</p>
-          <p class="bold">Start Date:</p>
-          <p>{{userProject?.startDate | date }}</p>
-          <p class="bold">End Date:</p>
-          <p>{{userProject?.endDate | date}}</p>
-          <button mat-raised-button [routerLink]="['home']" class="button">Zur Projektübersicht</button>
-        </mat-expansion-panel>
-      </div>
+    <div>
+      <mat-expansion-panel class="currentProject">
+        <mat-expansion-panel-header>
+          <mat-panel-title>{{ userProject?.name }}</mat-panel-title>
+        </mat-expansion-panel-header>
+        <p>{{ userProject?.description }}</p>
+        <p class="bold">Start Date:</p>
+        <p>{{ userProject?.startDate | date }}</p>
+        <p class="bold">End Date:</p>
+        <p>{{ userProject?.endDate | date }}</p>
+        <button [routerLink]="['home']" class="button" mat-raised-button>Zur Projektübersicht</button>
+      </mat-expansion-panel>
+    </div>
   </mat-accordion>
 
   <app-user-skills [user]="user"></app-user-skills>
 
-<button mat-raised-button (click)="triggerLogout()">Logout</button>
+  <button (click)="triggerLogout()" mat-raised-button>Logout</button>
 </div>

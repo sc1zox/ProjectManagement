@@ -8,7 +8,8 @@
       <mat-list-item [routerLink]="['home']">Dashboard</mat-list-item>
 
 
-      <mat-list-item *ngIf="user?.role===UserRole.PO" [routerLink]="['create-project']">Projekt erstellen</mat-list-item>
+      <mat-list-item *ngIf="user?.role===UserRole.PO" [routerLink]="['create-project']">Projekt erstellen
+      </mat-list-item>
 
       <mat-list-item [routerLink]="['team-roadmap']">Team Roadmap</mat-list-item>
 
