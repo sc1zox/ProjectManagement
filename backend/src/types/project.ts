@@ -6,7 +6,6 @@ export interface Project {
   endDate: Date| null;
   roadmapId: number| null;
   PriorityPosition?: number | null;
-  estimationDays?: number| null;
   estimationHours?: number| null;
   createdAt: Date;
   updatedAt: Date;

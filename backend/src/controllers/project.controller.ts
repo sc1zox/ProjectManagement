@@ -181,7 +181,7 @@ class ProjectController {
 
 
     async updateProject(req: Request, res: Response, next: NextFunction): Promise<any> {
-        const {id, name, description, teamid, startDate, endDate, estimationDays, estimationHours} = req.body;
+        const {id, name, description, teamid, startDate, endDate, estimationHours} = req.body;
 
         try {
             const existingProject = await prisma.project.findUnique({
@@ -214,7 +214,6 @@ class ProjectController {
                     },
                     startDate,
                     endDate,
-                    estimationDays,
                     estimationHours,
                 },
             });

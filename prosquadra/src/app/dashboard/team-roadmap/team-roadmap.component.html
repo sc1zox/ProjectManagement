@@ -59,7 +59,7 @@
         </mat-form-field>
       </div>
       <div class="submitContainer">
-        <button (click)=onSubmit() id="submitProject" mat-raised-button>Safe Project</button>
+        <button [disabled]=!updated (click)=onSubmit() id="submitProject" mat-raised-button>Safe Project</button>
       </div>
       <div *ngIf="this.user?.role === UserRole.PO" class="deleteContainer">
         <button (click)=onDelete() id="deleteProject" mat-raised-button>Delete Project</button>

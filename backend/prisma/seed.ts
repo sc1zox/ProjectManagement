@@ -139,7 +139,6 @@ async function main() {
         data: {
             name: 'New Development Project',
             description: 'A new project for development team',
-            estimationDays: 30,
             estimationHours: 45,
             startDate: new Date(2023, 4, 1),
             endDate: new Date(2023, 9, 1),
@@ -153,7 +152,6 @@ async function main() {
         data: {
             name: 'QA Testing Project',
             description: 'A project for quality assurance testing',
-            estimationDays: 45,
             estimationHours: 19,
             startDate: new Date(2023, 5, 15),
             endDate: new Date(2023, 10, 15),
@@ -167,7 +165,6 @@ async function main() {
         data: {
             name: 'Design Sprint',
             description: 'A design-focused sprint for UI/UX improvement',
-            estimationDays: 15,
             estimationHours: 20,
             startDate: new Date(2023, 6, 1),
             endDate: new Date(2023, 7, 1),
@@ -181,7 +178,6 @@ async function main() {
         data: {
             name: 'Product Development',
             description: 'A project focused on product improvements',
-            estimationDays: 30,
             estimationHours: 40,
             startDate: new Date(2023, 7, 15),
             endDate: new Date(2023, 12, 15),
@@ -195,7 +191,6 @@ async function main() {
         data: {
             name: 'Marketing Strategy',
             description: 'A project focused on developing marketing strategies',
-            estimationDays: 25,
             estimationHours: 30,
             startDate: new Date(2023, 5, 1),
             endDate: new Date(2023, 6, 30),
