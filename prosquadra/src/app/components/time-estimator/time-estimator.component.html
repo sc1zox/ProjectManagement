@@ -1,0 +1,31 @@
+<div class="time-estimator-container">
+    <form [formGroup]="timeEstimateForm" (ngSubmit)="calculateEstimate()">
+        <div *ngFor="let field of estimateFields" class="form-group">
+            <mat-form-field appearance="outline">
+                <mat-label>{{ field.label }}</mat-label>
+                <input matInput type="number" formControlName="{{ field.control }}" placeholder="{{ field.label }}"
+                    min="0" />
+                <mat-error *ngIf="timeEstimateForm.get(field.control)?.hasError('required')">
+                    {{ field.label }} is required
+                </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+                <mat-label>Unit</mat-label>
+                <mat-select formControlName="{{ field.unitControl }}">
+                    <mat-option *ngFor="let unit of timeUnits" [value]="unit.value">
+                        {{ unit.label }}
+                    </mat-option>
+                </mat-select>
+            </mat-form-field>
+        </div>
+
+        <button mat-raised-button color="primary" type="submit" [disabled]="timeEstimateForm.invalid">
+            Calculate Estimate
+        </button>
+    </form>
+
+    <div *ngIf="result">
+        <h3>Your Estimated Time: {{ result }} hours</h3>
+    </div>
+</div>

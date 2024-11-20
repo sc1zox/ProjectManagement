@@ -57,7 +57,9 @@ const isStartDateInRange = (projects: Project[], startDate: Date,selectedProject
     MatNativeDateModule,
     MatInputModule,
     FormsModule,
-    ReactiveFormsModule, MatButton],
+    ReactiveFormsModule, 
+    MatButton,
+    TimeEstimatorComponent],
   templateUrl: './team-roadmap.component.html',
   styleUrls: ['./team-roadmap.component.scss']
 })

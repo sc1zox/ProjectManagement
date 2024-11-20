@@ -30,4 +30,8 @@
   <app-user-skills [user]="user"></app-user-skills>
 
   <button (click)="triggerLogout()" mat-raised-button>Logout</button>
+
+  <div class="footer">
+    <p> {{ user?.role }} </p>
+  </div>
 </div>

@@ -43,23 +43,30 @@
     </div>
 
     <p><strong>Beschreibung:</strong> {{ selectedProject.description }}</p>
-    <p><strong>Aufwand in Tagen:</strong> {{ selectedProject.estimationDays }}</p>
-    <p><strong>Aufwand in Stunden:</strong> {{ selectedProject.estimationHours }}</p>
+    <p><strong>Projekt Zeitschätzung: </strong> {{ selectedProject.estimationHours }}</p>
 
+    <div *ngIf = "estimatableDEV" >
+      <p><strong>Deine Zeitschätzung</strong></p>
+      <app-time-estimator></app-time-estimator>
+    </div>
+    
+    
     <div class="timeButtonContainer">
+      <!--
       <div *ngIf="user?.role === UserRole.Developer && estimatableDEV" class="devTimeEstimate">
         <mat-form-field appearance="fill">
           <mat-label>Tage</mat-label>
           <input [(ngModel)]="days" matInput min="0" placeholder="Tage" type="number">
         </mat-form-field>
-
+    
         <mat-form-field appearance="fill">
           <mat-label>Stunden</mat-label>
           <input [(ngModel)]="hours" matInput min="0" placeholder="Stunden" type="number">
         </mat-form-field>
       </div>
+      -->
       <div class="submitContainer">
-        <button [disabled]=!updated (click)=onSubmit() id="submitProject" mat-raised-button>Safe Project</button>
+        <button (click)=onSubmit() id="submitProject" mat-raised-button>Save Project</button>
       </div>
       <div *ngIf="this.user?.role === UserRole.PO" class="deleteContainer">
         <button (click)=onDelete() id="deleteProject" mat-raised-button>Delete Project</button>
