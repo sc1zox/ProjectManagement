@@ -374,10 +374,11 @@ class ProjectController {
             });
 
             if (estimations.length === 0) {
-                return next({
-                    status: StatusCodes.NOT_FOUND,
+                res.status(StatusCodes.OK).json({
                     message: 'No estimations found for the project.',
+                    data: -1337,
                 });
+                return;
             }
 
             const averageEstimation = await prisma.estimation.aggregate({

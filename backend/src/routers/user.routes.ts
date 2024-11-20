@@ -1,4 +1,4 @@
-import {Router} from 'express';
+import { Router } from 'express';
 import rescue from 'express-rescue';
 import userController from '../controllers/user.controller';
 import ProjectController from '../controllers/project.controller';
@@ -7,9 +7,12 @@ import RoadmapController from "../controllers/roadmap.controller";
 import SkillsController from "../controllers/skills.controller";
 import UserController from "../controllers/user.controller";
 import NotificationsController from "../controllers/notifications.controller";
+import checkRole from '../middleware/roleChecker';
+import {UserRole} from "@prisma/client";
 
 const userRouter = Router();
 
+// routen absicherung ist implementiert, jedoch schickt das frontend momentan nicht überall auth mit. Bei Bedarf: checkRole(UserRole.Admin)
 
 userRouter.get('/users', rescue(userController.getAllUser));
 userRouter.get('/users/:id', rescue(userController.getUserById));

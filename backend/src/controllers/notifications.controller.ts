@@ -93,7 +93,7 @@ class NotificationsController {
     }
     async markNotificationAsRead(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const notificationId = Number(req.params);
+            const notificationId:number = Number(req.params.id);
 
             if(!notificationId){
                 return next({

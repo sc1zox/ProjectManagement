@@ -82,13 +82,13 @@ class RoadmapController {
                     message: "An array of projects is required.",
                 });
             }
-            projects.sort((a, b) => a.PriorityPosition - b.PriorityPosition);
+            projects.sort((a, b) => a.priorityPosition - b.priorityPosition);
 
             for (const project of projects) {
                 await prisma.project.update({
                     where: { id: project.id },
                     data: {
-                        priorityPosition: project.PriorityPosition,
+                        priorityPosition: project.priorityPosition,
                     },
                 });
             }

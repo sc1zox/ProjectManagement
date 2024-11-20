@@ -66,7 +66,6 @@ export class TeamsFormComponent implements OnInit {
       console.error('Error while fetching Users:', error);
     }
     this.filterUsers()
-    console.log(this.filteredUsers, this.Users)
   }
 
   onSubmit() {
@@ -77,7 +76,7 @@ export class TeamsFormComponent implements OnInit {
         data: {message: 'Wollen Sie dieses Team wirklich anlegen?'}
       });
 
-      dialogRef.afterClosed().subscribe(result => {
+      dialogRef.afterClosed().subscribe(async result => {
         if (result) {
           this.selectedUser = formValue.selectedUser;
           if (this.Team) {
@@ -91,13 +90,17 @@ export class TeamsFormComponent implements OnInit {
             }
             this.Team.name = formValue.teamName;
             this.Team.members = this.selectedUsers;
-            this.TeamService.createTeam(this.Team);
-            this.selectedUser?.forEach((user) => {
-              this.NotificationService.createNotification('Du wurdest einem neuen Team hinzugefügt', user)
-            })
+            try {
+              await this.TeamService.createTeam(this.Team);
+              this.selectedUser?.forEach((user) => {
+                this.NotificationService.createNotification('Du wurdest einem neuen Team hinzugefügt', user)
+              })
+
+            } catch (error) {
+              this.SnackBarService.open("Bei der Teamerstellung gab es einen Fehler!")
+            }
             this.router.navigate(['/dashboard/admin-panel']);
           }
-          // Diese Daten dann an den Server schicken
         } else {
           this.SnackBarService.open("Sie haben die Teamerstellung abgebrochen")
         }

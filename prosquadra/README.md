@@ -33,6 +33,9 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 ### TODO:
 
 - Try catch Blöcke nutzen für backend calls und im catch einfach mit SnackBar Fehler ausgeben.
+- unauthorized page 
+- submit und delete button on mobile fix
+- backend route checking ist implementiert aber wird momentan nicht benutzt, da es 1. im frontend gemacht wird und 2. das FE momentan kein auth daten mitschickt bei requests
 - Safe project Button führt 5 network requests aus auch ohne Änderungen weil er alle roadmaps neu pulled -> unnötig. Entweder gar keine ohen changes oder nur die affected Roadmap neu pullen 
 - Bei Projekterstellung sollte PO nur sein Team als Auswahl bekommen
 - safe project button in team roadmap nur verfügbar für sm oder po ? -> ne für alle aber nicht alle dürfen editieren

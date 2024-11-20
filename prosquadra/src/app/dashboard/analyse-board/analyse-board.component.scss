@@ -6,3 +6,21 @@
   width: 100%;
   height: auto;
 }
+
+#errorMessage{
+  display: none;
+}
+
+@media screen and (max-width: 1000px) {
+  #gantt-chart{
+    display: none;
+  }
+  #errorMessage{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bolder;
+    padding-top: calc(var(--content-padding)*8);
+    padding-bottom: calc(var(--content-padding)*8);;
+  }
+}

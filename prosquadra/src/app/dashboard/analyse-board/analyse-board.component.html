@@ -1,5 +1,9 @@
-<app-gantt-chart
+<app-gantt-chart id="gantt-chart"
   *ngIf="teams.length > 0"
   [startDate]="startDate"
   [teams]="teams"
 ></app-gantt-chart>
+
+<div id="errorMessage">
+<p> Die Analyse ist auf mobile derzeit nicht verfügbar</p>
+</div>

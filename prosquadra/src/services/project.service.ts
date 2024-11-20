@@ -108,9 +108,8 @@ export class ProjectService implements OnInit {
       response = await this.ApiService.fetch('/project/estimation/' + projectId);
       return response.data;
     }catch (error){
-        console.log("ERROR:",error)
     }
-    return 0;
+    return -1;
   }
 
 }
