@@ -44,10 +44,9 @@
 
     <p><strong>Beschreibung:</strong> {{ selectedProject.description }}</p>
     <p><strong>Projekt Zeitschätzung: </strong> {{ selectedProject.estimationHours }}</p>
+    <p><strong>Deine Zeitschätzung:</strong></p>
 
-
-      <div *ngIf = "estimatableDEV" >
-        <p><strong>Deine Zeitschätzung</strong></p>
+      <div *ngIf = "estimatableDEV" class="estimationContainer">
         <app-time-estimator [currentProject]="selectedProject"></app-time-estimator>
       </div>
 

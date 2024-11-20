@@ -123,4 +123,19 @@
   right: 0;
   padding: var(--content-padding);
   margin: calc(var(--content-margin) * 3);
+  margin-bottom: calc(var(--content-margin) * 4);
 }
+.estimationContainer{
+  margin-top: var(--content-margin);
+}
+@media screen and (max-width: 1000px) {
+  .submitContainer{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+}
+
+
+
