@@ -124,12 +124,3 @@
   padding: var(--content-padding);
   margin: calc(var(--content-margin) * 3);
 }
-
-@media screen and (max-width: 1000px) {
-  .timeButtonContainer, .devTimeEstimate {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-}

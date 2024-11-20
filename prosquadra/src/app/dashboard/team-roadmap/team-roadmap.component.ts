@@ -34,6 +34,7 @@ import {RoadmapService} from '../../../services/roadmap.service';
 import {SnackbarService} from '../../../services/snackbar.service';
 import {Team} from '../../../types/team';
 import {parseProjects} from '../../../mapper/projectDatesToDate';
+import {TimeEstimatorComponent} from '../../components/time-estimator/time-estimator.component';
 
 
 const isStartDateInRange = (projects: Project[], startDate: Date,selectedProject: Project): boolean => {
@@ -57,7 +58,7 @@ const isStartDateInRange = (projects: Project[], startDate: Date,selectedProject
     MatNativeDateModule,
     MatInputModule,
     FormsModule,
-    ReactiveFormsModule, 
+    ReactiveFormsModule,
     MatButton,
     TimeEstimatorComponent],
   templateUrl: './team-roadmap.component.html',
@@ -193,17 +194,11 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
 
   async onSubmit() {
 
-    if (this.days === 0 && this.hours === 0 && this.user?.role === UserRole.Developer) {
-      this.SnackBarSerivce.open("Die Dauer darf nicht 0 Stunden und 0 Tage sein")
-      return;
-    }
     if (this.selectedProject) {
       const updatedProject = {
         ...this.selectedProject,
         startDate: this.startDateControl.value,
         endDate: this.endDateControl.value,
-        estimationDays: this.days,
-        estimationHours: this.hours,
       };
 
       try {
@@ -212,8 +207,6 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
           await this.RoadmapService.updateRoadmap(this.roadmap);
           await this.refreshProjectOrder();
         }
-        this.hours = 0;
-        this.days = 0;
         if (this.user?.role === UserRole.Developer) {
           this.dataUpdated.emit(); // das hier verursacht ein doppeltes rendern der ersten roadmap. Unsicher ob es weggelassen werden kann für andere Updates.Scheint mir momentan nicht essenziell zu sein. Doch wenn es fehlt wird für Dev die Zeit nicht aktualisiert deshalb die if clause
         }

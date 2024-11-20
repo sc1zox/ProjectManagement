@@ -76,7 +76,6 @@ export class CreateProjectComponent implements AfterViewInit {
           name: this.projectForm.value.projectName,
           description: this.projectForm.value.description,
           team: selectedTeam,
-          estimationDays: 0,
           PriorityPosition: newPriorityPosition,
         };
         await this.projectService.setProjects(newProject);
