@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, Input} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -6,6 +6,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { UpdateService } from '../../../services/update.service';
+import {Project} from '../../../types/project';
 
 
 @Component({
@@ -26,6 +27,7 @@ import { UpdateService } from '../../../services/update.service';
 export class TimeEstimatorComponent {
   timeEstimateForm: FormGroup;
   result: number | null = null;
+  @Input() currentProject?:Project;
 
   timeUnits = [
     { value: 'hours', label: 'Hours' },
@@ -59,8 +61,11 @@ export class TimeEstimatorComponent {
 
     // PERT formula
     this.result = Math.round((optimistic + 4 * realistic + pessimistic) / 6);
-  
-    this.service.updateResource("/api/project/update", this.result);
+
+    if (this.currentProject) {
+      this.currentProject.estimationHours = this.result;
+      this.service.updateResource("/api/project/update", this.currentProject);
+    }
   }
 
   private convertToHours(value: number, unit: string): number {
