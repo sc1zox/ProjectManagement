@@ -7,9 +7,17 @@ import {Notifications} from "@prisma/client";
 class NotificationsController {
 
     async getNotificationsByUserId(req: Request, res: Response, next: NextFunction): Promise<void> {
+        const userId: number = Number(req.params.id);
+
+        if(!userId){
+            return next({
+                status: StatusCodes.BAD_REQUEST,
+                message: 'provide a valid id'
+            });
+        }
         try {
             const notifications = await prisma.notifications.findMany({
-                where: {userId: Number(req.params.id)},
+                where: {userId: userId},
             });
 
             if (!notifications) {
@@ -28,11 +36,11 @@ class NotificationsController {
     async setNotification(req: Request, res: Response, next: NextFunction): Promise<void> {
         const {isRead, message, userId} = req.body;
 
-        if (isRead === undefined || !message || isNaN(userId)) {
-            res.status(StatusCodes.BAD_REQUEST).json({
+        if (isRead === undefined || !message || isNaN(userId) ||!userId) {
+            return next({
+                status: StatusCodes.BAD_REQUEST,
                 message: 'isRead, message, and valid userId are required.',
             });
-            return;
         }
 
         try {
@@ -57,10 +65,17 @@ class NotificationsController {
     }
     async deleteNotification(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const { id } = req.params;
+            const notificationId:number = Number(req.params);
+
+            if(!notificationId){
+                return next({
+                    status: StatusCodes.BAD_REQUEST,
+                    message: 'provide a valid id'
+                })
+            }
 
             const notification = await prisma.notifications.delete({
-                where: { id: Number(id) },
+                where: { id: notificationId },
             });
 
             if (!notification) {
@@ -78,10 +93,17 @@ class NotificationsController {
     }
     async markNotificationAsRead(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const { id } = req.params;
+            const notificationId = Number(req.params);
+
+            if(!notificationId){
+                return next({
+                    status: StatusCodes.BAD_REQUEST,
+                    message: 'provide a valid id'
+                })
+            }
 
             const notification = await prisma.notifications.update({
-                where: { id: Number(id) },
+                where: { id: notificationId },
                 data: { isRead: true },
             });
 
@@ -103,10 +125,10 @@ class NotificationsController {
         const { isRead, message, userId } = req.body;
 
         if (isRead === undefined || !message || !userId) {
-            res.status(StatusCodes.BAD_REQUEST).json({
+            return next({
+                status: StatusCodes.BAD_REQUEST,
                 message: 'isRead, message, and valid userId are required.',
             });
-            return;
         }
 
         try {

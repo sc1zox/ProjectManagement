@@ -67,7 +67,7 @@ export class CreateProjectComponent implements AfterViewInit {
         const existingProjects = await this.projectService.getProjectsByTeamId(selectedTeam.id);
 
         const maxPriorityPosition = existingProjects.length > 0
-          ? Math.max(...existingProjects.map(project => project.PriorityPosition || 0))
+          ? Math.max(...existingProjects.map(project => project.priorityPosition || 0))
           : 0;
         const newPriorityPosition = maxPriorityPosition + 1;
 
@@ -76,7 +76,7 @@ export class CreateProjectComponent implements AfterViewInit {
           name: this.projectForm.value.projectName,
           description: this.projectForm.value.description,
           team: selectedTeam,
-          PriorityPosition: newPriorityPosition,
+          priorityPosition: newPriorityPosition,
         };
         await this.projectService.setProjects(newProject);
         this.selectedTeam = selectedTeam;
@@ -90,7 +90,7 @@ export class CreateProjectComponent implements AfterViewInit {
               projects: [
                 ...this.roadmap.projects,
                 newProject,
-              ].sort((a, b) => (a.PriorityPosition ?? 0) - (b.PriorityPosition ?? 0)) //chatgpt, sortiere hier nach priority
+              ].sort((a, b) => (a.priorityPosition ?? 0) - (b.priorityPosition ?? 0)) //chatgpt, sortiere hier nach priority
             };
           }
         }

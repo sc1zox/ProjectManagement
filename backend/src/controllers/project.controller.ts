@@ -3,13 +3,15 @@ import {StatusCodes} from "http-status-codes";
 import prisma from "../lib/prisma";
 import {ApiResponse} from "../types/api-response";
 import {Project} from "../types/project";
+import {Estimation} from "../types/estimation";
 
 class ProjectController {
-    async createProject(req: Request, res: Response, next: NextFunction): Promise<any> {
-        const {name, description, team,PriorityPosition } = req.body;
+    async createProject(req: Request, res: Response, next: NextFunction): Promise<void> {
+        const {name, description, team, PriorityPosition} = req.body;
 
         if (!name || !description || !team || !team.id || !team.roadmapId) {
-            return res.status(StatusCodes.BAD_REQUEST).json({
+            return next({
+                status: StatusCodes.BAD_REQUEST,
                 message: 'Alle Felder (name, description, team, teamid, team.roadmapId) sind erforderlich.',
             });
         }
@@ -20,7 +22,8 @@ class ProjectController {
             });
 
             if (!existingTeam) {
-                return res.status(StatusCodes.NOT_FOUND).json({
+                return next({
+                    status: StatusCodes.NOT_FOUND,
                     message: 'Das Team wurde nicht gefunden.',
                 });
             }
@@ -36,7 +39,7 @@ class ProjectController {
                             id: team.roadmapId
                         }
                     },
-                    PriorityPosition: PriorityPosition,
+                    priorityPosition: PriorityPosition,
                 },
             });
 
@@ -51,7 +54,14 @@ class ProjectController {
 
     async getProjects(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const projects = await prisma.project.findMany();
+            const projects:Project[] = await prisma.project.findMany();
+
+            if(projects.length===0){
+                return next({
+                    status: StatusCodes.NOT_FOUND,
+                    message:'Could not find any projects'
+                });
+            }
 
             if (projects) {
                 const response: ApiResponse<Project[]> = {
@@ -69,12 +79,11 @@ class ProjectController {
     async getProjectsByTeam(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const teamId = Number(req.params.id);
-            if (isNaN(teamId)) {
-                res.status(StatusCodes.BAD_REQUEST).json({
+            if (isNaN(teamId) || !teamId) {
+                return next({
                     code: StatusCodes.BAD_REQUEST,
                     message: 'Invalid team ID provided',
                 });
-                return;
             }
 
             const teamWithProjects = await prisma.team.findUnique({
@@ -105,9 +114,16 @@ class ProjectController {
     }
 
     async getProjectById(req: Request, res: Response, next: NextFunction): Promise<void> {
+        const projectId = Number(req.params.id);
+        if(!projectId){
+            return next({
+                status: StatusCodes.BAD_REQUEST,
+                message: 'provide a valid projectId'
+            });
+        }
         try {
             const project = await prisma.project.findUnique({
-                where: {id: Number(req.params.id)},
+                where: {id: projectId},
             });
 
             if (!project) {
@@ -123,19 +139,20 @@ class ProjectController {
         }
     }
 
-    async getProjectWithLowestPriorityByUserId(req: Request, res: Response, next: NextFunction): Promise<any> {
-        console.log("This function gets polled with ",req.params)
+    async getProjectWithLowestPriorityByUserId(req: Request, res: Response, next: NextFunction): Promise<void> {
+        console.log("This function gets polled with ", req.params)
         try {
             const userId = Number(req.params.id);
 
-            if (isNaN(userId)) {
-                return res.status(StatusCodes.BAD_REQUEST).json({
+            if (isNaN(userId) || !userId) {
+                return next({
+                    status: StatusCodes.BAD_REQUEST,
                     message: 'Invalid user ID provided',
                 });
             }
 
             const user = await prisma.user.findUnique({
-                where: { id: userId },
+                where: {id: userId},
                 include: {
                     teams: {
                         include: {
@@ -146,7 +163,8 @@ class ProjectController {
             });
 
             if (!user || user.teams.length === 0) {
-                return res.status(StatusCodes.NOT_FOUND).json({
+                return next({
+                    status: StatusCodes.NOT_FOUND,
                     message: 'User or associated teams not found',
                 });
             }
@@ -158,12 +176,13 @@ class ProjectController {
                 where: {
                     teamid: team.id,
                     roadmapId: team.roadmapId,
-                    PriorityPosition: 1,
+                    priorityPosition: 1,
                 },
             });
 
             if (!project) {
-                return res.status(StatusCodes.NOT_FOUND).json({
+                return next({
+                    status: StatusCodes.NOT_FOUND,
                     message: 'No project found with the lowest priority for the team and roadmap',
                 });
             }
@@ -178,10 +197,15 @@ class ProjectController {
     }
 
 
+    async updateProject(req: Request, res: Response, next: NextFunction): Promise<void> {
+        const {id, name, description, teamid, startDate, endDate} = req.body;
 
-
-    async updateProject(req: Request, res: Response, next: NextFunction): Promise<any> {
-        const {id, name, description, teamid, startDate, endDate, estimationHours} = req.body;
+        if(!id || !teamid){
+            return next({
+                status: StatusCodes.BAD_REQUEST,
+                message: 'provide valid id or teamid'
+            })
+        }
 
         try {
             const existingProject = await prisma.project.findUnique({
@@ -189,7 +213,8 @@ class ProjectController {
             });
 
             if (!existingProject) {
-                return res.status(StatusCodes.NOT_FOUND).json({
+                return next({
+                    status: StatusCodes.NOT_FOUND,
                     message: 'Das Projekt wurde nicht gefunden.',
                 });
             }
@@ -199,7 +224,8 @@ class ProjectController {
             });
 
             if (!existingTeam) {
-                return res.status(StatusCodes.NOT_FOUND).json({
+                return next({
+                    status: StatusCodes.NOT_FOUND,
                     message: 'Das Team wurde nicht gefunden.',
                 });
             }
@@ -214,7 +240,6 @@ class ProjectController {
                     },
                     startDate,
                     endDate,
-                    estimationHours,
                 },
             });
 
@@ -231,36 +256,36 @@ class ProjectController {
         try {
             const projectId = Number(req.params.id);
 
-            if (isNaN(projectId)) {
-                res.status(StatusCodes.BAD_REQUEST).json({
-                    message: 'Invalid project ID provided',
+            if (isNaN(projectId) || !projectId) {
+                return next({
+                   status: StatusCodes.BAD_REQUEST,
+                   message: 'Invalid project ID provided',
                 });
-                return;
             }
             const projectToDelete = await prisma.project.findUnique({
-                where: { id: projectId },
+                where: {id: projectId},
             });
 
             if (!projectToDelete) {
-                res.status(StatusCodes.NOT_FOUND).json({
+                return next({
+                    status: StatusCodes.NOT_FOUND,
                     message: 'Project not found',
                 });
-                return;
             }
             await prisma.project.delete({
-                where: { id: projectId },
+                where: {id: projectId},
             });
             const remainingProjects = await prisma.project.findMany({
                 where: {
                     teamid: projectToDelete.teamid,
                     roadmapId: projectToDelete.roadmapId,
                 },
-                orderBy: { PriorityPosition: 'asc' },
+                orderBy: {priorityPosition: 'asc'},
             });
             for (let i = 0; i < remainingProjects.length; i++) {
                 await prisma.project.update({
-                    where: { id: remainingProjects[i].id },
-                    data: { PriorityPosition: i + 1 },
+                    where: {id: remainingProjects[i].id},
+                    data: {priorityPosition: i + 1},
                 });
             }
 
@@ -273,6 +298,106 @@ class ProjectController {
         }
     }
 
+    async addEstimationToProject(req: Request, res: Response, next: NextFunction): Promise<void> {
+        const {projectId, estimationHours, userId} = req.body;
+
+        if (!projectId || !estimationHours || !userId) {
+            return next({
+               status: StatusCodes.BAD_REQUEST,
+               message: 'projectId, estimationHours, and userId are required.',
+            });
+        }
+
+        try {
+            const existingProject = await prisma.project.findUnique({
+                where: {id: Number(projectId)},
+            });
+
+            if (!existingProject) {
+                return next({
+                    status: StatusCodes.NOT_FOUND,
+                    message: 'Project not found.',
+                });
+            }
+
+            const existingEstimation = await prisma.estimation.findUnique({
+                where: {
+                    projectId_userId: {
+                        projectId: Number(projectId),
+                        userId: Number(userId),
+                    },
+                },
+            });
+
+            let newEstimation: Estimation;
+            if (existingEstimation) {
+                newEstimation = await prisma.estimation.update({
+                    where: {
+                        id: existingEstimation.id,
+                    },
+                    data: {
+                        hours: estimationHours,
+                    },
+                });
+            } else {
+                newEstimation = await prisma.estimation.create({
+                    data: {
+                        hours: estimationHours,
+                        projectId: existingProject.id,
+                        userId: Number(userId),
+                    },
+                });
+            }
+
+            res.status(StatusCodes.CREATED).json({
+                code: StatusCodes.CREATED,
+                data: newEstimation,
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async getEstimationsWithAverage(req: Request, res: Response, next: NextFunction): Promise<void> {
+        const projectId = Number(req.params.id);
+
+        if (isNaN(projectId)) {
+            return next({
+               status: StatusCodes.BAD_REQUEST,
+                message: 'Invalid project ID provided.',
+            });
+        }
+
+        try {
+            const estimations = await prisma.estimation.findMany({
+                where: {projectId: Number(projectId)},
+            });
+
+            if (estimations.length === 0) {
+                return next({
+                    status: StatusCodes.NOT_FOUND,
+                    message: 'No estimations found for the project.',
+                });
+            }
+
+            const averageEstimation = await prisma.estimation.aggregate({
+                _avg: {
+                    hours: true,
+                },
+                where: {
+                    projectId: Number(projectId),
+                },
+            });
+
+            res.status(StatusCodes.OK).json({
+                code: StatusCodes.OK,
+                data: averageEstimation._avg.hours,
+
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
 
 
 }

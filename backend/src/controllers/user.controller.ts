@@ -7,9 +7,17 @@ import {User} from "../types/user";
 class UserController {
 
     async getUserById(req: Request, res: Response, next: NextFunction): Promise<void> {
+        const userId: number = Number(req.params.id);
+
+        if(!userId){
+            return next({
+                status: StatusCodes.BAD_REQUEST,
+                message: 'provide a valid id'
+            });
+        }
         try {
             const user = await prisma.user.findUnique({
-                where: { id: Number(req.params.id) },
+                where: { id:  userId},
             });
 
             if (!user) {
@@ -39,6 +47,12 @@ class UserController {
                 },
             });
 
+            if(users.length === 0){
+                return next({
+                    message: 'No users found.',
+                });
+            }
+
             const response: ApiResponse<User[]> = {
                 code: StatusCodes.OK,
                 data: users,
@@ -57,10 +71,10 @@ class UserController {
         const { vorname, nachname, role, arbeitszeit, teams, urlaubstage} = req.body;
 
         if (!vorname || !nachname || !role || !arbeitszeit || !teams) {
-            res.status(StatusCodes.BAD_REQUEST).json({
+            return next({
+                code: StatusCodes.BAD_REQUEST,
                 message: 'Alle Felder (vorname, nachname, role, arbeitszeit, teamID) sind erforderlich.',
             });
-            return;
         }
 
 
@@ -90,11 +104,11 @@ class UserController {
     async updateArbeitszeit(req: Request, res: Response, next: NextFunction): Promise<void> {
         const { userID, arbeitszeit } = req.body;
 
-        if (!userID || arbeitszeit === undefined) {
-            res.status(StatusCodes.BAD_REQUEST).json({
+        if (!userID || !arbeitszeit) {
+            return next({
+                status: StatusCodes.BAD_REQUEST,
                 message: 'userID und arbeitszeit sind erforderlich.',
             });
-            return;
         }
 
         try {
@@ -109,6 +123,38 @@ class UserController {
             };
 
             res.status(StatusCodes.OK).json(response);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async getEstimationsByUserId(req: Request, res: Response, next: NextFunction): Promise<void> {
+        const userId = Number(req.params.id);
+
+        if (isNaN(userId) || !userId) {
+            return next({
+                status: StatusCodes.BAD_REQUEST,
+                message: 'Invalid user ID provided.',
+            });
+
+        }
+
+        try {
+            const estimations = await prisma.estimation.findMany({
+                where: { userId },
+            });
+
+            if (estimations.length === 0) {
+                return next({
+                    status: StatusCodes.NOT_FOUND,
+                    message: 'No estimations found for the user.',
+                });
+            }
+
+            res.status(StatusCodes.OK).json({
+                code: StatusCodes.OK,
+                data: estimations,
+            });
         } catch (error) {
             next(error);
         }
