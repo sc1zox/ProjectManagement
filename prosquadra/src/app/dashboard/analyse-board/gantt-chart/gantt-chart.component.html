@@ -1,0 +1,15 @@
+<ngx-gantt
+  #gantt
+  [draggable]="true"
+  [groups]="groups"
+  [items]="items"
+  [viewOptions]="viewOptions"
+>
+  <ngx-gantt-table>
+    <ngx-gantt-column name="Title" title="Project Title" width="300px">
+      <ng-template #cell let-item="item">
+        {{ item.title }}
+      </ng-template>
+    </ngx-gantt-column>
+  </ngx-gantt-table>
+</ngx-gantt>

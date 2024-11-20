@@ -1,0 +1,23 @@
+.team-form {
+  padding: var(--content-padding);
+  max-width: var(--form-maxsize);
+  width: 100%;
+}
+
+.full-width {
+  width: 100%;
+}
+
+#form-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+}
+
+@media screen and (max-width: 1000px) {
+  .team-form {
+    margin-bottom: calc(var(--form-maxsize) / 2.5);
+    margin-top: calc(var(--form-maxsize) / 2.5);
+  }
+}

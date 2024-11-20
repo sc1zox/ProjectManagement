@@ -1,0 +1,80 @@
+<div *ngIf="roadmap && roadmap.projects.length>0; else noRoadmap" class="team-roadmap">
+  <h2>{{ teams?.name }}</h2>
+
+  <!-- Horizontal scrollable project list -->
+  <div #projectList (cdkDropListDropped)="drop($event)" [cdkDropListDisabled]="!enableDragDrop"
+       [cdkDropListOrientation]="window.innerWidth > 1000 ? 'horizontal' : 'vertical'"
+       cdkDropList
+       class="project-list">
+    <div (click)="selectProject(project)" *ngFor="let project of projects" [cdkDragLockAxis]="window.innerWidth > 1000 ? 'x' : 'y'" [class.selected]="project.id === selectedProject?.id"
+         cdkDrag cdkDragBoundary=".project-list"
+         class="project-box">
+      {{ project.name }}
+    </div>
+  </div>
+
+  <!-- Selected project details -->
+  <div *ngIf="selectedProject" class="project-details">
+    <h3>{{ selectedProject.name }}</h3>
+
+    <div *ngIf="setTimeScrum">
+      <!-- Start Date with Datepicker -->
+      <mat-form-field appearance="fill">
+        <mat-label>Start Date</mat-label>
+        <input [formControl]="startDateControl" [matDatepicker]="startPicker" matInput>
+        <mat-datepicker-toggle [for]="startPicker" matSuffix></mat-datepicker-toggle>
+        <mat-datepicker #startPicker></mat-datepicker>
+      </mat-form-field>
+
+      <!-- End Date with Datepicker -->
+      <mat-form-field appearance="fill">
+        <mat-label>End Date</mat-label>
+        <input [formControl]="endDateControl" [matDatepicker]="endPicker" matInput>
+        <mat-datepicker-toggle [for]="endPicker" matSuffix></mat-datepicker-toggle>
+        <mat-datepicker #endPicker></mat-datepicker>
+        <mat-error *ngIf="endDateControl.hasError('endDateInvalid')">End date cannot be before Start date!</mat-error>
+      </mat-form-field>
+    </div>
+
+    <!-- Display dates as text for all users -->
+    <div>
+      <p><strong>Start:</strong> {{ startDateControl.value | date: 'shortDate' }}</p>
+      <p><strong>End:</strong> {{ endDateControl.value | date: 'shortDate' }}</p>
+    </div>
+
+    <p><strong>Beschreibung:</strong> {{ selectedProject.description }}</p>
+    <p><strong>Projekt Zeitschätzung: </strong> {{ selectedProject.estimationHours }}</p>
+
+    <div *ngIf = "estimatableDEV" >
+      <p><strong>Deine Zeitschätzung</strong></p>
+      <app-time-estimator></app-time-estimator>
+    </div>
+    
+    
+    <div class="timeButtonContainer">
+      <!--
+      <div *ngIf="user?.role === UserRole.Developer && estimatableDEV" class="devTimeEstimate">
+        <mat-form-field appearance="fill">
+          <mat-label>Tage</mat-label>
+          <input [(ngModel)]="days" matInput min="0" placeholder="Tage" type="number">
+        </mat-form-field>
+    
+        <mat-form-field appearance="fill">
+          <mat-label>Stunden</mat-label>
+          <input [(ngModel)]="hours" matInput min="0" placeholder="Stunden" type="number">
+        </mat-form-field>
+      </div>
+      -->
+      <div class="submitContainer">
+        <button (click)=onSubmit() id="submitProject" mat-raised-button>Save Project</button>
+      </div>
+      <div *ngIf="this.user?.role === UserRole.PO" class="deleteContainer">
+        <button (click)=onDelete() id="deleteProject" mat-raised-button>Delete Project</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<ng-template #noRoadmap>
+</ng-template>

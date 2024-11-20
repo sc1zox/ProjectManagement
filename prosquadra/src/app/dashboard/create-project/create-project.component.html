@@ -1,0 +1,29 @@
+<div id="create-project-container">
+  <form (ngSubmit)="onSubmit()" [formGroup]="projectForm" class="createproject-form">
+    <mat-form-field class="full-width">
+      <mat-label>Projekt Name</mat-label>
+      <input formControlName="projectName" matInput placeholder="Projekt Name">
+      <mat-error *ngIf="projectForm.get('projectName')?.hasError('maxlength')">
+        Maximal 10 Zeichen erlaubt.
+      </mat-error>
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-label>Projekt Beschreibung</mat-label>
+      <textarea formControlName="description" matInput placeholder="Projekt Beschreibung"></textarea>
+    </mat-form-field>
+
+    <mat-form-field class="full-width">
+      <mat-label>Team</mat-label>
+      <mat-select formControlName="teamName" placeholder="Team" required>
+        <mat-option *ngFor="let team of teams" [value]="team.id">{{ team.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <button [disabled]="projectForm.invalid" mat-raised-button type="submit">Erstellen</button>
+  </form>
+</div>
+
+<div class="roadmap-container">
+  <app-team-roadmap [enableDragDrop]="true" [roadmap]="roadmap"></app-team-roadmap>
+</div>

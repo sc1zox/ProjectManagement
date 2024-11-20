@@ -1,0 +1,10 @@
+.modal {
+  padding: calc(var(--content-padding) * 2);
+
+  #modalButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+

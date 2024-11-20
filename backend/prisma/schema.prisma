@@ -1,0 +1,92 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int             @id @default(autoincrement())
+  vorname       String
+  nachname      String
+  role          UserRole
+  skills        Skill[]         @relation("UserSkills")
+  teams         Team[]          @relation("TeamMembers")
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  arbeitszeit   Int
+  urlaubstage   Int
+  login         Login?
+  notifications Notifications[] @relation("UserNotifications")
+}
+
+model Notifications {
+  id        Int      @id @default(autoincrement())
+  message   String
+  createdAt DateTime @default(now())
+  isRead    Boolean
+  userId    Int
+  user      User     @relation("UserNotifications", fields: [userId], references: [id])
+}
+
+model Skill {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  users     User[]   @relation("UserSkills")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Team {
+  id        Int       @id @default(autoincrement())
+  name      String
+  members   User[]    @relation("TeamMembers")
+  roadmapId Int?      @unique
+  roadmap   Roadmap?  @relation(fields: [roadmapId], references: [id])
+  projects  Project[] @relation("TeamProjects")
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Roadmap {
+  id        Int       @id @default(autoincrement())
+  projects  Project[] @relation("RoadmapProjects")
+  teams     Team?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Project {
+  id               Int       @id @default(autoincrement())
+  name             String
+  description      String
+  startDate        DateTime?
+  endDate          DateTime?
+  roadmapId        Int?
+  roadmap          Roadmap?  @relation("RoadmapProjects", fields: [roadmapId], references: [id])
+  team             Team?     @relation("TeamProjects", fields: [teamid], references: [id])
+  teamid           Int
+  estimationDays   Int?
+  estimationHours  Int?
+  PriorityPosition Int?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+}
+
+model Login {
+  id       Int    @id @default(autoincrement())
+  username String @unique
+  password String
+  userId   Int    @unique
+  user     User   @relation(fields: [userId], references: [id])
+}
+
+enum UserRole {
+  PO
+  SM
+  Developer
+  Admin
+  Bereichsleiter
+}

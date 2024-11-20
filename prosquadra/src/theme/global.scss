@@ -1,0 +1,33 @@
+:root {
+  --main-color: #f26c3b;
+  --sidebar-color: #e0e0e0;
+  --main-background: #ffffff;
+  --primary-blue: #005cbb;
+  --primary-green: #5ce65c;
+  --content-padding: 20px;
+  --content-margin: 10px;
+  --sidebar-padding: 20px;
+  --form-maxsize: 50vh;
+  --admin-panelsize: 50vh;
+
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.bold {
+  font-weight: bolder;
+}
+
+.button {
+  padding: var(--content-padding) !important;
+}
+
+
+

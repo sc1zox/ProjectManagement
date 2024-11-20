@@ -1,0 +1,28 @@
+<h1 mat-dialog-title>Mitglieder von {{ data.team.name }} bearbeiten</h1>
+<div mat-dialog-content>
+  <mat-form-field>
+    <mat-label>Neues Mitglied</mat-label>
+    <input [(ngModel)]="newMemberName" [matAutocompleteDisabled]="newMemberName.length === 0" [matAutocomplete]="auto" matInput
+           placeholder="Mitgliedsname"/>
+    <mat-autocomplete #auto="matAutocomplete">
+      @for (option of options; track option) {
+        <mat-option [value]="option">{{ option }}</mat-option>
+      }
+    </mat-autocomplete>
+  </mat-form-field>
+  <button (click)="addMember()" mat-button>Hinzufügen</button>
+
+  <mat-list>
+    <mat-list-item *ngFor="let member of data.team.members">
+      {{ member.vorname }} {{ member.nachname }}
+      <button (click)="removeMember(member.id)" mat-icon-button>
+        <mat-icon>delete</mat-icon>
+      </button>
+    </mat-list-item>
+  </mat-list>
+</div>
+<div mat-dialog-actions>
+  <button (click)="onCancel()" mat-button>Abbrechen</button>
+</div>
+
+

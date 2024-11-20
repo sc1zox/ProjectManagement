@@ -1,0 +1,26 @@
+#create-project-container {
+  width: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.createproject-form {
+  padding: var(--content-padding);
+  max-width: var(--form-maxsize);
+
+  .full-width {
+    width: 100%;
+  }
+
+  button {
+    margin-top: var(--content-margin);
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .createproject-form {
+    margin-bottom: calc(var(--form-maxsize) / 2.5);
+    margin-top: calc(var(--form-maxsize) / 2.5);
+  }
+}
