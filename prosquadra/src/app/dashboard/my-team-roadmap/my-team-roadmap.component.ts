@@ -6,6 +6,7 @@ import {TeamService} from '../../../services/team.service';
 import {UserService} from '../../../services/user.service';
 import {NgForOf, NgIf} from '@angular/common';
 import {UserRole} from '../../../types/user';
+import {SnackbarService} from '../../../services/snackbar.service';
 
 @Component({
   selector: 'app-my-team-roadmap',
@@ -22,10 +23,12 @@ export class MyTeamRoadmapComponent implements OnInit {
   firstTeam?: Team;
   isPo: boolean = false;
   isScrum: boolean = false;
+  isDev: boolean = false
 
   constructor(
     private readonly TeamService: TeamService,
-    private readonly UserService: UserService
+    private readonly UserService: UserService,
+    private readonly SnackBarService: SnackbarService
   ) {
   }
 
@@ -57,6 +60,9 @@ export class MyTeamRoadmapComponent implements OnInit {
     if (user && user.role === UserRole.SM) {
       this.isScrum = true;
     }
+    if (user && user.role === UserRole.Developer) {
+      this.isDev = true;
+    }
   }
 
   public async refetch() {
@@ -64,7 +70,7 @@ export class MyTeamRoadmapComponent implements OnInit {
       if (this.firstTeam)
         await this.fetchRoadmapForTeam(this.firstTeam.id);
     } catch (error) {
-      console.error('Error refetching roadmap:', error);
+      this.SnackBarService.open('Es gab ein Fehler bei der Teamaktualisierung')
     }
   }
 
@@ -78,13 +84,12 @@ export class MyTeamRoadmapComponent implements OnInit {
     try {
       for (const team of teams) {
         const teamDetails = await this.TeamService.getTeamByID(team.id);
-        console.log("---------------", teamDetails)
         if (teamDetails && teamDetails.roadmap) {
           this.roadmaps.push(teamDetails.roadmap);
         }
       }
     } catch (error) {
-      console.error('Error fetching roadmaps for teams:', error);
+      this.SnackBarService.open('Es gab ein Fehler bei der Teamaktualisierung')
     }
   }
 }

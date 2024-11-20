@@ -66,9 +66,9 @@ export class MitarbeiterFormComponent implements OnInit, OnChanges {
 
   constructor(private fb: FormBuilder, private TeamService: TeamService, private UserService: UserService, private dialog: MatDialog, private router: Router, private SnackBarService: SnackbarService) {
     this.firstFormGroup = this.fb.group({
-      vorname: ['', Validators.required],
-      nachname: ['', Validators.required],
-      arbeitszeit: ['', Validators.required],
+      vorname: ['', [Validators.required, Validators.pattern('^[A-Za-z]+$')]],
+      nachname: ['', [Validators.required, Validators.pattern('^[A-Za-z]+$')]],
+      arbeitszeit: ['', [Validators.required, Validators.min(0), Validators.max(168)]],
       role: ['', Validators.required],
       urlaubstage: [''],
       selectedSingleTeam: [''],

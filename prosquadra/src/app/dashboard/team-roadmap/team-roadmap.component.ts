@@ -3,14 +3,14 @@ import {
   Component,
   ElementRef,
   EventEmitter,
-  Input,
+  Input, LOCALE_ID,
   OnChanges,
   OnInit,
   Output,
   SimpleChanges,
   ViewChild
 } from '@angular/core';
-import {CommonModule} from '@angular/common';
+import {CommonModule, registerLocaleData} from '@angular/common';
 import {ProjectService} from '../../../services/project.service';
 import {Project} from '../../../types/project';
 import {CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray} from '@angular/cdk/drag-drop';
@@ -37,6 +37,7 @@ import {parseProjects} from '../../../mapper/projectDatesToDate';
 import {TimeEstimatorComponent} from '../../components/time-estimator/time-estimator.component';
 import {Estimation} from '../../../types/estimation';
 import {ApiError} from '../../../../error/ApiError';
+import localeDe from '@angular/common/locales/de';
 
 
 const isStartDateInRange = (projects: Project[], startDate: Date, selectedProject: Project): boolean => {
@@ -48,7 +49,7 @@ const isStartDateInRange = (projects: Project[], startDate: Date, selectedProjec
 
   return boolresult;
 };
-
+registerLocaleData(localeDe);
 
 @Component({
   selector: 'app-team-roadmap',
@@ -63,6 +64,9 @@ const isStartDateInRange = (projects: Project[], startDate: Date, selectedProjec
     ReactiveFormsModule,
     MatButton,
     TimeEstimatorComponent],
+  providers: [
+    { provide: LOCALE_ID, useValue: 'de' }
+  ],
   templateUrl: './team-roadmap.component.html',
   styleUrls: ['./team-roadmap.component.scss']
 })
@@ -84,6 +88,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   startDateControl = new FormControl();
   endDateControl = new FormControl();
   dateForm: FormGroup;
+  currentEstimation?: Estimation;
   updated: boolean = false;
   @ViewChild('projectList') projectList?: ElementRef;
   protected readonly window = window;
@@ -150,7 +155,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     }
     await this.setSelectedProjectAvgEstimation();
 
-    if (this.user) {
+    if (this.user && this.user.role === UserRole.Developer) {
       try {
         this.userEstimates = await this.UserService.getUserEstimation(this.user.id);
       } catch (error) {
@@ -166,20 +171,15 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
       try {
         this.selectedProject.avgEstimationHours = await this.ProjectService.getProjectEstimationAvg(this.selectedProject?.id);
       } catch (error) {
-        if (error instanceof ApiError && error.code === 404) {
-          console.log("ERROR:",error)
-          this.SnackBarSerivce.open("Es wurde noch keine Schätzung abgegeben");
-        } else {
           this.SnackBarSerivce.open("Schätzungen konnte nicht abgerufen werden");
-        }
       }
     }
   }
 
   getUserEstimationForSelectedProject(): number | undefined {
     if (this.selectedProject && this.selectedProject.id) {
-      const estimation: Estimation | undefined = this.userEstimates.find(est => est.projectId === this.selectedProject!.id);
-      return estimation ? estimation.hours : undefined;
+      this.currentEstimation = this.userEstimates.find(est => est.projectId === this.selectedProject!.id);
+      return this.currentEstimation ? this.currentEstimation.hours : undefined;
     }
     return undefined;
   }
