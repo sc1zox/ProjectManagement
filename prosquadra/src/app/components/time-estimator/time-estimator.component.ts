@@ -1,12 +1,17 @@
-import {Component, Input} from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatInputModule } from '@angular/material/input';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatSelectModule } from '@angular/material/select';
-import { MatButtonModule } from '@angular/material/button';
-import { UpdateService } from '../../../services/update.service';
+import {Component, Input, OnInit} from '@angular/core';
+import {CommonModule} from '@angular/common';
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+import {MatSelectModule} from '@angular/material/select';
+import {MatButtonModule} from '@angular/material/button';
 import {Project} from '../../../types/project';
+import {ApiService} from '../../../services/api.service';
+import {SnackbarService} from '../../../services/snackbar.service';
+import {UserService} from '../../../services/user.service';
+import {User} from '../../../types/user';
+import {ProjectService} from '../../../services/project.service';
+
 
 
 @Component({
@@ -24,23 +29,24 @@ import {Project} from '../../../types/project';
   styleUrls: ['./time-estimator.component.scss'],
 })
 
-export class TimeEstimatorComponent {
+export class TimeEstimatorComponent implements OnInit{
   timeEstimateForm: FormGroup;
   result: number | null = null;
-  @Input() currentProject?:Project;
+  currentUser?: User;
+  @Input() currentProject?: Project;
 
   timeUnits = [
-    { value: 'hours', label: 'Hours' },
-    { value: 'days', label: 'Days' },
+    {value: 'hours', label: 'Hours'},
+    {value: 'days', label: 'Days'},
   ];
 
   estimateFields = [
-    { label: 'Optimistic', control: 'optimistic', unitControl: 'optimisticUnit' },
-    { label: 'Realistic', control: 'realistic', unitControl: 'realisticUnit' },
-    { label: 'Pessimistic', control: 'pessimistic', unitControl: 'pessimisticUnit' },
+    {label: 'Optimistic', control: 'optimistic', unitControl: 'optimisticUnit'},
+    {label: 'Realistic', control: 'realistic', unitControl: 'realisticUnit'},
+    {label: 'Pessimistic', control: 'pessimistic', unitControl: 'pessimisticUnit'},
   ];
 
-  constructor(private fb: FormBuilder, private service: UpdateService) {
+  constructor(private fb: FormBuilder, private ProjectService: ProjectService,private UserService: UserService,private readonly SnackBarService: SnackbarService) {
     this.timeEstimateForm = this.fb.group({
       optimistic: [null, Validators.required],
       optimisticUnit: ['hours', Validators.required],
@@ -51,7 +57,11 @@ export class TimeEstimatorComponent {
     });
   }
 
-  calculateEstimate(): void {
+  async ngOnInit(){
+    this.currentUser = await this.UserService.getCurrentUser();
+  }
+
+  async calculateEstimate(): Promise<void> {
     const formValues = this.timeEstimateForm.value;
 
     // Convert all estimates to hours
@@ -61,10 +71,12 @@ export class TimeEstimatorComponent {
 
     // PERT formula
     this.result = Math.round((optimistic + 4 * realistic + pessimistic) / 6);
-
-    if (this.currentProject) {
-      this.currentProject.estimationHours = this.result;
-      this.service.updateResource("/api/project/update", this.currentProject);
+    try {
+      if (this.currentProject && this.currentUser && this.currentProject.id) {
+        await this.ProjectService.updateEstimation(this.result, this.currentUser.id, this.currentProject.id)
+      }
+    }catch (error){
+      this.SnackBarService.open("Einschätzung konnte nicht geladen werden");
     }
   }
 

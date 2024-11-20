@@ -3,6 +3,7 @@ import {User} from '../types/user';
 import {ApiService} from './api.service';
 import {ApiResponse} from '../types/api-response';
 import {Login} from '../types/login';
+import {Estimation} from '../types/estimation';
 
 @Injectable({
   providedIn: 'root'
@@ -33,12 +34,12 @@ export class UserService {
   }
 
 
-  async getUser(ID: number): Promise<User> {
+  async getUser(userId: number): Promise<User> {
 
-    const response: ApiResponse<User> = await this.ApiService.fetch(`/users/${ID}`);
+    const response: ApiResponse<User> = await this.ApiService.fetch(`/users/`+userId);
 
     if (response.code !== 200) {
-      throw new Error('Failed to fetch user data for specific id:' + ID);
+      throw new Error('Failed to fetch user data for specific id:' + userId);
     }
 
     return response.data;
@@ -103,5 +104,17 @@ export class UserService {
     console.log("No cached user found and no fetch in progress.");
     return undefined;
   }
+
+  async getUserEstimation(userId: number): Promise<Estimation[]> {
+
+    const response: ApiResponse<Estimation[]> = await this.ApiService.fetch(`/users/estimations/`+userId);
+
+    if (response.code !== 200) {
+      throw new Error('Failed to fetch estimations for user:' + userId);
+    }
+
+    return response.data;
+  }
+
 
 }

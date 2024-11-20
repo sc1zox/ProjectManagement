@@ -6,7 +6,8 @@
        [cdkDropListOrientation]="window.innerWidth > 1000 ? 'horizontal' : 'vertical'"
        cdkDropList
        class="project-list">
-    <div (click)="selectProject(project)" *ngFor="let project of projects" [cdkDragLockAxis]="window.innerWidth > 1000 ? 'x' : 'y'" [class.selected]="project.id === selectedProject?.id"
+    <div (click)="selectProject(project)" *ngFor="let project of projects"
+         [cdkDragLockAxis]="window.innerWidth > 1000 ? 'x' : 'y'" [class.selected]="project.id === selectedProject?.id"
          cdkDrag cdkDragBoundary=".project-list"
          class="project-box">
       {{ project.name }}
@@ -43,20 +44,29 @@
     </div>
 
     <p><strong>Beschreibung:</strong> {{ selectedProject.description }}</p>
-    <p><strong>Projekt Zeitschätzung: </strong> {{ selectedProject.estimationHours }}</p>
-    <p><strong>Deine Zeitschätzung:</strong></p>
+    <ng-container *ngIf="selectedProject.avgEstimationHours!==0; else errorKeineSchaetzungen">
+    <p><strong>Projekt Zeitschätzung: </strong> {{ selectedProject.avgEstimationHours }}</p>
+    </ng-container>
+    <ng-template #errorKeineSchaetzungen>
+      <p><strong>Projekt Zeitschätzung: </strong> Es wurden noch keine Schätzungen abgegeben</p>
+    </ng-template>
+    <ng-container *ngIf="user?.role === UserRole.Developer; else errorContainerUserNoDev">
+      <p><strong>Deine Zeitschätzung: </strong>{{ getUserEstimationForSelectedProject() }}</p>
+    </ng-container>
+    <ng-template #errorContainerUserNoDev>
 
-      <div *ngIf = "estimatableDEV" class="estimationContainer">
-        <app-time-estimator [currentProject]="selectedProject"></app-time-estimator>
-      </div>
-
-      <div class="submitContainer">
-        <button (click)=onSubmit() id="submitProject" mat-raised-button>Save Project</button>
-      </div>
-      <div *ngIf="this.user?.role === UserRole.PO" class="deleteContainer">
-        <button (click)=onDelete() id="deleteProject" mat-raised-button>Delete Project</button>
-      </div>
+    </ng-template>
+    <div *ngIf="estimatableDEV" class="estimationContainer">
+      <app-time-estimator [currentProject]="selectedProject"></app-time-estimator>
     </div>
+
+    <div class="submitContainer">
+      <button (click)=onSubmit() id="submitProject" mat-raised-button>Save Project</button>
+    </div>
+    <div *ngIf="this.user?.role === UserRole.PO" class="deleteContainer">
+      <button (click)=onDelete() id="deleteProject" mat-raised-button>Delete Project</button>
+    </div>
+  </div>
 </div>
 
 

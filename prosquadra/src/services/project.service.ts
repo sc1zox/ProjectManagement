@@ -3,6 +3,9 @@ import {Project} from '../types/project';
 import {ApiService} from './api.service';
 import {ApiResponse} from '../types/api-response';
 import {UpdateService} from './update.service';
+import {SnackbarService} from './snackbar.service';
+import {Estimation} from '../types/estimation';
+import {ApiError} from '../../error/ApiError';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +14,7 @@ export class ProjectService implements OnInit {
 
   projects: Project[] = [];
 
-  constructor(private readonly ApiService: ApiService, private readonly UpdateService: UpdateService) {
+  constructor(private readonly ApiService: ApiService, private readonly UpdateService: UpdateService,private readonly SnackBarService: SnackbarService) {
   }
 
   async ngOnInit() {
@@ -85,4 +88,30 @@ export class ProjectService implements OnInit {
     }
   }
 
+  async updateEstimation(estimation: number, userId: number, projectId: number): Promise<void> {
+    const sendToApi = {
+      projectId: projectId,
+      estimationHours: estimation,
+      userId: userId,
+    };
+
+    const response: ApiResponse<void> = await this.ApiService.post("/project/create/estimation", sendToApi);
+
+    if (response.code !== 201) {
+      throw new Error('Failed to update estimation for project with Id: ' + projectId);
+    }
+  }
+
+  async getProjectEstimationAvg(projectId: number): Promise<number> {
+    let response: ApiResponse<number>;
+    try {
+      response = await this.ApiService.fetch('/project/estimation/' + projectId);
+      return response.data;
+    }catch (error){
+        console.log("ERROR:",error)
+    }
+    return 0;
+  }
+
 }
+

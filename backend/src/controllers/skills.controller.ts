@@ -98,6 +98,10 @@ class SkillsController {
     async deleteSkill(req: Request, res: Response, next: NextFunction): Promise<void> {
         const skillId = Number(req.params.skillId);
 
+        if(isNaN(skillId)){
+            return next({status: StatusCodes.BAD_REQUEST,message: 'provide valid SkillId'})
+        }
+
         try {
             await prisma.skill.delete({
                 where: { id: skillId },
