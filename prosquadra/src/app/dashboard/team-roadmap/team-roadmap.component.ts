@@ -34,13 +34,14 @@ import {RoadmapService} from '../../../services/roadmap.service';
 import {SnackbarService} from '../../../services/snackbar.service';
 import {Team} from '../../../types/team';
 import {parseProjects} from '../../../mapper/projectDatesToDate';
-import { TimeEstimatorComponent } from '../../components/time-estimator/time-estimator.component';
 
-const isStartDateInRange = (projects: Project[], startDate: Date): boolean => {
-  const projectsMapped = parseProjects(projects);
+
+const isStartDateInRange = (projects: Project[], startDate: Date,selectedProject: Project): boolean => {
+  const projectsWithoutItself = projects.filter(project => project.id !== selectedProject.id);
+  const projectsMapped = parseProjects(projectsWithoutItself);
   const result = projectsMapped
     .filter(project => (project.startDate !== null && project.endDate !== null))
-  const boolresult = result.some(range => startDate >= (range.startDate as Date) && startDate <= (range.endDate as Date));
+  const boolresult = result.some(range => startDate >= (range.startDate as Date) && startDate <= (range.endDate as Date)); //as Date to avoid undefined
 
   return boolresult;
 };
@@ -73,13 +74,13 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
 
   projects: Project[] = [];
   selectedProject?: Project;
-  teamname: string = ''; // get Team name to display
   @Output() dataUpdated = new EventEmitter<void>()
   hours?: number;
   days?: number;
   startDateControl = new FormControl();
   endDateControl = new FormControl();
   dateForm: FormGroup;
+  updated: boolean=false;
   @ViewChild('projectList') projectList?: ElementRef;
   protected readonly window = window;
   protected readonly UserRole = UserRole;
@@ -97,10 +98,11 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
 
   startDateValidator(control: AbstractControl): ValidationErrors | null {
     const startDate = control.value;
-    console.log(this.projects);
-    if (isStartDateInRange(this.projects, startDate) && startDate !== null) {
+    if(this.selectedProject !== undefined){
+    if (isStartDateInRange(this.projects, startDate,this.selectedProject) && startDate !== null) {
       this.SnackBarSerivce.open('Das Startdatum darf sich nicht mit einem Projekt überschneiden')
       return {startDateInvalid: true}
+    }
     }
     return null;
   }
@@ -185,10 +187,12 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
       if (this.roadmap) {
         this.roadmap.projects = [...this.projects];
       }
+      this.updated=true;
     }
   }
 
   async onSubmit() {
+
     if (this.days === 0 && this.hours === 0 && this.user?.role === UserRole.Developer) {
       this.SnackBarSerivce.open("Die Dauer darf nicht 0 Stunden und 0 Tage sein")
       return;
@@ -213,7 +217,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
         if (this.user?.role === UserRole.Developer) {
           this.dataUpdated.emit(); // das hier verursacht ein doppeltes rendern der ersten roadmap. Unsicher ob es weggelassen werden kann für andere Updates.Scheint mir momentan nicht essenziell zu sein. Doch wenn es fehlt wird für Dev die Zeit nicht aktualisiert deshalb die if clause
         }
-        this.SnackBarSerivce.open('Projekt wurde erfolgreich erstellt')
+        this.SnackBarSerivce.open('Projekt wurde erfolgreich geändert')
       } catch (error) {
         console.error('Error updating project roadmap:', error);
         this.SnackBarSerivce.open('Bei der Projekterstellung ist ein Fehler aufgetreten')
