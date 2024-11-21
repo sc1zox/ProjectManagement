@@ -20,7 +20,7 @@ export const routes: Routes = [
         path: 'create-project',
         loadComponent: () => import('./dashboard/create-project/create-project.component').then(m => m.CreateProjectComponent),
         canActivate: [AuthGuard],
-        data: { role: UserRole.PO || UserRole.Bereichsleiter }
+        data: { role: [UserRole.PO , UserRole.Bereichsleiter]}
       },
       {
         path: 'team-roadmap',
@@ -34,31 +34,31 @@ export const routes: Routes = [
         path: 'admin-panel',
         loadComponent: () => import('./dashboard/admin-panel/admin-panel.component').then(m => m.AdminPanelComponent),
         canActivate: [AuthGuard],
-        data: { role: UserRole.Admin }
+        data: { role: [UserRole.Admin] }
       },
       {
         path: 'admin-panel/mitarbeiter-form',
         loadComponent: () => import('./dashboard/admin-panel/mitarbeiter-form/mitarbeiter-form.component').then(m => m.MitarbeiterFormComponent),
         canActivate: [AuthGuard],
-        data: { role: UserRole.Admin }
+        data: { role: [UserRole.Admin] }
       },
       {
         path: 'admin-panel/teams-form',
         loadComponent: () => import('./dashboard/admin-panel/teams-form/teams-form.component').then(m => m.TeamsFormComponent),
         canActivate: [AuthGuard],
-        data: { role: UserRole.Admin }
+        data: { role: [UserRole.Admin] }
       },
       {
         path: 'analyse-board',
         loadComponent: () => import('./dashboard/analyse-board/analyse-board.component').then(m => m.AnalyseBoardComponent),
         canActivate: [AuthGuard],
-        data: { role: UserRole.SM }
+        data: { role: [UserRole.SM] }
       },
       {
         path: 'team-overview',
         loadComponent: () => import('./dashboard/team-overview/team-overview.component').then(m => m.TeamOverviewComponent),
         canActivate: [AuthGuard],
-        data: { role: UserRole.SM || UserRole.Admin || UserRole.Bereichsleiter }
+        data: { role: [UserRole.SM, UserRole.Admin, UserRole.Bereichsleiter ]}
       },
       {
         path: 'unauthorized',
