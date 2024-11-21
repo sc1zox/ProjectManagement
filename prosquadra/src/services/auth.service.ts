@@ -62,8 +62,11 @@ export class AuthService {
     }
   }
 
-  async hasRole(requiredRole: UserRole): Promise<boolean> {
+  async hasRole(requiredRoles: UserRole[]): Promise<boolean> {
     const currentUser = await this.UserService.getCurrentUser();
-    return requiredRole === currentUser?.role;
+    if (currentUser && currentUser.role) {
+      return requiredRoles.includes(currentUser.role);
+    }
+    return false;
   }
 }
