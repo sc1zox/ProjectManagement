@@ -43,13 +43,13 @@
           <input formControlName="arbeitszeit" matInput required type="number">
           <mat-error *ngIf="firstFormGroup.get('arbeitszeit')?.hasError('required')">Arbeitszeit wird benötigt.</mat-error>
           <mat-error *ngIf="firstFormGroup.get('arbeitszeit')?.hasError('min')">Arbeitszeit muss mindestens 0 Stunden betragen.</mat-error>
-          <mat-error *ngIf="firstFormGroup.get('arbeitszeit')?.hasError('max')">Arbeitszeit darf maximal 168 Stunden betragen.</mat-error>
+          <mat-error *ngIf="firstFormGroup.get('arbeitszeit')?.hasError('max')">Arbeitszeit darf maximal 100 Stunden betragen.</mat-error>
         </mat-form-field>
 
         <!-- Urlaubstage -->
         <mat-form-field class="full-width">
           <mat-label>Urlaubstage</mat-label>
-          <input formControlName="urlaubstage" matInput type="number">
+          <input formControlName="urlaubstage" matInput type="number" placeholder="28">
           <mat-error *ngIf="firstFormGroup.get('urlaubstage')?.hasError('pattern')">Ungültige Anzahl von Urlaubstagen.</mat-error>
         </mat-form-field>
 

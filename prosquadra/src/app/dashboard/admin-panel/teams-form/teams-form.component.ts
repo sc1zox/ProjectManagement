@@ -51,11 +51,12 @@ export class TeamsFormComponent implements OnInit {
   selectedUser?: number[];
   selectedUsers: User[] = [];
   teamForm: FormGroup;
+  bereichsleiter?: User[];
 
   constructor(private TeamService: TeamService, private UserService: UserService, private fb: FormBuilder, private dialog: MatDialog, private router: Router, private SnackBarService: SnackbarService, private readonly NotificationService: NotificationsService) {
     this.teamForm = this.fb.group({
       teamName: ['', Validators.required],
-      selectedUser: [[], Validators.required]
+      selectedUser: [[]]
     });
   }
 
@@ -93,9 +94,11 @@ export class TeamsFormComponent implements OnInit {
             try {
               await this.TeamService.createTeam(this.Team);
               this.selectedUser?.forEach((user) => {
-                this.NotificationService.createNotification('Du wurdest einem neuen Team hinzugefügt', user)
+                this.NotificationService.createNotification('Du wurdest einem neuen Team hinzugefügt', user);
               })
-
+              this.bereichsleiter?.forEach(user => {
+                this.NotificationService.createNotification('Es wurde ein neues Team erstellt',user.id)
+              })
             } catch (error) {
               this.SnackBarService.open("Bei der Teamerstellung gab es einen Fehler!")
             }
@@ -112,5 +115,8 @@ export class TeamsFormComponent implements OnInit {
     this.filteredUsers = this.Users.filter(user => {
       return user.role === UserRole.SM || (user.teams && user.teams.length === 0);
     });
+  }
+  private getBereichsleiter(): void{
+    this.bereichsleiter = this.Users.filter(user => user.role === UserRole.Bereichsleiter)
   }
 }
