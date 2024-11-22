@@ -26,6 +26,10 @@ export class ApiService {
     return this.baseUrl;
   }
 
+  getApiUrl(): string {
+    return this.apiUrl;
+  }
+
   async fetch<T>(endpoint: string): Promise<ApiResponse<T>> {
     const response: Response = await fetch(this.apiUrl + endpoint);
 
