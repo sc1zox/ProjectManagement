@@ -9,6 +9,7 @@ import UserController from "../controllers/user.controller";
 import NotificationsController from "../controllers/notifications.controller";
 import checkRole from '../middleware/roleChecker';
 import {UserRole} from "@prisma/client";
+import PdfController from "../controllers/pdf.controller";
 
 const userRouter = Router();
 
@@ -50,5 +51,7 @@ userRouter.post('/notifications', rescue(NotificationsController.setNotification
 userRouter.post('/notifications/read/:id', rescue(NotificationsController.markNotificationAsRead));
 userRouter.post('/notifications/delete/:id', rescue(NotificationsController.deleteNotification));
 userRouter.post('/notifications/create', rescue(NotificationsController.createNotification));
+
+userRouter.get('/export/:id', rescue(PdfController.exportUserPDF));
 
 export default userRouter;

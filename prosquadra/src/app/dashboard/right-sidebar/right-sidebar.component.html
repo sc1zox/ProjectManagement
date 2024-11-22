@@ -26,7 +26,12 @@
       </mat-expansion-panel>
     </div>
   </mat-accordion>
-
+  <button mat-raised-button (click)="showQrCode()">Zeig QR-Code</button>
+  <button mat-raised-button (click)="getPDF()">Download Benutzerdaten</button>
+  <ng-container *ngIf="QrCodeVisible">
+  <qr-code [value]=getPdfUrl()
+           errorCorrectionLevel="M" />
+  </ng-container>
   <app-user-skills [user]="user"></app-user-skills>
 
   <button (click)="triggerLogout()" mat-raised-button>Logout</button>
