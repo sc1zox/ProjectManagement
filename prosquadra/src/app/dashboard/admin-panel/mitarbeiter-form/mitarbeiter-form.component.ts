@@ -68,9 +68,9 @@ export class MitarbeiterFormComponent implements OnInit, OnChanges {
     this.firstFormGroup = this.fb.group({
       vorname: ['', [Validators.required, Validators.pattern('^[A-Za-z]+$')]],
       nachname: ['', [Validators.required, Validators.pattern('^[A-Za-z]+$')]],
-      arbeitszeit: ['', [Validators.required, Validators.min(0), Validators.max(168)]],
+      arbeitszeit: ['', [Validators.required, Validators.min(0), Validators.max(100)]],
       role: ['', Validators.required],
-      urlaubstage: [''],
+      urlaubstage: [28],
       selectedSingleTeam: [''],
       selectedMultipleTeams: [[]]
     });
@@ -131,7 +131,7 @@ export class MitarbeiterFormComponent implements OnInit, OnChanges {
           if (formValueUser.urlaubstage) {
             this.user.urlaubstage = formValueUser.urlaubstage;
           } else {
-            this.user.urlaubstage = 0;
+            this.user.urlaubstage = 28;
           }
           this.Login.username = formValueLogin.username;
           this.Login.password = formValueLogin.password;

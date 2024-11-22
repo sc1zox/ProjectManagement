@@ -32,6 +32,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 ### TODO:
 
+- Team-Übersicht soll noch Urlaubstage aufnehmen und Admin+BL dürfen ändern
 - Try catch Blöcke nutzen für backend calls und im catch einfach mit SnackBar Fehler ausgeben.
 - unauthorized page 
 - submit und delete button on mobile fix
