@@ -133,13 +133,16 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
         this.NotificationService.showNotificationPermanent(notification);
       });
   }
-  getPdfUrl(){
-    return this.ApiService.getApiUrl()+'/export/'+this.user?.id
+
+  getPdfUrl() {
+    return this.ApiService.getApiUrl() + '/export/' + this.user?.id
   }
-  showQrCode(){
-    this.QrCodeVisible = true;
+
+  showQrCode() {
+    this.QrCodeVisible = !this.QrCodeVisible;
   }
-  getPDF(){
+
+  getPDF() {
     window.location.href = this.getPdfUrl();
   }
 }
