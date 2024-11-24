@@ -59,7 +59,7 @@ class TeamController {
     async getTeamByUserID(req: Request, res: Response, next: NextFunction): Promise<void> {
         const userId: number = Number(req.params.id);
 
-        if(!userId){
+        if (!userId) {
             return next({
                 status: StatusCodes.BAD_REQUEST,
                 message: 'provide a valid userId'
@@ -93,9 +93,11 @@ class TeamController {
 
     async createTeam(req: Request, res: Response, next: NextFunction): Promise<void> {
         const {name, members} = req.body;
+        let newTeamWithoutMember;
+        let newTeamWithMember;
 
 
-        if (!name || !members || members.length === 0) {
+        if (!name || !members) {
             return next({
                 status: StatusCodes.BAD_REQUEST,
                 message: 'Alle Felder (name, members) müssen ausgefüllt sein',
@@ -110,23 +112,38 @@ class TeamController {
             });
 
             const memberIds = members.map((member: { id: number }) => ({id: member.id}));
-
-            const newTeam = await prisma.team.create({
-                data: {
-                    name,
-                    members: {
-                        connect: memberIds,
+            if (!memberIds) {
+                newTeamWithoutMember = await prisma.team.create({
+                    data: {
+                        name,
+                        roadmap: {
+                            connect: {id: newRoadmap.id},
+                        },
                     },
-                    roadmap: {
-                        connect: {id: newRoadmap.id},
+                });
+                res.status(StatusCodes.CREATED).json({
+                    code: StatusCodes.CREATED,
+                    data: {...newTeamWithoutMember},
+                });
+            } else {
+                newTeamWithMember = await prisma.team.create({
+                    data: {
+                        name,
+                        members: {
+                            connect: memberIds,
+                        },
+                        roadmap: {
+                            connect: {id: newRoadmap.id},
+                        },
                     },
-                },
-            });
+                });
+                res.status(StatusCodes.CREATED).json({
+                    code: StatusCodes.CREATED,
+                    data: {...newTeamWithMember},
+                });
+            }
 
-            res.status(StatusCodes.CREATED).json({
-                code: StatusCodes.CREATED,
-                data: {...newTeam},
-            });
+
         } catch (error) {
             next(error);
         }
