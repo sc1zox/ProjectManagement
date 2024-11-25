@@ -32,48 +32,43 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 ### TODO:
 
-- Team-Übersicht soll noch Urlaubstage aufnehmen und Admin+BL dürfen ändern
-- Try catch Blöcke nutzen für backend calls und im catch einfach mit SnackBar Fehler ausgeben.
-- unauthorized page 
+- unauthorized page schönmachen
 - submit und delete button on mobile fix
 - BL in keinem Team?
-- backend route checking ist implementiert aber wird momentan nicht benutzt, da es 1. im frontend gemacht wird und 2. das FE momentan kein auth daten mitschickt bei requests
-- Safe project Button führt 5 network requests aus auch ohne Änderungen weil er alle roadmaps neu pulled -> unnötig. Entweder gar keine ohen changes oder nur die affected Roadmap neu pullen 
+- Safe project Button führt 5 network requests + (Meldung) aus auch ohne Änderungen weil er alle roadmaps neu pulled -> unnötig. Entweder gar keine ohne changes oder nur die affected Roadmap neu pullen 
 - Bei Projekterstellung sollte PO nur sein Team als Auswahl bekommen
 - safe project button in team roadmap nur verfügbar für sm oder po ? -> ne für alle aber nicht alle dürfen editieren
-- current project in der rechten sidebar wird momentan gepolled also alle 30 sekunden gefetched. Funktioniert aber ist das gut?
-- momentan ist es nicht möglich einen User ohne Team zu erstellen und ein Team ohne User/oder das nachträgliche ändern, hinzufügen. How to do? -> nachträglich geht nun also passt?
-- FIX: Fehlerabfangen damit es nicht zu prisma error kommt aber es sollte auch kein null ans backend geschickt werden :D
-- breakpoints sind momentan bei 1000px.
-- Bereichsleiter fehlt bei Berechtigungen implementierung also Rolle gibt es
-- Gantt diagramm für analyse SM einbauen -> Backend für update nachziehen und dann im FE aktualisieren (sollen hier projekte bearbeitet werden können ? also verschieben auf der zeitleiste) -> denke momentan nicht
-- Teamübersicht visual bug bei kleinerem Screen (kann momentan vernachlässigt werden, da wir uns auf mobile oder desktop screensize fokussieren und nicht dazwischen)
 - Teamroadmap hat bei den projekten den mauszeiger auf drag and drop obwohl die rolle dafür nicht gegeben ist. (Klasse dynamisch setzen?)
 - generell Berechtigungen überprüfen, wer darf wo was sehen bearbeiten usw.
 - Team-overview Wenn ich die Arbeitszeit ändere soll die UI- updaten, bzw auch Skills zb
-- Projekt darf von sm nicht eingeplant werden, so dass es sich überschneidet
 - Teamübersicht darf nur von Admin SM und BL eingesehen werden, für die restlichen Mitarbeiter muss es ausgeblendet werden
 - Ich denke ein Team sollte erstellt werden können ohne User. Danach muss ich jedoch sicher stellen, dass mindestens ein SM, PO und DEV zugeordnet werden. Sonst kann PO zb keine roadmap + projekte anlegen wenn im Team kein PO exisitiert
 
 ### BUGS
 
-- BUG: mobile ansicht bricht Gantt komplett
-- BUG: sm plant projekt ein und submitted. Datepicker verschwindet.+ fehlermeldung "Die Dauer darf nicht 0 Stunden und 0 Tage sein" aber erstes datumsetzen funktioniert und ab fresh wieder -> **i think this is solved**
-- BUG: bei projekt erstellen. Wenn ich ein projekt erstelle und danach die reihenfolge anpasse und dann nochmal ein projekt erstelle resetted sich die reihenfolge. Im backend stimmt es also muss das frontend vermutlich neu pullen oder so. -> **i think this is solved**
-- BUG: wenn ich einen Nutzer erstellen will und als rolle sm auswähle aber ihm nur ein Team(scheinbar egal) zuweise wird null and backend geschickt bei Team. Somit schlägt die erstellung fehl. -> **i think this is solved**
-- BUG: wenn ich als sm neue Daten eintrage erscheint danach die erste Roadmap nochmal? Bei refresh stimmt es wieder. bzw. wenn ich nochmal welche eingeben will kommt der snackbar error ? -> **i think this is solved**
-- PO: kann momentan Projekte erstellen für alle Teams und die Roadmap aller Teams bearbeiten. Bei Team-Roadmap sieht er nur die seines Teams. Wie ist hier das gewünschte Verhalten?
-- Wenn ich das letzte Projekt in einer Roadmap lösche ist die Roadmap leer. Darf das sein? Wenn ja Fehlerabfragen! -> **i think this is solved**
-- BUG: bei notifications, wenn ich schnell lösche ? kommt prisma error -> überprüfen (konnte nicht reproduzieren)
-- BUG: wenn ich ein Projekt hinzufüge erscheint es zweimal? Einmal mit keinem Wert für Aufwand einmal mit 0. Aber nur in der create projekt Übersicht. -> Eventuell überlegen feature zu killen und prio nur über dashboard/team-roadmap zu regeln?
-- BUG: Team-Roadmap: wenn ich ein Projekt lösche, wird die roadmap des zu löschenden Projektes dupliziert? Scheint edge case zu sein konnte nicht 100% reproduzieren **solved for now**
+- BUG: user dialog(mobile Ansicht) in Teamübersicht aktualisiert nicht die Daten bei veränderter Arbeitszeit
 - BUG: Analyse chart soll nur die Teams anzeigen, in denen der SM Teil von ist
 - Unsicher ob Notifications die Push in realtime anzeigt aber momentan ist es glaube ich zufriedenstellend da es on Login/Buttonclick aufjedenfall geht
 - BUG: team edit: Ich kann einen User der kein Team hat mehreren Teams zuweisen, da die UI nicht updated bis refreshed wird. Hier sollte ein reload passieren bzw verifiziert werden, dass der user kein sm ist und teams.length === 0 ist
 - BUG: BL ist unauthorized bei Team-overview? + darf auch wie PO drag&drop machen
+- BUG: wenn ich ein Projekt hinzufüge erscheint es zweimal? Einmal mit keinem Wert für Aufwand einmal mit 0. Aber nur in der create projekt Übersicht. -> Eventuell überlegen feature zu killen und prio nur über dashboard/team-roadmap zu regeln?
+- PO: kann momentan Projekte erstellen für alle Teams und die Roadmap aller Teams bearbeiten. Bei Team-Roadmap sieht er nur die seines Teams. Wie ist hier das gewünschte Verhalten? -> vermutlich nur die seines Teams
+- BUG: sm plant projekt ein und submitted. Datepicker verschwindet.+ fehlermeldung "Die Dauer darf nicht 0 Stunden und 0 Tage sein" aber erstes datumsetzen funktioniert und ab fresh wieder -> **i think this is solved**
+- BUG: bei projekt erstellen. Wenn ich ein projekt erstelle und danach die reihenfolge anpasse und dann nochmal ein projekt erstelle resetted sich die reihenfolge. Im backend stimmt es also muss das frontend vermutlich neu pullen oder so. -> **i think this is solved**
+- BUG: wenn ich einen Nutzer erstellen will und als rolle sm auswähle aber ihm nur ein Team(scheinbar egal) zuweise wird null and backend geschickt bei Team. Somit schlägt die erstellung fehl. -> **i think this is solved**
+- BUG: wenn ich als sm neue Daten eintrage erscheint danach die erste Roadmap nochmal? Bei refresh stimmt es wieder. bzw. wenn ich nochmal welche eingeben will kommt der snackbar error ? -> **i think this is solved**
+- Wenn ich das letzte Projekt in einer Roadmap lösche ist die Roadmap leer. Darf das sein? Wenn ja Fehlerabfragen! -> **i think this is solved**
+- BUG: bei notifications, wenn ich schnell lösche ? kommt prisma error -> überprüfen (konnte nicht reproduzieren)
+- BUG: Team-Roadmap: wenn ich ein Projekt lösche, wird die roadmap des zu löschenden Projektes dupliziert? Scheint edge case zu sein konnte nicht 100% reproduzieren **solved for now**
+
 
 ### perspektivisch
 
+- Try catch Blöcke nutzen für backend calls und im catch einfach mit SnackBar Fehler ausgeben. Vor Allem in den Services -> überarbeiten
+- Gantt diagramm für analyse SM einbauen -> Backend für update nachziehen und dann im FE aktualisieren (sollen hier projekte bearbeitet werden können ? also verschieben auf der zeitleiste) -> denke momentan nicht
+- current project in der rechten sidebar wird momentan gepolled also alle 30 sekunden gefetched. Funktioniert aber ist das gut?
+- breakpoints sind momentan bei 1000px.
+- backend route checking ist implementiert aber wird momentan nicht benutzt, da es 1. im frontend gemacht wird und 2. das FE momentan kein auth daten mitschickt bei requests
 - Projekt einschätzungen und ähnlich sollten auf 0 initialisert sein und nicht auf null um Probleme zu vermeiden
 - RESPONSIVE UI: falls es zu viel Probleme macht -> Seite neu laden ist auch eine Option beim abschicken von Daten o.ä. um einen Teil der Bugs zu umgehen oder falls es performance lastig probleme gibt
 - calc(var()) durch neue variable ersetzen?
@@ -86,6 +81,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - Websockets??
 - Performance probleme: Daten lokal behalten und updaten und asynchron an den Server schicken um eine zu hohe Datenlast zu vermeiden
 - Datum als deutsch darstellen, momentan american
+- Teamübersicht visual bug bei kleinerem Screen (kann momentan vernachlässigt werden, da wir uns auf mobile oder desktop screensize fokussieren und nicht dazwischen)
 
 ### Fragen
 

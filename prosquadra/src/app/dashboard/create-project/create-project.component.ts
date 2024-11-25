@@ -8,7 +8,7 @@ import {MatOption, MatSelect} from '@angular/material/select';
 import {TeamRoadmapComponent} from '../team-roadmap/team-roadmap.component';
 import {ProjectService} from '../../../services/project.service';
 import {TeamService} from '../../../services/team.service';
-import {Project} from '../../../types/project';
+import {Project, ProjectStatus} from '../../../types/project';
 import {Team} from '../../../types/team';
 import {Roadmap} from '../../../types/roadmap';
 import {NotificationsService} from '../../../services/notifications.service';
@@ -76,6 +76,7 @@ export class CreateProjectComponent implements AfterViewInit {
           name: this.projectForm.value.projectName,
           description: this.projectForm.value.description,
           team: selectedTeam,
+          projectStatus: ProjectStatus.offen,
           priorityPosition: newPriorityPosition,
         };
         await this.projectService.setProjects(newProject);

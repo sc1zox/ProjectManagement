@@ -65,6 +65,7 @@ CREATE TABLE `Project` (
     `roadmapId` INTEGER NULL,
     `teamid` INTEGER NOT NULL,
     `priorityPosition` INTEGER NULL,
+    `projectStatus` ENUM('offen', 'inBearbeitung', 'geschlossen') NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -91,6 +92,16 @@ CREATE TABLE `Login` (
 
     UNIQUE INDEX `Login_username_key`(`username`),
     UNIQUE INDEX `Login_userId_key`(`userId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `Urlaub` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `userId` INTEGER NOT NULL,
+    `startdatum` DATETIME(3) NOT NULL,
+    `enddatum` DATETIME(3) NOT NULL,
+
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -132,6 +143,9 @@ ALTER TABLE `Estimation` ADD CONSTRAINT `Estimation_userId_fkey` FOREIGN KEY (`u
 
 -- AddForeignKey
 ALTER TABLE `Login` ADD CONSTRAINT `Login_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `Urlaub` ADD CONSTRAINT `Urlaub_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `User`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `_UserSkills` ADD CONSTRAINT `_UserSkills_A_fkey` FOREIGN KEY (`A`) REFERENCES `Skill`(`id`) ON DELETE CASCADE ON UPDATE CASCADE;

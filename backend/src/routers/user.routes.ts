@@ -19,7 +19,10 @@ userRouter.get('/users', rescue(userController.getAllUser));
 userRouter.get('/users/:id', rescue(userController.getUserById));
 userRouter.post('/users/create', rescue(userController.createUser));
 userRouter.put('/users/update/arbeitszeit', rescue(UserController.updateArbeitszeit));
+userRouter.put('/users/update/urlaubstage', rescue(UserController.updateUrlaubstage));
 userRouter.get('/users/estimations/:id', rescue(UserController.getEstimationsByUserId));
+userRouter.get('/users/vacations/:id', rescue(UserController.getUserVacationsById));
+userRouter.post('/users/vacations/set', rescue(UserController.addVacation));
 
 userRouter.get('/projects', rescue(ProjectController.getProjects));
 userRouter.get('/projects/:id', rescue(ProjectController.getProjectById));
@@ -30,6 +33,7 @@ userRouter.put('/project/update', rescue(ProjectController.updateProject));
 userRouter.get('/project/current/:id', rescue(ProjectController.getProjectWithLowestPriorityByUserId));
 userRouter.post('/project/create/estimation', rescue(ProjectController.addEstimationToProject));
 userRouter.get('/project/estimation/:id', rescue(ProjectController.getEstimationsWithAverage));
+userRouter.put('/project/status/update', rescue(ProjectController.updateProjectStatus));
 
 userRouter.get('/team', rescue(TeamController.getTeams));
 userRouter.get('/team/:id', rescue(TeamController.getTeamByID));

@@ -10,7 +10,9 @@
 @media (max-width: 1200px) {
   .mat-column-skills,
   .mat-column-teamPlanning,
-  .mat-column-workHours {
+  .mat-column-workHours,
+  .mat-column-vacationDays,
+  {
     display: none;
   }
   .mat-column-modal {

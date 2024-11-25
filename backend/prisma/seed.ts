@@ -34,7 +34,7 @@ async function main() {
             arbeitszeit: 35,
             login: { create: { username: 'po', password: hashedpw1 } },
             skills: { connect: [{ id: skill3.id }, { id: skill4.id }] },
-            urlaubstage: 15,
+            urlaubstage: 28,
         },
     });
 
@@ -46,7 +46,7 @@ async function main() {
             arbeitszeit: 35,
             login: { create: { username: 'sm', password: hashedpw1 } },
             skills: { connect: [{ id: skill1.id }, { id: skill5.id }] },
-            urlaubstage: 0,
+            urlaubstage: 28,
         },
     });
 
@@ -82,7 +82,7 @@ async function main() {
             arbeitszeit: 42,
             login: { create: { username: 'bob.builder', password: hashedpw1 } },
             skills: { connect: [{ id: skill1.id }, { id: skill4.id }] },
-            urlaubstage: 10,
+            urlaubstage: 28,
         },
     });
 
@@ -142,6 +142,7 @@ async function main() {
             startDate: new Date(2023, 4, 1),
             endDate: new Date(2023, 9, 1),
             team: { connect: { id: team1.id } },
+            projectStatus: 'offen',
             roadmap: { connect: { id: roadmap1.id } },
             priorityPosition: 1,
         },
@@ -153,6 +154,7 @@ async function main() {
             description: 'A project for quality assurance testing',
             startDate: new Date(2023, 5, 15),
             endDate: new Date(2023, 10, 15),
+            projectStatus: 'offen',
             team: { connect: { id: team2.id } },
             roadmap: { connect: { id: roadmap2.id } },
             priorityPosition: 1,
@@ -166,6 +168,7 @@ async function main() {
             startDate: new Date(2023, 6, 1),
             endDate: new Date(2023, 7, 1),
             team: { connect: { id: team3.id } },
+            projectStatus: 'inBearbeitung',
             roadmap: { connect: { id: roadmap3.id } },
             priorityPosition: 1,
         },
@@ -178,6 +181,7 @@ async function main() {
             startDate: new Date(2023, 7, 15),
             endDate: new Date(2023, 12, 15),
             team: { connect: { id: team4.id } },
+            projectStatus: 'geschlossen',
             roadmap: { connect: { id: roadmap4.id } },
             priorityPosition: 1,
         },
@@ -190,6 +194,7 @@ async function main() {
             startDate: new Date(2023, 5, 1),
             endDate: new Date(2023, 6, 30),
             team: { connect: { id: team5.id } },
+            projectStatus: 'offen',
             roadmap: { connect: { id: roadmap5.id } },
             priorityPosition: 1,
         },

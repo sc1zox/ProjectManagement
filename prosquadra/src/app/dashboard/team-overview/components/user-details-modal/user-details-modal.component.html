@@ -17,7 +17,7 @@
     <input
       [(ngModel)]="arbeitszeit"
       id="arbeitszeit"
-      max="168"
+      max="100"
       min="0"
       name="arbeitszeit"
       placeholder="Arbeitszeit in Stunden eingeben"
@@ -25,6 +25,7 @@
     />
   </ng-container>
   <p><strong>Arbeitszeit:</strong> {{ user?.arbeitszeit }} Stunden</p>
+  <p><strong>Urlaubstage:</strong> {{ user?.urlaubstage }} Tage</p>
   <p><strong>Teams:</strong></p>
   <ul>
     <li *ngFor="let team of teams">
