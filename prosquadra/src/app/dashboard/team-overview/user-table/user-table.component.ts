@@ -53,11 +53,12 @@ export class UserTableComponent implements OnInit {
 
   async ngOnInit() {
     this.currentUser = await this.UserService.getCurrentUser();
-    // hier kann man evtl die Berechtigung regeln
+
     this.displayedColumns.push('userVorname')
     this.displayedColumns.push('userNachname')
     this.displayedColumns.push('skills');
     this.displayedColumns.push('workHours');
+    this.displayedColumns.push('vacationDays')
     this.displayedColumns.push('teamPlanning');
     this.displayedColumns.push('modal')
   }

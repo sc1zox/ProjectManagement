@@ -34,7 +34,7 @@ async function main() {
             arbeitszeit: 35,
             login: { create: { username: 'po', password: hashedpw1 } },
             skills: { connect: [{ id: skill3.id }, { id: skill4.id }] },
-            urlaubstage: 15,
+            urlaubstage: 28,
         },
     });
 
@@ -46,7 +46,7 @@ async function main() {
             arbeitszeit: 35,
             login: { create: { username: 'sm', password: hashedpw1 } },
             skills: { connect: [{ id: skill1.id }, { id: skill5.id }] },
-            urlaubstage: 0,
+            urlaubstage: 28,
         },
     });
 
@@ -82,7 +82,7 @@ async function main() {
             arbeitszeit: 42,
             login: { create: { username: 'bob.builder', password: hashedpw1 } },
             skills: { connect: [{ id: skill1.id }, { id: skill4.id }] },
-            urlaubstage: 10,
+            urlaubstage: 28,
         },
     });
 

@@ -215,6 +215,32 @@ class UserController {
             next(error);
         }
     }
+    async updateUrlaubstage(req: Request, res: Response, next: NextFunction): Promise<void> {
+        const { userID, urlaubstage } = req.body;
+
+        if (!userID || !urlaubstage) {
+            return next({
+                status: StatusCodes.BAD_REQUEST,
+                message: 'userID and urlaubstage are required.',
+            });
+        }
+
+        try {
+            const updatedUser = await prisma.user.update({
+                where: { id: Number(userID) },
+                data: { urlaubstage },
+            });
+
+            const response: ApiResponse<{ urlaubstage: number }> = {
+                code: StatusCodes.OK,
+                data: { urlaubstage: updatedUser.urlaubstage },
+            };
+
+            res.status(StatusCodes.OK).json(response);
+        } catch (error) {
+            next(error);
+        }
+    }
 }
 
 export default new UserController();
