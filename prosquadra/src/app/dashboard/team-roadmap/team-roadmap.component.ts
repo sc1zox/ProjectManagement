@@ -137,7 +137,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['roadmap']) {
+    if (changes['roadmap'] && this.roadmap || changes['roadmap.projects']) {
       this.extractProjectsFromRoadmaps();
       this.selectInitialProject();
     }
