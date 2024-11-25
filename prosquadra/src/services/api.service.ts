@@ -1,6 +1,7 @@
 // api.service.ts
 import {Injectable} from '@angular/core';
 import {ApiResponse} from '../types/api-response';
+import {ApiError} from '../../error/ApiError';
 
 
 @Injectable({
@@ -25,23 +26,24 @@ export class ApiService {
     return this.baseUrl;
   }
 
+  getApiUrl(): string {
+    return this.apiUrl;
+  }
+
   async fetch<T>(endpoint: string): Promise<ApiResponse<T>> {
-    let response;
-    try {
-      response = await fetch(`${this.apiUrl}${endpoint}`);
-    } catch (error) {
-      throw new Error("api fetch failed" + error)
-    }
-    if (response && !response.ok) {
+    const response: Response = await fetch(this.apiUrl + endpoint);
+
+    if (!response.ok) {
       const errorData = await response.json();
-      throw new Error(`Error: ${errorData.error || 'Unknown error'}`);
+      throw new ApiError(response.status, errorData.message || 'Unknown error');
     }
+
     return await response.json();
   }
 
 
   async post<T>(endpoint: string, body: any): Promise<ApiResponse<T>> {
-    const response = await fetch(`${this.apiUrl}${endpoint}`, {
+    const response:Response = await fetch(this.apiUrl+endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -50,8 +52,8 @@ export class ApiService {
     });
 
     if (!response.ok) {
-      const errorResponse = await response.json();
-      throw new Error(`Error: ${errorResponse.error}`);
+      const errorData = await response.json();
+      throw new ApiError(response.status, errorData.message || 'Unknown error');
     }
 
     return response.json();
@@ -67,8 +69,8 @@ export class ApiService {
     });
 
     if (!response.ok) {
-      const errorResponse = await response.json();
-      throw new Error(`Error: ${errorResponse.error}`);
+      const errorData = await response.json();
+      throw new ApiError(response.status, errorData.message || 'Unknown error');
     }
 
     return response.json();

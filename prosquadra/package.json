@@ -24,6 +24,7 @@
     "date-fns": "^4.1.0",
     "html2canvas": "^1.4.1",
     "moment": "^2.30.1",
+    "ng-qrcode": "^18.0.0",
     "ngx-toastr": "^19.0.0",
     "prettier": "^3.3.3",
     "rxjs": "~7.8.0",

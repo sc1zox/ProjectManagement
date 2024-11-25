@@ -51,11 +51,12 @@ export class TeamsFormComponent implements OnInit {
   selectedUser?: number[];
   selectedUsers: User[] = [];
   teamForm: FormGroup;
+  bereichsleiter?: User[];
 
   constructor(private TeamService: TeamService, private UserService: UserService, private fb: FormBuilder, private dialog: MatDialog, private router: Router, private SnackBarService: SnackbarService, private readonly NotificationService: NotificationsService) {
     this.teamForm = this.fb.group({
       teamName: ['', Validators.required],
-      selectedUser: [[], Validators.required]
+      selectedUser: [[]]
     });
   }
 
@@ -66,7 +67,6 @@ export class TeamsFormComponent implements OnInit {
       console.error('Error while fetching Users:', error);
     }
     this.filterUsers()
-    console.log(this.filteredUsers, this.Users)
   }
 
   onSubmit() {
@@ -77,7 +77,7 @@ export class TeamsFormComponent implements OnInit {
         data: {message: 'Wollen Sie dieses Team wirklich anlegen?'}
       });
 
-      dialogRef.afterClosed().subscribe(result => {
+      dialogRef.afterClosed().subscribe(async result => {
         if (result) {
           this.selectedUser = formValue.selectedUser;
           if (this.Team) {
@@ -91,13 +91,19 @@ export class TeamsFormComponent implements OnInit {
             }
             this.Team.name = formValue.teamName;
             this.Team.members = this.selectedUsers;
-            this.TeamService.createTeam(this.Team);
-            this.selectedUser?.forEach((user) => {
-              this.NotificationService.createNotification('Du wurdest einem neuen Team hinzugefügt', user)
-            })
+            try {
+              await this.TeamService.createTeam(this.Team);
+              this.selectedUser?.forEach((user) => {
+                this.NotificationService.createNotification('Du wurdest einem neuen Team hinzugefügt', user);
+              })
+              this.bereichsleiter?.forEach(user => {
+                this.NotificationService.createNotification('Es wurde ein neues Team erstellt',user.id)
+              })
+            } catch (error) {
+              this.SnackBarService.open("Bei der Teamerstellung gab es einen Fehler!")
+            }
             this.router.navigate(['/dashboard/admin-panel']);
           }
-          // Diese Daten dann an den Server schicken
         } else {
           this.SnackBarService.open("Sie haben die Teamerstellung abgebrochen")
         }
@@ -109,5 +115,8 @@ export class TeamsFormComponent implements OnInit {
     this.filteredUsers = this.Users.filter(user => {
       return user.role === UserRole.SM || (user.teams && user.teams.length === 0);
     });
+  }
+  private getBereichsleiter(): void{
+    this.bereichsleiter = this.Users.filter(user => user.role === UserRole.Bereichsleiter)
   }
 }

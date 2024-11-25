@@ -3,8 +3,9 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider          = "mysql"
+  url               = env("DATABASE_URL")
+  shadowDatabaseUrl = env("SHADOW_DATABASE_URL") // weil kein Zugriff auf mysql um migration zu erstellen
 }
 
 model User {
@@ -20,6 +21,7 @@ model User {
   urlaubstage   Int
   login         Login?
   notifications Notifications[] @relation("UserNotifications")
+  estimations   Estimation[]    @relation("UserEstimations")
 }
 
 model Notifications {
@@ -59,19 +61,30 @@ model Roadmap {
 }
 
 model Project {
-  id               Int       @id @default(autoincrement())
+  id               Int          @id @default(autoincrement())
   name             String
   description      String
   startDate        DateTime?
   endDate          DateTime?
   roadmapId        Int?
-  roadmap          Roadmap?  @relation("RoadmapProjects", fields: [roadmapId], references: [id])
-  team             Team?     @relation("TeamProjects", fields: [teamid], references: [id])
+  roadmap          Roadmap?     @relation("RoadmapProjects", fields: [roadmapId], references: [id])
+  team             Team?        @relation("TeamProjects", fields: [teamid], references: [id])
   teamid           Int
-  estimationHours  Int?
-  PriorityPosition Int?
-  createdAt        DateTime  @default(now())
-  updatedAt        DateTime  @updatedAt
+  estimations      Estimation[] @relation("ProjectEstimations")
+  priorityPosition Int?
+  createdAt        DateTime     @default(now())
+  updatedAt        DateTime     @updatedAt
+}
+
+model Estimation {
+  id        Int     @id @default(autoincrement())
+  hours     Int
+  projectId Int
+  userId    Int
+  project   Project @relation("ProjectEstimations", fields: [projectId], references: [id])
+  user      User    @relation("UserEstimations", fields: [userId], references: [id])
+
+  @@unique([projectId, userId])
 }
 
 model Login {

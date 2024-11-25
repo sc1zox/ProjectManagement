@@ -32,6 +32,12 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 ### TODO:
 
+- Team-Übersicht soll noch Urlaubstage aufnehmen und Admin+BL dürfen ändern
+- Try catch Blöcke nutzen für backend calls und im catch einfach mit SnackBar Fehler ausgeben.
+- unauthorized page 
+- submit und delete button on mobile fix
+- BL in keinem Team?
+- backend route checking ist implementiert aber wird momentan nicht benutzt, da es 1. im frontend gemacht wird und 2. das FE momentan kein auth daten mitschickt bei requests
 - Safe project Button führt 5 network requests aus auch ohne Änderungen weil er alle roadmaps neu pulled -> unnötig. Entweder gar keine ohen changes oder nur die affected Roadmap neu pullen 
 - Bei Projekterstellung sollte PO nur sein Team als Auswahl bekommen
 - safe project button in team roadmap nur verfügbar für sm oder po ? -> ne für alle aber nicht alle dürfen editieren
@@ -64,6 +70,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - BUG: Analyse chart soll nur die Teams anzeigen, in denen der SM Teil von ist
 - Unsicher ob Notifications die Push in realtime anzeigt aber momentan ist es glaube ich zufriedenstellend da es on Login/Buttonclick aufjedenfall geht
 - BUG: team edit: Ich kann einen User der kein Team hat mehreren Teams zuweisen, da die UI nicht updated bis refreshed wird. Hier sollte ein reload passieren bzw verifiziert werden, dass der user kein sm ist und teams.length === 0 ist
+- BUG: BL ist unauthorized bei Team-overview? + darf auch wie PO drag&drop machen
 
 ### perspektivisch
 

@@ -7,7 +7,7 @@ import {
   MatExpansionPanelHeader,
   MatExpansionPanelTitle
 } from '@angular/material/expansion';
-import {DatePipe} from '@angular/common';
+import {DatePipe, NgIf} from '@angular/common';
 import {MatBadge} from '@angular/material/badge';
 import {Project} from '../../../types/project';
 import {User} from '../../../types/user';
@@ -19,6 +19,8 @@ import {UserService} from '../../../services/user.service';
 import {AuthService} from '../../../services/auth.service';
 import {UserSkillsComponent} from './user-skills/user-skills.component';
 import {Notification} from '../../../types/Notifications';
+import {QrCodeModule} from 'ng-qrcode';
+import {ApiService} from '../../../services/api.service';
 
 @Component({
   selector: 'app-right-sidebar',
@@ -37,6 +39,8 @@ import {Notification} from '../../../types/Notifications';
     UserSkillsComponent,
     DatePipe,
     MatIconButton,
+    QrCodeModule,
+    NgIf,
   ],
   standalone: true,
 })
@@ -48,6 +52,7 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
   userInitials: string = '';
   user?: User;
   private projectPollingInterval: any;
+  QrCodeVisible: boolean = false
 
 
   constructor(
@@ -55,6 +60,7 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
     private readonly NotificationService: NotificationsService,
     private readonly UserService: UserService,
     private readonly AuthService: AuthService,
+    private readonly ApiService: ApiService,
   ) {
 
   }
@@ -126,5 +132,17 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
       this.notifications.forEach((notification) => {
         this.NotificationService.showNotificationPermanent(notification);
       });
+  }
+
+  getPdfUrl() {
+    return this.ApiService.getApiUrl() + '/export/' + this.user?.id
+  }
+
+  showQrCode() {
+    this.QrCodeVisible = !this.QrCodeVisible;
+  }
+
+  getPDF() {
+    window.location.href = this.getPdfUrl();
   }
 }

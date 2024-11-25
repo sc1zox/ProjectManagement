@@ -1,6 +1,6 @@
 import bcrypt from 'bcryptjs';
-import { Request, Response, NextFunction } from 'express';
-import { StatusCodes } from 'http-status-codes';
+import {Request, Response, NextFunction} from 'express';
+import {StatusCodes} from 'http-status-codes';
 import prisma from '../lib/prisma';
 import jwt from '../utils/jwt';
 import {Login} from "../types/login";
@@ -9,66 +9,48 @@ import {Login} from "../types/login";
 
 class AuthController {
     async authenticate(req: Request, res: Response, next: NextFunction): Promise<void> {
-        const { username, password }: Login = req.body;
-
-        console.log(req.body);
-
-
+        const {username, password}: Login = req.body;
         if (!username || !password) {
-             res.status(StatusCodes.BAD_REQUEST).json({
+            return next({
+                status: StatusCodes.BAD_REQUEST,
                 message: 'Username and password are required',
             });
-            return
         }
 
         try {
-
-            const login = await prisma.login.findUnique({ where: { username } });
-
-
+            const login = await prisma.login.findUnique({where: {username}});
             if (!login) {
-                 res.status(StatusCodes.NOT_FOUND).json({
+                return next({
+                    status: StatusCodes.NOT_FOUND,
                     message: 'User not found',
                 });
-                return
             }
-
-            console.log(login.password,password);
-            const isValidPassword = await bcrypt.compare(password ,login.password);
-            console.log(isValidPassword);
-
-
+            const isValidPassword = await bcrypt.compare(password, login.password);
             if (!isValidPassword) {
-                console.log(isValidPassword)
-                 res.status(StatusCodes.UNAUTHORIZED).json({
+                next({
+                    status: StatusCodes.UNAUTHORIZED,
                     message: 'Invalid password',
                 });
-                return
             }
-
-
-            const token = jwt.sign({username: login.username, userId: login.userId });
-
-
-            res.status(StatusCodes.OK).json({ token });
+            const token = jwt.sign({username: login.username, userId: login.userId});
+            res.status(StatusCodes.OK).json({token});
         } catch (error) {
-
             console.error('Error during authentication:', error);
-            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
+            return next({
+                status: StatusCodes.UNAUTHORIZED,
                 message: 'Something went wrong during authentication',
             });
-            next(error)
         }
     }
 
     async createLogin(req: Request, res: Response, next: NextFunction): Promise<void> {
-        const { username, password, userId }:Login = req.body;
+        const {username, password, userId}: Login = req.body;
 
         if (!username || !password || !userId) {
-             res.status(StatusCodes.BAD_REQUEST).json({
+            return next({
+                status: StatusCodes.BAD_REQUEST,
                 message: 'Benutzername, Passwort und UserID sind erforderlich.',
             });
-            return
         }
 
         try {
@@ -85,14 +67,14 @@ class AuthController {
 
 
             const user = await prisma.user.findUnique({
-                where: { id: userId },
+                where: {id: userId},
             });
 
             if (!user) {
-                 res.status(StatusCodes.NOT_FOUND).json({
+                return next({
+                    status: StatusCodes.BAD_REQUEST,
                     message: 'Benutzer nicht gefunden.',
                 });
-                return
             }
 
             res.status(StatusCodes.CREATED).json({
@@ -100,11 +82,11 @@ class AuthController {
                 data: {login: newLogin},
             });
         } catch (error) {
-            if(error.code === 'P2002'){
-                 res.status(StatusCodes.CONFLICT).json({
+            if (error.code === 'P2002') {
+                return next({
+                    status: StatusCodes.CONFLICT,
                     message: 'Der Benutzername existiert bereits.',
                 });
-                return
             }
             next(error);
         }

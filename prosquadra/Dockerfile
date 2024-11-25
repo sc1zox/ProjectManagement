@@ -2,6 +2,7 @@ FROM node:22.10
 WORKDIR /app
 COPY ./src ./src
 COPY ./public ./public
+COPY ./error ./error
 COPY angular.json .
 COPY package.json .
 COPY package-lock.json .

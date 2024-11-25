@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ApiService} from './api.service';
 import {UserService} from './user.service';
+import {UserRole} from '../types/user';
 
 @Injectable({
   providedIn: 'root',
@@ -59,5 +60,13 @@ export class AuthService {
     } catch (error) {
       return false;
     }
+  }
+
+  async hasRole(requiredRoles: UserRole[]): Promise<boolean> {
+    const currentUser = await this.UserService.getCurrentUser();
+    if (currentUser && currentUser.role) {
+      return requiredRoles.includes(currentUser.role);
+    }
+    return false;
   }
 }

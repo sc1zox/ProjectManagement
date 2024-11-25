@@ -31,7 +31,7 @@ class TeamController {
     async getTeamByID(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const team = await prisma.team.findUnique({
-                where: { id: Number(req.params.id) },
+                where: {id: Number(req.params.id)},
                 include: {
                     roadmap: {
                         include: {
@@ -42,7 +42,7 @@ class TeamController {
             });
 
             if (!team) {
-                return next({ status: StatusCodes.NOT_FOUND, message: 'Team not found' });
+                return next({status: StatusCodes.NOT_FOUND, message: 'Team not found'});
             }
 
             const response: ApiResponse<Team> = {
@@ -57,16 +57,25 @@ class TeamController {
     }
 
     async getTeamByUserID(req: Request, res: Response, next: NextFunction): Promise<void> {
+        const userId: number = Number(req.params.id);
+
+        if (!userId) {
+            return next({
+                status: StatusCodes.BAD_REQUEST,
+                message: 'provide a valid userId'
+            });
+        }
+
         try {
             const user = await prisma.user.findUnique({
-                where: { id: Number(req.params.id) },
+                where: {id: userId},
                 include: {
                     teams: true,
                 },
             });
 
             if (!user) {
-                return next({ status: StatusCodes.NOT_FOUND, message: 'User not found' });
+                return next({status: StatusCodes.NOT_FOUND, message: 'User not found'});
             }
 
             const TeamsOfUser = user.teams;
@@ -82,12 +91,15 @@ class TeamController {
     }
 
 
-    async createTeam(req: Request, res: Response, next: NextFunction): Promise<any> {
-        const { name, members } = req.body;
+    async createTeam(req: Request, res: Response, next: NextFunction): Promise<void> {
+        const {name, members} = req.body;
+        let newTeamWithoutMember;
+        let newTeamWithMember;
 
 
-        if (!name || !members || members.length === 0) {
-            return res.status(StatusCodes.BAD_REQUEST).json({
+        if (!name || !members) {
+            return next({
+                status: StatusCodes.BAD_REQUEST,
                 message: 'Alle Felder (name, members) müssen ausgefüllt sein',
             });
         }
@@ -95,28 +107,43 @@ class TeamController {
         try {
             const newRoadmap = await prisma.roadmap.create({
                 data: {
-                    projects: { create: [] },
+                    projects: {create: []},
                 },
             });
 
-            const memberIds = members.map((member: { id: number }) => ({ id: member.id }));
-
-            const newTeam = await prisma.team.create({
-                data: {
-                    name,
-                    members: {
-                        connect: memberIds,
+            const memberIds = members.map((member: { id: number }) => ({id: member.id}));
+            if (!memberIds) {
+                newTeamWithoutMember = await prisma.team.create({
+                    data: {
+                        name,
+                        roadmap: {
+                            connect: {id: newRoadmap.id},
+                        },
                     },
-                    roadmap: {
-                        connect: { id: newRoadmap.id },
+                });
+                res.status(StatusCodes.CREATED).json({
+                    code: StatusCodes.CREATED,
+                    data: {...newTeamWithoutMember},
+                });
+            } else {
+                newTeamWithMember = await prisma.team.create({
+                    data: {
+                        name,
+                        members: {
+                            connect: memberIds,
+                        },
+                        roadmap: {
+                            connect: {id: newRoadmap.id},
+                        },
                     },
-                },
-            });
+                });
+                res.status(StatusCodes.CREATED).json({
+                    code: StatusCodes.CREATED,
+                    data: {...newTeamWithMember},
+                });
+            }
 
-            res.status(StatusCodes.CREATED).json({
-                code: StatusCodes.CREATED,
-                data: { ...newTeam },
-            });
+
         } catch (error) {
             next(error);
         }
@@ -124,20 +151,20 @@ class TeamController {
 
     async removeUserFromTeam(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const { teamId, userId } = req.body;
+            const {teamId, userId} = req.body;
 
             if (!teamId || !userId) {
-                res.status(StatusCodes.BAD_REQUEST).json({
+                return next({
+                    status: StatusCodes.BAD_REQUEST,
                     message: 'Alle Felder (teamID, userID) müssen ausgefüllt sein',
                 });
-                return;
             }
 
             const updatedTeam = await prisma.team.update({
-                where: { id: Number(teamId) },
+                where: {id: Number(teamId)},
                 data: {
                     members: {
-                        disconnect: { id: Number(userId) },
+                        disconnect: {id: Number(userId)},
                     },
                 },
             });
@@ -153,20 +180,20 @@ class TeamController {
 
     async addUserToTeam(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const { teamId,userId } = req.body;
+            const {teamId, userId} = req.body;
 
             if (!teamId || !userId) {
-                res.status(StatusCodes.BAD_REQUEST).json({
+                return next({
+                    status: StatusCodes.BAD_REQUEST,
                     message: 'Both teamId and userId must be provided',
                 });
-                return;
             }
 
             const updatedTeam = await prisma.team.update({
-                where: { id: Number(teamId) },
+                where: {id: Number(teamId)},
                 data: {
                     members: {
-                        connect: { id: Number(userId) },
+                        connect: {id: Number(userId)},
                     },
                 },
             });
@@ -181,4 +208,5 @@ class TeamController {
     }
 
 }
+
 export default new TeamController();

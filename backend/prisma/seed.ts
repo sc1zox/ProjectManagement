@@ -11,7 +11,7 @@ async function main() {
     const skill4 = await prisma.skill.create({ data: { name: 'Node.js' } });
     const skill5 = await prisma.skill.create({ data: { name: 'GraphQL' } });
 
-    const hashedpw1 = await bcrypt.hash('test',10);
+    const hashedpw1 = await bcrypt.hash('test', 10);
 
     // Erstelle Benutzer
     const user1 = await prisma.user.create({
@@ -139,12 +139,11 @@ async function main() {
         data: {
             name: 'New Development Project',
             description: 'A new project for development team',
-            estimationHours: 45,
             startDate: new Date(2023, 4, 1),
             endDate: new Date(2023, 9, 1),
             team: { connect: { id: team1.id } },
             roadmap: { connect: { id: roadmap1.id } },
-            PriorityPosition: 1,
+            priorityPosition: 1,
         },
     });
 
@@ -152,12 +151,11 @@ async function main() {
         data: {
             name: 'QA Testing Project',
             description: 'A project for quality assurance testing',
-            estimationHours: 19,
             startDate: new Date(2023, 5, 15),
             endDate: new Date(2023, 10, 15),
             team: { connect: { id: team2.id } },
             roadmap: { connect: { id: roadmap2.id } },
-            PriorityPosition: 1,
+            priorityPosition: 1,
         },
     });
 
@@ -165,12 +163,11 @@ async function main() {
         data: {
             name: 'Design Sprint',
             description: 'A design-focused sprint for UI/UX improvement',
-            estimationHours: 20,
             startDate: new Date(2023, 6, 1),
             endDate: new Date(2023, 7, 1),
             team: { connect: { id: team3.id } },
             roadmap: { connect: { id: roadmap3.id } },
-            PriorityPosition: 1,
+            priorityPosition: 1,
         },
     });
 
@@ -178,12 +175,11 @@ async function main() {
         data: {
             name: 'Product Development',
             description: 'A project focused on product improvements',
-            estimationHours: 40,
             startDate: new Date(2023, 7, 15),
             endDate: new Date(2023, 12, 15),
             team: { connect: { id: team4.id } },
             roadmap: { connect: { id: roadmap4.id } },
-            PriorityPosition: 1,
+            priorityPosition: 1,
         },
     });
 
@@ -191,16 +187,21 @@ async function main() {
         data: {
             name: 'Marketing Strategy',
             description: 'A project focused on developing marketing strategies',
-            estimationHours: 30,
             startDate: new Date(2023, 5, 1),
             endDate: new Date(2023, 6, 30),
             team: { connect: { id: team5.id } },
             roadmap: { connect: { id: roadmap5.id } },
-            PriorityPosition: 1,
+            priorityPosition: 1,
         },
     });
 
-    // Weitere Projekte (analog)
+    // Erstelle Estimations und ordne sie den Projekten zu
+    await prisma.estimation.createMany({
+        data: [
+            { hours: 45, projectId: project1.id, userId: user1.id },
+            { hours: 50, projectId: project1.id, userId: user5.id },
+        ],
+    });
 
     console.log({
         user1,

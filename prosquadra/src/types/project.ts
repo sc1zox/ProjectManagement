@@ -7,7 +7,7 @@ export interface Project {
   startDate?: Date;
   endDate?: Date;
   team?: Team;
-  estimationHours?: number;
-  PriorityPosition?: number;
+  avgEstimationHours?: number;
+  priorityPosition?: number;
 }
 
