@@ -28,6 +28,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 # Max's explanation corner
 - Status Impl ToDo: Permission Setup, Status Geschlossen -> Datepicker Locked sometimes breaks on reload
+- Problem: Mehrere Projekte in einer Roadmap, wenn man hin und her switched gehts kaputt...
 
 # Christian's explanation corner
 

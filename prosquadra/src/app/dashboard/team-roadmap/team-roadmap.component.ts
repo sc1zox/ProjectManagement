@@ -42,6 +42,7 @@ import { ProjectStatus } from '../../../types/project';
 import { MatSelectChange } from '@angular/material/select';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
+import { ChangeDetectorRef } from '@angular/core';
 
 
 const isStartDateInRange = (projects: Project[], startDate: Date, selectedProject: Project): boolean => {
@@ -105,7 +106,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
 
   constructor(private readonly ProjectService: ProjectService,
               private readonly UserService: UserService, private readonly fb: FormBuilder,
-              private readonly RoadmapService: RoadmapService, private SnackBarSerivce: SnackbarService) {
+              private readonly RoadmapService: RoadmapService, private SnackBarSerivce: SnackbarService, private cdr: ChangeDetectorRef) {
     this.dateForm = this.fb.group({
       startDate: this.startDateControl,
       endDate: this.endDateControl,
@@ -136,11 +137,16 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes['roadmap'] && this.roadmap || changes['roadmap.projects']) {
-      console.log('Received updated roadmap:', this.roadmap);
+    if (changes['roadmap']) {
       this.extractProjectsFromRoadmaps();
       this.selectInitialProject();
     }
+  
+    if (changes['selectedProject'] && this.selectedProject) {
+      this.startDateControl.setValue(this.selectedProject.startDate, { emitEvent: false });
+      this.endDateControl.setValue(this.selectedProject.endDate, { emitEvent: false });
+      this.updateDateControls();
+    }  
   }
 
   extractProjectsFromRoadmaps() {
@@ -176,26 +182,42 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     this.updateDateControls();
   }
 
-  async onStatusChange(event: MatSelectChange) {
+  async onStatusChange(event: MatSelectChange): Promise<void> {
     const newStatus = event.value as ProjectStatus;
-    if (this.selectedProject?.id) {
-      const updatedProject = await this.ProjectService.setProjectStatus(this.selectedProject.id, newStatus);
-      this.selectedProject.projectStatus = updatedProject.projectStatus;
+
+    if (this.selectedProject) {
+      this.selectedProject.projectStatus = newStatus;
+      await this.ProjectService.setProjectStatus(this.selectedProject.id!, newStatus);
+      this.updateDateControls();
     }
-    this.updateDateControls();
   }
 
   updateDateControls(): void {
-    if (this.selectedProject?.projectStatus === ProjectStatus.geschlossen) {
-      this.startDateControl.disable({ emitEvent: false });
-      this.endDateControl.disable({ emitEvent: false });
-    } else if (this.selectedProject?.projectStatus === ProjectStatus.inBearbeitung) {
-      this.startDateControl.enable({ emitEvent: false });
-      this.endDateControl.enable({ emitEvent: false });
-    } else if (this.selectedProject?.projectStatus === ProjectStatus.offen) {
-      this.startDateControl.disable({ emitEvent: false });
-      this.endDateControl.disable({ emitEvent: false });
+    if (!this.selectedProject) return;
+
+    console.log('Updating Date Controls. Current Status:', this.selectedProject.projectStatus);
+
+    switch (this.selectedProject.projectStatus) {
+      case ProjectStatus.geschlossen:
+        this.startDateControl.disable({ emitEvent: false });
+        this.endDateControl.disable({ emitEvent: false });
+        break;
+
+      case ProjectStatus.inBearbeitung:
+        this.startDateControl.enable({ emitEvent: false });
+        this.endDateControl.enable({ emitEvent: false });
+        break;
+
+      case ProjectStatus.offen:
+        this.startDateControl.disable({ emitEvent: false });
+        this.endDateControl.disable({ emitEvent: false });
+        break;
+
+      default:
+        console.warn('Unhandled Project Status:', this.selectedProject.projectStatus);
     }
+    // Force UI to update
+    this.cdr.detectChanges();
   }
 
   getStatusLabel(status: ProjectStatus): string {
@@ -229,14 +251,19 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     return undefined;
   }
 
-  // Block default scroll, enable horizontal scroll
-
   async selectProject(project: Project): Promise<void> {
     this.selectedProject = project;
+  
+    // Update the form controls to reflect the selected project
+    this.startDateControl.setValue(project.startDate, { emitEvent: false });
+    this.endDateControl.setValue(project.endDate, { emitEvent: false });
+  
+    // Update control locking state based on the selected project's status
+    this.updateDateControls();
+  
     await this.setSelectedProjectAvgEstimation();
-    this.startDateControl.setValue(project.startDate);
-    this.endDateControl.setValue(project.endDate);
   }
+  
 
   // Inspired by https://stackoverflow.com/questions/59468926/horizontal-scroll-in-typescript
   onWheelScroll(event: WheelEvent): void {
