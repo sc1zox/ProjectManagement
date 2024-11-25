@@ -19,6 +19,7 @@ userRouter.get('/users', rescue(userController.getAllUser));
 userRouter.get('/users/:id', rescue(userController.getUserById));
 userRouter.post('/users/create', rescue(userController.createUser));
 userRouter.put('/users/update/arbeitszeit', rescue(UserController.updateArbeitszeit));
+userRouter.put('/users/update/urlaubstage', rescue(UserController.updateUrlaubstage));
 userRouter.get('/users/estimations/:id', rescue(UserController.getEstimationsByUserId));
 userRouter.get('/users/vacations/:id', rescue(UserController.getUserVacationsById));
 userRouter.post('/users/vacations/set', rescue(UserController.addVacation));

@@ -30,6 +30,13 @@
       </td>
     </ng-container>
 
+    <ng-container matColumnDef="vacationDays">
+      <th *matHeaderCellDef mat-header-cell> Urlaubstage</th>
+      <td *matCellDef="let user" mat-cell>
+          {{ user.urlaubstage}}
+      </td>
+    </ng-container>
+
     <ng-container matColumnDef="teamPlanning">
       <th *matHeaderCellDef mat-header-cell> Team</th>
       <td *matCellDef="let user" mat-cell>

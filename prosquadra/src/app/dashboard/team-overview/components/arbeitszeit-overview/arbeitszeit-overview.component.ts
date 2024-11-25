@@ -5,6 +5,9 @@ import {UpdateService} from '../../../../../services/update.service';
 import {FormsModule} from '@angular/forms';
 import {SnackbarService} from '../../../../../services/snackbar.service';
 
+const defaultUrlaubstage: number = 28;
+const defaultArbeitszeit: number = 38.5;
+
 @Component({
   selector: 'app-arbeitszeit-overview',
   standalone: true,
@@ -26,8 +29,9 @@ export class ArbeitszeitOverviewComponent {
   }
 
   updateArbeitszeit() {
-    if (this.arbeitszeit && (this.arbeitszeit < 0 || this.arbeitszeit > 168)) {
-      this.SnackBarService.open('Die Arbeitszeit muss zwischen 0 und 168 sein.')
+    this.updateUrlaubstage()
+    if (this.arbeitszeit && (this.arbeitszeit < 0 || this.arbeitszeit > 100)) {
+      this.SnackBarService.open('Die Arbeitszeit muss zwischen 0 und 100 sein.')
       this.arbeitszeit = undefined;
       return;
     }
@@ -35,9 +39,21 @@ export class ArbeitszeitOverviewComponent {
       try {
         this.UpdateService.updateArbeitszeit(this.user.id, this.arbeitszeit)
       } catch (error) {
-        console.log("error beim senden der Arbeitszeit")
+        this.SnackBarService.open('Error beim Aktualisieren der Arbeitszeit')
       }
 
+    }
+  }
+  updateUrlaubstage(){
+    if(this.arbeitszeit && this.user) {
+      let newUrlaubstage: number = defaultUrlaubstage / (defaultArbeitszeit / this.arbeitszeit);
+      try {
+        this.UpdateService.updateUrlaubstage(this.user?.id, newUrlaubstage)
+      }catch (error){
+        this.SnackBarService.open('Error bei der Aktualisierung der Urlaubstage')
+      }
+    }else{
+      this.SnackBarService.open('Die neuen Urlaubstage konnten nicht berechnet werden')
     }
   }
 
