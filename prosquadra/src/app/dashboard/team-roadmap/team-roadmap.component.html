@@ -3,13 +3,10 @@
 
   <!-- Horizontal scrollable project list -->
   <div #projectList (cdkDropListDropped)="drop($event)" [cdkDropListDisabled]="!enableDragDrop"
-       [cdkDropListOrientation]="window.innerWidth > 1000 ? 'horizontal' : 'vertical'"
-       cdkDropList
-       class="project-list">
+    [cdkDropListOrientation]="window.innerWidth > 1000 ? 'horizontal' : 'vertical'" cdkDropList class="project-list">
     <div (click)="selectProject(project)" *ngFor="let project of projects"
-         [cdkDragLockAxis]="window.innerWidth > 1000 ? 'x' : 'y'" [class.selected]="project.id === selectedProject?.id"
-         cdkDrag cdkDragBoundary=".project-list"
-         class="project-box">
+      [cdkDragLockAxis]="window.innerWidth > 1000 ? 'x' : 'y'" [class.selected]="project.id === selectedProject?.id"
+      cdkDrag cdkDragBoundary=".project-list" class="project-box">
       {{ project.name }}
     </div>
   </div>
@@ -18,34 +15,60 @@
   <div *ngIf="selectedProject" class="project-details">
     <h3>{{ selectedProject.name }}</h3>
 
-    <div *ngIf="setTimeScrum">
-      <!-- Start Date with Datepicker -->
-      <mat-form-field appearance="fill">
-        <mat-label>Start Date</mat-label>
-        <input [formControl]="startDateControl" [matDatepicker]="startPicker" matInput>
-        <mat-datepicker-toggle [for]="startPicker" matSuffix></mat-datepicker-toggle>
-        <mat-datepicker #startPicker></mat-datepicker>
-      </mat-form-field>
-
-      <!-- End Date with Datepicker -->
-      <mat-form-field appearance="fill">
-        <mat-label>End Date</mat-label>
-        <input [formControl]="endDateControl" [matDatepicker]="endPicker" matInput>
-        <mat-datepicker-toggle [for]="endPicker" matSuffix></mat-datepicker-toggle>
-        <mat-datepicker #endPicker></mat-datepicker>
-        <mat-error *ngIf="endDateControl.hasError('endDateInvalid')">End date cannot be before Start date!</mat-error>
-      </mat-form-field>
-    </div>
+    <mat-form-field appearance="fill">
+      <mat-label>Status</mat-label>
+      <mat-select [(value)]="selectedProject.projectStatus" (selectionChange)="onStatusChange($event)">
+        <mat-option *ngFor="let status of projectStatuses" [value]="status">{{ getStatusLabel(status) }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    
+    <!-- Display "offen" status and hide date fields -->
+    <ng-container *ngIf="selectedProject.projectStatus === ProjectStatus.offen; else dateFields">
+      <p><strong>Status:</strong> Offen</p>
+    </ng-container>
+    
+    <!-- Start and End Date fields -->
+    <ng-template #dateFields>
+      <div *ngIf="selectedProject.projectStatus === ProjectStatus.inBearbeitung || selectedProject.projectStatus === ProjectStatus.geschlossen">
+        <mat-form-field appearance="fill">
+          <mat-label>Start Date</mat-label>
+          <input
+            [formControl]="startDateControl"
+            [matDatepicker]="startPicker"
+            matInput
+            [disabled]="selectedProject.projectStatus === ProjectStatus.geschlossen"
+          />
+          <mat-datepicker-toggle [for]="startPicker" matSuffix></mat-datepicker-toggle>
+          <mat-datepicker #startPicker></mat-datepicker>
+        </mat-form-field>
+    
+        <mat-form-field appearance="fill">
+          <mat-label>End Date</mat-label>
+          <input
+            [formControl]="endDateControl"
+            [matDatepicker]="endPicker"
+            matInput
+            [disabled]="selectedProject.projectStatus === ProjectStatus.geschlossen"
+          />
+          <mat-datepicker-toggle [for]="endPicker" matSuffix></mat-datepicker-toggle>
+          <mat-datepicker #endPicker></mat-datepicker>
+          <mat-error *ngIf="endDateControl.hasError('endDateInvalid')">
+            End date cannot be before Start date!
+          </mat-error>
+        </mat-form-field>
+      </div>
+    </ng-template>    
 
     <!-- Display dates as text for all users -->
-    <div>
+    <div *ngIf="selectedProject.projectStatus === ProjectStatus.inBearbeitung || selectedProject.projectStatus === ProjectStatus.geschlossen">
       <p><strong>Start:</strong> {{ startDateControl.value | date: 'shortDate' }}</p>
       <p><strong>End:</strong> {{ endDateControl.value | date: 'shortDate' }}</p>
     </div>
 
     <p><strong>Beschreibung:</strong> {{ selectedProject.description }}</p>
-    <ng-container *ngIf="selectedProject.avgEstimationHours!==-1337 && selectedProject.avgEstimationHours!==-1; else errorKeineSchaetzungen">
-    <p><strong>Projekt Zeitschätzung: </strong> {{ selectedProject.avgEstimationHours }} h</p>
+    <ng-container
+      *ngIf="selectedProject.avgEstimationHours!==-1337 && selectedProject.avgEstimationHours!==-1; else errorKeineSchaetzungen">
+      <p><strong>Projekt Zeitschätzung: </strong> {{ selectedProject.avgEstimationHours }} h</p>
     </ng-container>
     <ng-template #errorKeineSchaetzungen>
       <p><strong>Projekt Zeitschätzung: </strong> Es wurden noch keine Schätzungen abgegeben</p>

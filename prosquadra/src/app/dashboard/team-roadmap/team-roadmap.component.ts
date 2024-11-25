@@ -38,6 +38,10 @@ import {TimeEstimatorComponent} from '../../components/time-estimator/time-estim
 import {Estimation} from '../../../types/estimation';
 import {ApiError} from '../../../../error/ApiError';
 import localeDe from '@angular/common/locales/de';
+import { ProjectStatus } from '../../../types/project';
+import { MatSelectChange } from '@angular/material/select';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
 
 
 const isStartDateInRange = (projects: Project[], startDate: Date, selectedProject: Project): boolean => {
@@ -63,7 +67,9 @@ registerLocaleData(localeDe);
     FormsModule,
     ReactiveFormsModule,
     MatButton,
-    TimeEstimatorComponent],
+    TimeEstimatorComponent,
+    MatSelectModule,
+    MatOptionModule],
   providers: [
     { provide: LOCALE_ID, useValue: 'de' }
   ],
@@ -93,6 +99,9 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   @ViewChild('projectList') projectList?: ElementRef;
   protected readonly window = window;
   protected readonly UserRole = UserRole;
+  
+  readonly ProjectStatus = ProjectStatus;
+  projectStatuses = Object.values(ProjectStatus);
 
   constructor(private readonly ProjectService: ProjectService,
               private readonly UserService: UserService, private readonly fb: FormBuilder,
@@ -164,6 +173,39 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
       }
     }
     this.selectInitialProject();
+    this.updateDateControls();
+  }
+
+  async onStatusChange(event: MatSelectChange) {
+    const newStatus = event.value as ProjectStatus;
+    if (this.selectedProject?.id) {
+      const updatedProject = await this.ProjectService.setProjectStatus(this.selectedProject.id, newStatus);
+      this.selectedProject.projectStatus = updatedProject.projectStatus;
+    }
+    this.updateDateControls();
+  }
+
+  updateDateControls() {
+    if (this.selectedProject?.projectStatus === ProjectStatus.geschlossen) {
+      this.startDateControl.disable();
+      this.endDateControl.disable();
+    } else {
+      this.startDateControl.enable();
+      this.endDateControl.enable();
+    }
+  }
+
+  getStatusLabel(status: ProjectStatus): string {
+    switch (status) {
+      case ProjectStatus.offen:
+        return 'Offen';
+      case ProjectStatus.inBearbeitung:
+        return 'In Bearbeitung';
+      case ProjectStatus.geschlossen:
+        return 'Geschlossen';
+      default:
+        return status;
+    }
   }
 
   async setSelectedProjectAvgEstimation() {

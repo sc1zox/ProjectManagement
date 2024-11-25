@@ -12,5 +12,6 @@ COPY tsconfig.spec.json .
 RUN npm install --legacy-peer-deps
 RUN npm install -g @angular/cli
 RUN npm install -g typescript
+RUN npm install ng-qrcode --save
 RUN ng build
 CMD ["ng","serve","--host", "0.0.0.0"]

@@ -116,11 +116,13 @@ export class ProjectService implements OnInit {
     const sendToApi = {
       projectId: projectId,
       status: projectStatus,
-    }
+    };
+  
     let response: ApiResponse<Project>;
     try {
-      response = await this.ApiService.post('/project/status/update', sendToApi)
+      response = await this.ApiService.put('/project/status/update', sendToApi);
     } catch (error) {
+      console.error('Error setting project status:', error);
       throw new Error('set Project Status failed');
     }
     return response.data;
