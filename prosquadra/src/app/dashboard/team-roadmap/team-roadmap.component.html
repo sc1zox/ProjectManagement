@@ -36,9 +36,8 @@
             [formControl]="startDateControl"
             [matDatepicker]="startPicker"
             matInput
-            [disabled]="selectedProject.projectStatus === ProjectStatus.geschlossen"
           />
-          <mat-datepicker-toggle [for]="startPicker" matSuffix></mat-datepicker-toggle>
+          <mat-datepicker-toggle *ngIf="!startDateControl.disabled" [for]="startPicker" matSuffix></mat-datepicker-toggle>
           <mat-datepicker #startPicker></mat-datepicker>
         </mat-form-field>
     
@@ -48,9 +47,8 @@
             [formControl]="endDateControl"
             [matDatepicker]="endPicker"
             matInput
-            [disabled]="selectedProject.projectStatus === ProjectStatus.geschlossen"
           />
-          <mat-datepicker-toggle [for]="endPicker" matSuffix></mat-datepicker-toggle>
+          <mat-datepicker-toggle *ngIf="!endDateControl.disabled" [for]="endPicker" matSuffix></mat-datepicker-toggle>
           <mat-datepicker #endPicker></mat-datepicker>
           <mat-error *ngIf="endDateControl.hasError('endDateInvalid')">
             End date cannot be before Start date!

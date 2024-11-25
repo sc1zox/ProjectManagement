@@ -185,13 +185,16 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     this.updateDateControls();
   }
 
-  updateDateControls() {
+  updateDateControls(): void {
     if (this.selectedProject?.projectStatus === ProjectStatus.geschlossen) {
-      this.startDateControl.disable();
-      this.endDateControl.disable();
-    } else {
-      this.startDateControl.enable();
-      this.endDateControl.enable();
+      this.startDateControl.disable({ emitEvent: false });
+      this.endDateControl.disable({ emitEvent: false });
+    } else if (this.selectedProject?.projectStatus === ProjectStatus.inBearbeitung) {
+      this.startDateControl.enable({ emitEvent: false });
+      this.endDateControl.enable({ emitEvent: false });
+    } else if (this.selectedProject?.projectStatus === ProjectStatus.offen) {
+      this.startDateControl.disable({ emitEvent: false });
+      this.endDateControl.disable({ emitEvent: false });
     }
   }
 
