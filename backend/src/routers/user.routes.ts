@@ -21,6 +21,7 @@ userRouter.post('/users/create', rescue(userController.createUser));
 userRouter.put('/users/update/arbeitszeit', rescue(UserController.updateArbeitszeit));
 userRouter.get('/users/estimations/:id', rescue(UserController.getEstimationsByUserId));
 userRouter.get('/users/vacations/:id', rescue(UserController.getUserVacationsById));
+userRouter.post('/users/vacations/set', rescue(UserController.addVacation));
 
 userRouter.get('/projects', rescue(ProjectController.getProjects));
 userRouter.get('/projects/:id', rescue(ProjectController.getProjectById));

@@ -188,6 +188,33 @@ class UserController {
             next(error);
         }
     }
+    async addVacation(req: Request, res: Response, next: NextFunction): Promise<void> {
+        const { userId, startDate, endDate } = req.body;
+
+        if (!userId || !startDate || !endDate) {
+            return next({
+                status: StatusCodes.BAD_REQUEST,
+                message: 'userId, startDate, and endDate are required.',
+            });
+        }
+
+        try {
+            const newVacation = await prisma.urlaub.create({
+                data: {
+                    userId: Number(userId),
+                    startdatum: new Date(startDate),
+                    enddatum: new Date(endDate),
+                },
+            });
+
+            res.status(StatusCodes.CREATED).json({
+                code: StatusCodes.CREATED,
+                data: newVacation,
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
 }
 
 export default new UserController();
