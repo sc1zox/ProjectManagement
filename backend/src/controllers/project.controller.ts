@@ -39,6 +39,7 @@ class ProjectController {
                             id: team.roadmapId
                         }
                     },
+                    projectStatus: 'offen',
                     priorityPosition: PriorityPosition,
                 },
             });

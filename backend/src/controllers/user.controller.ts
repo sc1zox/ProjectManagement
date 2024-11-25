@@ -1,5 +1,5 @@
-import { NextFunction, Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
+import {NextFunction, Request, Response} from 'express';
+import {StatusCodes} from 'http-status-codes';
 import prisma from '../lib/prisma';
 import {ApiResponse} from "../types/api-response";
 import {User} from "../types/user";
@@ -9,7 +9,7 @@ class UserController {
     async getUserById(req: Request, res: Response, next: NextFunction): Promise<void> {
         const userId: number = Number(req.params.id);
 
-        if(!userId){
+        if (!userId) {
             return next({
                 status: StatusCodes.BAD_REQUEST,
                 message: 'provide a valid id'
@@ -17,11 +17,11 @@ class UserController {
         }
         try {
             const user = await prisma.user.findUnique({
-                where: { id:  userId},
+                where: {id: userId},
             });
 
             if (!user) {
-                return next({ status: StatusCodes.NOT_FOUND, message: 'User not found' });
+                return next({status: StatusCodes.NOT_FOUND, message: 'User not found'});
             }
             const response: ApiResponse<{ vorname: string; nachname: string }> = {
                 code: StatusCodes.OK,
@@ -47,7 +47,7 @@ class UserController {
                 },
             });
 
-            if(users.length === 0){
+            if (users.length === 0) {
                 return next({
                     message: 'No users found.',
                 });
@@ -65,10 +65,9 @@ class UserController {
     }
 
 
-
     async createUser(req: Request, res: Response, next: NextFunction): Promise<void> {
         console.log(req.body)
-        const { vorname, nachname, role, arbeitszeit, teams, urlaubstage} = req.body;
+        const {vorname, nachname, role, arbeitszeit, teams, urlaubstage} = req.body;
 
         if (!vorname || !nachname || !role || !arbeitszeit || !teams) {
             return next({
@@ -76,7 +75,6 @@ class UserController {
                 message: 'Alle Felder (vorname, nachname, role, arbeitszeit, teamID) sind erforderlich.',
             });
         }
-
 
 
         try {
@@ -88,7 +86,7 @@ class UserController {
                     arbeitszeit,
                     urlaubstage,
                     teams: {
-                        connect: teams.map((teamId: number) => ({ id: teamId }))
+                        connect: teams.map((teamId: number) => ({id: teamId}))
                     }
                 },
             });
@@ -101,8 +99,9 @@ class UserController {
             next(error);
         }
     }
+
     async updateArbeitszeit(req: Request, res: Response, next: NextFunction): Promise<void> {
-        const { userID, arbeitszeit } = req.body;
+        const {userID, arbeitszeit} = req.body;
 
         if (!userID || !arbeitszeit) {
             return next({
@@ -113,13 +112,13 @@ class UserController {
 
         try {
             const updatedUser = await prisma.user.update({
-                where: { id: Number(userID) },
-                data: { arbeitszeit },
+                where: {id: Number(userID)},
+                data: {arbeitszeit},
             });
 
             const response: ApiResponse<{ arbeitszeit: number }> = {
                 code: StatusCodes.OK,
-                data: { arbeitszeit: updatedUser.arbeitszeit },
+                data: {arbeitszeit: updatedUser.arbeitszeit},
             };
 
             res.status(StatusCodes.OK).json(response);
@@ -141,7 +140,7 @@ class UserController {
 
         try {
             const estimations = await prisma.estimation.findMany({
-                where: { userId },
+                where: {userId},
             });
 
             if (estimations.length === 0) {
@@ -160,6 +159,35 @@ class UserController {
         }
     }
 
+    async getUserVacationsById(req: Request, res: Response, next: NextFunction): Promise<void> {
+        const userId: number = Number(req.params.id);
+
+        if (isNaN(userId) || !userId) {
+            return next({
+                status: StatusCodes.BAD_REQUEST,
+                message: 'Invalid user ID provided',
+            });
+        }
+
+        try {
+            const vacations = await prisma.urlaub.findMany({
+                where: {userId}
+            });
+            if (vacations.length === 0) {
+                return next({
+                    status: StatusCodes.NOT_FOUND,
+                    message: 'No vacations found for the user.',
+                });
+            }
+
+            res.status(StatusCodes.OK).json({
+                code: StatusCodes.OK,
+                data: vacations,
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
 }
 
 export default new UserController();

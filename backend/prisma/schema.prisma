@@ -17,6 +17,7 @@ model User {
   teams         Team[]          @relation("TeamMembers")
   createdAt     DateTime        @default(now())
   updatedAt     DateTime        @updatedAt
+  urlaub        Urlaub[]        @relation("Urlaub")
   arbeitszeit   Int
   urlaubstage   Int
   login         Login?
@@ -61,19 +62,20 @@ model Roadmap {
 }
 
 model Project {
-  id               Int          @id @default(autoincrement())
+  id               Int           @id @default(autoincrement())
   name             String
   description      String
   startDate        DateTime?
   endDate          DateTime?
   roadmapId        Int?
-  roadmap          Roadmap?     @relation("RoadmapProjects", fields: [roadmapId], references: [id])
-  team             Team?        @relation("TeamProjects", fields: [teamid], references: [id])
+  roadmap          Roadmap?      @relation("RoadmapProjects", fields: [roadmapId], references: [id])
+  team             Team?         @relation("TeamProjects", fields: [teamid], references: [id])
   teamid           Int
-  estimations      Estimation[] @relation("ProjectEstimations")
+  estimations      Estimation[]  @relation("ProjectEstimations")
   priorityPosition Int?
-  createdAt        DateTime     @default(now())
-  updatedAt        DateTime     @updatedAt
+  projectStatus    ProjectStatus
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
 }
 
 model Estimation {
@@ -95,10 +97,24 @@ model Login {
   user     User   @relation(fields: [userId], references: [id])
 }
 
+model Urlaub {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  user       User     @relation("Urlaub", fields: [userId], references: [id])
+  startdatum DateTime
+  enddatum   DateTime
+}
+
 enum UserRole {
   PO
   SM
   Developer
   Admin
   Bereichsleiter
+}
+
+enum ProjectStatus {
+  offen
+  inBearbeitung
+  geschlossen
 }
