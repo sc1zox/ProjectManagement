@@ -401,6 +401,42 @@ class ProjectController {
         }
     }
 
+    async updateProjectStatus(req: Request, res: Response, next: NextFunction): Promise<void> {
+        const { projectId, status } = req.body;
+
+        if (!projectId || !status) {
+            return next({
+                status: StatusCodes.BAD_REQUEST,
+                message: 'projectId and status are required.',
+            });
+        }
+
+        try {
+            const existingProject = await prisma.project.findUnique({
+                where: { id: Number(projectId) },
+            });
+
+            if (!existingProject) {
+                return next({
+                    status: StatusCodes.NOT_FOUND,
+                    message: 'Project not found.',
+                });
+            }
+
+            const updatedProject = await prisma.project.update({
+                where: { id: Number(projectId) },
+                data: { projectStatus: status },
+            });
+
+            res.status(StatusCodes.OK).json({
+                code: StatusCodes.OK,
+                data: updatedProject,
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
 
 }
 

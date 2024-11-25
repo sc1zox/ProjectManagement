@@ -32,6 +32,7 @@ userRouter.put('/project/update', rescue(ProjectController.updateProject));
 userRouter.get('/project/current/:id', rescue(ProjectController.getProjectWithLowestPriorityByUserId));
 userRouter.post('/project/create/estimation', rescue(ProjectController.addEstimationToProject));
 userRouter.get('/project/estimation/:id', rescue(ProjectController.getEstimationsWithAverage));
+userRouter.put('/project/status/update', rescue(ProjectController.updateProjectStatus));
 
 userRouter.get('/team', rescue(TeamController.getTeams));
 userRouter.get('/team/:id', rescue(TeamController.getTeamByID));
