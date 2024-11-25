@@ -64,7 +64,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 ### perspektivisch
 
-- Try catch Blöcke nutzen für backend calls und im catch einfach mit SnackBar Fehler ausgeben.
+- Try catch Blöcke nutzen für backend calls und im catch einfach mit SnackBar Fehler ausgeben. Vor Allem in den Services -> überarbeiten
 - Gantt diagramm für analyse SM einbauen -> Backend für update nachziehen und dann im FE aktualisieren (sollen hier projekte bearbeitet werden können ? also verschieben auf der zeitleiste) -> denke momentan nicht
 - current project in der rechten sidebar wird momentan gepolled also alle 30 sekunden gefetched. Funktioniert aber ist das gut?
 - breakpoints sind momentan bei 1000px.

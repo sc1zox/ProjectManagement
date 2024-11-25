@@ -1,5 +1,5 @@
 import {Injectable, OnInit} from '@angular/core';
-import {Project} from '../types/project';
+import {Project, ProjectStatus} from '../types/project';
 import {ApiService} from './api.service';
 import {ApiResponse} from '../types/api-response';
 import {UpdateService} from './update.service';
@@ -14,7 +14,7 @@ export class ProjectService implements OnInit {
 
   projects: Project[] = [];
 
-  constructor(private readonly ApiService: ApiService, private readonly UpdateService: UpdateService,private readonly SnackBarService: SnackbarService) {
+  constructor(private readonly ApiService: ApiService, private readonly UpdateService: UpdateService, private readonly SnackBarService: SnackbarService) {
   }
 
   async ngOnInit() {
@@ -107,9 +107,23 @@ export class ProjectService implements OnInit {
     try {
       response = await this.ApiService.fetch('/project/estimation/' + projectId);
       return response.data;
-    }catch (error){
+    } catch (error) {
     }
     return -1;
+  }
+
+  async setProjectStatus(projectId: number, projectStatus: ProjectStatus): Promise<Project> {
+    const sendToApi = {
+      projectId: projectId,
+      status: projectStatus,
+    }
+    let response: ApiResponse<Project>;
+    try {
+      response = await this.ApiService.post('/project/status/update', sendToApi)
+    } catch (error) {
+      throw new Error('set Project Status failed');
+    }
+    return response.data;
   }
 
 }
