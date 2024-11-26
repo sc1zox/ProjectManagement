@@ -43,6 +43,7 @@ import { MatSelectChange } from '@angular/material/select';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { ChangeDetectorRef } from '@angular/core';
+import { Router } from '@angular/router';
 
 
 const isStartDateInRange = (projects: Project[], startDate: Date, selectedProject: Project): boolean => {
@@ -104,9 +105,11 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   readonly ProjectStatus = ProjectStatus;
   projectStatuses = Object.values(ProjectStatus);
 
+  showTimeEstimator: boolean = false;
+
   constructor(private readonly ProjectService: ProjectService,
               private readonly UserService: UserService, private readonly fb: FormBuilder,
-              private readonly RoadmapService: RoadmapService, private SnackBarSerivce: SnackbarService, private cdr: ChangeDetectorRef) {
+              private readonly RoadmapService: RoadmapService, private SnackBarSerivce: SnackbarService, private cdr: ChangeDetectorRef, private router: Router) {
     this.dateForm = this.fb.group({
       startDate: this.startDateControl,
       endDate: this.endDateControl,
@@ -180,6 +183,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     }
     this.selectInitialProject();
     this.updateDateControls();
+    this.showTimeEstimator = this.router.url.includes('dashboard/team-roadmap');
   }
 
   async onStatusChange(event: MatSelectChange): Promise<void> {
@@ -367,4 +371,10 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
       this.projects = [...this.roadmap.projects];
     }
   }
+
+  handleTimeEstimate(estimation: Estimation): void {
+    console.log('Received Time Estimate:', estimation);
+    // Update the selected project with the new estimation
+  }
+
 }

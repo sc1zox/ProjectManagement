@@ -27,8 +27,7 @@ Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To u
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
 
 # Max's explanation corner
-- Status Impl ToDo: Permission Setup, Status Geschlossen -> Datepicker Locked sometimes breaks on reload
-- Problem: Mehrere Projekte in einer Roadmap, wenn man hin und her switched gehts kaputt...
+- Status Impl ToDo: Permission Setup
 
 # Christian's explanation corner
 
