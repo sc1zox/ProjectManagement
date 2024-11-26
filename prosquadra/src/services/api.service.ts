@@ -60,7 +60,7 @@ export class ApiService {
   }
 
   async delete<T>(endpoint: string): Promise<ApiResponse<T>> {
-    const response:Response = await fetch(this.apiUrl+endpoint, {
+    const response = await fetch(this.apiUrl+endpoint, {
       method: 'DELETE',
     });
 

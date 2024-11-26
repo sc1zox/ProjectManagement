@@ -48,7 +48,9 @@ export class ArbeitszeitOverviewComponent {
     if(this.arbeitszeit && this.user) {
       let newUrlaubstage: number = defaultUrlaubstage / (defaultArbeitszeit / this.arbeitszeit);
       try {
-        this.UserService.updateUrlaubstage(this.user?.id, newUrlaubstage)
+        this.UserService.updateUrlaubstage(this.user?.id, newUrlaubstage);
+        this.user.urlaubstage = Math.trunc(newUrlaubstage);
+        this.user.arbeitszeit = this.arbeitszeit;
       }catch (error){
         this.SnackBarService.open('Error bei der Aktualisierung der Urlaubstage')
       }

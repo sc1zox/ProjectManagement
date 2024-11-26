@@ -141,7 +141,6 @@ class ProjectController {
     }
 
     async getProjectWithLowestPriorityByUserId(req: Request, res: Response, next: NextFunction): Promise<void> {
-        console.log("This function gets polled with ", req.params)
         try {
             const userId = Number(req.params.id);
 

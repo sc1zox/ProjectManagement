@@ -61,9 +61,8 @@ export class LoginComponent implements OnInit {
   async login(username: string, password: string): Promise<void> {
     const loginData: Login = {username, password};
 
-    await this.userService.setCurrentUser(loginData)
-
     try {
+      await this.userService.setCurrentUser(loginData)
       const apiUrl = this.apiService.getLoginUrl();
 
       const response = await fetch(apiUrl, {
