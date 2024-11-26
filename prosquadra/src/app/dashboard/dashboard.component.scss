@@ -48,7 +48,7 @@
     flex-direction: column; /* Stack children vertically */
 
     .main-content {
-      margin: calc(var(--content-margin) * 2) calc(var(--content-margin) / 2);
+      margin: 0;
     }
   }
 
