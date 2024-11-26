@@ -1,9 +1,9 @@
 import {Component, Input} from '@angular/core';
 import {User, UserRole} from '../../../../../types/user';
 import {NgIf} from '@angular/common';
-import {UpdateService} from '../../../../../services/update.service';
 import {FormsModule} from '@angular/forms';
 import {SnackbarService} from '../../../../../services/snackbar.service';
+import {UserService} from '../../../../../services/user.service';
 
 const defaultUrlaubstage: number = 28;
 const defaultArbeitszeit: number = 38.5;
@@ -25,7 +25,7 @@ export class ArbeitszeitOverviewComponent {
   @Input() currentUser?: User;
   protected readonly UserRole = UserRole;
 
-  constructor(private readonly UpdateService: UpdateService,private readonly SnackBarService: SnackbarService) {
+  constructor(private readonly UserService: UserService,private readonly SnackBarService: SnackbarService) {
   }
 
   updateArbeitszeit() {
@@ -37,7 +37,7 @@ export class ArbeitszeitOverviewComponent {
     }
     if (this.user && this.arbeitszeit !== undefined) {
       try {
-        this.UpdateService.updateArbeitszeit(this.user.id, this.arbeitszeit)
+        this.UserService.updateArbeitszeit(this.user.id, this.arbeitszeit);
       } catch (error) {
         this.SnackBarService.open('Error beim Aktualisieren der Arbeitszeit')
       }
@@ -48,7 +48,9 @@ export class ArbeitszeitOverviewComponent {
     if(this.arbeitszeit && this.user) {
       let newUrlaubstage: number = defaultUrlaubstage / (defaultArbeitszeit / this.arbeitszeit);
       try {
-        this.UpdateService.updateUrlaubstage(this.user?.id, newUrlaubstage)
+        this.UserService.updateUrlaubstage(this.user?.id, newUrlaubstage);
+        this.user.urlaubstage = Math.trunc(newUrlaubstage);
+        this.user.arbeitszeit = this.arbeitszeit;
       }catch (error){
         this.SnackBarService.open('Error bei der Aktualisierung der Urlaubstage')
       }

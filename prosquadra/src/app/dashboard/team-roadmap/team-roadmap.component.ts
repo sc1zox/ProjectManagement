@@ -10,12 +10,12 @@ import {
   SimpleChanges,
   ViewChild
 } from '@angular/core';
-import {CommonModule, registerLocaleData} from '@angular/common';
+import {CommonModule} from '@angular/common';
 import {ProjectService} from '../../../services/project.service';
 import {Project} from '../../../types/project';
 import {CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray} from '@angular/cdk/drag-drop';
 import {MatDatepickerModule} from '@angular/material/datepicker';
-import {MatNativeDateModule} from '@angular/material/core';
+import {MAT_DATE_LOCALE, MatNativeDateModule, provideNativeDateAdapter} from '@angular/material/core';
 import {MatInputModule} from '@angular/material/input';
 import {
   AbstractControl,
@@ -36,8 +36,12 @@ import {Team} from '../../../types/team';
 import {parseProjects} from '../../../mapper/projectDatesToDate';
 import {TimeEstimatorComponent} from '../../components/time-estimator/time-estimator.component';
 import {Estimation} from '../../../types/estimation';
-import {ApiError} from '../../../../error/ApiError';
-import localeDe from '@angular/common/locales/de';
+import { ProjectStatus } from '../../../types/project';
+import { MatSelectChange } from '@angular/material/select';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
+import { ChangeDetectorRef } from '@angular/core';
+import { Router } from '@angular/router';
 
 
 const isStartDateInRange = (projects: Project[], startDate: Date, selectedProject: Project): boolean => {
@@ -49,7 +53,6 @@ const isStartDateInRange = (projects: Project[], startDate: Date, selectedProjec
 
   return boolresult;
 };
-registerLocaleData(localeDe);
 
 @Component({
   selector: 'app-team-roadmap',
@@ -63,9 +66,11 @@ registerLocaleData(localeDe);
     FormsModule,
     ReactiveFormsModule,
     MatButton,
-    TimeEstimatorComponent],
-  providers: [
-    { provide: LOCALE_ID, useValue: 'de' }
+    TimeEstimatorComponent,
+    MatSelectModule,
+    MatOptionModule],
+  providers: [provideNativeDateAdapter(),
+    {provide: MAT_DATE_LOCALE, useValue: 'de-DE'}
   ],
   templateUrl: './team-roadmap.component.html',
   styleUrls: ['./team-roadmap.component.scss']
@@ -94,9 +99,16 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   protected readonly window = window;
   protected readonly UserRole = UserRole;
 
+  readonly ProjectStatus = ProjectStatus;
+  projectStatuses = Object.values(ProjectStatus);
+
+  showTimeEstimator: boolean = false;
+
+  private isDragging = false;
+
   constructor(private readonly ProjectService: ProjectService,
               private readonly UserService: UserService, private readonly fb: FormBuilder,
-              private readonly RoadmapService: RoadmapService, private SnackBarSerivce: SnackbarService) {
+              private readonly RoadmapService: RoadmapService, private SnackBarSerivce: SnackbarService, private cdr: ChangeDetectorRef, private router: Router) {
     this.dateForm = this.fb.group({
       startDate: this.startDateControl,
       endDate: this.endDateControl,
@@ -128,9 +140,14 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
 
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['roadmap'] && this.roadmap || changes['roadmap.projects']) {
-      console.log('Received updated roadmap:', this.roadmap);
       this.extractProjectsFromRoadmaps();
       this.selectInitialProject();
+    }
+
+    if (changes['selectedProject'] && this.selectedProject) {
+      this.startDateControl.setValue(this.selectedProject.startDate, { emitEvent: false });
+      this.endDateControl.setValue(this.selectedProject.endDate, { emitEvent: false });
+      this.updateDateControls();
     }
   }
 
@@ -164,6 +181,64 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
       }
     }
     this.selectInitialProject();
+    this.updateDateControls();
+    this.showTimeEstimator = this.router.url.includes('dashboard/team-roadmap');
+  }
+
+  async onStatusChange(event: MatSelectChange): Promise<void> {
+    const newStatus = event.value as ProjectStatus;
+
+    if (this.selectedProject) {
+      this.selectedProject.projectStatus = newStatus;
+      try {
+        await this.ProjectService.setProjectStatus(this.selectedProject.id!, newStatus);
+      }catch (error){
+        this.SnackBarSerivce.open("Status konnte nicht geupdated werden");
+        return;
+      }
+      this.updateDateControls();
+    }
+  }
+
+  updateDateControls(): void {
+    if (!this.selectedProject) return;
+
+    console.log('Updating Date Controls. Current Status:', this.selectedProject.projectStatus);
+
+    switch (this.selectedProject.projectStatus) {
+      case ProjectStatus.geschlossen:
+        this.startDateControl.disable({ emitEvent: false });
+        this.endDateControl.disable({ emitEvent: false });
+        break;
+
+      case ProjectStatus.inBearbeitung:
+        this.startDateControl.enable({ emitEvent: false });
+        this.endDateControl.enable({ emitEvent: false });
+        break;
+
+      case ProjectStatus.offen:
+        this.startDateControl.disable({ emitEvent: false });
+        this.endDateControl.disable({ emitEvent: false });
+        break;
+
+      default:
+        console.warn('Unhandled Project Status:', this.selectedProject.projectStatus);
+    }
+    // Force UI to update
+    this.cdr.detectChanges();
+  }
+
+  getStatusLabel(status: ProjectStatus): string {
+    switch (status) {
+      case ProjectStatus.offen:
+        return 'Offen';
+      case ProjectStatus.inBearbeitung:
+        return 'In Bearbeitung';
+      case ProjectStatus.geschlossen:
+        return 'Geschlossen';
+      default:
+        return status;
+    }
   }
 
   async setSelectedProjectAvgEstimation() {
@@ -184,18 +259,47 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     return undefined;
   }
 
-  // Block default scroll, enable horizontal scroll
+  updateUserEstimation(estimatedTime: Estimation): void {
+    this.currentEstimation = estimatedTime;
+  }
 
   async selectProject(project: Project): Promise<void> {
     this.selectedProject = project;
+
+    // Update the form controls to reflect the selected project
+    this.startDateControl.setValue(project.startDate, { emitEvent: false });
+    this.endDateControl.setValue(project.endDate, { emitEvent: false });
+
+    // Update control locking state based on the selected project's status
+    this.updateDateControls();
+
     await this.setSelectedProjectAvgEstimation();
-    this.startDateControl.setValue(project.startDate);
-    this.endDateControl.setValue(project.endDate);
+  }
+
+  onMouseDown(event: MouseEvent): void {
+    this.isDragging = false;
+
+    setTimeout(() => {
+      if (event.buttons === 1) {
+        this.isDragging = true; // Detect dragging
+      }
+    }, 100);
+  }
+
+  // Handle project clicks
+  async handleProjectClick(event: MouseEvent, project: Project): Promise<void> {
+    if (this.isDragging) {
+      // Ignore clicks if dragging
+      return;
+    }
+
+    // Use the existing selectProject method
+    await this.selectProject(project);
   }
 
   // Inspired by https://stackoverflow.com/questions/59468926/horizontal-scroll-in-typescript
   onWheelScroll(event: WheelEvent): void {
-    if (window.innerWidth > 1000 && this.projectList) {
+    if (window.innerWidth > 1000 && this.projectList && !event.defaultPrevented) {
       event.preventDefault();
       this.projectList.nativeElement.scrollLeft += event.deltaY;
     }
@@ -213,18 +317,18 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     }
   }
 
-  drop(event: CdkDragDrop<Project[]>) {
-    if (this.projects) {
-      moveItemInArray(this.projects, event.previousIndex, event.currentIndex)
+  drop(event: CdkDragDrop<Project[]>): void {
+    if (this.projects && event.previousIndex !== event.currentIndex) {
+      moveItemInArray(this.projects, event.previousIndex, event.currentIndex);
 
       this.projects.forEach((project, index) => {
         project.priorityPosition = index + 1;
       });
 
       if (this.roadmap) {
-        this.roadmap.projects = [...this.projects];
+        this.roadmap.projects = this.projects;
       }
-      this.updated = true;
+      this.updated = true
     }
   }
 
@@ -248,7 +352,6 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
         }
         this.SnackBarSerivce.open('Projekt wurde erfolgreich geändert')
       } catch (error) {
-        console.error('Error updating project roadmap:', error);
         this.SnackBarSerivce.open('Bei der Projekterstellung ist ein Fehler aufgetreten')
       }
     }
@@ -281,9 +384,26 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   }
 
   async refreshProjectOrder() {
-    if (this.roadmap) {
-      this.roadmap = await this.RoadmapService.getRoadmapById(this.roadmap.id);
-      this.projects = [...this.roadmap.projects];
+    try {
+      if (this.roadmap) {
+        this.roadmap = await this.RoadmapService.getRoadmapById(this.roadmap.id);
+        this.projects = [...this.roadmap.projects];
+      }
+    }catch (error){
+      this.SnackBarSerivce.open('Fehler bei refetch roadmap')
+    }
+  }
+
+  async updateTimeEstimate(): Promise<void> {
+    if (this.selectedProject?.id) {
+      try {
+        const updatedEstimation = await this.ProjectService.getProjectEstimationAvg(this.selectedProject.id);
+        if (updatedEstimation !== -1) {
+          this.selectedProject.avgEstimationHours = updatedEstimation;
+        }
+      } catch (error) {
+        this.SnackBarSerivce.open('Fehler bei fetchen von getProjectEstimationAvg')
+      }
     }
   }
 }

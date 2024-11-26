@@ -62,34 +62,31 @@ export class NotificationsService {
 
 
   async getNotificationsByUserId(userId: number): Promise<Notification[]> {
-
-    const response: ApiResponse<Notification[]> = await this.apiService.fetch('/notifications/' + userId);
-
-    if (response.code !== 200) {
-      throw new Error('Failed to fetch notifications for specific id:' + userId);
+    try {
+      const response: ApiResponse<Notification[]> = await this.apiService.fetch('/notifications/' + userId);
+      return response.data;
+    }catch (error){
+      throw error;
     }
-
-    return response.data;
   }
 
   async markNotificationAsRead(notificationId: number): Promise<void> {
-    const response: ApiResponse<void> = await this.apiService.post(`/notifications/read/` + notificationId, {
-      method: 'PUT',
-    });
-
-    if (response.code !== 200) {
-      throw new Error('Failed to mark notification as read: ' + notificationId);
+    try {
+      const response: ApiResponse<void> = await this.apiService.putWithoutBody(`/notifications/read/` + notificationId)
+      return response.data;
+    }catch (error){
+      throw error;
     }
   }
 
   async deleteNotification(notificationId: number): Promise<void> {
-    const response: ApiResponse<void> = await this.apiService.post(`/notifications/delete/` + notificationId, {
-      method: 'DELETE',
-    });
-
-    if (response.code !== 200) {
-      throw new Error('Failed to delete notification: ' + notificationId);
+    try {
+      const response: ApiResponse<void> = await this.apiService.delete(`/notifications/delete/` + notificationId);
+      return response.data;
+    }catch (error){
+      throw error;
     }
+
   }
 
   // hier einen return type definieren? anstatt any?
@@ -99,13 +96,11 @@ export class NotificationsService {
       isRead: false,
       userId: userId,
     };
-
-    const response: ApiResponse<any> = await this.apiService.post('/notifications/create', notification);
-
-    if (response.code !== 201) {
-      throw new Error('Failed to create notification');
+    try {
+      const response: ApiResponse<any> = await this.apiService.post('/notifications/create', notification);
+      return response.data;
+    }catch (error){
+      throw error;
     }
-
-    return response.data;
   }
 }

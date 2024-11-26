@@ -2,10 +2,7 @@ import {Injectable, OnInit} from '@angular/core';
 import {Project, ProjectStatus} from '../types/project';
 import {ApiService} from './api.service';
 import {ApiResponse} from '../types/api-response';
-import {UpdateService} from './update.service';
-import {SnackbarService} from './snackbar.service';
 import {Estimation} from '../types/estimation';
-import {ApiError} from '../../error/ApiError';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +11,7 @@ export class ProjectService implements OnInit {
 
   projects: Project[] = [];
 
-  constructor(private readonly ApiService: ApiService, private readonly UpdateService: UpdateService, private readonly SnackBarService: SnackbarService) {
+  constructor(private readonly ApiService: ApiService) {
   }
 
   async ngOnInit() {
@@ -22,83 +19,80 @@ export class ProjectService implements OnInit {
   }
 
   async getProjects(): Promise<Project[]> {
-    const response: ApiResponse<Project[]> = await this.ApiService.fetch("/projects");
-    console.log("Project Fetch " + response.data)
-    if (response.code !== 200) {
-      throw new Error('Network response was not ok');
+    try {
+      const response: ApiResponse<Project[]> = await this.ApiService.fetch("/projects");
+      return response.data
+    } catch (error) {
+      throw error;
     }
-    return response.data
   }
 
   async getProjectsById(ID: number): Promise<Project> {
-
-    const response: ApiResponse<Project> = await this.ApiService.fetch('/projects/' + ID);
-
-    if (response.code !== 200) {
-      throw new Error('Failed to fetch projects for specific id:' + ID);
+    try {
+      const response: ApiResponse<Project> = await this.ApiService.fetch('/projects/' + ID);
+      return response.data;
+    } catch (error) {
+      throw error;
     }
-
-    return response.data;
   }
 
   async getProjectsByTeamId(ID: number): Promise<Project[]> {
-
-    const response: ApiResponse<Project[]> = await this.ApiService.fetch('/team/projects/' + ID);
-
-    if (response.code !== 200) {
-      throw new Error('Failed to fetch projects for specific Team id:' + ID);
+    try {
+      const response: ApiResponse<Project[]> = await this.ApiService.fetch('/team/projects/' + ID);
+      return response.data
+    } catch (error) {
+      throw error;
     }
-
-    return response.data;
   }
 
 
   async setProjects(Project: Project): Promise<Project> {
-    const response: ApiResponse<Project> = await this.ApiService.post("/project/create", Project);
-    if (response.code !== 201) {
-      throw new Error('Failed to create project');
+    try {
+      const response: ApiResponse<Project> = await this.ApiService.post("/project/create", Project);
+      return response.data;
+    } catch (error) {
+      throw error;
     }
-    return response.data;
   }
 
   async updateProject(updatedProject: Project) {
     try {
-      await this.UpdateService.updateResource('/api/project/update', updatedProject);
+      const response = await this.ApiService.put('/project/update', updatedProject);
+      return response.data;
     } catch (error) {
-      console.error('Error updating project:', error);
+      throw error;
     }
   }
 
   async getProjectWithLowestPriorityByUserId(ID: number): Promise<Project> {
-    const response: ApiResponse<Project> = await this.ApiService.fetch('/project/current/' + ID);
-
-    if (response.code !== 200) {
-      throw new Error('Failed to fetch projects for specific Team id:' + ID);
+    try {
+      const response: ApiResponse<Project> = await this.ApiService.fetch('/project/current/' + ID);
+      return response.data;
+    } catch (error) {
+      throw error;
     }
-
-    return response.data;
   }
 
   async deleteProjectById(projectId: number): Promise<void> {
-    const response: ApiResponse<void> = await this.ApiService.post('/project/delete/' + projectId, {
-      method: 'DELETE',
-    })
-    if (response.code !== 200) {
-      throw new Error('Failed to delete project with Id: ' + projectId);
+    try {
+      const response: ApiResponse<void> = await this.ApiService.delete('/project/delete/' + projectId);
+      return response.data;
+    } catch (error) {
+      throw error;
     }
   }
 
-  async updateEstimation(estimation: number, userId: number, projectId: number): Promise<void> {
+  async updateEstimation(estimation: number, userId: number, projectId: number): Promise<Estimation> {
     const sendToApi = {
       projectId: projectId,
       estimationHours: estimation,
       userId: userId,
     };
-
-    const response: ApiResponse<void> = await this.ApiService.post("/project/create/estimation", sendToApi);
-
-    if (response.code !== 201) {
-      throw new Error('Failed to update estimation for project with Id: ' + projectId);
+    try {
+      const response: ApiResponse<Estimation> = await this.ApiService.post("/project/create/estimation", sendToApi);
+      return response.data;
+    } catch (error) {
+      throw error
     }
   }
 
@@ -113,18 +107,12 @@ export class ProjectService implements OnInit {
   }
 
   async setProjectStatus(projectId: number, projectStatus: ProjectStatus): Promise<Project> {
-    const sendToApi = {
-      projectId: projectId,
-      status: projectStatus,
-    }
-    let response: ApiResponse<Project>;
     try {
-      response = await this.ApiService.post('/project/status/update', sendToApi)
+      const response: ApiResponse<Project> = await this.ApiService.put(projectStatus, projectId);
+      return response.data;
     } catch (error) {
-      throw new Error('set Project Status failed');
+      throw error;
     }
-    return response.data;
   }
-
 }
 

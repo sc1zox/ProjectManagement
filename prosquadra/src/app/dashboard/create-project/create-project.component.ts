@@ -12,6 +12,7 @@ import {Project, ProjectStatus} from '../../../types/project';
 import {Team} from '../../../types/team';
 import {Roadmap} from '../../../types/roadmap';
 import {NotificationsService} from '../../../services/notifications.service';
+import {SnackbarService} from '../../../services/snackbar.service';
 
 @Component({
   selector: 'app-create-project',
@@ -36,14 +37,13 @@ export class CreateProjectComponent implements AfterViewInit {
   selectedTeam?: Team; // Variable to hold the selected team
   roadmap?: Roadmap;
   currentTeam?: Team;
-  position: number = 0;
 
   constructor(
     private readonly fb: FormBuilder,
     private readonly projectService: ProjectService,
-    private readonly teamService: TeamService,
     private readonly TeamService: TeamService,
     private readonly NotificationService: NotificationsService,
+    private readonly SnackBarService: SnackbarService,
   ) {
     this.projectForm = this.fb.group({
       projectName: ['', [Validators.required, Validators.maxLength(10)]], // Correct maxLength usage
@@ -57,7 +57,11 @@ export class CreateProjectComponent implements AfterViewInit {
   }
 
   async loadTeams() {
-    this.teams = await this.teamService.getTeams();
+    try {
+      this.teams = await this.TeamService.getTeams();
+    }catch (error){
+      this.SnackBarService.open('Konnte die Teams nicht laden')
+    }
   }
 
   async onSubmit(): Promise<void> {
@@ -79,10 +83,18 @@ export class CreateProjectComponent implements AfterViewInit {
           projectStatus: ProjectStatus.offen,
           priorityPosition: newPriorityPosition,
         };
-        await this.projectService.setProjects(newProject);
+        try {
+          await this.projectService.setProjects(newProject);
+        }catch (error){
+          this.SnackBarService.open('Projekt konnte nicht erstellt werden');
+        }
         this.selectedTeam = selectedTeam;
         if (selectedTeam) {
-          this.currentTeam = await this.TeamService.getTeamByID(selectedTeam.id);
+          try {
+            this.currentTeam = await this.TeamService.getTeamById(selectedTeam.id);
+          }catch (error){
+            this.SnackBarService.open('Konnte das Team nicht laden')
+          }
           this.roadmap = this.currentTeam?.roadmap;
 
           if (this.roadmap) {

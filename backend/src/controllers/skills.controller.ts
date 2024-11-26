@@ -96,7 +96,7 @@ class SkillsController {
     }
 
     async deleteSkill(req: Request, res: Response, next: NextFunction): Promise<void> {
-        const skillId = Number(req.params.skillId);
+        const skillId = Number(req.params.id);
 
         if(isNaN(skillId)){
             return next({status: StatusCodes.BAD_REQUEST,message: 'provide valid SkillId'})

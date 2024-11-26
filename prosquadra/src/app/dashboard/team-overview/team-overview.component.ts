@@ -6,6 +6,7 @@ import {TeamService} from '../../../services/team.service';
 import {EditTeamsComponent} from './edit-teams/edit-teams.component';
 import {Team} from '../../../types/team';
 import {NgIf} from '@angular/common';
+import {SnackbarService} from '../../../services/snackbar.service';
 
 @Component({
   selector: 'app-team-overview',
@@ -24,14 +25,18 @@ export class TeamOverviewComponent implements OnInit {
   currentUser?: User;
   isScrum: boolean = false;
 
-  constructor(private readonly UserService: UserService, private readonly TeamService: TeamService) {
+  constructor(private readonly UserService: UserService, private readonly TeamService: TeamService,private readonly SnackBarService: SnackbarService) {
 
   }
 
   async ngOnInit() {
-    this.users = await this.UserService.getUsers();
-    this.teams = await this.TeamService.getTeams();
-    this.currentUser = await this.UserService.getCurrentUser();
+    try {
+      this.users = await this.UserService.getUsers();
+      this.teams = await this.TeamService.getTeams();
+      this.currentUser = await this.UserService.getCurrentUser();
+    }catch (error){
+      this.SnackBarService.open('Es gab ein Fehler bei der Initalisierung')
+    }
 
     this.isScrum = this.currentUser?.role === 'SM';
   }

@@ -53,7 +53,7 @@ userRouter.post('/skills/remove', rescue(SkillsController.removeSkillFromUser));
 userRouter.get('/notifications/:id', rescue(NotificationsController.getNotificationsByUserId));
 userRouter.post('/notifications', rescue(NotificationsController.setNotification));
 userRouter.post('/notifications/read/:id', rescue(NotificationsController.markNotificationAsRead));
-userRouter.post('/notifications/delete/:id', rescue(NotificationsController.deleteNotification));
+userRouter.delete('/notifications/delete/:id', rescue(NotificationsController.deleteNotification));
 userRouter.post('/notifications/create', rescue(NotificationsController.createNotification));
 
 userRouter.get('/export/:id', rescue(PdfController.exportUserPDF));

@@ -6,6 +6,7 @@ import {Team} from '../../../../../types/team';
 import {TeamService} from '../../../../../services/team.service';
 import {FormsModule} from '@angular/forms';
 import {MatButton} from '@angular/material/button';
+import {SnackbarService} from '../../../../../services/snackbar.service';
 
 @Component({
   selector: 'app-user-details-modal',
@@ -29,7 +30,7 @@ export class UserDetailsModalComponent implements OnInit {
   protected readonly UserRole = UserRole;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: { user: User, currentUser: User },
-              private readonly dialogRef: MatDialogRef<UserDetailsModalComponent>, private readonly TeamService: TeamService) {
+              private readonly dialogRef: MatDialogRef<UserDetailsModalComponent>, private readonly TeamService: TeamService,private readonly SnackBarService: SnackbarService) {
     this.user = data.user;
     this.currentUser = data.currentUser;
   }
@@ -38,7 +39,11 @@ export class UserDetailsModalComponent implements OnInit {
     this.user = this.data.user;
     this.currentUser = this.data.currentUser;
     if (this.currentUser) {
-      this.teams = await this.TeamService.getTeamByUserID(this.currentUser.id)
+      try {
+        this.teams = await this.TeamService.getTeamsByUserId(this.currentUser.id)
+      }catch (error){
+        this.SnackBarService.open('Konnte Nutzer nicht laden')
+      }
     }
 
     if (this.currentUser?.role === UserRole.Admin) {
