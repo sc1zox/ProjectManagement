@@ -107,6 +107,8 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
 
   showTimeEstimator: boolean = false;
 
+  private isDragging = false;
+
   constructor(private readonly ProjectService: ProjectService,
               private readonly UserService: UserService, private readonly fb: FormBuilder,
               private readonly RoadmapService: RoadmapService, private SnackBarSerivce: SnackbarService, private cdr: ChangeDetectorRef, private router: Router) {
@@ -277,10 +279,30 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     await this.setSelectedProjectAvgEstimation();
   }
 
+  onMouseDown(event: MouseEvent): void {
+    this.isDragging = false;
+
+    setTimeout(() => {
+      if (event.buttons === 1) {
+        this.isDragging = true; // Detect dragging
+      }
+    }, 100);
+  }
+
+  // Handle project clicks
+  async handleProjectClick(event: MouseEvent, project: Project): Promise<void> {
+    if (this.isDragging) {
+      // Ignore clicks if dragging
+      return;
+    }
+
+    // Use the existing selectProject method
+    await this.selectProject(project);
+  }
 
   // Inspired by https://stackoverflow.com/questions/59468926/horizontal-scroll-in-typescript
   onWheelScroll(event: WheelEvent): void {
-    if (window.innerWidth > 1000 && this.projectList) {
+    if (window.innerWidth > 1000 && this.projectList && !event.defaultPrevented) {
       event.preventDefault();
       this.projectList.nativeElement.scrollLeft += event.deltaY;
     }
@@ -298,18 +320,18 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     }
   }
 
-  drop(event: CdkDragDrop<Project[]>) {
-    if (this.projects) {
-      moveItemInArray(this.projects, event.previousIndex, event.currentIndex)
-
+  drop(event: CdkDragDrop<Project[]>): void {
+    if (this.projects && event.previousIndex !== event.currentIndex) {
+      moveItemInArray(this.projects, event.previousIndex, event.currentIndex);
+  
       this.projects.forEach((project, index) => {
         project.priorityPosition = index + 1;
       });
-
+  
       if (this.roadmap) {
-        this.roadmap.projects = [...this.projects];
+        this.roadmap.projects = this.projects;
       }
-      this.updated = true;
+      this.updated = true
     }
   }
 
@@ -371,10 +393,4 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
       this.projects = [...this.roadmap.projects];
     }
   }
-
-  handleTimeEstimate(estimation: Estimation): void {
-    console.log('Received Time Estimate:', estimation);
-    // Update the selected project with the new estimation
-  }
-
 }
