@@ -2,8 +2,6 @@ import {Injectable, OnInit} from '@angular/core';
 import {Project, ProjectStatus} from '../types/project';
 import {ApiService} from './api.service';
 import {ApiResponse} from '../types/api-response';
-import {UpdateService} from './update.service';
-import {SnackbarService} from './snackbar.service';
 import {Estimation} from '../types/estimation';
 
 @Injectable({
@@ -13,7 +11,7 @@ export class ProjectService implements OnInit {
 
   projects: Project[] = [];
 
-  constructor(private readonly ApiService: ApiService, private readonly UpdateService: UpdateService, private readonly SnackBarService: SnackbarService) {
+  constructor(private readonly ApiService: ApiService) {
   }
 
   async ngOnInit() {
@@ -59,7 +57,7 @@ export class ProjectService implements OnInit {
 
   async updateProject(updatedProject: Project) {
     try {
-      const response = await this.UpdateService.updateResourceWithAuthentification('/api/project/update', updatedProject);
+      const response = await this.ApiService.put('/project/update', updatedProject);
       return response.data;
     } catch (error) {
       throw error;
@@ -110,7 +108,8 @@ export class ProjectService implements OnInit {
 
   async setProjectStatus(projectId: number, projectStatus: ProjectStatus): Promise<Project> {
     try {
-      return await this.UpdateService.updateProjectStatus(projectStatus, projectId);
+      const response: ApiResponse<Project> = await this.ApiService.put(projectStatus, projectId);
+      return response.data;
     } catch (error) {
       throw error;
     }

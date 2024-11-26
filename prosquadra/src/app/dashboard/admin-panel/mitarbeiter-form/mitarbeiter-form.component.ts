@@ -83,7 +83,11 @@ export class MitarbeiterFormComponent implements OnInit, OnChanges {
   }
 
   async ngOnInit() {
-    this.Teams = await this.TeamService.getTeams();
+    try {
+      this.Teams = await this.TeamService.getTeams();
+    }catch (error){
+      this.SnackBarService.open('Konnte die Teams nicht laden')
+    }
 
     this.firstFormGroup.get('role')?.valueChanges.subscribe((role) => {
       this.adjustTeamSelectionValidators(role);
@@ -91,7 +95,11 @@ export class MitarbeiterFormComponent implements OnInit, OnChanges {
   }
 
   async ngOnChanges() {
-    this.Teams = await this.TeamService.getTeams();
+    try {
+      this.Teams = await this.TeamService.getTeams();
+    }catch (error){
+      this.SnackBarService.open('Konnte die Teams nicht laden')
+    }
   }
 
   adjustTeamSelectionValidators(role: string) {
@@ -140,15 +148,13 @@ export class MitarbeiterFormComponent implements OnInit, OnChanges {
             let responseUser = await this.UserService.createUser(this.user);
             this.Login.userId = responseUser.id;
             await this.UserService.createLogin(this.Login);
+            this.SnackBarService.open('Die Nutzererstellung war erfolgreich');
+            this.router.navigate(['/dashboard/admin-panel']);
           } catch (error) {
-            console.error('Error while creating user:', error);
-          } finally {
-            console.log('User creation process finished.');
+            this.SnackBarService.open('Die Mitarbeitererstellung ist schiefgelaufen');
           }
-          this.router.navigate(['/dashboard/admin-panel']);
         } else {
           this.SnackBarService.open("Sie haben die Nutzererstellung abgebrochen");
-          console.log('User cancelled the creation of the user.');
         }
       });
     }

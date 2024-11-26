@@ -99,6 +99,7 @@ export class TeamsFormComponent implements OnInit {
               this.bereichsleiter?.forEach(user => {
                 this.NotificationService.createNotification('Es wurde ein neues Team erstellt',user.id)
               })
+              this.SnackBarService.open('Die Teamerstellung war erfolgreich');
             } catch (error) {
               this.SnackBarService.open("Bei der Teamerstellung gab es einen Fehler!")
             }

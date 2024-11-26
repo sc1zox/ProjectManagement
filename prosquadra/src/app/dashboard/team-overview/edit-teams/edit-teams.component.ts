@@ -19,6 +19,7 @@ import {
 } from '@angular/material/table';
 import {AddMemberComponent} from '../components/add-member/add-member.component';
 import {User} from '../../../../types/user';
+import {SnackbarService} from '../../../../services/snackbar.service';
 
 @Component({
   selector: 'app-edit-teams',
@@ -46,7 +47,7 @@ export class EditTeamsComponent {
   @Input() teams: Team[] = [];
   @Input() user: User[] = [];
 
-  constructor(public dialog: MatDialog, private readonly TeamService: TeamService) {
+  constructor(public dialog: MatDialog, private readonly TeamService: TeamService,private readonly SnackBarService: SnackbarService) {
     this.teams.forEach(team => {
       if (!team.members) {
         team.members = [];
@@ -65,6 +66,10 @@ export class EditTeamsComponent {
   }
 
   async reloadTeamData() {
-    this.teams = await this.TeamService.getTeams();
+    try {
+      this.teams = await this.TeamService.getTeams();
+    }catch (error){
+      this.SnackBarService.open('Konnte die Teams nicht laden')
+    }
   }
 }
