@@ -1,5 +1,5 @@
-import {Component, Input, input, OnInit, signal, ViewChild} from '@angular/core';
-import {MatInput, MatInputModule} from '@angular/material/input';
+import {Component,OnInit, signal} from '@angular/core';
+import { MatInputModule} from '@angular/material/input';
 import {MAT_DATE_LOCALE, MatNativeDateModule, MatOptionModule, provideNativeDateAdapter} from '@angular/material/core';
 import {MatDatepickerInputEvent, MatDatepickerModule} from '@angular/material/datepicker';
 import {CommonModule} from '@angular/common';
@@ -12,7 +12,6 @@ import {UserService} from '../../../services/user.service';
 import {Urlaub} from '../../../types/Urlaub';
 import {SnackbarService} from '../../../services/snackbar.service';
 import {MatIconModule} from '@angular/material/icon';
-import {btjSlideState} from 'ngx-bootjack-bounce';
 import {animate, style, transition, trigger} from '@angular/animations';
 
 @Component({

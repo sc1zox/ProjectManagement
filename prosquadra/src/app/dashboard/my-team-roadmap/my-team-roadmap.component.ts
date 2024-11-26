@@ -7,6 +7,7 @@ import {UserService} from '../../../services/user.service';
 import {NgForOf, NgIf} from '@angular/common';
 import {UserRole} from '../../../types/user';
 import {SnackbarService} from '../../../services/snackbar.service';
+import {animate, style, transition, trigger} from '@angular/animations';
 
 @Component({
   selector: 'app-my-team-roadmap',
@@ -14,6 +15,17 @@ import {SnackbarService} from '../../../services/snackbar.service';
   imports: [TeamRoadmapComponent, NgIf, NgForOf],
   templateUrl: './my-team-roadmap.component.html',
   styleUrls: ['./my-team-roadmap.component.scss'],
+  animations: [
+    trigger('slideIn', [
+      transition(':enter', [
+        style({ transform: 'translateY(+100%)' }),
+        animate('300ms ease-in', style({ transform: 'translateY(0)' }))
+      ]),
+      transition(':leave', [
+        animate('300ms ease-in', style({ transform: 'translateY(-100%)' }))
+      ])
+    ])
+  ],
 })
 export class MyTeamRoadmapComponent implements OnInit {
   currentTeam?: Team;

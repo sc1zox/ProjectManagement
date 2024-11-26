@@ -4,8 +4,10 @@
 </div>
 <div *ngIf="roadmaps.length > 0">
   <div *ngFor="let roadmap of roadmaps">
+    <div [@slideIn]>
     <app-team-roadmap (dataUpdated)="refetch()" *ngIf="roadmap" [roadmap]="roadmap"
                       [setTimeScrum]="isScrum"></app-team-roadmap>
+    </div>
   </div>
 </div>
 <!-- doppelte rendering wegen project create seite. Refactoring?-->

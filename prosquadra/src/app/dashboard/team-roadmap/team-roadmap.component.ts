@@ -42,6 +42,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
+import {animate, style, transition, trigger} from '@angular/animations';
 
 
 const isStartDateInRange = (projects: Project[], startDate: Date, selectedProject: Project): boolean => {
