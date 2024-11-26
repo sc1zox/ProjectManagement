@@ -102,7 +102,6 @@ export class CreateProjectComponent implements AfterViewInit {
               ...this.roadmap,
               projects: [
                 ...this.roadmap.projects,
-                newProject,
               ].sort((a, b) => (a.priorityPosition ?? 0) - (b.priorityPosition ?? 0)) //chatgpt, sortiere hier nach priority
             };
           }

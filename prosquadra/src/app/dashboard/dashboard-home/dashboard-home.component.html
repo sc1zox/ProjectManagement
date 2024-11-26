@@ -1,6 +1,6 @@
 <div class="dashboard-home">
   <main *ngFor="let roadmap of roadmaps" class="main-content">
-    <div  [@slideIn]>
+    <div  [@fadeIn]>
     <app-team-roadmap (dataUpdated)="refetch()" [enableDragDrop]="isPo" [roadmap]="roadmap" [teams]="roadmap.teams"
                       [user]="user"></app-team-roadmap>
     </div>

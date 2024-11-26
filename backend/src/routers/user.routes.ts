@@ -27,7 +27,7 @@ userRouter.delete('/users/vacations/delete/:id', rescue(UserController.deleteVac
 
 userRouter.get('/projects', rescue(ProjectController.getProjects));
 userRouter.get('/projects/:id', rescue(ProjectController.getProjectById));
-userRouter.post('/project/delete/:id', rescue(ProjectController.deleteProject));
+userRouter.delete('/project/delete/:id', rescue(ProjectController.deleteProject));
 userRouter.get('/team/projects/:id', rescue(ProjectController.getProjectsByTeam));
 userRouter.post('/project/create', rescue(ProjectController.createProject));
 userRouter.put('/project/update', rescue(ProjectController.updateProject));
@@ -53,7 +53,7 @@ userRouter.post('/skills/remove', rescue(SkillsController.removeSkillFromUser));
 
 userRouter.get('/notifications/:id', rescue(NotificationsController.getNotificationsByUserId));
 userRouter.post('/notifications', rescue(NotificationsController.setNotification));
-userRouter.post('/notifications/read/:id', rescue(NotificationsController.markNotificationAsRead));
+userRouter.put('/notifications/read/:id', rescue(NotificationsController.markNotificationAsRead));
 userRouter.delete('/notifications/delete/:id', rescue(NotificationsController.deleteNotification));
 userRouter.post('/notifications/create', rescue(NotificationsController.createNotification));
 

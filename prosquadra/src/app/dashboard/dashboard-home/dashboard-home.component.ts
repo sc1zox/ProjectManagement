@@ -7,7 +7,7 @@ import {TeamRoadmapComponent} from '../team-roadmap/team-roadmap.component';
 import {UserService} from '../../../services/user.service';
 import {User, UserRole} from '../../../types/user';
 import {SnackbarService} from '../../../services/snackbar.service';
-import {animate, style, transition, trigger} from '@angular/animations';
+import {fadeIn} from '../../../animations/fadeIn';
 
 
 @Component({
@@ -19,15 +19,7 @@ import {animate, style, transition, trigger} from '@angular/animations';
     TeamRoadmapComponent,
   ],
   animations: [
-    trigger('slideIn', [
-      transition(':enter', [
-        style({ transform: 'translateY(+100%)' }),
-        animate('300ms ease-in', style({ transform: 'translateY(0)' }))
-      ]),
-      transition(':leave', [
-        animate('300ms ease-in', style({ transform: 'translateY(-100%)' }))
-      ])
-    ])
+    fadeIn
   ],
   templateUrl: './dashboard-home.component.html',
   styleUrl: './dashboard-home.component.scss'

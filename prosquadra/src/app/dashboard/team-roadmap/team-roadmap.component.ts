@@ -3,7 +3,7 @@ import {
   Component,
   ElementRef,
   EventEmitter,
-  Input, LOCALE_ID,
+  Input,
   OnChanges,
   OnInit,
   Output,
@@ -42,7 +42,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
-import {animate, style, transition, trigger} from '@angular/animations';
 
 
 const isStartDateInRange = (projects: Project[], startDate: Date, selectedProject: Project): boolean => {
@@ -171,7 +170,11 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
         return priorityA - priorityB;
       });
     }
-    await this.setSelectedProjectAvgEstimation();
+    try {
+      await this.setSelectedProjectAvgEstimation();
+    }catch (error){
+      console.log("Error bei avg Estimation")
+    }
 
     if (this.user && this.user.role === UserRole.Developer) {
       try {

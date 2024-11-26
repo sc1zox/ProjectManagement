@@ -1,5 +1,5 @@
-import {Component,OnInit, signal} from '@angular/core';
-import { MatInputModule} from '@angular/material/input';
+import {Component, OnInit, signal} from '@angular/core';
+import {MatInputModule} from '@angular/material/input';
 import {MAT_DATE_LOCALE, MatNativeDateModule, MatOptionModule, provideNativeDateAdapter} from '@angular/material/core';
 import {MatDatepickerInputEvent, MatDatepickerModule} from '@angular/material/datepicker';
 import {CommonModule} from '@angular/common';
@@ -12,7 +12,8 @@ import {UserService} from '../../../services/user.service';
 import {Urlaub} from '../../../types/Urlaub';
 import {SnackbarService} from '../../../services/snackbar.service';
 import {MatIconModule} from '@angular/material/icon';
-import {animate, style, transition, trigger} from '@angular/animations';
+import {slideIn} from '../../../animations/slideIn';
+
 
 @Component({
   selector: 'app-urlaubs-planung',
@@ -32,15 +33,7 @@ import {animate, style, transition, trigger} from '@angular/animations';
     MatFabButton,
   ],
   animations: [
-    trigger('slideIn', [
-      transition(':enter', [
-        style({ transform: 'translateY(+100%)' }),
-        animate('300ms ease-in', style({ transform: 'translateY(0)' }))
-      ]),
-      transition(':leave', [
-        animate('300ms ease-in', style({ transform: 'translateY(-100%)' }))
-      ])
-    ])
+    slideIn
   ],
   templateUrl: './urlaubs-planung.component.html',
   styleUrl: './urlaubs-planung.component.scss'
