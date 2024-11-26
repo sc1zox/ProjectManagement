@@ -1,5 +1,5 @@
 .sidebar-left {
-  background-color: #e0e0e0;
+  background-color: var(--sidebar-color);
   padding: var(--sidebar-padding);
   height: 100%;
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);

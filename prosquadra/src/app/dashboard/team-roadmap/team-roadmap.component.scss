@@ -1,5 +1,4 @@
 /* Base Styles */
-$secondary-color: #f5f5f5;
 $border-color: #e0e0e0;
 $accent-color: #00b894;
 $text-color: #333;
@@ -7,7 +6,6 @@ $text-light-color: #555;
 
 /* Containers */
 .roadmap-card {
-  background: var(--main-background);
   border-radius: 10px;
   box-shadow: var(--box-shadow-light);
   padding: 2rem;
@@ -18,7 +16,6 @@ $text-light-color: #555;
 
 .team-roadmap {
   padding: 2rem;
-  background-color: $secondary-color;
   border-radius: 10px;
   overflow: visible;
   box-sizing: border-box;
@@ -93,7 +90,7 @@ h2 {
   padding: 1rem;
   border: solid 1px #ccc;
   border-radius: 8px;
-  background: white;
+  background: var(--project-list);
   overflow-x: auto;
 }
 

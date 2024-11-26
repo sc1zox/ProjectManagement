@@ -7,7 +7,7 @@
   padding: calc(var(--content-padding)*5);
 }
 .urlaub-anzeige{
-  border: 2px #2f4858 solid;
+  border: 2px rgba(242, 108, 59, 0.66) solid;
   box-shadow: var(--box-shadow-light);
   border-radius: 5px;
   padding: var(--content-padding);
@@ -15,7 +15,8 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-  background: rgba(47, 72, 88, 0.51);
+  background: rgb(242, 108, 59);
+  color: white;
 }
 #deleteButton{
   color: white;
