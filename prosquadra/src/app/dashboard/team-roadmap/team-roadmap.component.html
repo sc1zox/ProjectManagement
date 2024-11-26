@@ -73,7 +73,7 @@
 
       <!-- Render the TimeEstimatorComponent -->
       <app-time-estimator *ngIf="showTimeEstimator && user?.role === UserRole.Developer"
-        [currentProject]="selectedProject"></app-time-estimator>
+        [currentProject]="selectedProject" (myTimeEstimate)="updateTimeEstimate()"></app-time-estimator>
 
       <ng-template #errorKeineSchaetzungen>
         <p class="error-text"><strong>Projekt Zeitschätzung: </strong>Es wurden noch keine Schätzungen abgegeben.</p>

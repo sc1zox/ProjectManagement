@@ -396,4 +396,17 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
       this.SnackBarSerivce.open('Fehler bei refetch roadmap')
     }
   }
+
+  async updateTimeEstimate(): Promise<void> {
+    if (this.selectedProject?.id) {
+      try {
+        const updatedEstimation = await this.ProjectService.getProjectEstimationAvg(this.selectedProject.id);
+        if (updatedEstimation !== -1) {
+          this.selectedProject.avgEstimationHours = updatedEstimation;
+        }
+      } catch (error) {
+        this.SnackBarSerivce.open('Fehler bei fetchen von getProjectEstimationAvg')
+      }
+    }
+  }
 }
