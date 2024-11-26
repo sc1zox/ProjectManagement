@@ -1,4 +1,4 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, Input, OnChanges, OnInit} from '@angular/core';
 import {ArbeitszeitOverviewComponent} from '../components/arbeitszeit-overview/arbeitszeit-overview.component';
 import {SkillOverviewComponent} from '../components/skill-overview/skill-overview.component';
 import {
@@ -44,7 +44,7 @@ import {UserService} from '../../../../services/user.service';
 })
 export class UserTableComponent implements OnInit {
   displayedColumns: string[] = [];
-  @Input() user: User[] = [];
+  @Input() users: User[] = [];
   currentUser?: User;
   protected readonly UserRole = UserRole;
 
@@ -68,6 +68,4 @@ export class UserTableComponent implements OnInit {
       data: {user, currentUser},
     });
   }
-
-
 }

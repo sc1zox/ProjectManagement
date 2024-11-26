@@ -65,7 +65,7 @@ class NotificationsController {
     }
     async deleteNotification(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
-            const notificationId:number = Number(req.params);
+            const notificationId:number = Number(req.params.id);
 
             if(!notificationId){
                 return next({
