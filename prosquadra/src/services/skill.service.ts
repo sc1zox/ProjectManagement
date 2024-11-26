@@ -12,37 +12,40 @@ export class SkillService {
   }
 
   async addSkill(skillName: string, userId: number): Promise<Skill[]> {
-    let body = {userId: userId, skillName: skillName}
-    const response: ApiResponse<Skill[]> = await this.ApiService.post("/skills/add", body);
-    if (response.code !== 200) {
-      throw new Error('Failed to create skill');
+    try {
+      let body = {userId: userId, skillName: skillName}
+      const response: ApiResponse<Skill[]> = await this.ApiService.post("/skills/add", body);
+      return response.data
+    } catch (error){
+      throw error;
     }
-    return response.data;
   }
 
   async getSkill(userId: number): Promise<Skill[]> {
-    const response: ApiResponse<Skill[]> = await this.ApiService.fetch("/skills/" + userId);
-    console.log("RESPONSE:", response)
-    if (response.code !== 200) {
-      throw new Error('Failed to fetch skills');
+    try {
+      const response: ApiResponse<Skill[]> = await this.ApiService.fetch("/skills/" + userId);
+      return response.data;
+    }catch (error){
+      throw error;
     }
-    return response.data;
   }
 
   async getAllSkills(): Promise<Skill[]> {
-    const response: ApiResponse<Skill[]> = await this.ApiService.fetch("/skills/all");
-    if (response.code !== 201) {
-      throw new Error('Failed to fetch skills');
+    try {
+      const response: ApiResponse<Skill[]> = await this.ApiService.fetch("/skills/all");
+      return response.data;
+    }catch (error){
+      throw error;
     }
-    return response.data;
   }
 
   async removeSkill(skillName: string, userId: number): Promise<Skill[]> {
-    let body = {userId: userId, skillName: skillName};
-    const response: ApiResponse<Skill[]> = await this.ApiService.post("/skills/remove", body);
-    if (response.code !== 200) {
-      throw new Error('Failed to remove skill');
+    try {
+      let body = {userId: userId, skillName: skillName};
+      const response: ApiResponse<Skill[]> = await this.ApiService.post("/skills/remove", body);
+      return response.data;
+    }catch (error){
+      throw error;
     }
-    return response.data;
   }
 }

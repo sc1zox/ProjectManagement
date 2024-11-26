@@ -116,5 +116,31 @@ export class UserService {
     return response.data;
   }
 
+  async updateArbeitszeit(userID: number, arbeitszeit: number) {
+    if (!userID || !arbeitszeit) {
+      throw new Error('Invalid userId und Arbeitszeit')
+    }
+    let data = {userID, arbeitszeit}
+    try {
+      const response:ApiResponse<number> = await this.ApiService.put('/users/update/arbeitszeit', data);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async updateUrlaubstage(userID: number, urlaubstage: number) {
+    if (!userID || !urlaubstage) {
+      throw new Error('Invalid userId und Urlaubstage')
+    }
+    try {
+      let data = {userID, urlaubstage}
+      const response: ApiResponse<number> = await this.ApiService.put('/users/update/urlaubstage', data);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
 
 }

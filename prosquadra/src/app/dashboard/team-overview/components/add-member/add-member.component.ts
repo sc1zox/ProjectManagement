@@ -89,7 +89,11 @@ export class AddMemberComponent implements OnInit {
       return;
     }
     if (this.selectedUser) {
-      await this.TeamService.addUserToTeam(this.selectedUser.id, this.data.team.id);
+      try {
+        await this.TeamService.addUserToTeam(this.selectedUser.id, this.data.team.id);
+      }catch (error){
+        this.SnackbarService.open('Konnte Nutzer nicht zum Team hinzufügen')
+      }
       if (this.data.team.members)
         this.data.team.members.push(this.selectedUser);
       this.newMemberName = '';
@@ -98,7 +102,12 @@ export class AddMemberComponent implements OnInit {
   }
 
   async removeMember(userID: number): Promise<void> {
-    await this.TeamService.removeUserFromTeam(userID, this.data.team.id);
+    try {
+      await this.TeamService.removeUserFromTeam(userID, this.data.team.id);
+    }catch (error)
+    {
+      this.SnackbarService.open('Konnte Nutzer nicht aus dem Team entfernen')
+    }
     if (this.data.team.members)
       this.data.team.members = this.data.team.members.filter((member) => member.id !== userID);
     this.cdr.detectChanges();

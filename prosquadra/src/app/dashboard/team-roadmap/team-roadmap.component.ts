@@ -333,7 +333,6 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
         }
         this.SnackBarSerivce.open('Projekt wurde erfolgreich geändert')
       } catch (error) {
-        console.error('Error updating project roadmap:', error);
         this.SnackBarSerivce.open('Bei der Projekterstellung ist ein Fehler aufgetreten')
       }
     }
@@ -366,9 +365,13 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   }
 
   async refreshProjectOrder() {
-    if (this.roadmap) {
-      this.roadmap = await this.RoadmapService.getRoadmapById(this.roadmap.id);
-      this.projects = [...this.roadmap.projects];
+    try {
+      if (this.roadmap) {
+        this.roadmap = await this.RoadmapService.getRoadmapById(this.roadmap.id);
+        this.projects = [...this.roadmap.projects];
+      }
+    }catch (error){
+      this.SnackBarSerivce.open('Fehler bei refetch roadmap')
     }
   }
 

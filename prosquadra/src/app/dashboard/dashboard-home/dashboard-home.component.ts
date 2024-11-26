@@ -6,6 +6,7 @@ import {Roadmap} from '../../../types/roadmap';
 import {TeamRoadmapComponent} from '../team-roadmap/team-roadmap.component';
 import {UserService} from '../../../services/user.service';
 import {User, UserRole} from '../../../types/user';
+import {SnackbarService} from '../../../services/snackbar.service';
 
 
 @Component({
@@ -25,7 +26,7 @@ export class DashboardHomeComponent implements OnInit {
   public user?: User;
   isPo: boolean = false;
 
-  constructor(private readonly RoadmapService: RoadmapService, private readonly UserService: UserService) {
+  constructor(private readonly RoadmapService: RoadmapService, private readonly UserService: UserService,private readonly SnackBarService: SnackbarService) {
   }
 
   async ngOnInit() {
@@ -35,9 +36,8 @@ export class DashboardHomeComponent implements OnInit {
         this.isPo = true;
       }
       this.roadmaps = await this.RoadmapService.getRoadmaps();
-      console.log('ROADMAPS', this.roadmaps)
     } catch (error) {
-      console.error('Error while fetching Roadmaps:', error);
+      this.SnackBarService.open('Fehler Roadmapintialisierung');
     }
   }
 
@@ -45,7 +45,7 @@ export class DashboardHomeComponent implements OnInit {
     try {
       this.roadmaps = await this.RoadmapService.getRoadmaps();
     } catch (error) {
-      console.error('Error refetching roadmaps:', error);
+      this.SnackBarService.open('Fehler refetch roadmaps')
     }
   }
 }

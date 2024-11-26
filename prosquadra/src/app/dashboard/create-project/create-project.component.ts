@@ -37,12 +37,10 @@ export class CreateProjectComponent implements AfterViewInit {
   selectedTeam?: Team; // Variable to hold the selected team
   roadmap?: Roadmap;
   currentTeam?: Team;
-  position: number = 0;
 
   constructor(
     private readonly fb: FormBuilder,
     private readonly projectService: ProjectService,
-    private readonly teamService: TeamService,
     private readonly TeamService: TeamService,
     private readonly NotificationService: NotificationsService,
     private readonly SnackBarService: SnackbarService,
@@ -59,7 +57,11 @@ export class CreateProjectComponent implements AfterViewInit {
   }
 
   async loadTeams() {
-    this.teams = await this.teamService.getTeams();
+    try {
+      this.teams = await this.TeamService.getTeams();
+    }catch (error){
+      this.SnackBarService.open('Konnte die Teams nicht laden')
+    }
   }
 
   async onSubmit(): Promise<void> {
@@ -88,7 +90,11 @@ export class CreateProjectComponent implements AfterViewInit {
         }
         this.selectedTeam = selectedTeam;
         if (selectedTeam) {
-          this.currentTeam = await this.TeamService.getTeamByID(selectedTeam.id);
+          try {
+            this.currentTeam = await this.TeamService.getTeamById(selectedTeam.id);
+          }catch (error){
+            this.SnackBarService.open('Konnte das Team nicht laden')
+          }
           this.roadmap = this.currentTeam?.roadmap;
 
           if (this.roadmap) {

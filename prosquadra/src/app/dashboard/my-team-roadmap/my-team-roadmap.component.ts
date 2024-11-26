@@ -41,8 +41,11 @@ export class MyTeamRoadmapComponent implements OnInit {
     }
 
     // Get all teams the user is part of
-    this.teams = await this.TeamService.getTeamByUserID(user.id);
-
+    try {
+      this.teams = await this.TeamService.getTeamsByUserId(user.id);
+    }catch (error){
+      this.SnackBarService.open('Konnte die Teams nicht abrufen');
+    }
     if (this.teams.length === 0) {
       console.error('User is not part of any team');
       return;
@@ -76,14 +79,18 @@ export class MyTeamRoadmapComponent implements OnInit {
 
 
   private async fetchRoadmapForTeam(teamId: number) {
-    this.currentTeam = await this.TeamService.getTeamByID(teamId);
+    try {
+      this.currentTeam = await this.TeamService.getTeamById(teamId);
+    }catch (error){
+      this.SnackBarService.open('Konnte das Team nicht laden')
+    }
     this.roadmap = this.currentTeam?.roadmap;
   }
 
   private async fetchRoadmapsForTeams(teams: Team[]) {
     try {
       for (const team of teams) {
-        const teamDetails = await this.TeamService.getTeamByID(team.id);
+        const teamDetails = await this.TeamService.getTeamById(team.id);
         if (teamDetails && teamDetails.roadmap) {
           this.roadmaps.push(teamDetails.roadmap);
         }

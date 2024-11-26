@@ -1,69 +1,79 @@
-import {Injectable} from '@angular/core';
-import {Team} from '../types/team';
-import {ApiService} from './api.service';
-import {ApiResponse} from '../types/api-response';
-
+import { Injectable, OnInit } from '@angular/core';
+import { Team } from '../types/team';
+import { ApiService } from './api.service';
+import { ApiResponse } from '../types/api-response';
 
 @Injectable({
   providedIn: 'root'
 })
-export class TeamService {
+export class TeamService implements OnInit {
 
-  constructor(private readonly apiService: ApiService) {
+  teams: Team[] = [];
+
+  constructor(private readonly apiService: ApiService) {}
+
+  async ngOnInit(): Promise<void> {
+    try {
+      this.teams = await this.getTeams();
+    } catch (error) {
+      console.error('Error initializing TeamService:', error);
+      throw new Error('Initialization Error')
+    }
   }
 
-  public async getTeams(): Promise<Team[]> {
-    const response: ApiResponse<Team[]> = await this.apiService.fetch('/team');
-    if (response.code !== 200) {
-      throw new Error('Failed to fetch teams');
+  async getTeams(): Promise<Team[]> {
+    try {
+      const response: ApiResponse<Team[]> = await this.apiService.fetch('/team');
+      return response.data;
+    } catch (error) {
+      throw error;
     }
-    return response.data;
   }
 
-  public async createTeam(team: Team): Promise<Team> {
-    const response: ApiResponse<Team> = await this.apiService.post('/team/create', team);
-    if (response.code !== 201) {
-      throw new Error('Failed to create team');
+  async createTeam(team: Team): Promise<Team> {
+    try {
+      const response: ApiResponse<Team> = await this.apiService.post('/team/create', team);
+      return response.data;
+    } catch (error) {
+      throw error;
     }
-    return response.data;
   }
 
-  async getTeamByID(ID: number): Promise<Team> {
-
-    const response: ApiResponse<Team> = await this.apiService.fetch('/team/' + ID);
-
-    if (response.code !== 200) {
-      throw new Error('Failed to fetch team data for specific id:' + ID);
+  async getTeamById(teamId: number): Promise<Team> {
+    try {
+      const response: ApiResponse<Team> = await this.apiService.fetch(`/team/`+teamId);
+      return response.data;
+    } catch (error) {
+      throw error;
     }
-
-    return response.data;
   }
 
-  async getTeamByUserID(ID: number): Promise<Team[]> {
-    const response: ApiResponse<Team[]> = await this.apiService.fetch('/team/user/' + ID);
-
-    if (response.code !== 200) {
-      throw new Error('Failed to fetch team data for specific id:' + ID);
+  async getTeamsByUserId(userId: number): Promise<Team[]> {
+    try {
+      const response: ApiResponse<Team[]> = await this.apiService.fetch(`/team/user/`+userId);
+      return response.data;
+    } catch (error) {
+      throw error;
     }
-
-    return response.data;
   }
 
   async removeUserFromTeam(userId: number, teamId: number): Promise<void> {
-    const body = {userId, teamId};
-    const response: ApiResponse<void> = await this.apiService.post("/team/user/delete", body);
-
-    if (response.code !== 200) {
-      throw new Error('Failed to remove user from team');
+    const body = { userId, teamId };
+    try {
+      const response: ApiResponse<void> = await this.apiService.post('/team/user/delete', body);
+      return response.data;
+    } catch (error) {
+      throw error;
     }
   }
 
   async addUserToTeam(userId: number, teamId: number): Promise<void> {
-    const body = {userId, teamId};
-    const response: ApiResponse<void> = await this.apiService.post("/team/user/add", body);
-
-    if (response.code !== 200) {
-      throw new Error('Failed to add user from team');
+    const body = { userId, teamId };
+    try {
+      const response: ApiResponse<void> = await this.apiService.post('/team/user/add', body);
+      return response.data;
+    } catch (error) {
+      throw error;
     }
   }
 }

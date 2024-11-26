@@ -10,6 +10,7 @@ import {Team} from '../../../types/team';
 import {GanttChartComponent} from './gantt-chart/gantt-chart.component';
 import {getEarliestStartDate} from '../../../helper/projectHelper';
 import {GanttDate} from '@worktile/gantt';
+import {SnackbarService} from '../../../services/snackbar.service';
 
 @Component({
   selector: 'app-analyse-board',
@@ -31,11 +32,15 @@ export class AnalyseBoardComponent implements OnInit {
   startDate: GanttDate = new GanttDate();
   protected readonly getEarliestStartDate = getEarliestStartDate;
 
-  constructor(private readonly teamService: TeamService) {
+  constructor(private readonly TeamService: TeamService,private readonly SnackBarService: SnackbarService) {
   }
 
   async ngOnInit() {
-    this.teams = await this.teamService.getTeams();
+    try {
+      this.teams = await this.TeamService.getTeams();
+    }catch (error){
+      this.SnackBarService.open('Konnte die Teams nicht laden')
+    }
     this.startDate = getEarliestStartDate(this.teams);
   }
 }
