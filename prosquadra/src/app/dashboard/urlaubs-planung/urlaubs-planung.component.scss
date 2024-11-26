@@ -1,0 +1,8 @@
+.urlaubs-planung{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: calc(var(--content-margin)*5);
+  padding: calc(var(--content-padding)*5);
+}

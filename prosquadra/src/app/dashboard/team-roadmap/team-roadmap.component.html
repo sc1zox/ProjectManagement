@@ -4,8 +4,8 @@
   <div class="project-list" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListData]="projects" [cdkDropListDisabled]="user?.role !== UserRole.PO"
     (cdkDropListDropped)="drop($event)">
 
-    <div *ngFor="let project of projects;" class="project-box" 
-    cdkDrag 
+    <div *ngFor="let project of projects;" class="project-box"
+    cdkDrag
     (mousedown)="onMouseDown($event)"
     (click)="handleProjectClick($event, project)"
     [ngClass]="{ 'selected': project === selectedProject }">
@@ -23,7 +23,7 @@
           appearance="outline">
           <mat-label>Status</mat-label>
           <mat-select [(value)]="selectedProject.projectStatus" (selectionChange)="onStatusChange($event)">
-            <mat-option *ngFor="let status of projectStatuses" [value]="status">{{ getStatusLabel(status)
+            <mat-option *ngFor="let status of projectStatuses" [value]="status">{{ status
               }}</mat-option>
           </mat-select>
         </mat-form-field>

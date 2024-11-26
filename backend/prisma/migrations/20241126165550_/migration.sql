@@ -99,8 +99,8 @@ CREATE TABLE `Login` (
 CREATE TABLE `Urlaub` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `userId` INTEGER NOT NULL,
-    `startdatum` DATETIME(3) NOT NULL,
-    `enddatum` DATETIME(3) NOT NULL,
+    `startDatum` DATETIME(3) NOT NULL,
+    `endDatum` DATETIME(3) NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

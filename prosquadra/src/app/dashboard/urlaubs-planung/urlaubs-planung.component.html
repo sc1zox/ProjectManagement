@@ -1,0 +1,16 @@
+<div class="urlaubs-planung">
+  <h1>Urlaub</h1>
+  <div class="dates-section">
+    <div>
+      <mat-form-field appearance="outline">
+        <mat-label>Urlaubsdaten </mat-label>
+        <mat-date-range-input [rangePicker]="picker">
+          <input matStartDate placeholder="Start date" (dateChange)="startDatePicker.next($event)">
+          <input matEndDate placeholder="End date"  (dateChange)="endDatePicker.next($event)">
+        </mat-date-range-input>
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-date-range-picker #picker></mat-date-range-picker>
+      </mat-form-field>
+    </div>
+  </div>
+</div>

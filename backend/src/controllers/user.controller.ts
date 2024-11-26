@@ -3,6 +3,7 @@ import {StatusCodes} from 'http-status-codes';
 import prisma from '../lib/prisma';
 import {ApiResponse} from "../types/api-response";
 import {User} from "../types/user";
+import {Urlaub} from "../types/Urlaub";
 
 class UserController {
 
@@ -189,9 +190,9 @@ class UserController {
         }
     }
     async addVacation(req: Request, res: Response, next: NextFunction): Promise<void> {
-        const { userId, startDate, endDate } = req.body;
+        const { userId, startDatum, endDatum } = req.body;
 
-        if (!userId || !startDate || !endDate) {
+        if (!userId || !startDatum || !endDatum) {
             return next({
                 status: StatusCodes.BAD_REQUEST,
                 message: 'userId, startDate, and endDate are required.',
@@ -199,11 +200,11 @@ class UserController {
         }
 
         try {
-            const newVacation = await prisma.urlaub.create({
+            const newVacation: Urlaub = await prisma.urlaub.create({
                 data: {
                     userId: Number(userId),
-                    startdatum: new Date(startDate),
-                    enddatum: new Date(endDate),
+                    startDatum: new Date(startDatum),
+                    endDatum: new Date(endDatum),
                 },
             });
 
