@@ -98,6 +98,7 @@ h2 {
 }
 
 .project-box {
+  border-radius: 8px;
   flex-grow: 1;
   flex-basis: 0; /* Ensures boxes stretch evenly */
   padding: 1rem;
@@ -112,8 +113,19 @@ h2 {
   font-size: 14px;
   box-sizing: border-box;
 
+  cursor: grab;
+
+  &.cdk-drag-disabled {
+    cursor: default;
+  }
+
   &:last-child {
     border-right: none;
+  }
+
+  &.selected {
+    outline: 2.5px solid #00b894;
+    outline-offset: -1px;
   }
 }
 
