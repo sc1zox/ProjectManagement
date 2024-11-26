@@ -34,16 +34,10 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 ### TODO:
 
 - unauthorized page schönmachen
-- submit und delete button on mobile fix
 - BL in keinem Team?
 - Safe project Button führt 5 network requests + (Meldung) aus auch ohne Änderungen weil er alle roadmaps neu pulled -> unnötig. Entweder gar keine ohne changes oder nur die affected Roadmap neu pullen 
 - Bei Projekterstellung sollte PO nur sein Team als Auswahl bekommen
-- safe project button in team roadmap nur verfügbar für sm oder po ? -> ne für alle aber nicht alle dürfen editieren
-- Teamroadmap hat bei den projekten den mauszeiger auf drag and drop obwohl die rolle dafür nicht gegeben ist. (Klasse dynamisch setzen?)
 - generell Berechtigungen überprüfen, wer darf wo was sehen bearbeiten usw.
-- Team-overview Wenn ich die Arbeitszeit ändere soll die UI- updaten, bzw auch Skills zb
-- Teamübersicht darf nur von Admin SM und BL eingesehen werden, für die restlichen Mitarbeiter muss es ausgeblendet werden
-- Ich denke ein Team sollte erstellt werden können ohne User. Danach muss ich jedoch sicher stellen, dass mindestens ein SM, PO und DEV zugeordnet werden. Sonst kann PO zb keine roadmap + projekte anlegen wenn im Team kein PO exisitiert
 
 ### BUGS
 
