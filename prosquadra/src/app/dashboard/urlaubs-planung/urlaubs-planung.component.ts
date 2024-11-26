@@ -1,4 +1,4 @@
-import {Component, Input, input, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, input, OnInit, signal, ViewChild} from '@angular/core';
 import {MatInput, MatInputModule} from '@angular/material/input';
 import {MAT_DATE_LOCALE, MatNativeDateModule, MatOptionModule, provideNativeDateAdapter} from '@angular/material/core';
 import {MatDatepickerInputEvent, MatDatepickerModule} from '@angular/material/datepicker';
@@ -12,6 +12,8 @@ import {UserService} from '../../../services/user.service';
 import {Urlaub} from '../../../types/Urlaub';
 import {SnackbarService} from '../../../services/snackbar.service';
 import {MatIconModule} from '@angular/material/icon';
+import {btjSlideState} from 'ngx-bootjack-bounce';
+import {animate, style, transition, trigger} from '@angular/animations';
 
 @Component({
   selector: 'app-urlaubs-planung',
@@ -30,11 +32,23 @@ import {MatIconModule} from '@angular/material/icon';
     MatIconModule,
     MatFabButton,
   ],
+  animations: [
+    trigger('slideIn', [
+      transition(':enter', [
+        style({ transform: 'translateY(+100%)' }),
+        animate('300ms ease-in', style({ transform: 'translateY(0)' }))
+      ]),
+      transition(':leave', [
+        animate('300ms ease-in', style({ transform: 'translateY(-100%)' }))
+      ])
+    ])
+  ],
   templateUrl: './urlaubs-planung.component.html',
   styleUrl: './urlaubs-planung.component.scss'
 })
 export class UrlaubsPlanungComponent implements OnInit {
 
+  protected isVisible = signal(false);
   currentUser?: User;
   urlaub$ = new BehaviorSubject<Urlaub[]>([]);
 
@@ -76,6 +90,7 @@ export class UrlaubsPlanungComponent implements OnInit {
           newUrlaub.id = urlaubMitId.id;
           const updatedUrlaub = [...this.urlaub$.getValue(), newUrlaub];
           this.urlaub$.next(updatedUrlaub);
+          this.isVisible.set(!this.isVisible());
           this.resetDatePickers();
           this.SnackBarService.open('Urlaub wurde erfolgreich eingetragen');
         } catch (error) {

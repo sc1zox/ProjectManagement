@@ -15,7 +15,7 @@
   </div>
 </div>
 <ng-container *ngFor="let urlaub of urlaub$ | async">
-<div class="urlaub-anzeige">
+<div class="urlaub-anzeige"  [@slideIn]>
   <div class="urlaub-datum">
   <p>Urlaubsbeginn: {{ urlaub.startDatum | date }}</p>
   <p>Urlaubsende: {{urlaub.endDatum | date }}</p>
