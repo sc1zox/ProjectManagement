@@ -43,7 +43,6 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 - BUG: user dialog(mobile Ansicht) in Teamübersicht aktualisiert nicht die Daten bei veränderter Arbeitszeit
 - BUG: Analyse chart soll nur die Teams anzeigen, in denen der SM Teil von ist
-- Unsicher ob Notifications die Push in realtime anzeigt aber momentan ist es glaube ich zufriedenstellend da es on Login/Buttonclick aufjedenfall geht
 - BUG: team edit: Ich kann einen User der kein Team hat mehreren Teams zuweisen, da die UI nicht updated bis refreshed wird. Hier sollte ein reload passieren bzw verifiziert werden, dass der user kein sm ist und teams.length === 0 ist
 - BUG: BL ist unauthorized bei Team-overview? + darf auch wie PO drag&drop machen
 - BUG: wenn ich ein Projekt hinzufüge erscheint es zweimal? Einmal mit keinem Wert für Aufwand einmal mit 0. Aber nur in der create projekt Übersicht. -> Eventuell überlegen feature zu killen und prio nur über dashboard/team-roadmap zu regeln?
@@ -59,7 +58,6 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 ### perspektivisch
 
-- Try catch Blöcke nutzen für backend calls und im catch einfach mit SnackBar Fehler ausgeben. Vor Allem in den Services -> überarbeiten
 - Gantt diagramm für analyse SM einbauen -> Backend für update nachziehen und dann im FE aktualisieren (sollen hier projekte bearbeitet werden können ? also verschieben auf der zeitleiste) -> denke momentan nicht
 - current project in der rechten sidebar wird momentan gepolled also alle 30 sekunden gefetched. Funktioniert aber ist das gut?
 - breakpoints sind momentan bei 1000px.
@@ -70,12 +68,9 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - PRIO: app-init-service aufsetzen und dort die fetches gestalten, bzw. aufjedenfall die fetches reduzieren. Überlegen ob es möglich ist, bei initalisierung einmal alle daten zu fetchen und dann only on update?
 - roadmap scrolling horizontal erst ab overflow? damit vertikales scrollen nicht gefangen wird und man dadurch nicht horizontal scrollen kann
 - modals einbauen zur Informationsbestätigung?
-- services refaktorieren für eine gute auth und api struktur
 - Idee: Bilder einfügbar machen für projektboxen in roadmap
-- darkmode? sollte nicht zu aufwendig sein
 - Websockets??
 - Performance probleme: Daten lokal behalten und updaten und asynchron an den Server schicken um eine zu hohe Datenlast zu vermeiden
-- Datum als deutsch darstellen, momentan american
 - Teamübersicht visual bug bei kleinerem Screen (kann momentan vernachlässigt werden, da wir uns auf mobile oder desktop screensize fokussieren und nicht dazwischen)
 
 ### Fragen
