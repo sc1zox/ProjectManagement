@@ -64,6 +64,10 @@ export const routes: Routes = [
         path: 'unauthorized',
         loadComponent: () => import('./unauthorized/unauthorized.component').then(m => m.UnauthorizedComponent)
       },
+      {
+        path: 'urlaubs-planung',
+        loadComponent: () => import('./dashboard/urlaubs-planung/urlaubs-planung.component').then(m => m.UrlaubsPlanungComponent)
+      },
     ]
   },
   {

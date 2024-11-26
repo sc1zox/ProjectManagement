@@ -10,12 +10,12 @@ import {
   SimpleChanges,
   ViewChild
 } from '@angular/core';
-import {CommonModule, registerLocaleData} from '@angular/common';
+import {CommonModule} from '@angular/common';
 import {ProjectService} from '../../../services/project.service';
 import {Project} from '../../../types/project';
 import {CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray} from '@angular/cdk/drag-drop';
 import {MatDatepickerModule} from '@angular/material/datepicker';
-import {MatNativeDateModule} from '@angular/material/core';
+import {MAT_DATE_LOCALE, MatNativeDateModule, provideNativeDateAdapter} from '@angular/material/core';
 import {MatInputModule} from '@angular/material/input';
 import {
   AbstractControl,
@@ -36,8 +36,6 @@ import {Team} from '../../../types/team';
 import {parseProjects} from '../../../mapper/projectDatesToDate';
 import {TimeEstimatorComponent} from '../../components/time-estimator/time-estimator.component';
 import {Estimation} from '../../../types/estimation';
-import {ApiError} from '../../../../error/ApiError';
-import localeDe from '@angular/common/locales/de';
 import { ProjectStatus } from '../../../types/project';
 import { MatSelectChange } from '@angular/material/select';
 import { MatSelectModule } from '@angular/material/select';
@@ -55,7 +53,6 @@ const isStartDateInRange = (projects: Project[], startDate: Date, selectedProjec
 
   return boolresult;
 };
-registerLocaleData(localeDe);
 
 @Component({
   selector: 'app-team-roadmap',
@@ -72,8 +69,8 @@ registerLocaleData(localeDe);
     TimeEstimatorComponent,
     MatSelectModule,
     MatOptionModule],
-  providers: [
-    { provide: LOCALE_ID, useValue: 'de' }
+  providers: [provideNativeDateAdapter(),
+    {provide: MAT_DATE_LOCALE, useValue: 'de-DE'}
   ],
   templateUrl: './team-roadmap.component.html',
   styleUrls: ['./team-roadmap.component.scss']
@@ -323,11 +320,11 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   drop(event: CdkDragDrop<Project[]>): void {
     if (this.projects && event.previousIndex !== event.currentIndex) {
       moveItemInArray(this.projects, event.previousIndex, event.currentIndex);
-  
+
       this.projects.forEach((project, index) => {
         project.priorityPosition = index + 1;
       });
-  
+
       if (this.roadmap) {
         this.roadmap.projects = this.projects;
       }

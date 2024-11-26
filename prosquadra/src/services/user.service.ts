@@ -4,6 +4,7 @@ import { ApiService } from './api.service';
 import { ApiResponse } from '../types/api-response';
 import { Login } from '../types/login';
 import { Estimation } from '../types/estimation';
+import {Urlaub} from '../types/Urlaub';
 
 @Injectable({
   providedIn: 'root',
@@ -107,6 +108,17 @@ export class UserService {
       const data = { userID, urlaubstage };
       const response: ApiResponse<number> = await this.ApiService.put('/users/update/urlaubstage', data);
       return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+  async sendUrlaubRequest(userId: number, startDatum: Date, endDatum: Date): Promise<void> {
+    if (!userId || !startDatum || !endDatum) {
+      throw new Error('Invalid userId, startDate, or endDate');
+    }
+    try {
+      const data: Urlaub = { userId, startDatum, endDatum };
+      await this.ApiService.post('/users/vacations/set', data);
     } catch (error) {
       throw error;
     }
