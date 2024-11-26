@@ -7,6 +7,7 @@ import {TeamRoadmapComponent} from '../team-roadmap/team-roadmap.component';
 import {UserService} from '../../../services/user.service';
 import {User, UserRole} from '../../../types/user';
 import {SnackbarService} from '../../../services/snackbar.service';
+import {fadeIn} from '../../../animations/fadeIn';
 
 
 @Component({
@@ -16,6 +17,9 @@ import {SnackbarService} from '../../../services/snackbar.service';
     MatCardModule,
     CommonModule,
     TeamRoadmapComponent,
+  ],
+  animations: [
+    fadeIn
   ],
   templateUrl: './dashboard-home.component.html',
   styleUrl: './dashboard-home.component.scss'

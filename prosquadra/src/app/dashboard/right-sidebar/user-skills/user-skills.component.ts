@@ -9,6 +9,7 @@ import {LiveAnnouncer} from '@angular/cdk/a11y';
 import {User} from '../../../../types/user';
 import {Skill} from '../../../../types/skill';
 import {SnackbarService} from '../../../../services/snackbar.service';
+import {fadeIn} from '../../../../animations/fadeIn';
 
 @Component({
   selector: 'app-user-skills',
@@ -22,6 +23,9 @@ import {SnackbarService} from '../../../../services/snackbar.service';
     MatIcon,
     MatLabel,
     NgForOf
+  ],
+  animations: [
+    fadeIn
   ],
   templateUrl: './user-skills.component.html',
   styleUrl: './user-skills.component.scss'

@@ -21,6 +21,7 @@ import {UserSkillsComponent} from './user-skills/user-skills.component';
 import {Notification} from '../../../types/Notifications';
 import {QrCodeModule} from 'ng-qrcode';
 import {ApiService} from '../../../services/api.service';
+import {SnackbarService} from '../../../services/snackbar.service';
 
 @Component({
   selector: 'app-right-sidebar',
@@ -61,6 +62,7 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
     private readonly UserService: UserService,
     private readonly AuthService: AuthService,
     private readonly ApiService: ApiService,
+    private readonly SnackBarService: SnackbarService,
   ) {
 
   }
@@ -129,6 +131,9 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
 
   showNotifications() {
     if (this.notifications)
+      if(this.notificationsAmount === 0){
+        this.SnackBarService.open('Keine Notifications vorhanden');
+      }
       this.notifications.forEach((notification) => {
         this.NotificationService.showNotificationPermanent(notification);
       });
