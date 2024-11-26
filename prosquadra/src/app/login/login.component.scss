@@ -4,12 +4,12 @@
   align-items: center;
   height: 100vh;
   padding: var(--content-padding);
-  background-color: var(--main-color); // Use the orange color from the sketch
+  background-color: var(--main-color);
   box-sizing: border-box; // Hides the scrollbar
 }
 
 .login-card {
-  background-color: var(--main-background);
+  background-color: white;
   padding: var(--content-padding);
   border-radius: 8px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);

@@ -7,6 +7,7 @@ import {EditTeamsComponent} from './edit-teams/edit-teams.component';
 import {Team} from '../../../types/team';
 import {NgIf} from '@angular/common';
 import {SnackbarService} from '../../../services/snackbar.service';
+import {fadeIn} from '../../../animations/fadeIn';
 
 @Component({
   selector: 'app-team-overview',
@@ -15,6 +16,9 @@ import {SnackbarService} from '../../../services/snackbar.service';
     UserTableComponent,
     EditTeamsComponent,
     NgIf
+  ],
+  animations: [
+    fadeIn,
   ],
   templateUrl: './team-overview.component.html',
   styleUrl: './team-overview.component.scss'

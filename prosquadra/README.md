@@ -39,6 +39,10 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 - Bei Projekterstellung sollte PO nur sein Team als Auswahl bekommen
 - generell Berechtigungen überprüfen, wer darf wo was sehen bearbeiten usw.
 
+COLOR SCHEME USED:
+
+![img.png](img.png)
+
 ### BUGS
 
 - BUG: user dialog(mobile Ansicht) in Teamübersicht aktualisiert nicht die Daten bei veränderter Arbeitszeit
