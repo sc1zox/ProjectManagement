@@ -25,7 +25,7 @@ export class RoadmapService {
 
   public async updateRoadmap(roadmap: Roadmap) {
     try {
-      await this.UpdateService.updateResource('/api/roadmaps/update', roadmap);
+      await this.UpdateService.updateResourceWithAuthentification('/api/roadmaps/update', roadmap);
     } catch (error) {
       console.error('Error updating project:', error);
     }

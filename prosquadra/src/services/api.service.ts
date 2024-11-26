@@ -59,24 +59,20 @@ export class ApiService {
     return response.json();
   }
 
-  async put<T>(endpoint: string, body: any): Promise<ApiResponse<T>> {
-    const response: Response = await fetch(this.apiUrl + endpoint, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(body),
+  async delete<T>(endpoint: string): Promise<ApiResponse<T>> {
+    const response:Response = await fetch(this.apiUrl+endpoint, {
+      method: 'DELETE',
     });
-  
+
     if (!response.ok) {
       const errorData = await response.json();
       throw new ApiError(response.status, errorData.message || 'Unknown error');
     }
-  
+
     return response.json();
   }
 
-  async postUrl<T>(url: string, body: any): Promise<ApiResponse<T>> {
+  async postWithUrl<T>(url: string, body: any): Promise<ApiResponse<T>> {
     const response = await fetch(url, {
       method: 'POST',
       headers: {

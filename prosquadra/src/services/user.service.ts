@@ -60,7 +60,7 @@ export class UserService {
 
   async createLogin(Login: Login): Promise<Login> {
     let LoginUrl = this.ApiService.getAuthUrl() + "/create";
-    const response: ApiResponse<Login> = await this.ApiService.postUrl(LoginUrl, Login);
+    const response: ApiResponse<Login> = await this.ApiService.postWithUrl(LoginUrl, Login);
 
     if (!response.data) {
       throw new Error('No response received from the server');

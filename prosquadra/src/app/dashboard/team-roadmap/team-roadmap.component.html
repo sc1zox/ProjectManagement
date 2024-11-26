@@ -21,12 +21,12 @@
         <mat-option *ngFor="let status of projectStatuses" [value]="status">{{ getStatusLabel(status) }}</mat-option>
       </mat-select>
     </mat-form-field>
-    
+
     <!-- Display "offen" status and hide date fields -->
     <ng-container *ngIf="selectedProject.projectStatus === ProjectStatus.offen; else dateFields">
       <p><strong>Status:</strong> Offen</p>
     </ng-container>
-    
+
     <!-- Start and End Date fields -->
     <ng-template #dateFields>
       <div *ngIf="selectedProject.projectStatus === ProjectStatus.inBearbeitung || selectedProject.projectStatus === ProjectStatus.geschlossen">
@@ -40,7 +40,7 @@
           <mat-datepicker-toggle *ngIf="!startDateControl.disabled" [for]="startPicker" matSuffix></mat-datepicker-toggle>
           <mat-datepicker #startPicker></mat-datepicker>
         </mat-form-field>
-    
+
         <mat-form-field appearance="fill">
           <mat-label>End Date</mat-label>
           <input
@@ -55,7 +55,7 @@
           </mat-error>
         </mat-form-field>
       </div>
-    </ng-template>    
+    </ng-template>
 
     <!-- Display dates as text for all users -->
     <div *ngIf="selectedProject.projectStatus === ProjectStatus.inBearbeitung || selectedProject.projectStatus === ProjectStatus.geschlossen">
@@ -72,13 +72,18 @@
       <p><strong>Projekt Zeitschätzung: </strong> Es wurden noch keine Schätzungen abgegeben</p>
     </ng-template>
     <ng-container *ngIf="user?.role === UserRole.Developer ; else errorContainerUserNoDev">
-      <p><strong>Deine Zeitschätzung: </strong>{{ getUserEstimationForSelectedProject() }}</p>
+      <ng-container *ngIf="currentEstimation; else fetchFromBackend">
+      <p><strong>Deine Zeitschätzung: </strong>{{ currentEstimation.hours }}</p>
+      </ng-container>
+      <ng-template #fetchFromBackend>
+        <p><strong>Deine Zeitschätzung: </strong>{{ getUserEstimationForSelectedProject() }}</p>
+      </ng-template>
     </ng-container>
     <ng-template #errorContainerUserNoDev>
 
     </ng-template>
     <div *ngIf="estimatableDEV" class="estimationContainer">
-      <app-time-estimator [currentProject]="selectedProject"></app-time-estimator>
+      <app-time-estimator [currentProject]="selectedProject" (myTimeEstimate)="updateUserEstimation($event)"></app-time-estimator>
     </div>
 
     <div class="submitContainer">

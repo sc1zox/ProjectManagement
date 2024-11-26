@@ -402,9 +402,9 @@ class ProjectController {
     }
 
     async updateProjectStatus(req: Request, res: Response, next: NextFunction): Promise<void> {
-        const { projectId, status } = req.body;
+        const { projectId, projectStatus } = req.body;
 
-        if (!projectId || !status) {
+        if (!projectId || !projectStatus) {
             return next({
                 status: StatusCodes.BAD_REQUEST,
                 message: 'projectId and status are required.',
@@ -425,7 +425,7 @@ class ProjectController {
 
             const updatedProject = await prisma.project.update({
                 where: { id: Number(projectId) },
-                data: { projectStatus: status },
+                data: { projectStatus: projectStatus },
             });
 
             res.status(StatusCodes.OK).json({

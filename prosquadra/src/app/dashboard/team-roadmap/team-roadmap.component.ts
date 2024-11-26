@@ -100,7 +100,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   @ViewChild('projectList') projectList?: ElementRef;
   protected readonly window = window;
   protected readonly UserRole = UserRole;
-  
+
   readonly ProjectStatus = ProjectStatus;
   projectStatuses = Object.values(ProjectStatus);
 
@@ -141,12 +141,12 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
       this.extractProjectsFromRoadmaps();
       this.selectInitialProject();
     }
-  
+
     if (changes['selectedProject'] && this.selectedProject) {
       this.startDateControl.setValue(this.selectedProject.startDate, { emitEvent: false });
       this.endDateControl.setValue(this.selectedProject.endDate, { emitEvent: false });
       this.updateDateControls();
-    }  
+    }
   }
 
   extractProjectsFromRoadmaps() {
@@ -187,7 +187,12 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
 
     if (this.selectedProject) {
       this.selectedProject.projectStatus = newStatus;
-      await this.ProjectService.setProjectStatus(this.selectedProject.id!, newStatus);
+      try {
+        await this.ProjectService.setProjectStatus(this.selectedProject.id!, newStatus);
+      }catch (error){
+        this.SnackBarSerivce.open("Status konnte nicht geupdated werden");
+        return;
+      }
       this.updateDateControls();
     }
   }
@@ -251,19 +256,23 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     return undefined;
   }
 
+  updateUserEstimation(estimatedTime: Estimation): void {
+    this.currentEstimation = estimatedTime;
+  }
+
   async selectProject(project: Project): Promise<void> {
     this.selectedProject = project;
-  
+
     // Update the form controls to reflect the selected project
     this.startDateControl.setValue(project.startDate, { emitEvent: false });
     this.endDateControl.setValue(project.endDate, { emitEvent: false });
-  
+
     // Update control locking state based on the selected project's status
     this.updateDateControls();
-  
+
     await this.setSelectedProjectAvgEstimation();
   }
-  
+
 
   // Inspired by https://stackoverflow.com/questions/59468926/horizontal-scroll-in-typescript
   onWheelScroll(event: WheelEvent): void {
