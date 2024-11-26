@@ -1,14 +1,17 @@
-import {Component, OnInit} from '@angular/core';
-import {MatInputModule} from '@angular/material/input';
+import {Component, Input, input, OnInit, ViewChild} from '@angular/core';
+import {MatInput, MatInputModule} from '@angular/material/input';
 import {MAT_DATE_LOCALE, MatNativeDateModule, MatOptionModule, provideNativeDateAdapter} from '@angular/material/core';
 import {MatDatepickerInputEvent, MatDatepickerModule} from '@angular/material/datepicker';
 import {CommonModule} from '@angular/common';
-import {MatButton} from '@angular/material/button';
+import {MatButton, MatFabButton} from '@angular/material/button';
 import {MatSelectModule} from '@angular/material/select';
 import {MatError, MatLabel} from '@angular/material/form-field';
-import {combineLatest, map, Subject} from 'rxjs';
+import {BehaviorSubject, combineLatest, map, Subject} from 'rxjs';
 import {User} from '../../../types/user';
 import {UserService} from '../../../services/user.service';
+import {Urlaub} from '../../../types/Urlaub';
+import {SnackbarService} from '../../../services/snackbar.service';
+import {MatIconModule} from '@angular/material/icon';
 
 @Component({
   selector: 'app-urlaubs-planung',
@@ -24,7 +27,8 @@ import {UserService} from '../../../services/user.service';
     CommonModule,
     MatError,
     MatLabel,
-
+    MatIconModule,
+    MatFabButton,
   ],
   templateUrl: './urlaubs-planung.component.html',
   styleUrl: './urlaubs-planung.component.scss'
@@ -32,9 +36,10 @@ import {UserService} from '../../../services/user.service';
 export class UrlaubsPlanungComponent implements OnInit {
 
   currentUser?: User;
+  urlaub$ = new BehaviorSubject<Urlaub[]>([]);
 
 // https://stackoverflow.com/questions/63823557/angular-material-datepickerrange-get-value-on-change
-  constructor(private UserService: UserService) {
+  constructor(private UserService: UserService, private readonly SnackBarService: SnackbarService) {
   }
 
   startDatePicker = new Subject<MatDatepickerInputEvent<any>>();
@@ -42,6 +47,7 @@ export class UrlaubsPlanungComponent implements OnInit {
 
   async ngOnInit(): Promise<void> {
     this.currentUser = await this.UserService.getCurrentUser();
+
     const dateChange$ = combineLatest([this.startDatePicker, this.endDatePicker]).pipe(
       map(([a$, b$]) => ({
         start: a$,
@@ -49,11 +55,51 @@ export class UrlaubsPlanungComponent implements OnInit {
       }))
     );
 
-    dateChange$.subscribe((data) => {
+    if (this.currentUser?.urlaub) {
+      this.urlaub$.next(this.currentUser.urlaub);
+    }
+
+    dateChange$.subscribe(async (data) => {
       if (data.start.value && data.end.value && this.currentUser) {
-        console.log('User has picked both ranges!');
-        this.UserService.sendUrlaubRequest(this.currentUser?.id,data.start.value,data.end.value)
+        try {
+          let newUrlaub: Urlaub = {
+            userId: this.currentUser.id,
+            startDatum: data.start.value,
+            endDatum: data.end.value,
+          };
+
+          const urlaubMitId: Urlaub = await this.UserService.sendUrlaubRequest(
+            this.currentUser.id,
+            data.start.value,
+            data.end.value
+          );
+          newUrlaub.id = urlaubMitId.id;
+          const updatedUrlaub = [...this.urlaub$.getValue(), newUrlaub];
+          this.urlaub$.next(updatedUrlaub);
+          this.resetDatePickers();
+          this.SnackBarService.open('Urlaub wurde erfolgreich eingetragen');
+        } catch (error) {
+          this.SnackBarService.open('Urlaub konnte nicht eingetragen werden');
+        }
       }
     });
   }
+
+
+  async deleteUrlaub(urlaub: Urlaub) {
+    try {
+      await this.UserService.deleteUrlaub(urlaub);
+      const updatedUrlaub = this.urlaub$.getValue().filter(u => u !== urlaub);
+      this.urlaub$.next(updatedUrlaub);
+      this.SnackBarService.open('Urlaub wurde gelöscht');
+    } catch (error) {
+      this.SnackBarService.open('Urlaub konnte nicht gelöscht werden');
+    }
+  }
+
+  resetDatePickers() {
+    this.startDatePicker.next({} as MatDatepickerInputEvent<any>);
+    this.endDatePicker.next({} as MatDatepickerInputEvent<any>);
+  }
+
 }

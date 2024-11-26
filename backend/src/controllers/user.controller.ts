@@ -45,6 +45,7 @@ class UserController {
                 include: {
                     skills: true,
                     teams: true,
+                    urlaub: true,
                 },
             });
 
@@ -207,7 +208,6 @@ class UserController {
                     endDatum: new Date(endDatum),
                 },
             });
-
             res.status(StatusCodes.CREATED).json({
                 code: StatusCodes.CREATED,
                 data: newVacation,
@@ -238,6 +238,30 @@ class UserController {
             };
 
             res.status(StatusCodes.OK).json(response);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async deleteVacation(req: Request, res: Response, next: NextFunction): Promise<void> {
+        const urlaubId: number=Number(req.params.id);
+
+        if (!urlaubId) {
+            return next({
+                status: StatusCodes.BAD_REQUEST,
+                message: 'urlaubsId is required.',
+            });
+        }
+
+        try {
+            const deletedVacation = await prisma.urlaub.delete({
+                where: { id: urlaubId },
+            });
+
+            res.status(StatusCodes.OK).json({
+                code: StatusCodes.OK,
+                data: deletedVacation,
+            });
         } catch (error) {
             next(error);
         }

@@ -112,13 +112,25 @@ export class UserService {
       throw error;
     }
   }
-  async sendUrlaubRequest(userId: number, startDatum: Date, endDatum: Date): Promise<void> {
+  async sendUrlaubRequest(userId: number, startDatum: Date, endDatum: Date): Promise<Urlaub> {
     if (!userId || !startDatum || !endDatum) {
       throw new Error('Invalid userId, startDate, or endDate');
     }
     try {
       const data: Urlaub = { userId, startDatum, endDatum };
-      await this.ApiService.post('/users/vacations/set', data);
+      const response: ApiResponse<Urlaub> = await this.ApiService.post('/users/vacations/set', data);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async deleteUrlaub (urlaub: Urlaub): Promise<void> {
+    if (!urlaub) {
+      throw new Error('Invalid urlaub');
+    }
+    try {
+      await this.ApiService.delete('/users/vacations/delete/'+ urlaub.id);
     } catch (error) {
       throw error;
     }

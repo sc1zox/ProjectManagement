@@ -6,3 +6,16 @@
   margin: calc(var(--content-margin)*5);
   padding: calc(var(--content-padding)*5);
 }
+.urlaub-anzeige{
+  border: 2px black solid;
+  border-radius: 5px;
+  padding: var(--content-padding);
+  margin: var(--content-margin);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+#deleteButton{
+  color: white;
+  background: black;
+}

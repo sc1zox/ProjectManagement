@@ -5,8 +5,8 @@
       <mat-form-field appearance="outline">
         <mat-label>Urlaubsdaten </mat-label>
         <mat-date-range-input [rangePicker]="picker">
-          <input matStartDate placeholder="Start date" (dateChange)="startDatePicker.next($event)">
-          <input matEndDate placeholder="End date"  (dateChange)="endDatePicker.next($event)">
+          <input #startDate matStartDate placeholder="Start date" (dateChange)="startDatePicker.next($event)">
+          <input #endDate matEndDate placeholder="End date"  (dateChange)="endDatePicker.next($event)">
         </mat-date-range-input>
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-date-range-picker #picker></mat-date-range-picker>
@@ -14,3 +14,16 @@
     </div>
   </div>
 </div>
+<ng-container *ngFor="let urlaub of urlaub$ | async">
+<div class="urlaub-anzeige">
+  <div class="urlaub-datum">
+  <p>Urlaubsbeginn: {{ urlaub.startDatum | date }}</p>
+  <p>Urlaubsende: {{urlaub.endDatum | date }}</p>
+  </div>
+  <div class="urlaub-button" *ngIf="urlaub">
+  <button mat-fab aria-label="delete icon" id="deleteButton" (click)=deleteUrlaub(urlaub)>
+    <mat-icon>delete</mat-icon>
+  </button>
+  </div>
+</div>
+</ng-container>
