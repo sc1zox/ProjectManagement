@@ -1,7 +1,10 @@
 <div *ngIf="roadmap && roadmap.projects.length > 0; else noRoadmap" class="roadmap-card">
   <h2>{{ teams?.name }}</h2>
 
-  <div class="project-list" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListData]="projects"
+  <div class="project-list" cdkDropList 
+  cdkDropListOrientation="horizontal" 
+  [cdkDropListData]="projects"
+  [cdkDropListDisabled]="user?.role !== UserRole.PO"
     (cdkDropListDropped)="drop($event)">
 
     <div *ngFor="let project of projects;" class="project-box" 
