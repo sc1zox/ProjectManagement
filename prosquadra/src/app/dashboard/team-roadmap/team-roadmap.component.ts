@@ -43,7 +43,6 @@ import { MatOptionModule } from '@angular/material/core';
 import { ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 
-
 const isStartDateInRange = (projects: Project[], startDate: Date, selectedProject: Project): boolean => {
   const projectsWithoutItself = projects.filter(project => project.id !== selectedProject.id);
   const projectsMapped = parseProjects(projectsWithoutItself);
