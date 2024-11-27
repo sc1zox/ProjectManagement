@@ -13,6 +13,8 @@ import {Team} from '../../../types/team';
 import {Roadmap} from '../../../types/roadmap';
 import {NotificationsService} from '../../../services/notifications.service';
 import {SnackbarService} from '../../../services/snackbar.service';
+import { UserService } from '../../../services/user.service';
+import { User } from '../../../types/user';
 
 @Component({
   selector: 'app-create-project',
@@ -25,7 +27,7 @@ import {SnackbarService} from '../../../services/snackbar.service';
     MatButtonModule,
     TeamRoadmapComponent,
     MatSelect,
-    MatOption
+    MatOption,
   ],
   templateUrl: './create-project.component.html',
   styleUrls: ['./create-project.component.scss']
@@ -37,6 +39,7 @@ export class CreateProjectComponent implements AfterViewInit {
   selectedTeam?: Team; // Variable to hold the selected team
   roadmap?: Roadmap;
   currentTeam?: Team;
+  user?: User;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -44,6 +47,7 @@ export class CreateProjectComponent implements AfterViewInit {
     private readonly TeamService: TeamService,
     private readonly NotificationService: NotificationsService,
     private readonly SnackBarService: SnackbarService,
+    private readonly UserService: UserService,
   ) {
     this.projectForm = this.fb.group({
       projectName: ['', [Validators.required, Validators.maxLength(10)]], // Correct maxLength usage
@@ -58,7 +62,11 @@ export class CreateProjectComponent implements AfterViewInit {
 
   async loadTeams() {
     try {
-      this.teams = await this.TeamService.getTeams();
+      if(!this.user) {
+        this.user = await this.UserService.getCurrentUser();
+      }
+
+      this.teams = await this.TeamService.getTeamsByUserId(this.user!.id);
     }catch (error){
       this.SnackBarService.open('Konnte die Teams nicht laden')
     }
