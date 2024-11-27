@@ -8,6 +8,7 @@ import {NgForOf, NgIf} from '@angular/common';
 import {UserRole} from '../../../types/user';
 import {SnackbarService} from '../../../services/snackbar.service';
 import {slideIn} from '../../../animations/slideIn';
+import {RoadmapService} from '../../../services/roadmap.service';
 
 @Component({
   selector: 'app-my-team-roadmap',
@@ -23,7 +24,7 @@ export class MyTeamRoadmapComponent implements OnInit {
   currentTeam?: Team;
   roadmap?: Roadmap;
   roadmaps: Roadmap[] = [];
-  teams: Team[] = [];
+  userTeams: Team[] = [];
   firstTeam?: Team;
   isPo: boolean = false;
   isScrum: boolean = false;
@@ -32,7 +33,8 @@ export class MyTeamRoadmapComponent implements OnInit {
   constructor(
     private readonly TeamService: TeamService,
     private readonly UserService: UserService,
-    private readonly SnackBarService: SnackbarService
+    private readonly SnackBarService: SnackbarService,
+    private readonly RoadmapService: RoadmapService,
   ) {
   }
 
@@ -46,20 +48,20 @@ export class MyTeamRoadmapComponent implements OnInit {
 
     // Get all teams the user is part of
     try {
-      this.teams = await this.TeamService.getTeamsByUserId(user.id);
+      this.userTeams = await this.TeamService.getTeamsByUserId(user.id);
     }catch (error){
       this.SnackBarService.open('Konnte die Teams nicht abrufen');
     }
-    if (this.teams.length === 0) {
+    if (this.userTeams.length === 0) {
       console.error('User is not part of any team');
       return;
     }
 
-    this.firstTeam = this.teams[0];
-    if (this.teams.length === 1) {
+    this.firstTeam = this.userTeams[0];
+    if (this.userTeams.length === 1) {
       await this.fetchRoadmapForTeam(this.firstTeam.id);
     } else {
-      await this.fetchRoadmapsForTeams(this.teams)
+      await this.fetchRoadmapsForTeams(this.userTeams)
     }
     if (user && user.role === UserRole.PO) {
       this.isPo = true;
@@ -91,14 +93,12 @@ export class MyTeamRoadmapComponent implements OnInit {
     this.roadmap = this.currentTeam?.roadmap;
   }
 
-  private async fetchRoadmapsForTeams(teams: Team[]) {
+  private async fetchRoadmapsForTeams(userTeams: Team[]) {
     try {
-      for (const team of teams) {
-        const teamDetails = await this.TeamService.getTeamById(team.id);
-        if (teamDetails && teamDetails.roadmap) {
-          this.roadmaps.push(teamDetails.roadmap);
-        }
-      }
+      this.roadmaps = await this.RoadmapService.getRoadmaps();
+      this.roadmaps = this.roadmaps.filter(roadmap =>
+        roadmap.teams && userTeams.some(userTeam => userTeam.id === roadmap.teams!.id)
+      );
     } catch (error) {
       this.SnackBarService.open('Es gab ein Fehler bei der Teamaktualisierung')
     }
