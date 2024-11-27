@@ -107,8 +107,9 @@ export class ProjectService implements OnInit {
   }
 
   async setProjectStatus(projectId: number, projectStatus: ProjectStatus): Promise<Project> {
+    const body = { projectId,projectStatus};
     try {
-      const response: ApiResponse<Project> = await this.ApiService.put(projectStatus, projectId);
+      const response: ApiResponse<Project> = await this.ApiService.put('/project/status/update', body);
       return response.data;
     } catch (error) {
       throw error;
