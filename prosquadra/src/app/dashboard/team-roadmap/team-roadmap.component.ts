@@ -100,7 +100,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   protected readonly UserRole = UserRole;
 
   readonly ProjectStatus = ProjectStatus;
-  projectStatuses = Object.values(ProjectStatus);
+  projectStatuses: ProjectStatus[] = Object.values(ProjectStatus);
 
   showTimeEstimator: boolean = false;
 
