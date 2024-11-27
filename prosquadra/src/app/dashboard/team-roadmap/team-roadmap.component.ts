@@ -43,7 +43,6 @@ import { MatOptionModule } from '@angular/material/core';
 import { ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
 
-
 const isStartDateInRange = (projects: Project[], startDate: Date, selectedProject: Project): boolean => {
   const projectsWithoutItself = projects.filter(project => project.id !== selectedProject.id);
   const projectsMapped = parseProjects(projectsWithoutItself);
@@ -103,6 +102,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   projectStatuses: ProjectStatus[] = Object.values(ProjectStatus);
 
   showTimeEstimator: boolean = false;
+  hideInDashboard: boolean = false;
 
   private isDragging = false;
 
@@ -187,6 +187,29 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     this.selectInitialProject();
     this.updateDateControls();
     this.showTimeEstimator = this.router.url.includes('dashboard/team-roadmap');
+    this.hideInDashboard = this.router.url.includes('dashboard/team-roadmap');
+  }
+
+  canEditStatus(): boolean {
+    switch (this.user?.role) {
+      case UserRole.Admin:
+      case UserRole.PO:
+      case UserRole.Bereichsleiter:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  canEditDate(): boolean {
+    switch (this.user?.role) {
+      case UserRole.Admin:
+      case UserRole.SM:
+      case UserRole.Bereichsleiter:
+        return true;
+      default:
+        return false;
+    }
   }
 
   async onStatusChange(event: MatSelectChange): Promise<void> {
