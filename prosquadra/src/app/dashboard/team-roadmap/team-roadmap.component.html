@@ -19,7 +19,7 @@
       <h3><strong>Projekt: </strong>{{ selectedProject.name }}</h3>
       <div class="status">
         <mat-form-field
-          *ngIf="user?.role === UserRole.Admin || user?.role === UserRole.SM || user?.role === UserRole.Bereichsleiter; else displayStatus"
+          *ngIf="canEditStatus() && hideInDashboard; else displayStatus"
           appearance="outline">
           <mat-label>Status</mat-label>
           <mat-select [(value)]="selectedProject.projectStatus" (selectionChange)="onStatusChange($event)">
@@ -35,7 +35,7 @@
     <!-- Dates Section -->
     <div *ngIf="selectedProject.projectStatus !== ProjectStatus.offen" class="dates-section">
       <div
-        *ngIf="user?.role === UserRole.Admin || user?.role === UserRole.SM || user?.role === UserRole.Bereichsleiter; else displayDates">
+        *ngIf="canEditDate() && hideInDashboard; else displayDates">
         <mat-form-field appearance="outline" class="date-picker">
           <mat-label>Start Date</mat-label>
           <input [formControl]="startDateControl" [matDatepicker]="startPicker" matInput />
@@ -81,8 +81,8 @@
 
     <!-- Action Buttons -->
     <div class="actions">
-      <button mat-raised-button color="primary" (click)="onSubmit()">Save Project</button>
-      <button *ngIf="user?.role === UserRole.PO" mat-raised-button color="warn" (click)="onDelete()">Delete
+      <button *ngIf="hideInDashboard" mat-raised-button color="primary" (click)="onSubmit()">Save Project</button>
+      <button *ngIf="user?.role === UserRole.PO && hideInDashboard" mat-raised-button color="warn" (click)="onDelete()">Delete
         Project</button>
     </div>
   </div>
