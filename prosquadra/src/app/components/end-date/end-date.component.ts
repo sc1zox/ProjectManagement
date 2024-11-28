@@ -4,6 +4,8 @@ import { UserService } from '../../../services/user.service';
 import { Project } from '../../../types/project';
 import { User } from '../../../types/user';
 import { CommonModule } from '@angular/common';
+import { TeamService } from '../../../services/team.service';
+import { TeamsFormComponent } from '../../dashboard/admin-panel/teams-form/teams-form.component';
 
 @Component({
   selector: 'app-end-date',
@@ -14,90 +16,60 @@ import { CommonModule } from '@angular/common';
 })
 export class EndDateComponent implements OnInit {
   projects: Project[] = [];
-  errorMessage: string | null = null;
 
   constructor(
     private projectService: ProjectService,
-    private userService: UserService
+    private userService: UserService,
+    private teamService: TeamService
   ) {}
 
   async ngOnInit(): Promise<void> {
     try {
       this.projects = await this.projectService.getProjects();
-      await this.calculateEndDates();
+      await this.preCalc();
     } catch (error) {
-      this.errorMessage = 'Failed to load projects.';
       console.error(error);
     }
   }
 
-  async calculateEndDates(): Promise<void> {
-    for (const project of this.projects) {
-      if (!project.startDate) continue;
+  async preCalc() {
 
-      const teamUsers = project.team?.members || [];
-      if (teamUsers.length === 0) {
-        console.warn(`Project "${project.name}" has no team members.`);
-        continue;
-      }
-
-      const estimationHours = await this.projectService.getProjectEstimationAvg(
-        project.id!
-      );
-
-      if (estimationHours === -1) {
-        console.warn(`Project "${project.name}" has no valid estimation.`);
-        continue;
-      }
-
-      const fullUsersData = await Promise.all(
-        teamUsers.map(user => this.userService.getUser(user.id))
-      );
-
-      const calculatedEndDate = this.calculateEndDatumForProject(
-        new Date(project.startDate),
-        estimationHours,
-        fullUsersData
-      );
-
-      project.endDate = calculatedEndDate;
-    }
   }
 
-  calculateEndDatumForProject(
-    startDatum: Date,
+  calculateProjectEndDate(
+    startDate: Date,
     estimationHours: number,
-    users: User[]
+    teamMembers: User[]
   ): Date {
-    const workingHoursPerDay = 8; // Needs to change
-    const userWorkingHours = users.map(user => user.arbeitszeit || workingHoursPerDay);
-    const totalDailyCapacity = userWorkingHours.reduce((sum, hours) => sum + hours, 0);
+    if (!startDate || estimationHours <= 0) {
+      throw new Error("Invalid start date or estimation hours");
+    }
   
+    const workingHoursPerDay = 8; // Default daily working hours
     let remainingHours = estimationHours;
-    let currentDate = new Date(startDatum);
+    let currentDate = new Date(startDate);
   
-    const getLostHoursForDate = (date: Date): number => {
-      let lostHours = 0;
-      for (const user of users) {
-        if (user.urlaub) {
-          for (const urlaub of user.urlaub) {
-            const urlaubStart = new Date(urlaub.startDatum);
-            const urlaubEnd = new Date(urlaub.endDatum);
-            if (date >= urlaubStart && date <= urlaubEnd) {
-              lostHours += user.arbeitszeit || workingHoursPerDay; // Add lost hours
-            }
-          }
-        }
-      }
-      return lostHours;
+    const isVacationDay = (date: Date, user: User): boolean => {
+      if (!user.urlaub) return false;
+      return user.urlaub.some(urlaub => {
+        const urlaubStart = new Date(urlaub.startDatum);
+        const urlaubEnd = new Date(urlaub.endDatum);
+        return date >= urlaubStart && date <= urlaubEnd;
+      });
     };
   
     while (remainingHours > 0) {
-      const lostHours = getLostHoursForDate(currentDate);
-      const effectiveCapacity = totalDailyCapacity - lostHours;
+      let dailyCapacity = 0;
   
-      if (effectiveCapacity > 0) {
-        remainingHours -= effectiveCapacity;
+      // Calculate effective daily working capacity by summing up available hours of team members
+      for (const member of teamMembers) {
+        if (!isVacationDay(currentDate, member)) {
+          dailyCapacity += member.arbeitszeit || workingHoursPerDay;
+        }
+      }
+  
+      if (dailyCapacity > 0) {
+        remainingHours -= dailyCapacity;
       }
   
       // Move to the next day
