@@ -33,8 +33,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 ### TODO:
 
-- unauthorized page schönmachen
-- BL in keinem Team?
+- BL+Admin in keinem Team?
 - Safe project Button führt 5 network requests + (Meldung) aus auch ohne Änderungen weil er alle roadmaps neu pulled -> unnötig. Entweder gar keine ohne changes oder nur die affected Roadmap neu pullen 
 - Bei Projekterstellung sollte PO nur sein Team als Auswahl bekommen
 - generell Berechtigungen überprüfen, wer darf wo was sehen bearbeiten usw.
@@ -44,7 +43,7 @@ COLOR SCHEME USED:
 ![img.png](img.png)
 
 ### BUGS
-
+- BUG: Urlaub speichert nicht im Frontend ohne neuzuladen. Also wenn man wischen Seiten navigiert
 - BUG: user dialog(mobile Ansicht) in Teamübersicht aktualisiert nicht die Daten bei veränderter Arbeitszeit
 - BUG: Analyse chart soll nur die Teams anzeigen, in denen der SM Teil von ist
 - BUG: team edit: Ich kann einen User der kein Team hat mehreren Teams zuweisen, da die UI nicht updated bis refreshed wird. Hier sollte ein reload passieren bzw verifiziert werden, dass der user kein sm ist und teams.length === 0 ist

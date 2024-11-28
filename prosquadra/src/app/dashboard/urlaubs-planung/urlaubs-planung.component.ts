@@ -13,6 +13,8 @@ import {Urlaub} from '../../../types/urlaub';
 import {SnackbarService} from '../../../services/snackbar.service';
 import {MatIconModule} from '@angular/material/icon';
 import {slideIn} from '../../../animations/slideIn';
+import {UrlaubPlanungService} from '../../../services/urlaub.planung.service';
+import {ApiError} from '../../../../error/ApiError';
 
 
 @Component({
@@ -45,14 +47,19 @@ export class UrlaubsPlanungComponent implements OnInit {
   urlaub$ = new BehaviorSubject<Urlaub[]>([]);
 
 // https://stackoverflow.com/questions/63823557/angular-material-datepickerrange-get-value-on-change
-  constructor(private UserService: UserService, private readonly SnackBarService: SnackbarService) {
+  constructor(private UserService: UserService, private readonly SnackBarService: SnackbarService, private UrlaubsPlanungService: UrlaubPlanungService) {
   }
 
   startDatePicker = new Subject<MatDatepickerInputEvent<any>>();
   endDatePicker = new Subject<MatDatepickerInputEvent<any>>();
 
   async ngOnInit(): Promise<void> {
-    this.currentUser = await this.UserService.getCurrentUser();
+
+    try {
+      this.currentUser = await this.UserService.getCurrentUser();
+    }catch (error){
+      this.SnackBarService.open('User konnte nicht abgerufen werden')
+    }
 
     const dateChange$ = combineLatest([this.startDatePicker, this.endDatePicker]).pipe(
       map(([a$, b$]) => ({
@@ -67,6 +74,11 @@ export class UrlaubsPlanungComponent implements OnInit {
 
     dateChange$.subscribe(async (data) => {
       if (data.start.value && data.end.value && this.currentUser) {
+        if (!await this.UrlaubsPlanungService.checkIfVacationIsValid(data.start.value, data.end.value, this.currentUser.id)) {
+          this.SnackBarService.open('Urlaub liegt im Projektzeitraum!');
+          this.resetDatePickers();
+          return;
+        }
         try {
           let newUrlaub: Urlaub = {
             userId: this.currentUser.id,
@@ -85,8 +97,14 @@ export class UrlaubsPlanungComponent implements OnInit {
           this.isVisible.set(!this.isVisible());
           this.resetDatePickers();
           this.SnackBarService.open('Urlaub wurde erfolgreich eingetragen');
-        } catch (error) {
-          this.SnackBarService.open('Urlaub konnte nicht eingetragen werden');
+        } catch (error: unknown) {
+          if (error instanceof ApiError && error.code === 409) {
+            this.resetDatePickers();
+            this.SnackBarService.open('Urlaub exisitert bereits');
+          } else {
+            this.resetDatePickers();
+            this.SnackBarService.open('Urlaub konnte nicht eingetragen werden');
+          }
         }
       }
     });

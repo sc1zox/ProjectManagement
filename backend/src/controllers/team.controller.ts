@@ -70,7 +70,11 @@ class TeamController {
             const user = await prisma.user.findUnique({
                 where: {id: userId},
                 include: {
-                    teams: true,
+                    teams: {
+                        include: {
+                            projects: true,
+                        }
+                    }
                 },
             });
 

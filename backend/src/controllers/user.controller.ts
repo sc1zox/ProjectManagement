@@ -202,6 +202,52 @@ class UserController {
         }
 
         try {
+            const overlappingVacations = await prisma.urlaub.findMany({
+                where: {
+                    userId: Number(userId),
+                    OR: [
+                        {
+                            startDatum: {
+                                gte: new Date(startDatum),
+                            },
+                            endDatum: {
+                                lte: new Date(endDatum),
+                            },
+                        },
+                        {
+                            startDatum: {
+                                lte: new Date(startDatum),
+                            },
+                            endDatum: {
+                                gte: new Date(endDatum),
+                            },
+                        },
+                        {
+                            startDatum: {
+                                lt: new Date(startDatum),
+                            },
+                            endDatum: {
+                                gte: new Date(startDatum),
+                            },
+                        },
+                        {
+                            startDatum: {
+                                lte: new Date(endDatum),
+                            },
+                            endDatum: {
+                                gt: new Date(endDatum),
+                            },
+                        },
+                    ],
+                },
+            });
+            if (overlappingVacations.length > 0) {
+                return next({
+                    status: StatusCodes.CONFLICT,
+                    message: 'The vacation dates overlap with an existing vacation.',
+                });
+            }
+
             const newVacation: Urlaub = await prisma.urlaub.create({
                 data: {
                     userId: Number(userId),
