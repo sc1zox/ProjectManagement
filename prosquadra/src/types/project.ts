@@ -10,7 +10,6 @@ export interface Project {
   projectStatus: ProjectStatus;
   avgEstimationHours?: number;
   priorityPosition?: number;
-  teamid?: number;
 }
 
 export enum ProjectStatus {
