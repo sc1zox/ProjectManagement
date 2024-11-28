@@ -96,8 +96,6 @@ export class GanttChartComponent implements OnInit, AfterViewInit {
         );
       }
     }
-
-    console.log('Items:', this.items);
   }
 
 }

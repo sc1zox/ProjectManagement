@@ -82,7 +82,6 @@ export class CreateProjectComponent implements AfterViewInit {
           ? Math.max(...existingProjects.map(project => project.priorityPosition || 0))
           : 0;
         const newPriorityPosition = maxPriorityPosition + 1;
-
         const newProject: Project = {
           id: 0,
           name: this.projectForm.value.projectName,

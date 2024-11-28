@@ -55,9 +55,10 @@ export class ProjectService implements OnInit {
     }
   }
 
-  async updateProject(updatedProject: Project) {
+  async updateProject(payload: Partial<Project>) {
+
     try {
-      const response = await this.ApiService.put('/project/update', updatedProject);
+      const response = await this.ApiService.put('/project/update', payload);
       return response.data;
     } catch (error) {
       throw error;

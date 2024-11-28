@@ -8,6 +8,7 @@ import {Estimation} from "../types/estimation";
 class ProjectController {
     async createProject(req: Request, res: Response, next: NextFunction): Promise<void> {
         const {name, description, team, PriorityPosition} = req.body;
+        console.log("CREATED: ",req.body)
 
         if (!name || !description || !team || !team.id || !team.roadmapId) {
             return next({
@@ -198,9 +199,9 @@ class ProjectController {
 
 
     async updateProject(req: Request, res: Response, next: NextFunction): Promise<void> {
-        const {id, name, description, teamid, startDate, endDate} = req.body;
-
-        if(!id || !teamid){
+        const {projectId, name, description, teamId, startDate, endDate} = req.body;
+        console.log("UPDATED PROJECT: ",req.body);
+        if(!projectId || !teamId){
             return next({
                 status: StatusCodes.BAD_REQUEST,
                 message: 'provide valid id or teamid'
@@ -209,7 +210,7 @@ class ProjectController {
 
         try {
             const existingProject = await prisma.project.findUnique({
-                where: {id: Number(id)},
+                where: {id: Number(projectId)},
             });
 
             if (!existingProject) {
@@ -220,7 +221,7 @@ class ProjectController {
             }
 
             const existingTeam = await prisma.team.findUnique({
-                where: {id: teamid},
+                where: {id: teamId},
             });
 
             if (!existingTeam) {
@@ -231,12 +232,12 @@ class ProjectController {
             }
 
             const updatedProject = await prisma.project.update({
-                where: {id: Number(id)},
+                where: {id: Number(projectId)},
                 data: {
                     name,
                     description,
                     team: {
-                        connect: {id: teamid},
+                        connect: {id: teamId},
                     },
                     startDate,
                     endDate,

@@ -1,14 +1,15 @@
 <div *ngIf="roadmap && roadmap.projects.length > 0; else noRoadmap" class="roadmap-card">
   <h2>{{ teams?.name }}</h2>
 
-  <div class="project-list" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListData]="projects" [cdkDropListDisabled]="user?.role !== UserRole.PO"
+  <div class="project-list" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListData]="projects" [cdkDropListDisabled]="user?.role !== UserRole.PO || !notDraggableInDashboardHome"
     (cdkDropListDropped)="drop($event)">
 
     <div *ngFor="let project of projects;" class="project-box"
     cdkDrag
     (mousedown)="onMouseDown($event)"
     (click)="handleProjectClick($event, project)"
-    [ngClass]="{ 'selected': project === selectedProject }">
+    [ngClass]="{ 'selected': project === selectedProject }"
+         cdkDragBoundary=".roadmap-card">
       {{ project.name }}
     </div>
   </div>
@@ -42,19 +43,10 @@
           <mat-datepicker-toggle [for]="startPicker" matSuffix></mat-datepicker-toggle>
           <mat-datepicker #startPicker></mat-datepicker>
         </mat-form-field>
-        <mat-form-field appearance="outline" class="date-picker end-date">
-          <mat-label>End Date</mat-label>
-          <input [formControl]="endDateControl" [matDatepicker]="endPicker" matInput />
-          <mat-datepicker-toggle [for]="endPicker" matSuffix></mat-datepicker-toggle>
-          <mat-datepicker #endPicker></mat-datepicker>
-          <mat-error *ngIf="endDateControl.hasError('endDateInvalid')">
-            End date cannot be before Start date!
-          </mat-error>
-        </mat-form-field>
       </div>
       <ng-template #displayDates>
-        <p class="date-display"><strong>Start:</strong> {{ startDateControl.value | date: 'shortDate' }}</p>
-        <p class="date-display"><strong>End:</strong> {{ endDateControl.value | date: 'shortDate' }}</p>
+        <p class="date-display"><strong>Project Start Date:</strong> {{ startDateFromBackendForCurrentProject | date }}</p>
+        <p class="date-display"><strong>Project End Date:</strong> {{ endDateFromBackendForCurrentProject | date }}</p>
       </ng-template>
     </div>
 
@@ -79,10 +71,14 @@
       </ng-template>
     </div>
 
+    <div>
+      <app-end-date [currentProject]="selectedProject" [currentTeam]="roadmap.teams" [startDateControl]="startDateControl"></app-end-date>
+    </div>
+
     <!-- Action Buttons -->
     <div class="actions">
-      <button *ngIf="hideInDashboard" mat-raised-button color="primary" (click)="onSubmit()">Save Project</button>
-      <button *ngIf="user?.role === UserRole.PO && hideInDashboard" mat-raised-button color="warn" (click)="onDelete()">Delete
+      <button *ngIf="hideInDashboard" mat-raised-button color="primary" (click)="onSubmit()" class="roadmap-button">Prioriät speichern</button>
+      <button *ngIf="user?.role === UserRole.PO && hideInDashboard" mat-raised-button color="warn" (click)="onDelete()" class="roadmap-button">Delete
         Project</button>
     </div>
   </div>

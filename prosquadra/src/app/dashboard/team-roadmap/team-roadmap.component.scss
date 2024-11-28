@@ -150,7 +150,6 @@ h2 {
 
 @media screen and (max-width: 1000px) {
   .project-details {
-
     .header {
       display: flex;
       flex-direction: column;
@@ -160,5 +159,8 @@ h2 {
         align-self: start;
       }
     }
+  }
+  .roadmap-button{
+    padding: var(--content-padding);
   }
 }

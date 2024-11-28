@@ -80,7 +80,6 @@ export class TimeEstimatorComponent implements OnInit {
           this.currentUser.id,
           this.currentProject.id
         );
-        console.log('ApiResponse:', response);
 
         this.myTimeEstimate.emit({
           hours: this.result,
