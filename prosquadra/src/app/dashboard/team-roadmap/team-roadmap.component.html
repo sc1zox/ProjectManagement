@@ -1,14 +1,15 @@
 <div *ngIf="roadmap && roadmap.projects.length > 0; else noRoadmap" class="roadmap-card">
   <h2>{{ teams?.name }}</h2>
 
-  <div class="project-list" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListData]="projects" [cdkDropListDisabled]="user?.role !== UserRole.PO"
+  <div class="project-list" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListData]="projects" [cdkDropListDisabled]="user?.role !== UserRole.PO || !notDraggableInDashboardHome"
     (cdkDropListDropped)="drop($event)">
 
     <div *ngFor="let project of projects;" class="project-box"
     cdkDrag
     (mousedown)="onMouseDown($event)"
     (click)="handleProjectClick($event, project)"
-    [ngClass]="{ 'selected': project === selectedProject }">
+    [ngClass]="{ 'selected': project === selectedProject }"
+         cdkDragBoundary=".roadmap-card">
       {{ project.name }}
     </div>
   </div>
@@ -44,10 +45,8 @@
         </mat-form-field>
       </div>
       <ng-template #displayDates>
-        <p class="date-display"><strong>Project Start Date:</strong> {{ startDateControl.value | date }}</p>
-        <ng-container *ngIf="endDateFromBackendForCurrentProject != undefined">
-          <p class="date-display"><strong>Project End Date:</strong> {{ endDateFromBackendForCurrentProject | date }}</p>
-        </ng-container>
+        <p class="date-display"><strong>Project Start Date:</strong> {{ startDateFromBackendForCurrentProject | date }}</p>
+        <p class="date-display"><strong>Project End Date:</strong> {{ endDateFromBackendForCurrentProject | date }}</p>
       </ng-template>
     </div>
 
@@ -78,8 +77,8 @@
 
     <!-- Action Buttons -->
     <div class="actions">
-      <button *ngIf="hideInDashboard" mat-raised-button color="primary" (click)="onSubmit()">Save Project</button>
-      <button *ngIf="user?.role === UserRole.PO && hideInDashboard" mat-raised-button color="warn" (click)="onDelete()">Delete
+      <button *ngIf="hideInDashboard" mat-raised-button color="primary" (click)="onSubmit()" class="roadmap-button">Prioriät speichern</button>
+      <button *ngIf="user?.role === UserRole.PO && hideInDashboard" mat-raised-button color="warn" (click)="onDelete()" class="roadmap-button">Delete
         Project</button>
     </div>
   </div>

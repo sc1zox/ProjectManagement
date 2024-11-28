@@ -8,6 +8,7 @@ import {Estimation} from "../types/estimation";
 class ProjectController {
     async createProject(req: Request, res: Response, next: NextFunction): Promise<void> {
         const {name, description, team, PriorityPosition} = req.body;
+        console.log("CREATED: ",req.body)
 
         if (!name || !description || !team || !team.id || !team.roadmapId) {
             return next({
@@ -130,9 +131,6 @@ class ProjectController {
             if (!project) {
                 return next({status: StatusCodes.NOT_FOUND, message: 'Project by ID not found'});
             }
-            if(project.endDate === null){
-                return next({status: StatusCodes.NO_CONTENT, message: 'Project End Date is null'});
-            }
             const response: ApiResponse<Project> = {
                 code: StatusCodes.OK,
                 data: project,
@@ -202,7 +200,7 @@ class ProjectController {
 
     async updateProject(req: Request, res: Response, next: NextFunction): Promise<void> {
         const {projectId, name, description, teamId, startDate, endDate} = req.body;
-        console.log(req.body);
+        console.log("UPDATED PROJECT: ",req.body);
         if(!projectId || !teamId){
             return next({
                 status: StatusCodes.BAD_REQUEST,

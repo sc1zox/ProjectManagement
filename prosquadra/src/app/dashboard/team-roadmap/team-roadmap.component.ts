@@ -89,6 +89,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   userEstimates: Estimation[] = [];
   selectedProject?: Project;
   endDateFromBackendForCurrentProject?: Date;
+  startDateFromBackendForCurrentProject?: Date;
   @Output() dataUpdated = new EventEmitter<void>()
   hours?: number;
   days?: number;
@@ -104,6 +105,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
 
   showTimeEstimator: boolean = false;
   hideInDashboard: boolean = false;
+  notDraggableInDashboardHome: boolean = false;
 
   private isDragging = false;
 
@@ -159,11 +161,8 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
         return priorityA - priorityB;
       });
     }
-    try {
       await this.setSelectedProjectAvgEstimation();
-    }catch (error){
-      console.log("Error bei avg Estimation")
-    }
+
 
     if (this.user && this.user.role === UserRole.Developer) {
       try {
@@ -178,6 +177,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     this.updateDateControls();
     this.showTimeEstimator = this.router.url.includes('dashboard/team-roadmap');
     this.hideInDashboard = this.router.url.includes('dashboard/team-roadmap');
+    this.notDraggableInDashboardHome = this.router.url.includes('dashboard/team-roadmap');
   }
 
   canEditStatus(): boolean {
@@ -296,8 +296,9 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
       try {
         let tmpProjectFromBackend = await this.ProjectService.getProjectsById(this.selectedProject?.id)
         this.endDateFromBackendForCurrentProject = tmpProjectFromBackend.endDate;
+        this.startDateFromBackendForCurrentProject= tmpProjectFromBackend.startDate;
       }catch (error){
-        this.SnackBarSerivce.open('Project End Date konnte nicht geladen werden.');
+        console.log(error)
       }
     }
   }
@@ -374,8 +375,6 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   }
 */
   async onSubmit() {
-
-
       try {
         if (this.roadmap) {
           await this.RoadmapService.updateRoadmap(this.roadmap);
@@ -384,9 +383,9 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
         if (this.user?.role === UserRole.Developer) {
           this.dataUpdated.emit(); // das hier verursacht ein doppeltes rendern der ersten roadmap. Unsicher ob es weggelassen werden kann für andere Updates.Scheint mir momentan nicht essenziell zu sein. Doch wenn es fehlt wird für Dev die Zeit nicht aktualisiert deshalb die if clause
         }
-        this.SnackBarSerivce.open('Projekt wurde erfolgreich geändert')
+        this.SnackBarSerivce.open('Projekt Priorität wurde erfolgreich geändert')
       } catch (error) {
-        this.SnackBarSerivce.open('Bei der Projekterstellung ist ein Fehler aufgetreten')
+        this.SnackBarSerivce.open('Bei der Projektpriorisierung ist ein Fehler aufgetreten')
       }
     }
 
