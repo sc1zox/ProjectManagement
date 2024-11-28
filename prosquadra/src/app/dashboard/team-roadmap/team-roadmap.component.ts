@@ -42,6 +42,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { ChangeDetectorRef } from '@angular/core';
 import { Router } from '@angular/router';
+import { EndDateComponent } from '../../components/end-date/end-date.component';
 
 const isStartDateInRange = (projects: Project[], startDate: Date, selectedProject: Project): boolean => {
   const projectsWithoutItself = projects.filter(project => project.id !== selectedProject.id);
@@ -67,7 +68,8 @@ const isStartDateInRange = (projects: Project[], startDate: Date, selectedProjec
     MatButton,
     TimeEstimatorComponent,
     MatSelectModule,
-    MatOptionModule],
+    MatOptionModule,
+    EndDateComponent],
   providers: [provideNativeDateAdapter(),
     {provide: MAT_DATE_LOCALE, useValue: 'de-DE'}
   ],
