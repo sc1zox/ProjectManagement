@@ -1,14 +1,6 @@
-  <div *ngIf="projects.length > 0; else noProjects">
-    <h2>Project End Dates</h2>
-    <ul>
-      <li *ngFor="let project of projects">
-        <strong>{{ project.name }}</strong>: 
-        End Date: {{ project.endDate ? (project.endDate | date: 'shortDate') : 'N/A' }}
-      </li>
-    </ul>
+  <div *ngIf="currentProject && currentProject.projectStatus === 'inBearbeitung' && result; else wrongStatusOrUndefined">
+    <p><strong>Project End Date:</strong> {{ result | date}}</p>
   </div>
-  
-  <ng-template #noProjects>
-    <p>No projects available.</p>
+
+  <ng-template #wrongStatusOrUndefined>
   </ng-template>
-  

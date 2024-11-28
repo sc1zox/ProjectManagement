@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { ProjectService } from '../../../services/project.service';
-import { UserService } from '../../../services/user.service';
+import {AfterViewInit, Component, Input} from '@angular/core';
 import { Project } from '../../../types/project';
-import { User } from '../../../types/user';
+import {User, UserRole} from '../../../types/user';
 import { CommonModule } from '@angular/common';
-import { TeamService } from '../../../services/team.service';
-import { TeamsFormComponent } from '../../dashboard/admin-panel/teams-form/teams-form.component';
+import {Team} from '../../../types/team';
+import {SnackbarService} from '../../../services/snackbar.service';
+import {FormControl} from '@angular/forms';
+import {ProjectService} from '../../../services/project.service';
 
 @Component({
   selector: 'app-end-date',
@@ -14,72 +14,64 @@ import { TeamsFormComponent } from '../../dashboard/admin-panel/teams-form/teams
   templateUrl: './end-date.component.html',
   styleUrl: './end-date.component.scss'
 })
-export class EndDateComponent implements OnInit {
-  projects: Project[] = [];
 
-  constructor(
-    private projectService: ProjectService,
-    private userService: UserService,
-    private teamService: TeamService
-  ) {}
+export class EndDateComponent implements AfterViewInit{
+  @Input() currentTeam?: Team;
+  @Input() currentProject?: Project;
+  @Input() startDateControl = new FormControl();
+  developers?: User[]
+  result?: Date;
+  projectFromBackend?: Project;
 
-  async ngOnInit(): Promise<void> {
-    try {
-      this.projects = await this.projectService.getProjects();
-      //await this.preCalc(1);
-    } catch (error) {
-      console.error(error);
-    }
+  constructor(private readonly SnackBarService: SnackbarService,private readonly ProjectService: ProjectService) {
+  }
+// if(this.currentProject?.id) {
+//       this.projectFromBackend = await this.ProjectService.getProjectsById(this.currentProject?.id);
+//       console.log("BACKEND",this.projectFromBackend)
+//     }
+//     this.result = this.projectFromBackend?.endDate;
+  async ngAfterViewInit() {
+    this.developers = this.currentTeam?.members?.filter(member => member.role === UserRole.Developer);
+
+    this.startDateControl.valueChanges.subscribe(() => {
+      this.calculateEndDate();
+    });
   }
 
-  /* 
-  Needs major work, way too many fetches. Crashes the entire Browser window 
-  async preCalc(projectId: number): Promise<Date> {
 
-    try {
-      const project = await this.projectService.getProjectsById(projectId);
-      console.log('project', project)
-      if (!project.startDate) {
-        throw new Error('Project does not have a valid start date');
+  async calculateEndDate () {
+    if(this.startDateControl.value && this.currentProject && this.currentProject.avgEstimationHours && this.developers) {
+      this.result = this.calculateProjectEndDate(this.startDateControl.value, this.currentProject?.avgEstimationHours, this.developers)
+    }
+    if(this.result) {
+      console.log(this.result)
+      let body = {projectId: this.currentProject?.id, teamId: this.currentTeam?.id,endDate: this.result,startDate:this.startDateControl.value}
+      try {
+        await this.ProjectService.updateProject(body);
+      }catch (error){
+        this.SnackBarService.open('Projektdaten konnte nicht aktualisiert werden');
       }
-
-      const estimationHours = await this.projectService.getProjectEstimationAvg(projectId);
-      console.log('eta', estimationHours)
-
-      const team = await this.teamService.getTeamById(project.teamid!);
-      console.log('team', team)
-
-      const teamMembers: User[] = team.members
-        ? await Promise.all(team.members.map(member => this.userService.getUser(member.id)))
-        : [];
-
-      const endDate = this.calculateProjectEndDate(
-        new Date(project.startDate),
-        estimationHours,
-        teamMembers
-      )
-
-      return endDate;
-    } catch (error) {
-      console.log('fuck', error)
-      throw error;
     }
   }
-    */
 
   calculateProjectEndDate(
     startDate: Date,
     estimationHours: number,
-    teamMembers: User[]
-  ): Date {
-    if (!startDate || estimationHours <= 0) {
-      throw new Error("Invalid start date or estimation hours");
+    developers: User[]
+  ): Date | undefined {
+    if (!startDate) {
+      this.SnackBarService.open('Es wurde noch kein Startdatum vergeben')
+      return;
     }
-  
+    if(estimationHours <= 0){
+      this.SnackBarService.open('Es wurden noch keine Schätzungen abgegeben');
+      return;
+    }
+
     const workingHoursPerDay = 8; // Default daily working hours
     let remainingHours = estimationHours;
     let currentDate = new Date(startDate);
-  
+
     const isVacationDay = (date: Date, user: User): boolean => {
       if (!user.urlaub) return false;
       return user.urlaub.some(urlaub => {
@@ -88,25 +80,25 @@ export class EndDateComponent implements OnInit {
         return date >= urlaubStart && date <= urlaubEnd;
       });
     };
-  
+
     while (remainingHours > 0) {
       let dailyCapacity = 0;
-  
+
       // Calculate effective daily working capacity by summing up available hours of team members
-      for (const member of teamMembers) {
-        if (!isVacationDay(currentDate, member)) {
-          dailyCapacity += member.arbeitszeit || workingHoursPerDay;
+      for (const member of developers) {
+        if (!isVacationDay(currentDate, member) && member.arbeitszeit) {
+          let memberArbeitszeitPercentage = member.arbeitszeit * 0.6;
+          dailyCapacity += (memberArbeitszeitPercentage/ 5) || workingHoursPerDay;
         }
       }
-  
+
       if (dailyCapacity > 0) {
         remainingHours -= dailyCapacity;
       }
-  
+
       // Move to the next day
       currentDate.setDate(currentDate.getDate() + 1);
     }
-  
     return currentDate;
-  }  
+  }
 }

@@ -130,6 +130,9 @@ class ProjectController {
             if (!project) {
                 return next({status: StatusCodes.NOT_FOUND, message: 'Project by ID not found'});
             }
+            if(project.endDate === null){
+                return next({status: StatusCodes.NO_CONTENT, message: 'Project End Date is null'});
+            }
             const response: ApiResponse<Project> = {
                 code: StatusCodes.OK,
                 data: project,
@@ -198,9 +201,9 @@ class ProjectController {
 
 
     async updateProject(req: Request, res: Response, next: NextFunction): Promise<void> {
-        const {id, name, description, teamid, startDate, endDate} = req.body;
-
-        if(!id || !teamid){
+        const {projectId, name, description, teamId, startDate, endDate} = req.body;
+        console.log(req.body);
+        if(!projectId || !teamId){
             return next({
                 status: StatusCodes.BAD_REQUEST,
                 message: 'provide valid id or teamid'
@@ -209,7 +212,7 @@ class ProjectController {
 
         try {
             const existingProject = await prisma.project.findUnique({
-                where: {id: Number(id)},
+                where: {id: Number(projectId)},
             });
 
             if (!existingProject) {
@@ -220,7 +223,7 @@ class ProjectController {
             }
 
             const existingTeam = await prisma.team.findUnique({
-                where: {id: teamid},
+                where: {id: teamId},
             });
 
             if (!existingTeam) {
@@ -231,12 +234,12 @@ class ProjectController {
             }
 
             const updatedProject = await prisma.project.update({
-                where: {id: Number(id)},
+                where: {id: Number(projectId)},
                 data: {
                     name,
                     description,
                     team: {
-                        connect: {id: teamid},
+                        connect: {id: teamId},
                     },
                     startDate,
                     endDate,

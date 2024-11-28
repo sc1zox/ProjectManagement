@@ -42,19 +42,12 @@
           <mat-datepicker-toggle [for]="startPicker" matSuffix></mat-datepicker-toggle>
           <mat-datepicker #startPicker></mat-datepicker>
         </mat-form-field>
-        <mat-form-field appearance="outline" class="date-picker end-date">
-          <mat-label>End Date</mat-label>
-          <input [formControl]="endDateControl" [matDatepicker]="endPicker" matInput />
-          <mat-datepicker-toggle [for]="endPicker" matSuffix></mat-datepicker-toggle>
-          <mat-datepicker #endPicker></mat-datepicker>
-          <mat-error *ngIf="endDateControl.hasError('endDateInvalid')">
-            End date cannot be before Start date!
-          </mat-error>
-        </mat-form-field>
       </div>
       <ng-template #displayDates>
-        <p class="date-display"><strong>Start:</strong> {{ startDateControl.value | date: 'shortDate' }}</p>
-        <p class="date-display"><strong>End:</strong> {{ endDateControl.value | date: 'shortDate' }}</p>
+        <p class="date-display"><strong>Project Start Date:</strong> {{ startDateControl.value | date }}</p>
+        <ng-container *ngIf="endDateFromBackendForCurrentProject != undefined">
+          <p class="date-display"><strong>Project End Date:</strong> {{ endDateFromBackendForCurrentProject | date }}</p>
+        </ng-container>
       </ng-template>
     </div>
 
@@ -80,7 +73,7 @@
     </div>
 
     <div>
-      <app-end-date></app-end-date>
+      <app-end-date [currentProject]="selectedProject" [currentTeam]="roadmap.teams" [startDateControl]="startDateControl"></app-end-date>
     </div>
 
     <!-- Action Buttons -->

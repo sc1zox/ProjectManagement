@@ -84,7 +84,7 @@ export class AddMemberComponent implements OnInit {
         return;
       }
     }
-    if (this.selectedUser.teams!.length > 0 || this.selectedUser.role === UserRole.SM) {
+    if (this.selectedUser.teams!.length > 0 && this.selectedUser.role !== UserRole.SM) {
       this.SnackbarService.open('Benutzer ist bereits in einem Team!');
       return;
     }
