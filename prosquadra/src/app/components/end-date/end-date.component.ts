@@ -26,15 +26,46 @@ export class EndDateComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     try {
       this.projects = await this.projectService.getProjects();
-      await this.preCalc();
+      //await this.preCalc(1);
     } catch (error) {
       console.error(error);
     }
   }
 
-  async preCalc() {
+  /* 
+  Needs major work, way too many fetches. Crashes the entire Browser window 
+  async preCalc(projectId: number): Promise<Date> {
 
+    try {
+      const project = await this.projectService.getProjectsById(projectId);
+      console.log('project', project)
+      if (!project.startDate) {
+        throw new Error('Project does not have a valid start date');
+      }
+
+      const estimationHours = await this.projectService.getProjectEstimationAvg(projectId);
+      console.log('eta', estimationHours)
+
+      const team = await this.teamService.getTeamById(project.teamid!);
+      console.log('team', team)
+
+      const teamMembers: User[] = team.members
+        ? await Promise.all(team.members.map(member => this.userService.getUser(member.id)))
+        : [];
+
+      const endDate = this.calculateProjectEndDate(
+        new Date(project.startDate),
+        estimationHours,
+        teamMembers
+      )
+
+      return endDate;
+    } catch (error) {
+      console.log('fuck', error)
+      throw error;
+    }
   }
+    */
 
   calculateProjectEndDate(
     startDate: Date,

@@ -232,7 +232,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   updateDateControls(): void {
     if (!this.selectedProject) return;
 
-    console.log('Updating Date Controls. Current Status:', this.selectedProject.projectStatus);
+    //console.log('Updating Date Controls. Current Status:', this.selectedProject.projectStatus);
 
     switch (this.selectedProject.projectStatus) {
       case ProjectStatus.geschlossen:
