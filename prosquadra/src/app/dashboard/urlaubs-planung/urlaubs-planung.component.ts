@@ -9,7 +9,7 @@ import {MatError, MatLabel} from '@angular/material/form-field';
 import {BehaviorSubject, combineLatest, map, Subject} from 'rxjs';
 import {User} from '../../../types/user';
 import {UserService} from '../../../services/user.service';
-import {Urlaub} from '../../../types/Urlaub';
+import {Urlaub} from '../../../types/urlaub';
 import {SnackbarService} from '../../../services/snackbar.service';
 import {MatIconModule} from '@angular/material/icon';
 import {slideIn} from '../../../animations/slideIn';

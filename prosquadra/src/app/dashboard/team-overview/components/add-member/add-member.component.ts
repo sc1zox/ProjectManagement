@@ -59,7 +59,6 @@ export class AddMemberComponent implements OnInit {
   }
 
   async ngOnInit() {
-    console.log(this.data.user)
 
     this.options = this.data.user
       .filter(member => member.teams!.length === 0 || member.role === UserRole.SM)
@@ -84,7 +83,7 @@ export class AddMemberComponent implements OnInit {
         return;
       }
     }
-    if (this.selectedUser.teams!.length > 0 || this.selectedUser.role === UserRole.SM) {
+    if (this.selectedUser.teams!.length > 0 && this.selectedUser.role !== UserRole.SM) {
       this.SnackbarService.open('Benutzer ist bereits in einem Team!');
       return;
     }

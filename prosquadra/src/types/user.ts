@@ -1,7 +1,7 @@
 import {Team} from './team';
 import {Skill} from './skill';
 import {Estimation} from './estimation';
-import {Urlaub} from './Urlaub';
+import {Urlaub} from './urlaub';
 
 export interface User {
   id: number;

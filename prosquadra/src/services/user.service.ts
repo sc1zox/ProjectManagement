@@ -4,7 +4,7 @@ import { ApiService } from './api.service';
 import { ApiResponse } from '../types/api-response';
 import { Login } from '../types/login';
 import { Estimation } from '../types/estimation';
-import {Urlaub} from '../types/Urlaub';
+import {Urlaub} from '../types/urlaub';
 
 @Injectable({
   providedIn: 'root',
