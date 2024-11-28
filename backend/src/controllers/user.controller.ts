@@ -51,6 +51,7 @@ class UserController {
 
             if (users.length === 0) {
                 return next({
+                    status: StatusCodes.NOT_FOUND,
                     message: 'No users found.',
                 });
             }
