@@ -1,5 +1,6 @@
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   EventEmitter,
@@ -12,10 +13,10 @@ import {
 } from '@angular/core';
 import {CommonModule} from '@angular/common';
 import {ProjectService} from '../../../services/project.service';
-import {Project} from '../../../types/project';
+import {Project, ProjectStatus} from '../../../types/project';
 import {CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray} from '@angular/cdk/drag-drop';
 import {MatDatepickerModule} from '@angular/material/datepicker';
-import {MAT_DATE_LOCALE, MatNativeDateModule, provideNativeDateAdapter} from '@angular/material/core';
+import {MAT_DATE_LOCALE, MatNativeDateModule, MatOptionModule, provideNativeDateAdapter} from '@angular/material/core';
 import {MatInputModule} from '@angular/material/input';
 import {
   AbstractControl,
@@ -35,14 +36,10 @@ import {SnackbarService} from '../../../services/snackbar.service';
 import {Team} from '../../../types/team';
 import {parseProjects} from '../../../mapper/projectDatesToDate';
 import {TimeEstimatorComponent} from '../../components/time-estimator/time-estimator.component';
-import {Estimation} from '../../../types/estimation';
-import {ProjectStatus} from '../../../types/project';
-import {MatSelectChange} from '@angular/material/select';
-import {MatSelectModule} from '@angular/material/select';
-import {MatOptionModule} from '@angular/material/core';
-import {ChangeDetectorRef} from '@angular/core';
+import {MatSelectChange, MatSelectModule} from '@angular/material/select';
 import {Router} from '@angular/router';
 import {EndDateComponent} from '../../components/end-date/end-date.component';
+import { MatSelect } from '@angular/material/select';
 
 const isStartDateInRange = (projects: Project[], startDate: Date, selectedProject: Project): boolean => {
   const projectsWithoutItself = projects.filter(project => project.id !== selectedProject.id);
@@ -86,12 +83,12 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   @Input() enableDragDrop: boolean = false;
 
   projects: Project[] = [];
-  userEstimates: Estimation[] = [];
   countEstimatesByUser: number = 0;
   maxEstimates: number = 0;
   selectedProject?: Project;
   endDateFromBackendForCurrentProject?: Date;
   startDateFromBackendForCurrentProject?: Date;
+  private originalStatus: ProjectStatus | null = null;
   @Output() dataUpdated = new EventEmitter<void>()
   hours?: number;
   days?: number;
@@ -193,8 +190,22 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     }
   }
 
-  async onStatusChange(event: MatSelectChange): Promise<void> {
+  onStatusDropdownOpened(): void {
+    if (this.selectedProject) {
+      this.originalStatus = this.selectedProject.projectStatus;
+    }
+  }
+
+  async onStatusChange(event: MatSelectChange, select: MatSelect): Promise<void> {
     const newStatus = event.value as ProjectStatus;
+
+    if(this.countEstimatesByUser !== this.maxEstimates /*&& select.value !== ProjectStatus.geschlossen*/){ //soll schließen hier möglich sein?
+     this.SnackBarSerivce.open('Aktualisierung fehlgeschlagen, fehlende Schätzungen')
+      if (this.selectedProject) {
+        select.writeValue(this.originalStatus);
+      }
+      return;
+    }
 
     if (this.selectedProject) {
       this.selectedProject.projectStatus = newStatus;
@@ -202,6 +213,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
         await this.ProjectService.setProjectStatus(this.selectedProject.id!, newStatus);
       } catch (error) {
         this.SnackBarSerivce.open("Status konnte nicht geupdated werden");
+        select.writeValue(this.originalStatus);
         return;
       }
       this.updateDateControls();
@@ -288,7 +300,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
       this.countEstimatesByUser = this.selectedProject?.estimations?.length;
     }
     if (this.teams?.members){
-      this.maxEstimates = this.teams?.members?.length;
+      this.maxEstimates = this.teams?.members?.filter(member => member.role === UserRole.Developer).length;
     }
 
     if (this.selectedProject?.id) {

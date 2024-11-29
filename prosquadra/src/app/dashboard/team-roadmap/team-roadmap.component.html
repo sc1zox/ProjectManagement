@@ -23,7 +23,7 @@
           *ngIf="canEditStatus() && hideInDashboard; else displayStatus"
           appearance="outline">
           <mat-label>Status</mat-label>
-          <mat-select [(value)]="selectedProject.projectStatus" (selectionChange)="onStatusChange($event)">
+          <mat-select  #statusSelect [(value)]="selectedProject.projectStatus" (selectionChange)="onStatusChange($event,statusSelect)" (opened)="onStatusDropdownOpened()">
             <mat-option *ngFor="let status of projectStatuses" [value]="status">{{ getStatusLabel(status)}}</mat-option>
           </mat-select>
         </mat-form-field>
