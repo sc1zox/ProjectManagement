@@ -15,7 +15,8 @@
   <ng-container *ngIf="isAdmin && user?.role===UserRole.Developer">
     <label for="arbeitszeit">Arbeitszeit (in Stunden):</label>
     <input
-      [(ngModel)]="arbeitszeit"
+      [ngModel]="arbeitszeit | async"
+      (ngModelChange)="updateArbeitszeit($event)"
       id="arbeitszeit"
       max="100"
       min="0"
@@ -24,7 +25,7 @@
       type="number"
     />
   </ng-container>
-  <p><strong>Arbeitszeit:</strong> {{ user?.arbeitszeit }} Stunden</p>
+  <p><strong>Arbeitszeit:</strong> {{ arbeitszeit?.value }} Stunden</p>
   <p><strong>Urlaubstage:</strong> {{ user?.urlaubstage }} Tage</p>
   <p><strong>Teams:</strong></p>
   <ul>

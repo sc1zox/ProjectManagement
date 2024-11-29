@@ -34,7 +34,7 @@
     </div>
 
     <!-- Dates Section -->
-    <div *ngIf="selectedProject.projectStatus !== ProjectStatus.offen" class="dates-section">
+    <div *ngIf="selectedProject.projectStatus === ProjectStatus.inBearbeitung" class="dates-section">
       <div
         *ngIf="canEditDate() && hideInDashboard; else displayDates">
         <mat-form-field appearance="outline" class="date-picker">

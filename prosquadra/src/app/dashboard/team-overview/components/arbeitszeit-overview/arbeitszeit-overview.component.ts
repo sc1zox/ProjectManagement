@@ -1,9 +1,11 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
 import {User, UserRole} from '../../../../../types/user';
-import {NgIf} from '@angular/common';
+import {AsyncPipe, NgIf} from '@angular/common';
 import {FormsModule} from '@angular/forms';
 import {SnackbarService} from '../../../../../services/snackbar.service';
 import {UserService} from '../../../../../services/user.service';
+import {BehaviorSubject} from 'rxjs';
+import {MatInput} from '@angular/material/input';
 
 const defaultUrlaubstage: number = 28;
 const defaultArbeitszeit: number = 38.5;
@@ -13,31 +15,40 @@ const defaultArbeitszeit: number = 38.5;
   standalone: true,
   imports: [
     NgIf,
-    FormsModule
+    FormsModule,
+    AsyncPipe,
+    MatInput
   ],
   templateUrl: './arbeitszeit-overview.component.html',
   styleUrl: './arbeitszeit-overview.component.scss'
 })
-export class ArbeitszeitOverviewComponent {
+export class ArbeitszeitOverviewComponent implements OnInit{
 
   @Input() user?: User;
-  arbeitszeit?: number;
+  arbeitszeit = new BehaviorSubject<number>(0);
   @Input() currentUser?: User;
   protected readonly UserRole = UserRole;
 
   constructor(private readonly UserService: UserService,private readonly SnackBarService: SnackbarService) {
   }
 
-  updateArbeitszeit() {
-    this.updateUrlaubstage()
-    if (this.arbeitszeit && (this.arbeitszeit < 0 || this.arbeitszeit > 100)) {
+  ngOnInit() {
+    if (this.user?.arbeitszeit) {
+      this.arbeitszeit.next(this.user.arbeitszeit);
+    }
+  }
+
+
+  updateArbeitszeit(value: number) {
+    if (isNaN(value) || value < 0 || value > 100 || value === null) {
       this.SnackBarService.open('Die Arbeitszeit muss zwischen 0 und 100 sein.')
-      this.arbeitszeit = undefined;
       return;
     }
-    if (this.user && this.arbeitszeit !== undefined) {
+    this.arbeitszeit.next(value);
+    this.updateUrlaubstage();
+    if (this.user) {
       try {
-        this.UserService.updateArbeitszeit(this.user.id, this.arbeitszeit);
+        this.UserService.updateArbeitszeit(this.user.id, this.arbeitszeit.value);
       } catch (error) {
         this.SnackBarService.open('Error beim Aktualisieren der Arbeitszeit')
       }
@@ -46,11 +57,13 @@ export class ArbeitszeitOverviewComponent {
   }
   updateUrlaubstage(){
     if(this.arbeitszeit && this.user) {
-      let newUrlaubstage: number = defaultUrlaubstage / (defaultArbeitszeit / this.arbeitszeit);
+      let newUrlaubstage: number = defaultUrlaubstage / (defaultArbeitszeit / this.arbeitszeit.value);
       try {
-        this.UserService.updateUrlaubstage(this.user?.id, newUrlaubstage);
+        if(this.arbeitszeit.value !== null) {
+          this.UserService.updateUrlaubstage(this.user?.id, newUrlaubstage);
+        }
         this.user.urlaubstage = Math.trunc(newUrlaubstage);
-        this.user.arbeitszeit = this.arbeitszeit;
+        this.user.arbeitszeit = this.arbeitszeit.value;
       }catch (error){
         this.SnackBarService.open('Error bei der Aktualisierung der Urlaubstage')
       }

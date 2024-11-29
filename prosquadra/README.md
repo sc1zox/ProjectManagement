@@ -43,7 +43,7 @@ COLOR SCHEME USED:
 ![img.png](img.png)
 
 ### BUGS
-- BUG: Urlaub speichert nicht im Frontend ohne neuzuladen. Also wenn man wischen Seiten navigiert
+- BUG: Urlaub speichert nicht im Frontend ohne neuzuladen. Also wenn man zwischen Seiten navigiert
 - BUG: user dialog(mobile Ansicht) in Teamübersicht aktualisiert nicht die Daten bei veränderter Arbeitszeit
 - BUG: Analyse chart soll nur die Teams anzeigen, in denen der SM Teil von ist
 - BUG: team edit: Ich kann einen User der kein Team hat mehreren Teams zuweisen, da die UI nicht updated bis refreshed wird. Hier sollte ein reload passieren bzw verifiziert werden, dass der user kein sm ist und teams.length === 0 ist
