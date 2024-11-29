@@ -1,6 +1,6 @@
 <ng-container *ngIf="currentUser?.role===UserRole.Admin && user?.role===UserRole.Developer ||currentUser?.role===UserRole.Bereichsleiter && user?.role===UserRole.Developer">
   <label for="arbeitszeit">Arbeitszeit (in Stunden):</label>
-  <input
+  <input matInput
     [ngModel]="arbeitszeit | async"
     (ngModelChange)="updateArbeitszeit($event)"
     id="arbeitszeit"

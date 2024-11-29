@@ -5,6 +5,7 @@ import {FormsModule} from '@angular/forms';
 import {SnackbarService} from '../../../../../services/snackbar.service';
 import {UserService} from '../../../../../services/user.service';
 import {BehaviorSubject} from 'rxjs';
+import {MatInput} from '@angular/material/input';
 
 const defaultUrlaubstage: number = 28;
 const defaultArbeitszeit: number = 38.5;
@@ -15,7 +16,8 @@ const defaultArbeitszeit: number = 38.5;
   imports: [
     NgIf,
     FormsModule,
-    AsyncPipe
+    AsyncPipe,
+    MatInput
   ],
   templateUrl: './arbeitszeit-overview.component.html',
   styleUrl: './arbeitszeit-overview.component.scss'
@@ -38,13 +40,13 @@ export class ArbeitszeitOverviewComponent implements OnInit{
 
 
   updateArbeitszeit(value: number) {
-    if (value < 0 || value > 100) {
+    if (isNaN(value) || value < 0 || value > 100 || value === null) {
       this.SnackBarService.open('Die Arbeitszeit muss zwischen 0 und 100 sein.')
       return;
     }
     this.arbeitszeit.next(value);
     this.updateUrlaubstage();
-    if (this.user && this.arbeitszeit) {
+    if (this.user) {
       try {
         this.UserService.updateArbeitszeit(this.user.id, this.arbeitszeit.value);
       } catch (error) {
