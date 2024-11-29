@@ -65,9 +65,9 @@ export class ProjectService implements OnInit {
     }
   }
 
-  async getProjectWithLowestPriorityByUserId(ID: number): Promise<Project> {
+  async getProjectWithLowestPriorityByUserId(ID: number): Promise<Project[]> {
     try {
-      const response: ApiResponse<Project> = await this.ApiService.fetch('/project/current/' + ID);
+      const response: ApiResponse<Project[]> = await this.ApiService.fetch('/project/current/' + ID);
       return response.data;
     } catch (error) {
       throw error;

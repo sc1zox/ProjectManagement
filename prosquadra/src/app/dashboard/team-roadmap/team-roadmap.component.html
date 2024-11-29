@@ -45,14 +45,20 @@
         </mat-form-field>
       </div>
       <ng-template #displayDates>
+        <div *ngIf="startDateFromBackendForCurrentProject !== undefined && endDateFromBackendForCurrentProject !== undefined">
         <p class="date-display"><strong>Project Start Date:</strong> {{ startDateFromBackendForCurrentProject | date }}</p>
         <p class="date-display"><strong>Project End Date:</strong> {{ endDateFromBackendForCurrentProject | date }}</p>
+        </div>
       </ng-template>
     </div>
 
     <!-- Description -->
     <div class="description">
       <p><strong>Beschreibung:</strong> {{ selectedProject.description }}</p>
+    </div>
+
+    <div *ngIf="selectedProject.projectStatus === ProjectStatus.offen">
+      <p><strong>Anzahl Schätzungen:</strong> {{countEstimatesByUser}} / {{ maxEstimates }}</p>
     </div>
 
     <!-- Estimation Section -->
@@ -63,11 +69,10 @@
       </ng-container>
 
       <!-- Render the TimeEstimatorComponent -->
-      <app-time-estimator *ngIf="showTimeEstimator && user?.role === UserRole.Developer"
+      <app-time-estimator *ngIf="showTimeEstimator && user?.role === UserRole.Developer && selectedProject.projectStatus === ProjectStatus.offen"
         [currentProject]="selectedProject" (myTimeEstimate)="updateTimeEstimate()"></app-time-estimator>
 
       <ng-template #errorKeineSchaetzungen>
-        <p class="error-text"><strong>Projekt Zeitschätzung: </strong>Es wurden noch keine Schätzungen abgegeben.</p>
       </ng-template>
     </div>
 

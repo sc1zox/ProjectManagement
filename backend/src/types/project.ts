@@ -1,3 +1,5 @@
+import {Estimation} from "./estimation";
+
 export interface Project {
   id: number;
   name: string;
@@ -7,6 +9,7 @@ export interface Project {
   roadmapId: number| null;
   PriorityPosition?: number | null;
   estimationHours?: number| null;
+  estimations?: Estimation[];
   createdAt: Date;
   updatedAt: Date;
 }

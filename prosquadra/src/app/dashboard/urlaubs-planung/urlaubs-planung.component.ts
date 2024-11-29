@@ -61,6 +61,14 @@ export class UrlaubsPlanungComponent implements OnInit {
       this.SnackBarService.open('User konnte nicht abgerufen werden')
     }
 
+    try{
+      if(this.currentUser) {
+        this.currentUser.urlaub = await this.UserService.getUserUrlaub(this.currentUser);
+      }
+    }catch (error){
+      console.log(error)
+    }
+
     const dateChange$ = combineLatest([this.startDatePicker, this.endDatePicker]).pipe(
       map(([a$, b$]) => ({
         start: a$,
@@ -69,8 +77,9 @@ export class UrlaubsPlanungComponent implements OnInit {
     );
 
     if (this.currentUser?.urlaub) {
-      this.urlaub$.next(this.currentUser.urlaub);
+      this.urlaub$.next(this.currentUser.urlaub); //das hier hält den gecachten User
     }
+
 
     dateChange$.subscribe(async (data) => {
       if (data.start.value && data.end.value && this.currentUser) {
@@ -110,13 +119,14 @@ export class UrlaubsPlanungComponent implements OnInit {
     });
   }
 
-
+// nach dieser Methode und weg bzw. zurück navigieren ist der Urlaub immernoch im FE da. Erst on reload verschwindet er
   async deleteUrlaub(urlaub: Urlaub) {
     try {
       await this.UserService.deleteUrlaub(urlaub);
       const updatedUrlaub = this.urlaub$.getValue().filter(u => u !== urlaub);
       this.urlaub$.next(updatedUrlaub);
       this.SnackBarService.open('Urlaub wurde gelöscht');
+      window.location.reload() // Bad fix in the meanwhile
     } catch (error) {
       this.SnackBarService.open('Urlaub konnte nicht gelöscht werden');
     }

@@ -7,10 +7,10 @@ import {
   MatExpansionPanelHeader,
   MatExpansionPanelTitle
 } from '@angular/material/expansion';
-import {DatePipe, NgIf} from '@angular/common';
+import {DatePipe, NgForOf, NgIf} from '@angular/common';
 import {MatBadge} from '@angular/material/badge';
 import {Project} from '../../../types/project';
-import {User} from '../../../types/user';
+import {User, UserRole} from '../../../types/user';
 import {MatButton, MatIconButton} from '@angular/material/button';
 import {RouterLink} from '@angular/router';
 import {NotificationsService} from '../../../services/notifications.service';
@@ -22,6 +22,7 @@ import {Notification} from '../../../types/Notifications';
 import {QrCodeModule} from 'ng-qrcode';
 import {ApiService} from '../../../services/api.service';
 import {SnackbarService} from '../../../services/snackbar.service';
+
 
 @Component({
   selector: 'app-right-sidebar',
@@ -42,12 +43,14 @@ import {SnackbarService} from '../../../services/snackbar.service';
     MatIconButton,
     QrCodeModule,
     NgIf,
+    NgForOf,
   ],
   standalone: true,
 })
 
 export class RightSidebarComponent implements OnInit, OnDestroy {
   userProject?: Project;
+  userProjects: Project[] =[];
   notificationsAmount?: number;
   notifications: Notification[] = [];
   userInitials: string = '';
@@ -74,6 +77,7 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
       if (this.user) {
         console.log('Der aktuelle Nutzer', this.user);
         this.userInitials = this.user.vorname.charAt(0).toUpperCase() + this.user.nachname.charAt(0).toUpperCase();
+
         await this.fetchProject();
 
         this.projectPollingInterval = setInterval(() => {
@@ -83,8 +87,6 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
       }
     } catch (error) {
       console.error('Error while fetching user or project:', error);
-    } finally {
-      console.log('Project fetch finished.');
     }
     if (this.user) {
       this.notifications = await this.NotificationService.getNotificationsByUserId(this.user?.id)
@@ -95,10 +97,15 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
   async fetchProject() {
     try {
       if (this.user) {
-        this.userProject = await this.ProjectService.getProjectWithLowestPriorityByUserId(this.user.id);
+        const response: Project[] = await this.ProjectService.getProjectWithLowestPriorityByUserId(this.user.id)
+        if(Array.isArray(response)){
+          this.userProjects = response;
+        }else{
+          this.userProject = response;
+        }
       }
     } catch (error) {
-      console.error('Error fetching project:', error);
+      throw error;
     }
   }
 
@@ -150,4 +157,6 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
   getPDF() {
     window.location.href = this.getPdfUrl();
   }
+
+  protected readonly UserRole = UserRole;
 }

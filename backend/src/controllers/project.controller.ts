@@ -151,9 +151,8 @@ class ProjectController {
                     message: 'Invalid user ID provided',
                 });
             }
-
             const user = await prisma.user.findUnique({
-                where: {id: userId},
+                where: { id: userId },
                 include: {
                     teams: {
                         include: {
@@ -170,8 +169,41 @@ class ProjectController {
                 });
             }
 
-            const team = user.teams[0]; // If user can have multiple teams, adjust accordingly
+            const isSM = user.role === 'SM';
 
+            if (isSM) {
+                const projectsPromises = user.teams.map(async (team) => {
+                    const project = await prisma.project.findFirst({
+                        where: {
+                            teamid: team.id,
+                            roadmapId: team.roadmapId,
+                        },
+                        orderBy: {
+                            priorityPosition: 'asc',
+                        },
+                    });
+
+                    return project;
+                });
+
+                const projects = await Promise.all(projectsPromises);
+
+                if (!projects || projects.length === 0) {
+                    return next({
+                        status: StatusCodes.NOT_FOUND,
+                        message: 'No project found with the lowest priority for the teams and roadmap',
+                    });
+                }
+
+                const response: ApiResponse<Project[]> = {
+                    code: StatusCodes.OK,
+                    data: projects.filter(project => project !== null),
+                };
+                res.status(StatusCodes.OK).json(response);
+                return
+            }
+
+            const team = user.teams[0]; // Hier gehen wir davon aus, dass ein Benutzer nur ein Team hat, wenn er kein SM ist
 
             const project = await prisma.project.findFirst({
                 where: {
@@ -187,15 +219,18 @@ class ProjectController {
                     message: 'No project found with the lowest priority for the team and roadmap',
                 });
             }
+
             const response: ApiResponse<Project> = {
                 code: StatusCodes.OK,
                 data: project,
             };
             res.status(StatusCodes.OK).json(response);
+            return
         } catch (error) {
             next(error);
         }
     }
+
 
 
     async updateProject(req: Request, res: Response, next: NextFunction): Promise<void> {

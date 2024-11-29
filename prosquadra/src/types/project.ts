@@ -1,4 +1,5 @@
 import {Team} from './team';
+import {Estimation} from './estimation';
 
 export interface Project {
   id?: number;
@@ -10,6 +11,7 @@ export interface Project {
   projectStatus: ProjectStatus;
   avgEstimationHours?: number;
   priorityPosition?: number;
+  estimations?: Estimation[];
 }
 
 export enum ProjectStatus {
