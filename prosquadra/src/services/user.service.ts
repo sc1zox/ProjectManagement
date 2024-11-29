@@ -135,4 +135,16 @@ export class UserService {
       throw error;
     }
   }
+
+  async getUserUrlaub (user: User): Promise<Urlaub[]> {
+    if (!user) {
+      throw new Error('Invalid user');
+    }
+    try {
+      const response: ApiResponse<Urlaub[]> = await this.ApiService.fetch('/users/vacations/'+ user.id);
+      return response.data;
+    } catch (error) {
+      throw error;
+    }
+  }
 }

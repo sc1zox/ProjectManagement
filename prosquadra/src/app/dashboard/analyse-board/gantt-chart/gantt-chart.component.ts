@@ -18,6 +18,8 @@ import {
 import {de} from 'date-fns/locale';
 import {Team} from '../../../../types/team';
 import {projectToGantt} from '../../../../mapper/projectToGantt';
+import {UserService} from '../../../../services/user.service';
+import {User} from '../../../../types/user';
 
 @Component({
   selector: 'app-gantt-chart',
@@ -46,9 +48,10 @@ import {projectToGantt} from '../../../../mapper/projectToGantt';
   ],
 })
 export class GanttChartComponent implements OnInit, AfterViewInit {
+
   @Input() teams: Team[] = [];
   @Input() startDate!: GanttDate;
-
+  currentUser?: User;
   @ViewChild('gantt') ganttComponent!: NgxGanttComponent;
 
   items: GanttItem[] = [];
@@ -62,8 +65,12 @@ export class GanttChartComponent implements OnInit, AfterViewInit {
     },
   };
 
+  constructor(private readonly UserService:UserService) {
+  }
 
-  ngOnInit() {
+
+  async ngOnInit() {
+    this.currentUser = await this.UserService.getCurrentUser();
     this.populateItems();
   }
 
@@ -81,7 +88,7 @@ export class GanttChartComponent implements OnInit, AfterViewInit {
   }
 
   private populateItems() {
-    this.groups = this.teams.map((team) => ({
+    this.groups = this.teams.filter(team => team.members?.some(member => member.id === this.currentUser?.id)).map((team) => ({
       id: team.id.toString(),
       title: team.name,
     }));

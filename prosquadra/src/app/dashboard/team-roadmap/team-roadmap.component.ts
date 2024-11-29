@@ -36,13 +36,13 @@ import {Team} from '../../../types/team';
 import {parseProjects} from '../../../mapper/projectDatesToDate';
 import {TimeEstimatorComponent} from '../../components/time-estimator/time-estimator.component';
 import {Estimation} from '../../../types/estimation';
-import { ProjectStatus } from '../../../types/project';
-import { MatSelectChange } from '@angular/material/select';
-import { MatSelectModule } from '@angular/material/select';
-import { MatOptionModule } from '@angular/material/core';
-import { ChangeDetectorRef } from '@angular/core';
-import { Router } from '@angular/router';
-import { EndDateComponent } from '../../components/end-date/end-date.component';
+import {ProjectStatus} from '../../../types/project';
+import {MatSelectChange} from '@angular/material/select';
+import {MatSelectModule} from '@angular/material/select';
+import {MatOptionModule} from '@angular/material/core';
+import {ChangeDetectorRef} from '@angular/core';
+import {Router} from '@angular/router';
+import {EndDateComponent} from '../../components/end-date/end-date.component';
 
 const isStartDateInRange = (projects: Project[], startDate: Date, selectedProject: Project): boolean => {
   const projectsWithoutItself = projects.filter(project => project.id !== selectedProject.id);
@@ -87,6 +87,8 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
 
   projects: Project[] = [];
   userEstimates: Estimation[] = [];
+  countEstimatesByUser: number = 0;
+  maxEstimates: number = 0;
   selectedProject?: Project;
   endDateFromBackendForCurrentProject?: Date;
   startDateFromBackendForCurrentProject?: Date;
@@ -129,14 +131,14 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     return null;
   }
 
- async ngOnChanges(changes: SimpleChanges) {
+  async ngOnChanges(changes: SimpleChanges) {
     if (changes['roadmap'] && this.roadmap || changes['roadmap.projects']) {
       this.extractProjectsFromRoadmaps();
       this.selectInitialProject();
     }
 
     if (changes['selectedProject'] && this.selectedProject) {
-      this.startDateControl.setValue(this.selectedProject.startDate, { emitEvent: false });
+      this.startDateControl.setValue(this.selectedProject.startDate, {emitEvent: false});
       this.updateDateControls();
     }
   }
@@ -161,18 +163,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
         return priorityA - priorityB;
       });
     }
-      await this.setSelectedProjectAvgEstimation();
-
-
-    if (this.user && this.user.role === UserRole.Developer) {
-      try {
-        this.userEstimates = await this.UserService.getUserEstimation(this.user.id);
-      } catch (error) {
-        this.userEstimates = [];
-        this.SnackBarSerivce.open("Benutzerschätzungen konnte nicht abgerufen werden")
-      }
-    }
-
+    await this.setSelectedProjectAvgEstimation();
     this.selectInitialProject();
     this.updateDateControls();
     this.showTimeEstimator = this.router.url.includes('dashboard/team-roadmap');
@@ -209,7 +200,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
       this.selectedProject.projectStatus = newStatus;
       try {
         await this.ProjectService.setProjectStatus(this.selectedProject.id!, newStatus);
-      }catch (error){
+      } catch (error) {
         this.SnackBarSerivce.open("Status konnte nicht geupdated werden");
         return;
       }
@@ -224,15 +215,15 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
 
     switch (this.selectedProject.projectStatus) {
       case ProjectStatus.geschlossen:
-        this.startDateControl.disable({ emitEvent: false });
+        this.startDateControl.disable({emitEvent: false});
         break;
 
       case ProjectStatus.inBearbeitung:
-        this.startDateControl.enable({ emitEvent: false });
+        this.startDateControl.enable({emitEvent: false});
         break;
 
       case ProjectStatus.offen:
-        this.startDateControl.disable({ emitEvent: false });
+        this.startDateControl.disable({emitEvent: false});
         break;
 
       default:
@@ -260,44 +251,52 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
       try {
         this.selectedProject.avgEstimationHours = await this.ProjectService.getProjectEstimationAvg(this.selectedProject?.id);
       } catch (error) {
-          this.SnackBarSerivce.open("Schätzungen konnte nicht abgerufen werden");
+        this.SnackBarSerivce.open("Schätzungen konnte nicht abgerufen werden");
       }
     }
   }
-/*
-  getUserEstimationForSelectedProject(): number | undefined {
-    if (this.selectedProject && this.selectedProject.id) {
-      this.currentEstimation = this.userEstimates.find(est => est.projectId === this.selectedProject!.id);
-      return this.currentEstimation ? this.currentEstimation.hours : undefined;
-    }
-    return undefined;
-  }
 
-  updateUserEstimation(estimatedTime: Estimation): void {
-    this.currentEstimation = estimatedTime;
-  }
-*/
+  /*
+    getUserEstimationForSelectedProject(): number | undefined {
+      if (this.selectedProject && this.selectedProject.id) {
+        this.currentEstimation = this.userEstimates.find(est => est.projectId === this.selectedProject!.id);
+        return this.currentEstimation ? this.currentEstimation.hours : undefined;
+      }
+      return undefined;
+    }
+
+    updateUserEstimation(estimatedTime: Estimation): void {
+      this.currentEstimation = estimatedTime;
+    }
+  */
   async selectProject(project: Project): Promise<void> {
     this.selectedProject = project;
 
     // Update the form controls to reflect the selected project
-    this.startDateControl.setValue(project.startDate, { emitEvent: false });
+    this.startDateControl.setValue(project.startDate, {emitEvent: false});
 
     // Update control locking state based on the selected project's status
     this.updateDateControls();
 
     try {
       await this.setSelectedProjectAvgEstimation();
-    }catch (error){
+    } catch (error) {
       this.SnackBarSerivce.open('Konnte Schätzung nicht laden');
     }
 
-    if(this.selectedProject?.id) {
+    if (this.selectedProject && this.selectedProject.estimations) {
+      this.countEstimatesByUser = this.selectedProject?.estimations?.length;
+    }
+    if (this.teams?.members){
+      this.maxEstimates = this.teams?.members?.length;
+    }
+
+    if (this.selectedProject?.id) {
       try {
         let tmpProjectFromBackend = await this.ProjectService.getProjectsById(this.selectedProject?.id)
         this.endDateFromBackendForCurrentProject = tmpProjectFromBackend.endDate;
-        this.startDateFromBackendForCurrentProject= tmpProjectFromBackend.startDate;
-      }catch (error){
+        this.startDateFromBackendForCurrentProject = tmpProjectFromBackend.startDate;
+      } catch (error) {
         console.log(error)
       }
     }
@@ -358,36 +357,37 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
       this.updated = true
     }
   }
-/*
-  async sendNewProjectToBackend() {
-    if (this.selectedProject) {
-      const updatedProject = {
-        ...this.selectedProject,
-        startDate: this.startDateControl.value,
-      };
-      try {
-        await this.ProjectService.updateProject(updatedProject);
-        this.SnackBarSerivce.open('Projekt wurde erfolgreich geändert')
-      }catch (error){
-        this.SnackBarSerivce.open('Beim Updaten des Projekts ist ein Fehler aufgetreten')
+
+  /*
+    async sendNewProjectToBackend() {
+      if (this.selectedProject) {
+        const updatedProject = {
+          ...this.selectedProject,
+          startDate: this.startDateControl.value,
+        };
+        try {
+          await this.ProjectService.updateProject(updatedProject);
+          this.SnackBarSerivce.open('Projekt wurde erfolgreich geändert')
+        }catch (error){
+          this.SnackBarSerivce.open('Beim Updaten des Projekts ist ein Fehler aufgetreten')
+        }
       }
+    }
+  */
+  async onSubmit() {
+    try {
+      if (this.roadmap) {
+        await this.RoadmapService.updateRoadmap(this.roadmap);
+        await this.refreshProjectOrder();
+      }
+      if (this.user?.role === UserRole.Developer) {
+        this.dataUpdated.emit(); // das hier verursacht ein doppeltes rendern der ersten roadmap. Unsicher ob es weggelassen werden kann für andere Updates.Scheint mir momentan nicht essenziell zu sein. Doch wenn es fehlt wird für Dev die Zeit nicht aktualisiert deshalb die if clause
+      }
+      this.SnackBarSerivce.open('Projekt Priorität wurde erfolgreich geändert')
+    } catch (error) {
+      this.SnackBarSerivce.open('Bei der Projektpriorisierung ist ein Fehler aufgetreten')
     }
   }
-*/
-  async onSubmit() {
-      try {
-        if (this.roadmap) {
-          await this.RoadmapService.updateRoadmap(this.roadmap);
-          await this.refreshProjectOrder();
-        }
-        if (this.user?.role === UserRole.Developer) {
-          this.dataUpdated.emit(); // das hier verursacht ein doppeltes rendern der ersten roadmap. Unsicher ob es weggelassen werden kann für andere Updates.Scheint mir momentan nicht essenziell zu sein. Doch wenn es fehlt wird für Dev die Zeit nicht aktualisiert deshalb die if clause
-        }
-        this.SnackBarSerivce.open('Projekt Priorität wurde erfolgreich geändert')
-      } catch (error) {
-        this.SnackBarSerivce.open('Bei der Projektpriorisierung ist ein Fehler aufgetreten')
-      }
-    }
 
 
   async onDelete() {
@@ -422,7 +422,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
         this.roadmap = await this.RoadmapService.getRoadmapById(this.roadmap.id);
         this.projects = [...this.roadmap.projects];
       }
-    }catch (error){
+    } catch (error) {
       this.SnackBarSerivce.open('Fehler bei refetch roadmap')
     }
   }

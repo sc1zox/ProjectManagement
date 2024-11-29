@@ -9,7 +9,11 @@ class RoadmapController {
         try {
             const roadmaps = await prisma.roadmap.findMany({
                 include: {
-                    projects: true,
+                    projects: {
+                        include: {
+                            estimations: true,
+                        }
+                    },
                     teams: {
                         include:{
                             members: true,

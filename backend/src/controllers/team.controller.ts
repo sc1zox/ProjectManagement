@@ -33,9 +33,14 @@ class TeamController {
             const team = await prisma.team.findUnique({
                 where: {id: Number(req.params.id)},
                 include: {
+                    members: true,
                     roadmap: {
                         include: {
-                            projects: true,
+                            projects: {
+                                include: {
+                                    estimations: true,
+                                }
+                            }
                         },
                     },
                 },
@@ -70,7 +75,11 @@ class TeamController {
             const user = await prisma.user.findUnique({
                 where: {id: userId},
                 include: {
-                    teams: true,
+                    teams: {
+                        include: {
+                            projects: true,
+                        }
+                    }
                 },
             });
 
