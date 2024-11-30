@@ -65,7 +65,7 @@ export class GanttChartComponent implements OnInit, AfterViewInit {
     },
   };
 
-  constructor(private readonly UserService:UserService, private cdr: ChangeDetectorRef) {
+  constructor(private readonly UserService:UserService) {
   }
 
 
