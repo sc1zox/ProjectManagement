@@ -164,8 +164,8 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     this.selectInitialProject();
     this.updateDateControls();
     this.showTimeEstimator = this.router.url.includes('dashboard/team-roadmap');
-    this.hideInDashboard = this.router.url.includes('dashboard/team-roadmap');
-    this.notDraggableInDashboardHome = this.router.url.includes('dashboard/team-roadmap');
+    this.hideInDashboard = this.router.url.includes('dashboard/team-roadmap') || this.router.url.includes('dashboard/create-project');
+    this.notDraggableInDashboardHome = this.router.url.includes('dashboard/team-roadmap') || this.router.url.includes('dashboard/create-project');
   }
 
   canEditStatus(): boolean {
@@ -422,7 +422,6 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
 
         this.SnackBarSerivce.open('Projekt erfolgreich gelöscht');
       } catch (error) {
-        console.error('Error deleting project:', error);
         this.SnackBarSerivce.open('Fehler beim Löschen des Projekts');
       }
     }

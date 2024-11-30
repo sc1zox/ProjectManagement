@@ -44,12 +44,12 @@ COLOR SCHEME USED:
 
 ### BUGS
 - BUG: Urlaub speichert nicht im Frontend ohne neuzuladen. Also wenn man zwischen Seiten navigiert
-- BUG: user dialog(mobile Ansicht) in Teamübersicht aktualisiert nicht die Daten bei veränderter Arbeitszeit
-- BUG: Analyse chart soll nur die Teams anzeigen, in denen der SM Teil von ist
 - BUG: team edit: Ich kann einen User der kein Team hat mehreren Teams zuweisen, da die UI nicht updated bis refreshed wird. Hier sollte ein reload passieren bzw verifiziert werden, dass der user kein sm ist und teams.length === 0 ist
 - BUG: BL ist unauthorized bei Team-overview? + darf auch wie PO drag&drop machen
-- BUG: wenn ich ein Projekt hinzufüge erscheint es zweimal? Einmal mit keinem Wert für Aufwand einmal mit 0. Aber nur in der create projekt Übersicht. -> Eventuell überlegen feature zu killen und prio nur über dashboard/team-roadmap zu regeln?
-- PO: kann momentan Projekte erstellen für alle Teams und die Roadmap aller Teams bearbeiten. Bei Team-Roadmap sieht er nur die seines Teams. Wie ist hier das gewünschte Verhalten? -> vermutlich nur die seines Teams
+- BUG: Bei create project stimmt die Schätzung nicht. Fehlende Daten vermutlich. 
+- BUG: Bei my team roadmap stimmt die Reihenfolge nicht nach dem Löschen
+
+### SOLVED
 - BUG: sm plant projekt ein und submitted. Datepicker verschwindet.+ fehlermeldung "Die Dauer darf nicht 0 Stunden und 0 Tage sein" aber erstes datumsetzen funktioniert und ab fresh wieder -> **i think this is solved**
 - BUG: bei projekt erstellen. Wenn ich ein projekt erstelle und danach die reihenfolge anpasse und dann nochmal ein projekt erstelle resetted sich die reihenfolge. Im backend stimmt es also muss das frontend vermutlich neu pullen oder so. -> **i think this is solved**
 - BUG: wenn ich einen Nutzer erstellen will und als rolle sm auswähle aber ihm nur ein Team(scheinbar egal) zuweise wird null and backend geschickt bei Team. Somit schlägt die erstellung fehl. -> **i think this is solved**
@@ -61,24 +61,14 @@ COLOR SCHEME USED:
 
 ### perspektivisch
 
-- Gantt diagramm für analyse SM einbauen -> Backend für update nachziehen und dann im FE aktualisieren (sollen hier projekte bearbeitet werden können ? also verschieben auf der zeitleiste) -> denke momentan nicht
 - current project in der rechten sidebar wird momentan gepolled also alle 30 sekunden gefetched. Funktioniert aber ist das gut?
 - breakpoints sind momentan bei 1000px.
 - backend route checking ist implementiert aber wird momentan nicht benutzt, da es 1. im frontend gemacht wird und 2. das FE momentan kein auth daten mitschickt bei requests
-- Projekt einschätzungen und ähnlich sollten auf 0 initialisert sein und nicht auf null um Probleme zu vermeiden
-- RESPONSIVE UI: falls es zu viel Probleme macht -> Seite neu laden ist auch eine Option beim abschicken von Daten o.ä. um einen Teil der Bugs zu umgehen oder falls es performance lastig probleme gibt
 - calc(var()) durch neue variable ersetzen?
 - PRIO: app-init-service aufsetzen und dort die fetches gestalten, bzw. aufjedenfall die fetches reduzieren. Überlegen ob es möglich ist, bei initalisierung einmal alle daten zu fetchen und dann only on update?
 - roadmap scrolling horizontal erst ab overflow? damit vertikales scrollen nicht gefangen wird und man dadurch nicht horizontal scrollen kann
-- modals einbauen zur Informationsbestätigung?
-- Idee: Bilder einfügbar machen für projektboxen in roadmap
 - Websockets??
-- Performance probleme: Daten lokal behalten und updaten und asynchron an den Server schicken um eine zu hohe Datenlast zu vermeiden
 - Teamübersicht visual bug bei kleinerem Screen (kann momentan vernachlässigt werden, da wir uns auf mobile oder desktop screensize fokussieren und nicht dazwischen)
-
-### Fragen
-
-- Was heißt Arbeitszeit? Stunden von dann bis dann? Oder maximale Stunden/Woche oder gearbeitete Zeit?
 
 ## Routing
 

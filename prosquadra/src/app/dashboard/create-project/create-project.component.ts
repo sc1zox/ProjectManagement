@@ -103,15 +103,6 @@ export class CreateProjectComponent implements AfterViewInit {
             this.SnackBarService.open('Konnte das Team nicht laden')
           }
           this.roadmap = this.currentTeam?.roadmap;
-
-          if (this.roadmap) {
-            this.roadmap = {
-              ...this.roadmap,
-              projects: [
-                ...this.roadmap.projects,
-              ].sort((a, b) => (a.priorityPosition ?? 0) - (b.priorityPosition ?? 0)) //chatgpt, sortiere hier nach priority
-            };
-          }
         }
         this.selectedTeam.members?.forEach((member) => {
           this.NotificationService.createNotification('Deinem Team wurde ein Projekt hinzugefügt', member.id);
