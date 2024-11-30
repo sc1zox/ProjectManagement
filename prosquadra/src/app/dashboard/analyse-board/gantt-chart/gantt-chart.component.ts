@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Input, OnInit, ViewChild} from '@angular/core';
+import {AfterViewInit, ChangeDetectorRef, Component, Input, OnInit, ViewChild} from '@angular/core';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatIconModule} from '@angular/material/icon';
@@ -65,7 +65,7 @@ export class GanttChartComponent implements OnInit, AfterViewInit {
     },
   };
 
-  constructor(private readonly UserService:UserService) {
+  constructor(private readonly UserService:UserService, private cdr: ChangeDetectorRef) {
   }
 
 
@@ -77,15 +77,12 @@ export class GanttChartComponent implements OnInit, AfterViewInit {
   ngAfterViewInit() {
     setTimeout(() => {
       if (this.ganttComponent) {
-        this.jumptoFirstDate();
+        this.ganttComponent.ganttRoot.ganttUpper.view.start$.next(this.startDate);
+        this.ganttComponent.ganttRoot.ganttUpper.view.addStartDate()
       }
     });
   }
 
-  jumptoFirstDate() {
-    const start = this.startDate || new GanttDate(new Date());
-    this.ganttComponent.scrollToDate(start);
-  }
 
   private populateItems() {
     this.groups = this.teams.filter(team => team.members?.some(member => member.id === this.currentUser?.id)).map((team) => ({
