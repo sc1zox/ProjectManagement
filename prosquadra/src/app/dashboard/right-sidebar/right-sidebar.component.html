@@ -51,7 +51,7 @@
   <qr-code [value]=getPdfUrl()
            errorCorrectionLevel="M" />
   </ng-container>
-  <app-user-skills [user]="user"></app-user-skills>
+  <app-user-skills [user]="user" *ngIf="user?.role !== UserRole.Admin && user?.role !== UserRole.Bereichsleiter"></app-user-skills>
 
   <button (click)="triggerLogout()" mat-raised-button>Logout</button>
 
