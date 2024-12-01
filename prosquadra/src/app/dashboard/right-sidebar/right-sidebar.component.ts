@@ -51,10 +51,11 @@ import {SnackbarService} from '../../../services/snackbar.service';
 export class RightSidebarComponent implements OnInit, OnDestroy {
   userProject?: Project;
   userProjects: Project[] =[];
-  notificationsAmount?: number;
+  notificationsAmount: number = 0;
   notifications: Notification[] = [];
   userInitials: string = '';
   user?: User;
+  noTeamAndProject: boolean = false;
   private projectPollingInterval: any;
   QrCodeVisible: boolean = false
 
@@ -77,6 +78,10 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
       if (this.user) {
         console.log('Der aktuelle Nutzer', this.user);
         this.userInitials = this.user.vorname.charAt(0).toUpperCase() + this.user.nachname.charAt(0).toUpperCase();
+        if(this.user.role === UserRole.Admin || this.user.role === UserRole.Bereichsleiter){
+          this.noTeamAndProject = true;
+          return;
+        }
 
         await this.fetchProject();
 
@@ -138,7 +143,7 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
 
   showNotifications() {
     if (this.notifications)
-      if(this.notificationsAmount === 0){
+      if(this.notificationsAmount === 0 || !!this.notifications){
         this.SnackBarService.open('Keine Notifications vorhanden');
       }
       this.notifications.forEach((notification) => {

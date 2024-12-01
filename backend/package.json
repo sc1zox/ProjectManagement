@@ -8,6 +8,7 @@
     "generate": "prisma generate",
     "build": "tsc",
     "seed": "ts-node prisma/seed.ts",
+    "emptySeed": "ts-node prisma/seedEMPTY.ts",
     "start": "node dist/server.js",
     "dev": "npx nodemon --exec ts-node src/api/server.ts"
   },

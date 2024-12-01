@@ -11,7 +11,7 @@
   </div>
 
 
-  <mat-accordion class="ProjectListContainer" *ngIf="userProject || userProjects">
+  <mat-accordion class="ProjectListContainer" *ngIf="(userProject || userProjects) && !noTeamAndProject">
     <div *ngIf="user?.role !== UserRole.SM">
       <mat-expansion-panel class="currentProject">
         <mat-expansion-panel-header>
@@ -41,13 +41,17 @@
     </div>
 
   </mat-accordion>
+
+  <div class="buttonsSidebar">
   <button mat-raised-button (click)="showQrCode()">Toggle QR-Code</button>
-  <button mat-raised-button (click)="getPDF()">Download Benutzerdaten</button>
+    <button mat-raised-button (click)="getPDF()">Download Benutzerdaten</button>
+  </div>
+
   <ng-container *ngIf="QrCodeVisible">
   <qr-code [value]=getPdfUrl()
            errorCorrectionLevel="M" />
   </ng-container>
-  <app-user-skills [user]="user"></app-user-skills>
+  <app-user-skills [user]="user" *ngIf="user?.role !== UserRole.Admin && user?.role !== UserRole.Bereichsleiter"></app-user-skills>
 
   <button (click)="triggerLogout()" mat-raised-button>Logout</button>
 

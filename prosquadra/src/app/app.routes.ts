@@ -13,9 +13,13 @@ export const routes: Routes = [
     path: 'dashboard',
     component: DashboardComponent,
     canActivate: [AuthGuard],
+    data: { role: [UserRole.SM, UserRole.PO, UserRole.Developer, UserRole.Bereichsleiter, UserRole.Admin]},
     children: [
       {path: '', component: DashboardHomeComponent}, // Diese Route ohne Lazy Loading
-      {path: 'home', component: DashboardHomeComponent},
+      {path: 'home', component: DashboardHomeComponent,
+        canActivate: [AuthGuard],
+        data: { role: [UserRole.SM, UserRole.PO, UserRole.Developer, UserRole.Bereichsleiter,]},
+      },
       {
         path: 'create-project',
         loadComponent: () => import('./dashboard/create-project/create-project.component').then(m => m.CreateProjectComponent),
@@ -24,11 +28,9 @@ export const routes: Routes = [
       },
       {
         path: 'team-roadmap',
-        loadComponent: () => import('./dashboard/my-team-roadmap/my-team-roadmap.component').then(m => m.MyTeamRoadmapComponent)
-      },
-      {
-        path: 'more-information',
-        loadComponent: () => import('./dashboard/dashboard-home/more-information/more-information.component').then(m => m.MoreInformationComponent)
+        loadComponent: () => import('./dashboard/my-team-roadmap/my-team-roadmap.component').then(m => m.MyTeamRoadmapComponent),
+        canActivate: [AuthGuard],
+        data: { role: [UserRole.PO , UserRole.Bereichsleiter, UserRole.SM, UserRole.Developer]}
       },
       {
         path: 'admin-panel',
@@ -66,7 +68,9 @@ export const routes: Routes = [
       },
       {
         path: 'urlaubs-planung',
-        loadComponent: () => import('./dashboard/urlaubs-planung/urlaubs-planung.component').then(m => m.UrlaubsPlanungComponent)
+        loadComponent: () => import('./dashboard/urlaubs-planung/urlaubs-planung.component').then(m => m.UrlaubsPlanungComponent),
+        canActivate: [AuthGuard],
+        data: { role: [UserRole.PO , UserRole.Developer, UserRole.SM, UserRole.Bereichsleiter]}
       },
     ]
   },

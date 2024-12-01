@@ -1,12 +1,17 @@
 .unauthorized-container {
   text-align: center;
-  padding: 2rem;
-  background: rgba(0, 0, 0, 0.5);
-  border-radius: 15px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
   display: flex;
   justify-content: center;
   align-items: center;
+  margin-top: calc(var(--content-margin)*20);
+}
+
+.unauthorized-content{
+  max-width: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  border-radius: 15px;
+  padding: 2rem;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 }
 
 .unauthorized-content h1 {
@@ -34,4 +39,26 @@
 
 .back-home:hover {
   background: #feb47b;
+}
+
+@media screen and (max-width: 1000px) {
+  .unauthorized-container {
+    margin: 0;
+  }
+
+  .unauthorized-content{
+    width: 70%;
+    height: 70%;
+    margin: calc(var(--content-margin)*3);
+  }
+
+  .unauthorized-content h1 {
+    font-size: 3rem;
+    margin: 50px;
+  }
+
+  .unauthorized-content p {
+    margin: 5px;
+    font-size: 1rem;
+  }
 }

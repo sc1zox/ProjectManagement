@@ -5,13 +5,13 @@
         <mat-panel-title> Menu</mat-panel-title>
       </mat-expansion-panel-header>
 
-      <mat-list-item [routerLink]="['home']">Dashboard</mat-list-item>
+      <mat-list-item *ngIf="user?.role !== UserRole.Admin" [routerLink]="['home']">Dashboard</mat-list-item>
 
 
       <mat-list-item *ngIf="user?.role===UserRole.PO" [routerLink]="['create-project']">Projekt erstellen
       </mat-list-item>
 
-      <mat-list-item [routerLink]="['team-roadmap']">Team Roadmap</mat-list-item>
+      <mat-list-item *ngIf="user?.role!==UserRole.Admin" [routerLink]="['team-roadmap']">Team Roadmap</mat-list-item>
 
       <mat-list-item *ngIf="user?.role===UserRole.Admin || user?.role===UserRole.SM || user?.role===UserRole.Bereichsleiter" [routerLink]="['team-overview']">Teamübersicht</mat-list-item>
 
@@ -19,7 +19,7 @@
 
       <mat-list-item *ngIf="user?.role===UserRole.SM" [routerLink]="['analyse-board']">Analyse</mat-list-item>
 
-      <mat-list-item [routerLink]="['urlaubs-planung']">Urlaubsplanung</mat-list-item>
+      <mat-list-item *ngIf="user?.role!==UserRole.Admin" [routerLink]="['urlaubs-planung']">Urlaubsplanung</mat-list-item>
 
     </mat-expansion-panel>
   </mat-action-list>

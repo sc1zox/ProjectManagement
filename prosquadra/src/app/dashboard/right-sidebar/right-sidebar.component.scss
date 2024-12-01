@@ -63,6 +63,14 @@
   padding: var(--content-padding);
 }
 
+.buttonsSidebar{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: calc(var(--content-margin)*3);
+}
+
 .currentProject {
   padding: calc(var(--content-padding) / 2);
   margin: var(--content-margin);
