@@ -51,7 +51,7 @@ import {SnackbarService} from '../../../services/snackbar.service';
 export class RightSidebarComponent implements OnInit, OnDestroy {
   userProject?: Project;
   userProjects: Project[] =[];
-  notificationsAmount?: number;
+  notificationsAmount: number = 0;
   notifications: Notification[] = [];
   userInitials: string = '';
   user?: User;
@@ -143,7 +143,7 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
 
   showNotifications() {
     if (this.notifications)
-      if(this.notificationsAmount === 0){
+      if(this.notificationsAmount === 0 || !!this.notifications){
         this.SnackBarService.open('Keine Notifications vorhanden');
       }
       this.notifications.forEach((notification) => {
