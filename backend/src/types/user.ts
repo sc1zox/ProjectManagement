@@ -17,4 +17,5 @@ export interface User {
   urlaub?: Urlaub[]
   arbeitszeit: number;
   login?: Login;
+  teamId?: number;
 }

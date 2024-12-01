@@ -1,4 +1,4 @@
-import {Component, Input, OnChanges, OnInit} from '@angular/core';
+import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
 import {ArbeitszeitOverviewComponent} from '../components/arbeitszeit-overview/arbeitszeit-overview.component';
 import {SkillOverviewComponent} from '../components/skill-overview/skill-overview.component';
 import {
@@ -38,13 +38,15 @@ import {UserService} from '../../../../services/user.service';
     MatHeaderRowDef,
     MatButton,
     TeamPlanungComponent,
+
   ],
   templateUrl: './user-table.component.html',
   styleUrl: './user-table.component.scss'
 })
-export class UserTableComponent implements OnInit {
+export class UserTableComponent implements OnInit,OnChanges {
   displayedColumns: string[] = [];
   @Input() users: User[] = [];
+  filteredUsers: User[] = [];
   currentUser?: User;
   protected readonly UserRole = UserRole;
 
@@ -61,6 +63,16 @@ export class UserTableComponent implements OnInit {
     this.displayedColumns.push('vacationDays')
     this.displayedColumns.push('teamPlanning');
     this.displayedColumns.push('modal')
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['users']) {
+      this.filterUsers();
+    }
+  }
+
+  filterUsers() {
+    this.filteredUsers = this.users.filter(user => user.role !== UserRole.Admin && user.role !== UserRole.Bereichsleiter);
   }
 
   openModal(user: User, currentUser: User | undefined) {

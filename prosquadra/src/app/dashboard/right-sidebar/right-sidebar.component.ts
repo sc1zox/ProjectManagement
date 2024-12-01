@@ -55,6 +55,7 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
   notifications: Notification[] = [];
   userInitials: string = '';
   user?: User;
+  noTeamAndProject: boolean = false;
   private projectPollingInterval: any;
   QrCodeVisible: boolean = false
 
@@ -77,6 +78,10 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
       if (this.user) {
         console.log('Der aktuelle Nutzer', this.user);
         this.userInitials = this.user.vorname.charAt(0).toUpperCase() + this.user.nachname.charAt(0).toUpperCase();
+        if(this.user.role === UserRole.Admin || this.user.role === UserRole.Bereichsleiter){
+          this.noTeamAndProject = true;
+          return;
+        }
 
         await this.fetchProject();
 

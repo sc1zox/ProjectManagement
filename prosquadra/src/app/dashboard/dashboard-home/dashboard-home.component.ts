@@ -8,6 +8,7 @@ import {UserService} from '../../../services/user.service';
 import {User, UserRole} from '../../../types/user';
 import {SnackbarService} from '../../../services/snackbar.service';
 import {fadeIn} from '../../../animations/fadeIn';
+import {Router, RouterLink} from '@angular/router';
 
 
 @Component({
@@ -30,12 +31,15 @@ export class DashboardHomeComponent implements OnInit {
   public user?: User;
   isPo: boolean = false;
 
-  constructor(private readonly RoadmapService: RoadmapService, private readonly UserService: UserService,private readonly SnackBarService: SnackbarService) {
+  constructor(private router: Router,private readonly RoadmapService: RoadmapService, private readonly UserService: UserService,private readonly SnackBarService: SnackbarService) {
   }
 
   async ngOnInit() {
     try {
       this.user = await this.UserService.getCurrentUser();
+      if( this.user && this.user.role === UserRole.Admin){
+        await this.router.navigate(['dashboard/admin-panel']);
+      }
       if (this.user && this.user.role === UserRole.PO) {
         this.isPo = true;
       }
