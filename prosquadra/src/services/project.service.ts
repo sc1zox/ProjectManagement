@@ -55,15 +55,15 @@ export class ProjectService implements OnInit {
     }
   }
 
-  async updateProject(payload: Partial<Project>) {
-
+  async updateProject(payload: Partial<Project>): Promise<any> {
     try {
       const response = await this.ApiService.put('/project/update', payload);
       return response.data;
     } catch (error) {
-      throw error;
+      const err = error as Error;
+      throw err;
     }
-  }
+  }  
 
   async getProjectWithLowestPriorityByUserId(ID: number): Promise<Project[]> {
     try {

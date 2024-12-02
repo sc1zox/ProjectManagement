@@ -171,6 +171,12 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     this.showTimeEstimator = this.router.url.includes('dashboard/team-roadmap');
     this.hideInDashboard = this.router.url.includes('dashboard/team-roadmap') || this.router.url.includes('dashboard/create-project');
     this.notDraggableInDashboardHome = this.router.url.includes('dashboard/team-roadmap') || this.router.url.includes('dashboard/create-project');
+
+    this.startDateControl.valueChanges.subscribe(async (newValue) => {
+      if (this.startDateControl.valid) {
+        await this.sendNewProjectToBackend(newValue);
+      }
+    })
   }
 
   canEditStatus(): boolean {
@@ -205,7 +211,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     const newStatus = event.value as ProjectStatus;
 
     if(this.countEstimatesByUser !== this.maxEstimates /*&& select.value !== ProjectStatus.geschlossen*/){ //soll schließen hier möglich sein?
-     this.SnackBarSerivce.open('Aktualisierung fehlgeschlagen, fehlende Schätzungen')
+     this.SnackBarSerivce.open('Aktualisierung fehlgeschlagen, fehlende Entwickler Schätzungen')
       if (this.selectedProject) {
         select.writeValue(this.originalStatus);
       }
@@ -375,22 +381,22 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     }
   }
 
-  /*
-    async sendNewProjectToBackend() {
-      if (this.selectedProject) {
-        const updatedProject = {
-          ...this.selectedProject,
-          startDate: this.startDateControl.value,
-        };
-        try {
-          await this.ProjectService.updateProject(updatedProject);
-          this.SnackBarSerivce.open('Projekt wurde erfolgreich geändert')
-        }catch (error){
-          this.SnackBarSerivce.open('Beim Updaten des Projekts ist ein Fehler aufgetreten')
-        }
+  async sendNewProjectToBackend(newStartDate: Date): Promise<void> {
+    if (this.selectedProject && this.selectedProject.id && this.selectedProject.teamid) {
+      const updatedProject: Partial<Project> = {
+        teamId: this.selectedProject.teamid,
+        projectId: this.selectedProject.id,
+        startDate: newStartDate,
+      } as any; // Da unsere Interfaces anders benannt sind als das Backend Schema 
+      try {
+        await this.ProjectService.updateProject(updatedProject);
+        this.SnackBarSerivce.open('Projekt wurde erfolgreich geändert')
+      } catch (error) {
+        this.SnackBarSerivce.open('Beim Updaten des Projekts ist ein Fehler aufgetreten')
       }
     }
-  */
+  }
+
   async onSubmit() {
     try {
       if (this.roadmap) {

@@ -12,6 +12,7 @@ export interface Project {
   avgEstimationHours?: number;
   priorityPosition?: number;
   estimations?: Estimation[];
+  teamid?: number;
 }
 
 export enum ProjectStatus {
