@@ -1,4 +1,5 @@
 <div class="dashboard-home">
+  <app-spinner></app-spinner>
   <main *ngFor="let roadmap of roadmaps" class="main-content">
     <div  [@fadeIn]>
     <app-team-roadmap (dataUpdated)="refetch()" [enableDragDrop]="isPo" [roadmap]="roadmap" [teams]="roadmap.teams"

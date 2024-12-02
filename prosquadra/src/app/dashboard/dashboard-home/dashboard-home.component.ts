@@ -8,7 +8,9 @@ import {UserService} from '../../../services/user.service';
 import {User, UserRole} from '../../../types/user';
 import {SnackbarService} from '../../../services/snackbar.service';
 import {fadeIn} from '../../../animations/fadeIn';
-import {Router, RouterLink} from '@angular/router';
+import {Router} from '@angular/router';
+import {SpinnerComponent} from '../../components/spinner/spinner.component';
+import {SpinnerService} from '../../../services/spinner.service';
 
 
 @Component({
@@ -18,6 +20,7 @@ import {Router, RouterLink} from '@angular/router';
     MatCardModule,
     CommonModule,
     TeamRoadmapComponent,
+    SpinnerComponent,
   ],
   animations: [
     fadeIn
@@ -31,10 +34,11 @@ export class DashboardHomeComponent implements OnInit {
   public user?: User;
   isPo: boolean = false;
 
-  constructor(private router: Router,private readonly RoadmapService: RoadmapService, private readonly UserService: UserService,private readonly SnackBarService: SnackbarService) {
+  constructor(private router: Router,private readonly RoadmapService: RoadmapService, private readonly UserService: UserService,private readonly SnackBarService: SnackbarService,private spinnerService: SpinnerService) {
   }
 
   async ngOnInit() {
+    this.spinnerService.show();
     try {
       this.user = await this.UserService.getCurrentUser();
       if( this.user && this.user.role === UserRole.Admin){
@@ -46,6 +50,8 @@ export class DashboardHomeComponent implements OnInit {
       this.roadmaps = await this.RoadmapService.getRoadmaps();
     } catch (error) {
       this.SnackBarService.open('Fehler Roadmapintialisierung');
+    }finally {
+      this.spinnerService.hide();
     }
   }
 

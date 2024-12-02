@@ -20,6 +20,7 @@
     "@angular/platform-browser": "^18.2.0",
     "@angular/platform-browser-dynamic": "^18.2.0",
     "@angular/router": "^18.2.0",
+    "@ngeenx/nx-angular-svg-loaders": "^1.0.3",
     "@worktile/gantt": "^18.0.5",
     "date-fns": "^4.1.0",
     "html2canvas": "^1.4.1",
