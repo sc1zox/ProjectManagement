@@ -81,12 +81,17 @@ export class EndDateComponent implements AfterViewInit{
       });
     };
 
+    const isWeekend = (date: Date): boolean => {
+      const dayOfWeek = date.getDay();
+      return dayOfWeek === 6 || dayOfWeek === 0;
+    };
+
     while (remainingHours > 0) {
       let dailyCapacity = 0;
 
       // Calculate effective daily working capacity by summing up available hours of team members
       for (const member of developers) {
-        if (!isVacationDay(currentDate, member) && member.arbeitszeit) {
+        if (!isVacationDay(currentDate, member) && !isWeekend(currentDate) && member.arbeitszeit) {
           let memberArbeitszeitPercentage = member.arbeitszeit * 0.6;
           dailyCapacity += (memberArbeitszeitPercentage/ 5) || workingHoursPerDay;
         }
