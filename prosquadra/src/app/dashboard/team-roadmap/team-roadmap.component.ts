@@ -151,16 +151,6 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     }
   }
 
-  progressBarStart() {
-    if(this.progressBar)
-      this.progressBar.start();
-  }
-
-  progressBarStop(){
-    if(this.progressBar)
-    this.progressBar.set(100);
-  }
-
   async ngOnInit() {
     this.endDateFromBackendForCurrentProject = undefined;
     if (!this.user) {
@@ -418,7 +408,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
 
 
   async onDelete() {
-    this.progressBarStart();
+    this.progressBar.start();
     if (this.roadmap?.projects && !(this.roadmap?.projects.length > 1)) {
       this.SnackBarSerivce.open('Löschen fehlgeschlagen! Die Roadmap enthält nur ein Projekt')
       return;
@@ -440,7 +430,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
       } catch (error) {
         this.SnackBarSerivce.open('Fehler beim Löschen des Projekts');
       }finally {
-        this.progressBarStop();
+        this.progressBar.complete();
       }
     }
     this.progressBar.complete()
