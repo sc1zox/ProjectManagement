@@ -1,14 +1,17 @@
+<ng-progress/>
+
 <div *ngIf="roadmap && roadmap.projects.length > 0; else noRoadmap" class="roadmap-card">
   <h2>{{ teams?.name }}</h2>
 
-  <div class="project-list" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListData]="projects" [cdkDropListDisabled]="user?.role !== UserRole.PO || !notDraggableInDashboardHome"
-    (cdkDropListDropped)="drop($event)">
+  <div class="project-list" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListData]="projects"
+       [cdkDropListDisabled]="user?.role !== UserRole.PO || !notDraggableInDashboardHome"
+       (cdkDropListDropped)="drop($event)">
 
     <div *ngFor="let project of projects;" class="project-box"
-    cdkDrag
-    (mousedown)="onMouseDown($event)"
-    (click)="handleProjectClick($event, project)"
-    [ngClass]="{ 'selected': project === selectedProject }"
+         cdkDrag
+         (mousedown)="onMouseDown($event)"
+         (click)="handleProjectClick($event, project)"
+         [ngClass]="{ 'selected': project === selectedProject }"
          cdkDragBoundary=".roadmap-card">
       {{ project.name }}
     </div>
@@ -23,8 +26,10 @@
           *ngIf="canEditStatus() && hideInDashboard; else displayStatus"
           appearance="outline">
           <mat-label>Status</mat-label>
-          <mat-select  #statusSelect [(value)]="selectedProject.projectStatus" (selectionChange)="onStatusChange($event,statusSelect)" (opened)="onStatusDropdownOpened()">
-            <mat-option *ngFor="let status of projectStatuses" [value]="status">{{ getStatusLabel(status)}}</mat-option>
+          <mat-select #statusSelect [(value)]="selectedProject.projectStatus"
+                      (selectionChange)="onStatusChange($event,statusSelect)" (opened)="onStatusDropdownOpened()">
+            <mat-option *ngFor="let status of projectStatuses" [value]="status">{{ getStatusLabel(status) }}
+            </mat-option>
           </mat-select>
         </mat-form-field>
         <ng-template #displayStatus>
@@ -39,15 +44,18 @@
         *ngIf="canEditDate() && hideInDashboard; else displayDates">
         <mat-form-field appearance="outline" class="date-picker">
           <mat-label>Start Date</mat-label>
-          <input [formControl]="startDateControl" [matDatepicker]="startPicker" matInput />
+          <input [formControl]="startDateControl" [matDatepicker]="startPicker" matInput/>
           <mat-datepicker-toggle [for]="startPicker" matSuffix></mat-datepicker-toggle>
           <mat-datepicker #startPicker></mat-datepicker>
         </mat-form-field>
       </div>
       <ng-template #displayDates>
-        <div *ngIf="startDateFromBackendForCurrentProject !== undefined && endDateFromBackendForCurrentProject !== undefined">
-        <p class="date-display"><strong>Project Start Date:</strong> {{ startDateFromBackendForCurrentProject | date }}</p>
-        <p class="date-display"><strong>Project End Date:</strong> {{ endDateFromBackendForCurrentProject | date }}</p>
+        <div
+          *ngIf="startDateFromBackendForCurrentProject !== undefined && endDateFromBackendForCurrentProject !== undefined">
+          <p class="date-display"><strong>Project Start
+            Date:</strong> {{ startDateFromBackendForCurrentProject | date }}</p>
+          <p class="date-display"><strong>Project End Date:</strong> {{ endDateFromBackendForCurrentProject | date }}
+          </p>
         </div>
       </ng-template>
     </div>
@@ -58,7 +66,7 @@
     </div>
 
     <div *ngIf="selectedProject.projectStatus === ProjectStatus.offen">
-      <p><strong>Anzahl Schätzungen:</strong> {{countEstimatesByUser}} / {{ maxEstimates }}</p>
+      <p><strong>Anzahl Schätzungen:</strong> {{ countEstimatesByUser }} / {{ maxEstimates }}</p>
     </div>
 
     <!-- Estimation Section -->
@@ -69,7 +77,8 @@
       </ng-container>
 
       <!-- Render the TimeEstimatorComponent -->
-      <app-time-estimator *ngIf="showTimeEstimator && user?.role === UserRole.Developer && selectedProject.projectStatus === ProjectStatus.offen"
+      <app-time-estimator
+        *ngIf="showTimeEstimator && user?.role === UserRole.Developer && selectedProject.projectStatus === ProjectStatus.offen"
         [currentProject]="selectedProject" (myTimeEstimate)="updateTimeEstimate()"></app-time-estimator>
 
       <ng-template #errorKeineSchaetzungen>
@@ -77,14 +86,19 @@
     </div>
 
     <div>
-      <app-end-date [currentProject]="selectedProject" [currentTeam]="roadmap.teams" [startDateControl]="startDateControl"></app-end-date>
+      <app-end-date [currentProject]="selectedProject" [currentTeam]="roadmap.teams"
+                    [startDateControl]="startDateControl"></app-end-date>
     </div>
 
     <!-- Action Buttons -->
     <div class="actions">
-      <button *ngIf="hideInDashboard && user?.role === UserRole.PO" mat-raised-button color="primary" (click)="onSubmit()" class="roadmap-button">Prioriät speichern</button>
-      <button *ngIf="user?.role === UserRole.PO && hideInDashboard" mat-raised-button color="warn" (click)="onDelete()" class="roadmap-button">Delete
-        Project</button>
+      <button *ngIf="hideInDashboard && user?.role === UserRole.PO" mat-raised-button color="primary"
+              (click)="onSubmit()" class="roadmap-button">Prioriät speichern
+      </button>
+      <button *ngIf="user?.role === UserRole.PO && hideInDashboard" mat-raised-button color="warn" (click)="onDelete()"
+              class="roadmap-button">Delete
+        Project
+      </button>
     </div>
   </div>
 </div>

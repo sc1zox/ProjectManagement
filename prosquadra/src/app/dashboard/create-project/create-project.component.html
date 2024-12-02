@@ -1,3 +1,6 @@
+<ng-progress
+></ng-progress>
+
 <div id="create-project-container">
   <form (ngSubmit)="onSubmit()" [formGroup]="projectForm" class="createproject-form">
     <mat-form-field class="full-width">
@@ -23,7 +26,6 @@
     <button [disabled]="projectForm.invalid" mat-raised-button type="submit">Erstellen</button>
   </form>
 </div>
-
 <div class="roadmap-container">
   <app-team-roadmap [enableDragDrop]="true" [roadmap]="roadmap"></app-team-roadmap>
 </div>

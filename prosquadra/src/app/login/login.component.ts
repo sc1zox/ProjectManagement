@@ -10,6 +10,8 @@ import {NgIf, NgOptimizedImage} from '@angular/common';
 import {SnackbarService} from '../../services/snackbar.service';
 import {UserService} from '../../services/user.service';
 import {Login} from '../../types/login';
+import {SpinnerComponent} from '../components/spinner/spinner.component';
+import {SpinnerService} from '../../services/spinner.service';
 
 @Component({
   selector: 'app-login',
@@ -24,6 +26,7 @@ import {Login} from '../../types/login';
     NgIf,
     MatLabel,
     NgOptimizedImage,
+    SpinnerComponent,
   ],
   styleUrls: ['./login.component.scss'],
 })
@@ -37,6 +40,7 @@ export class LoginComponent implements OnInit {
     private readonly authService: AuthService,
     private readonly snackbarService: SnackbarService,
     private userService: UserService,
+    private readonly SpinnerService: SpinnerService,
   ) {
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
@@ -52,6 +56,7 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit(): void {
+    this.SpinnerService.show();
     if (this.loginForm.valid) {
       const {username, password} = this.loginForm.value;
       this.login(username, password);
@@ -84,6 +89,8 @@ export class LoginComponent implements OnInit {
       }
     } catch (error) {
       this.snackbarService.open("Server ist momentan nicht erreichbar")
+    } finally {
+      this.SpinnerService.hide();
     }
   }
 }

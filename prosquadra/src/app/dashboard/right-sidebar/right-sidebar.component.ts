@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {MatChipsModule} from '@angular/material/chips';
 import {MatIcon} from '@angular/material/icon';
 import {
@@ -22,6 +22,7 @@ import {Notification} from '../../../types/Notifications';
 import {QrCodeModule} from 'ng-qrcode';
 import {ApiService} from '../../../services/api.service';
 import {SnackbarService} from '../../../services/snackbar.service';
+import {NgProgressbar, NgProgressRef} from 'ngx-progressbar';
 
 
 @Component({
@@ -44,6 +45,7 @@ import {SnackbarService} from '../../../services/snackbar.service';
     QrCodeModule,
     NgIf,
     NgForOf,
+    NgProgressbar,
   ],
   standalone: true,
 })
@@ -58,6 +60,7 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
   noTeamAndProject: boolean = false;
   private projectPollingInterval: any;
   QrCodeVisible: boolean = false
+  @ViewChild(NgProgressRef) progressBar!: NgProgressRef;
 
 
   constructor(
@@ -160,7 +163,14 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
   }
 
   getPDF() {
-    window.location.href = this.getPdfUrl();
+    this.progressBar.start();
+    try {
+      window.location.href = this.getPdfUrl();
+    }catch (error){
+      this.SnackBarService.open('PDF konnte nicht geladen werden')
+    }finally {
+      this.progressBar.complete();
+    }
   }
 
   protected readonly UserRole = UserRole;

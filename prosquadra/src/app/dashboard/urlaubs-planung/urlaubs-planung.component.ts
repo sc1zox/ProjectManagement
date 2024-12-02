@@ -1,4 +1,4 @@
-import {Component, OnInit, signal} from '@angular/core';
+import {Component, OnInit, signal, ViewChild} from '@angular/core';
 import {MatInputModule} from '@angular/material/input';
 import {MAT_DATE_LOCALE, MatNativeDateModule, MatOptionModule, provideNativeDateAdapter} from '@angular/material/core';
 import {MatDatepickerInputEvent, MatDatepickerModule} from '@angular/material/datepicker';
@@ -15,6 +15,8 @@ import {MatIconModule} from '@angular/material/icon';
 import {slideIn} from '../../../animations/slideIn';
 import {UrlaubPlanungService} from '../../../services/urlaub.planung.service';
 import {ApiError} from '../../../../error/ApiError';
+import {SpinnerService} from '../../../services/spinner.service';
+import {NgProgressbar, NgProgressRef} from 'ngx-progressbar';
 
 
 @Component({
@@ -33,6 +35,7 @@ import {ApiError} from '../../../../error/ApiError';
     MatLabel,
     MatIconModule,
     MatFabButton,
+    NgProgressbar,
   ],
   animations: [
     slideIn
@@ -45,15 +48,17 @@ export class UrlaubsPlanungComponent implements OnInit {
   protected isVisible = signal(false);
   currentUser?: User;
   urlaub$ = new BehaviorSubject<Urlaub[]>([]);
+  @ViewChild(NgProgressRef) progressBar!: NgProgressRef;
 
 // https://stackoverflow.com/questions/63823557/angular-material-datepickerrange-get-value-on-change
-  constructor(private UserService: UserService, private readonly SnackBarService: SnackbarService, private UrlaubsPlanungService: UrlaubPlanungService) {
+  constructor(private UserService: UserService, private readonly SnackBarService: SnackbarService, private UrlaubsPlanungService: UrlaubPlanungService,private readonly SpinnerService: SpinnerService,) {
   }
 
   startDatePicker = new Subject<MatDatepickerInputEvent<any>>();
   endDatePicker = new Subject<MatDatepickerInputEvent<any>>();
 
   async ngOnInit(): Promise<void> {
+    this.SpinnerService.show();
 
     try {
       this.currentUser = await this.UserService.getCurrentUser();
@@ -67,6 +72,8 @@ export class UrlaubsPlanungComponent implements OnInit {
       }
     }catch (error){
       console.log(error)
+    }finally {
+      this.SpinnerService.hide();
     }
 
     const dateChange$ = combineLatest([this.startDatePicker, this.endDatePicker]).pipe(
@@ -89,6 +96,7 @@ export class UrlaubsPlanungComponent implements OnInit {
           return;
         }
         try {
+          this.progressBar.start();
           let newUrlaub: Urlaub = {
             userId: this.currentUser.id,
             startDatum: data.start.value,
@@ -114,6 +122,8 @@ export class UrlaubsPlanungComponent implements OnInit {
             this.resetDatePickers();
             this.SnackBarService.open('Urlaub konnte nicht eingetragen werden');
           }
+        } finally {
+          this.progressBar.complete();
         }
       }
     });
@@ -121,6 +131,7 @@ export class UrlaubsPlanungComponent implements OnInit {
 
 // nach dieser Methode und weg bzw. zurück navigieren ist der Urlaub immernoch im FE da. Erst on reload verschwindet er
   async deleteUrlaub(urlaub: Urlaub) {
+    this.progressBar.start();
     try {
       await this.UserService.deleteUrlaub(urlaub);
       const updatedUrlaub = this.urlaub$.getValue().filter(u => u !== urlaub);
@@ -129,6 +140,8 @@ export class UrlaubsPlanungComponent implements OnInit {
       window.location.reload() // Bad fix in the meanwhile
     } catch (error) {
       this.SnackBarService.open('Urlaub konnte nicht gelöscht werden');
+    }finally {
+      this.progressBar.complete();
     }
   }
 

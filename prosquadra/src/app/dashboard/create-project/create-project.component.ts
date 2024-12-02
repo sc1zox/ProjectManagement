@@ -1,4 +1,4 @@
-import {AfterViewInit, Component} from '@angular/core';
+import {AfterViewInit, Component, Signal, ViewChild, viewChild} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -15,6 +15,7 @@ import {NotificationsService} from '../../../services/notifications.service';
 import {SnackbarService} from '../../../services/snackbar.service';
 import { UserService } from '../../../services/user.service';
 import { User } from '../../../types/user';
+import {NgProgressbar, NgProgressRef} from 'ngx-progressbar';
 
 @Component({
   selector: 'app-create-project',
@@ -28,6 +29,8 @@ import { User } from '../../../types/user';
     TeamRoadmapComponent,
     MatSelect,
     MatOption,
+    NgProgressbar,
+    NgProgressRef,
   ],
   templateUrl: './create-project.component.html',
   styleUrls: ['./create-project.component.scss']
@@ -40,6 +43,7 @@ export class CreateProjectComponent implements AfterViewInit {
   roadmap?: Roadmap;
   currentTeam?: Team;
   user?: User;
+  @ViewChild(NgProgressRef) progressBar!: NgProgressRef;
 
   constructor(
     private readonly fb: FormBuilder,
@@ -73,6 +77,7 @@ export class CreateProjectComponent implements AfterViewInit {
   }
 
   async onSubmit(): Promise<void> {
+    this.progressBar.start();
     if (this.projectForm.valid) {
       const selectedTeam = this.teams.find(team => team.id === this.projectForm.value.teamName);
       if (selectedTeam) {
@@ -112,6 +117,7 @@ export class CreateProjectComponent implements AfterViewInit {
         console.log('Form is invalid');
       }
     }
+    this.progressBar.complete();
   }
 
 }
