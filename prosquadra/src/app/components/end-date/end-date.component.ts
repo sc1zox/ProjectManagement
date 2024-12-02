@@ -38,7 +38,6 @@ export class EndDateComponent implements AfterViewInit{
     });
   }
 
-
   async calculateEndDate () {
     if(this.startDateControl.value && this.currentProject && this.currentProject.avgEstimationHours && this.developers) {
       this.result = this.calculateProjectEndDate(this.startDateControl.value, this.currentProject?.avgEstimationHours, this.developers)
