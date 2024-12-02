@@ -5,3 +5,9 @@
 ::ng-deep .mdc-evolution-chip {
   background: var(--main-color) !important;
 }
+
+#Hint{
+  font-size: small;
+  text-wrap: wrap;
+  margin-bottom: var(--content-margin);
+}

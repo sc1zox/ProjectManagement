@@ -13,6 +13,6 @@ export class SpinnerService {
   }
 
   hide() {
-    this.isLoading.next(false);
+      this.isLoading.next(false);
   }
 }

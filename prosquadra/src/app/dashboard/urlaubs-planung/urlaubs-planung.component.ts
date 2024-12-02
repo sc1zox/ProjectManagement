@@ -15,6 +15,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {slideIn} from '../../../animations/slideIn';
 import {UrlaubPlanungService} from '../../../services/urlaub.planung.service';
 import {ApiError} from '../../../../error/ApiError';
+import {SpinnerService} from '../../../services/spinner.service';
 
 
 @Component({
@@ -47,13 +48,14 @@ export class UrlaubsPlanungComponent implements OnInit {
   urlaub$ = new BehaviorSubject<Urlaub[]>([]);
 
 // https://stackoverflow.com/questions/63823557/angular-material-datepickerrange-get-value-on-change
-  constructor(private UserService: UserService, private readonly SnackBarService: SnackbarService, private UrlaubsPlanungService: UrlaubPlanungService) {
+  constructor(private UserService: UserService, private readonly SnackBarService: SnackbarService, private UrlaubsPlanungService: UrlaubPlanungService,private readonly SpinnerService: SpinnerService,) {
   }
 
   startDatePicker = new Subject<MatDatepickerInputEvent<any>>();
   endDatePicker = new Subject<MatDatepickerInputEvent<any>>();
 
   async ngOnInit(): Promise<void> {
+    this.SpinnerService.show();
 
     try {
       this.currentUser = await this.UserService.getCurrentUser();
@@ -67,6 +69,8 @@ export class UrlaubsPlanungComponent implements OnInit {
       }
     }catch (error){
       console.log(error)
+    }finally {
+      this.SpinnerService.hide();
     }
 
     const dateChange$ = combineLatest([this.startDatePicker, this.endDatePicker]).pipe(

@@ -8,6 +8,8 @@ import {Team} from '../../../types/team';
 import {NgIf} from '@angular/common';
 import {SnackbarService} from '../../../services/snackbar.service';
 import {fadeIn} from '../../../animations/fadeIn';
+import {SpinnerService} from '../../../services/spinner.service';
+import {SpinnerComponent} from '../../components/spinner/spinner.component';
 
 @Component({
   selector: 'app-team-overview',
@@ -15,7 +17,8 @@ import {fadeIn} from '../../../animations/fadeIn';
   imports: [
     UserTableComponent,
     EditTeamsComponent,
-    NgIf
+    NgIf,
+    SpinnerComponent
   ],
   animations: [
     fadeIn,
@@ -29,17 +32,20 @@ export class TeamOverviewComponent implements OnInit {
   currentUser?: User;
   isScrum: boolean = false;
 
-  constructor(private readonly UserService: UserService, private readonly TeamService: TeamService,private readonly SnackBarService: SnackbarService) {
+  constructor(private readonly UserService: UserService, private readonly TeamService: TeamService,private readonly SnackBarService: SnackbarService, private SpinnerService: SpinnerService) {
 
   }
 
   async ngOnInit() {
+    this.SpinnerService.show();
     try {
       this.users = await this.UserService.getUsers();
       this.teams = await this.TeamService.getTeams();
       this.currentUser = await this.UserService.getCurrentUser();
     }catch (error){
       this.SnackBarService.open('Es gab ein Fehler bei der Initalisierung')
+    }finally {
+      this.SpinnerService.hide();
     }
 
     this.isScrum = this.currentUser?.role === 'SM';

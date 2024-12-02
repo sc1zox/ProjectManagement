@@ -1,6 +1,6 @@
 import {Component, inject, Input, OnChanges, signal, SimpleChanges} from '@angular/core';
 import {MatChipGrid, MatChipInput, MatChipInputEvent, MatChipRemove, MatChipRow} from "@angular/material/chips";
-import {MatFormField, MatLabel} from "@angular/material/form-field";
+import {MatFormField, MatHint, MatLabel} from "@angular/material/form-field";
 import {MatIcon} from "@angular/material/icon";
 import {NgForOf} from "@angular/common";
 import {COMMA, ENTER} from '@angular/cdk/keycodes';
@@ -22,7 +22,8 @@ import {fadeIn} from '../../../../animations/fadeIn';
     MatFormField,
     MatIcon,
     MatLabel,
-    NgForOf
+    NgForOf,
+    MatHint,
   ],
   animations: [
     fadeIn
@@ -33,7 +34,7 @@ import {fadeIn} from '../../../../animations/fadeIn';
 export class UserSkillsComponent implements OnChanges {
   @Input() user?: User;
   skills: Skill[] = [];
-  readonly result = signal<string[]>(['test']);
+  readonly result = signal<string[]>([]);
   readonly announcer = inject(LiveAnnouncer);
   readonly addOnBlur = true;
   readonly separatorKeysCodes = [ENTER, COMMA] as const;

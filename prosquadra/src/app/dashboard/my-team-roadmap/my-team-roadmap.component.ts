@@ -9,11 +9,13 @@ import {UserRole} from '../../../types/user';
 import {SnackbarService} from '../../../services/snackbar.service';
 import {slideIn} from '../../../animations/slideIn';
 import {RoadmapService} from '../../../services/roadmap.service';
+import {SpinnerComponent} from "../../components/spinner/spinner.component";
+import {SpinnerService} from '../../../services/spinner.service';
 
 @Component({
   selector: 'app-my-team-roadmap',
   standalone: true,
-  imports: [TeamRoadmapComponent, NgIf, NgForOf],
+    imports: [TeamRoadmapComponent, NgIf, NgForOf, SpinnerComponent],
   templateUrl: './my-team-roadmap.component.html',
   styleUrls: ['./my-team-roadmap.component.scss'],
   animations: [
@@ -35,11 +37,13 @@ export class MyTeamRoadmapComponent implements OnInit {
     private readonly UserService: UserService,
     private readonly SnackBarService: SnackbarService,
     private readonly RoadmapService: RoadmapService,
+    private readonly SpinnerService: SpinnerService,
   ) {
   }
 
   async ngOnInit() {
     const user = await this.UserService.getCurrentUser();
+    this.SpinnerService.show();
 
     if (!user) {
       console.error('User is not logged in or not found');
@@ -51,6 +55,8 @@ export class MyTeamRoadmapComponent implements OnInit {
       this.userTeams = await this.TeamService.getTeamsByUserId(user.id);
     }catch (error){
       this.SnackBarService.open('Konnte die Teams nicht abrufen');
+    }finally {
+      this.SpinnerService.hide();
     }
     if (this.userTeams.length === 0) {
       console.error('User is not part of any team');

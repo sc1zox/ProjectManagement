@@ -1,3 +1,6 @@
+<div class="spinner">
+  <app-spinner></app-spinner>
+</div>
 <div>
   <app-team-roadmap (dataUpdated)="refetch()" *ngIf="roadmap" [enableDragDrop]="isPo" [estimatableDEV]="isDev" [teams]="currentTeam"
                     [roadmap]="roadmap"></app-team-roadmap>
