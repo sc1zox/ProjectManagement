@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Input} from '@angular/core';
+import {AfterViewInit, Component, Input, ViewChild} from '@angular/core';
 import { Project } from '../../../types/project';
 import {User, UserRole} from '../../../types/user';
 import { CommonModule } from '@angular/common';
@@ -6,11 +6,12 @@ import {Team} from '../../../types/team';
 import {SnackbarService} from '../../../services/snackbar.service';
 import {FormControl} from '@angular/forms';
 import {ProjectService} from '../../../services/project.service';
+import {NgProgressbar, NgProgressRef} from 'ngx-progressbar';
 
 @Component({
   selector: 'app-end-date',
   standalone: true,
-  imports: [ CommonModule ],
+  imports: [CommonModule, NgProgressbar],
   templateUrl: './end-date.component.html',
   styleUrl: './end-date.component.scss'
 })
@@ -21,7 +22,7 @@ export class EndDateComponent implements AfterViewInit{
   @Input() startDateControl = new FormControl();
   developers?: User[]
   result?: Date;
-  projectFromBackend?: Project;
+  @ViewChild(NgProgressRef) progressBar!: NgProgressRef;
 
   constructor(private readonly SnackBarService: SnackbarService,private readonly ProjectService: ProjectService) {
   }
@@ -38,18 +39,21 @@ export class EndDateComponent implements AfterViewInit{
     });
   }
 
-
   async calculateEndDate () {
+    this.progressBar.start();
     if(this.startDateControl.value && this.currentProject && this.currentProject.avgEstimationHours && this.developers) {
       this.result = this.calculateProjectEndDate(this.startDateControl.value, this.currentProject?.avgEstimationHours, this.developers)
     }
     if(this.result) {
       console.log(this.result)
-      let body = {projectId: this.currentProject?.id, teamId: this.currentTeam?.id,endDate: this.result,startDate:this.startDateControl.value}
+      let body = {id: this.currentProject?.id,endDate: this.result,startDate:this.startDateControl.value}
       try {
         await this.ProjectService.updateProject(body);
+        this.SnackBarService.open('Projektdaten wurden aktualisiert!')
       }catch (error){
         this.SnackBarService.open('Projektdaten konnte nicht aktualisiert werden');
+      }finally {
+        this.progressBar.complete();
       }
     }
   }
@@ -81,12 +85,17 @@ export class EndDateComponent implements AfterViewInit{
       });
     };
 
+    const isWeekend = (date: Date): boolean => {
+      const dayOfWeek = date.getDay();
+      return dayOfWeek === 6 || dayOfWeek === 0;
+    };
+
     while (remainingHours > 0) {
       let dailyCapacity = 0;
 
       // Calculate effective daily working capacity by summing up available hours of team members
       for (const member of developers) {
-        if (!isVacationDay(currentDate, member) && member.arbeitszeit) {
+        if (!isVacationDay(currentDate, member) && !isWeekend(currentDate) && member.arbeitszeit) {
           let memberArbeitszeitPercentage = member.arbeitszeit * 0.6;
           dailyCapacity += (memberArbeitszeitPercentage/ 5) || workingHoursPerDay;
         }

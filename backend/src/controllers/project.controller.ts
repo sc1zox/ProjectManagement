@@ -234,18 +234,18 @@ class ProjectController {
 
 
     async updateProject(req: Request, res: Response, next: NextFunction): Promise<void> {
-        const {projectId, name, description, teamId, startDate, endDate} = req.body;
+        const {id, name, description, startDate, endDate} = req.body;
         console.log("UPDATED PROJECT: ",req.body);
-        if(!projectId || !teamId){
+        if(!id){
             return next({
                 status: StatusCodes.BAD_REQUEST,
-                message: 'provide valid id or teamid'
+                message: 'provide valid id'
             })
         }
 
         try {
             const existingProject = await prisma.project.findUnique({
-                where: {id: Number(projectId)},
+                where: {id: Number(id)},
             });
 
             if (!existingProject) {
@@ -255,25 +255,11 @@ class ProjectController {
                 });
             }
 
-            const existingTeam = await prisma.team.findUnique({
-                where: {id: teamId},
-            });
-
-            if (!existingTeam) {
-                return next({
-                    status: StatusCodes.NOT_FOUND,
-                    message: 'Das Team wurde nicht gefunden.',
-                });
-            }
-
             const updatedProject = await prisma.project.update({
-                where: {id: Number(projectId)},
+                where: {id: Number(id)},
                 data: {
                     name,
                     description,
-                    team: {
-                        connect: {id: teamId},
-                    },
                     startDate,
                     endDate,
                 },
