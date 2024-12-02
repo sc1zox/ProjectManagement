@@ -59,11 +59,10 @@ export class ProjectService implements OnInit {
     try {
       const response = await this.ApiService.put('/project/update', payload);
       return response.data;
-    } catch (error) {
-      const err = error as Error;
-      throw err;
+    } catch (error: any) {
+      throw error;
     }
-  }  
+  }
 
   async getProjectWithLowestPriorityByUserId(ID: number): Promise<Project[]> {
     try {
