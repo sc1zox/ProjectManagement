@@ -89,7 +89,6 @@ export class UrlaubsPlanungComponent implements OnInit {
 
 
     dateChange$.subscribe(async (data) => {
-      this.progressBar.start();
       if (data.start.value && data.end.value && this.currentUser) {
         if (!await this.UrlaubsPlanungService.checkIfVacationIsValid(data.start.value, data.end.value, this.currentUser.id)) {
           this.SnackBarService.open('Urlaub liegt im Projektzeitraum!');
@@ -97,6 +96,7 @@ export class UrlaubsPlanungComponent implements OnInit {
           return;
         }
         try {
+          this.progressBar.start();
           let newUrlaub: Urlaub = {
             userId: this.currentUser.id,
             startDatum: data.start.value,

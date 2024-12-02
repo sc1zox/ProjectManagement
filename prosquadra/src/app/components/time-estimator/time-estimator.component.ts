@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
@@ -11,6 +11,7 @@ import { UserService } from '../../../services/user.service';
 import { User } from '../../../types/user';
 import { ProjectService } from '../../../services/project.service';
 import { Estimation } from '../../../types/estimation';
+import {NgProgressbar, NgProgressRef} from 'ngx-progressbar';
 
 
 
@@ -24,6 +25,7 @@ import { Estimation } from '../../../types/estimation';
     MatSelectModule,
     MatButtonModule,
     CommonModule,
+    NgProgressbar,
   ],
   templateUrl: './time-estimator.component.html',
   styleUrls: ['./time-estimator.component.scss'],
@@ -35,6 +37,7 @@ export class TimeEstimatorComponent implements OnInit {
   currentUser?: User;
   @Input() currentProject?: Project;
   @Output() myTimeEstimate = new EventEmitter<Estimation>();
+  @ViewChild(NgProgressRef) progressBar!: NgProgressRef;
 
 
   timeUnits = [
@@ -64,6 +67,7 @@ export class TimeEstimatorComponent implements OnInit {
   }
 
   async calculateEstimate(): Promise<void> {
+    this.progressBar.start();
     const formValues = this.timeEstimateForm.value;
 
     // Convert all estimates to hours
@@ -89,6 +93,8 @@ export class TimeEstimatorComponent implements OnInit {
       }
     } catch (error) {
       this.SnackBarService.open("Einschätzung konnte nicht geladen werden");
+    }finally {
+      this.progressBar.complete();
     }
   }
 
