@@ -7,8 +7,8 @@ import {
   Input,
   OnChanges,
   OnInit,
-  Output,
-  SimpleChanges,
+  Output, Signal,
+  SimpleChanges, viewChild,
   ViewChild
 } from '@angular/core';
 import {CommonModule} from '@angular/common';
@@ -40,6 +40,8 @@ import {MatSelectChange, MatSelectModule} from '@angular/material/select';
 import {Router} from '@angular/router';
 import {EndDateComponent} from '../../components/end-date/end-date.component';
 import { MatSelect } from '@angular/material/select';
+import {SpinnerService} from '../../../services/spinner.service';
+import {NgProgressbar, NgProgressRef} from 'ngx-progressbar';
 
 const isStartDateInRange = (projects: Project[], startDate: Date, selectedProject: Project): boolean => {
   const projectsWithoutItself = projects.filter(project => project.id !== selectedProject.id);
@@ -66,7 +68,9 @@ const isStartDateInRange = (projects: Project[], startDate: Date, selectedProjec
     TimeEstimatorComponent,
     MatSelectModule,
     MatOptionModule,
-    EndDateComponent],
+    EndDateComponent,
+    NgProgressbar,
+  ],
   providers: [provideNativeDateAdapter(),
     {provide: MAT_DATE_LOCALE, useValue: 'de-DE'}
   ],
@@ -89,7 +93,8 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   endDateFromBackendForCurrentProject?: Date;
   startDateFromBackendForCurrentProject?: Date;
   private originalStatus: ProjectStatus | null = null;
-  @Output() dataUpdated = new EventEmitter<void>()
+  @Output() dataUpdated = new EventEmitter<void>();
+  @ViewChild(NgProgressRef) progressBar!: NgProgressRef;
   hours?: number;
   days?: number;
   startDateControl = new FormControl();
@@ -110,7 +115,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
 
   constructor(private readonly ProjectService: ProjectService,
               private readonly UserService: UserService, private readonly fb: FormBuilder,
-              private readonly RoadmapService: RoadmapService, private SnackBarSerivce: SnackbarService, private cdr: ChangeDetectorRef, private router: Router) {
+              private readonly RoadmapService: RoadmapService, private SnackBarSerivce: SnackbarService, private cdr: ChangeDetectorRef, private router: Router,private readonly SpinnerService: SpinnerService) {
     this.dateForm = this.fb.group({
       startDate: this.startDateControl,
     });
@@ -144,6 +149,16 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     if (this.roadmap) {
       this.projects = this.roadmap.projects;
     }
+  }
+
+  progressBarStart() {
+    if(this.progressBar)
+      this.progressBar.start();
+  }
+
+  progressBarStop(){
+    if(this.progressBar)
+    this.progressBar.set(100);
   }
 
   async ngOnInit() {
@@ -403,6 +418,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
 
 
   async onDelete() {
+    this.progressBarStart();
     if (this.roadmap?.projects && !(this.roadmap?.projects.length > 1)) {
       this.SnackBarSerivce.open('Löschen fehlgeschlagen! Die Roadmap enthält nur ein Projekt')
       return;
@@ -423,8 +439,11 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
         this.SnackBarSerivce.open('Projekt erfolgreich gelöscht');
       } catch (error) {
         this.SnackBarSerivce.open('Fehler beim Löschen des Projekts');
+      }finally {
+        this.progressBarStop();
       }
     }
+    this.progressBar.complete()
   }
 
   async refreshProjectOrder() {
