@@ -169,14 +169,23 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     this.selectInitialProject();
     this.updateDateControls();
     this.showTimeEstimator = this.router.url.includes('dashboard/team-roadmap');
-    this.hideInDashboard = this.router.url.includes('dashboard/team-roadmap') || this.router.url.includes('dashboard/create-project');
-    this.notDraggableInDashboardHome = this.router.url.includes('dashboard/team-roadmap') || this.router.url.includes('dashboard/create-project');
+    this.hideInDashboard = this.router.url.includes('dashboard/team-roadmap') || this.router.url.includes('dashboard/create-project') || this.canEditInDashboard();
+    this.notDraggableInDashboardHome = this.router.url.includes('dashboard/team-roadmap') || this.router.url.includes('dashboard/create-project') || this.canEditInDashboard();
   }
 
   canEditStatus(): boolean {
     switch (this.user?.role) {
       case UserRole.Admin:
       case UserRole.PO:
+      case UserRole.Bereichsleiter:
+        return true;
+      default:
+        return false;
+    }
+  }
+
+  canEditInDashboard(): boolean {
+    switch (this.user?.role) {
       case UserRole.Bereichsleiter:
         return true;
       default:

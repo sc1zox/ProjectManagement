@@ -7,11 +7,10 @@
 
       <mat-list-item *ngIf="user?.role !== UserRole.Admin" [routerLink]="['home']">Dashboard</mat-list-item>
 
-
       <mat-list-item *ngIf="user?.role===UserRole.PO" [routerLink]="['create-project']">Projekt erstellen
       </mat-list-item>
 
-      <mat-list-item *ngIf="user?.role!==UserRole.Admin" [routerLink]="['team-roadmap']">Team Roadmap</mat-list-item>
+      <mat-list-item *ngIf="user?.role!==UserRole.Admin && user?.role!==UserRole.Bereichsleiter"  [routerLink]="['team-roadmap']">Team Roadmap</mat-list-item>
 
       <mat-list-item *ngIf="user?.role===UserRole.Admin || user?.role===UserRole.SM || user?.role===UserRole.Bereichsleiter" [routerLink]="['team-overview']">Teamübersicht</mat-list-item>
 
