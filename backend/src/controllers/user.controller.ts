@@ -44,7 +44,11 @@ class UserController {
             const users = await prisma.user.findMany({
                 include: {
                     skills: true,
-                    teams: true,
+                    teams: {
+                        include: {
+                            members: true,
+                        }
+                    },
                     urlaub: true,
                 },
             });

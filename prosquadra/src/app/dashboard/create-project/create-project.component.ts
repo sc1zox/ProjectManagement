@@ -64,7 +64,6 @@ export class CreateProjectComponent implements OnInit{
     await this.loadTeams();
     if(this.user && this.user.teams)
     this.userTeam = this.user?.teams[0];
-    console.log(this.userTeam)
   }
 
   async loadTeams() {
