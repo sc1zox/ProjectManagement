@@ -1,18 +1,15 @@
-<ng-progress/>
+<ng-progress />
 
 <div *ngIf="roadmap && roadmap.projects.length > 0; else noRoadmap" class="roadmap-card">
   <h2>{{ teams?.name }}</h2>
 
   <div class="project-list" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListData]="projects"
-       [cdkDropListDisabled]="(user?.role !== UserRole.PO && user?.role !== UserRole.Bereichsleiter) || !notDraggableInDashboardHome"
-       (cdkDropListDropped)="drop($event)">
+    [cdkDropListDisabled]="(user?.role !== UserRole.PO && user?.role !== UserRole.Bereichsleiter) || !notDraggableInDashboardHome"
+    (cdkDropListDropped)="drop($event)">
 
-    <div *ngFor="let project of projects;" class="project-box"
-         cdkDrag
-         (mousedown)="onMouseDown($event)"
-         (click)="handleProjectClick($event, project)"
-         [ngClass]="{ 'selected': project === selectedProject }"
-         cdkDragBoundary=".roadmap-card">
+    <div *ngFor="let project of projects;" class="project-box" cdkDrag (mousedown)="onMouseDown($event)"
+      (click)="handleProjectClick($event, project)" [ngClass]="{ 'selected': project === selectedProject }"
+      cdkDragBoundary=".roadmap-card">
       {{ project.name }}
     </div>
   </div>
@@ -22,12 +19,10 @@
     <div class="header">
       <h3><strong>Projekt: </strong>{{ selectedProject.name }}</h3>
       <div class="status">
-        <mat-form-field
-          *ngIf="canEditStatus() && hideInDashboard; else displayStatus"
-          appearance="outline">
+        <mat-form-field *ngIf="canEditStatus() && hideInDashboard; else displayStatus" appearance="outline">
           <mat-label>Status</mat-label>
           <mat-select #statusSelect [(value)]="selectedProject.projectStatus"
-                      (selectionChange)="onStatusChange($event,statusSelect)" (opened)="onStatusDropdownOpened()">
+            (selectionChange)="onStatusChange($event,statusSelect)" (opened)="onStatusDropdownOpened()">
             <mat-option *ngFor="let status of projectStatuses" [value]="status">{{ getStatusLabel(status) }}
             </mat-option>
           </mat-select>
@@ -40,25 +35,35 @@
 
     <!-- Dates Section -->
     <div *ngIf="selectedProject.projectStatus === ProjectStatus.inBearbeitung" class="dates-section">
-      <div
-        *ngIf="canEditDate() && hideInDashboard; else displayDates">
+
+      <!-- Start Date Logic -->
+      <div *ngIf="canEditDate() && hideInDashboard; else displayStartDate">
         <mat-form-field appearance="outline" class="date-picker">
           <mat-label>Start Date</mat-label>
-          <input [formControl]="startDateControl" [matDatepicker]="startPicker" matInput/>
+          <input [formControl]="startDateControl" [matDatepicker]="startPicker" matInput />
           <mat-datepicker-toggle [for]="startPicker" matSuffix></mat-datepicker-toggle>
           <mat-datepicker #startPicker></mat-datepicker>
         </mat-form-field>
       </div>
-      <ng-template #displayDates>
-        <div
-          *ngIf="startDateFromBackendForCurrentProject !== undefined && endDateFromBackendForCurrentProject !== undefined">
-          <p class="date-display"><strong>Project Start
-            Date:</strong> {{ startDateFromBackendForCurrentProject | date }}</p>
-          <p class="date-display"><strong>Project End Date:</strong> {{ endDateFromBackendForCurrentProject | date }}
+
+      <!-- Start Date Display -->
+      <ng-template #displayStartDate>
+        <div *ngIf="startDateFromBackendForCurrentProject !== undefined">
+          <p class="date-display">
+            <strong>Project Start Date:</strong> {{ startDateFromBackendForCurrentProject | date }}
           </p>
         </div>
       </ng-template>
+
+      <!-- End Date Display (Always shown if exists) -->
+      <div *ngIf="endDateFromBackendForCurrentProject !== undefined">
+        <p class="date-display">
+          <strong>Project End Date:</strong> {{ endDateFromBackendForCurrentProject | date }}
+        </p>
+      </div>
+
     </div>
+
 
     <!-- Description -->
     <div class="description">
@@ -87,16 +92,16 @@
 
     <div>
       <app-end-date [currentProject]="selectedProject" [currentTeam]="teams"
-                    [startDateControl]="startDateControl"></app-end-date>
+        [startDateControl]="startDateControl"></app-end-date>
     </div>
 
     <!-- Action Buttons -->
     <div class="actions">
-      <button *ngIf="(user?.role === UserRole.Bereichsleiter || user?.role === UserRole.PO) && hideInDashboard" mat-raised-button color="primary"
-              (click)="onSubmit()" class="roadmap-button">Prioriät speichern
+      <button *ngIf="(user?.role === UserRole.Bereichsleiter || user?.role === UserRole.PO) && hideInDashboard"
+        mat-raised-button color="primary" (click)="onSubmit()" class="roadmap-button">Prioriät speichern
       </button>
-      <button *ngIf="(user?.role === UserRole.Bereichsleiter || user?.role === UserRole.PO) && hideInDashboard" mat-raised-button color="warn" (click)="onDelete()"
-              class="roadmap-button">Delete
+      <button *ngIf="(user?.role === UserRole.Bereichsleiter || user?.role === UserRole.PO) && hideInDashboard"
+        mat-raised-button color="warn" (click)="onDelete()" class="roadmap-button">Delete
         Project
       </button>
     </div>

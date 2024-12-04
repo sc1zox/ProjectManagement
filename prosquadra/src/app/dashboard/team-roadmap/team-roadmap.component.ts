@@ -46,9 +46,26 @@ import {NgProgressbar, NgProgressRef} from 'ngx-progressbar';
 const isStartDateInRange = (projects: Project[], startDate: Date, selectedProject: Project): boolean => {
   const projectsWithoutItself = projects.filter(project => project.id !== selectedProject.id);
   const projectsMapped = parseProjects(projectsWithoutItself);
-  const result = projectsMapped
-    .filter(project => (project.startDate !== null && project.endDate !== null))
-  const boolresult = result.some(range => startDate >= (range.startDate as Date) && startDate <= (range.endDate as Date)); //as Date to avoid undefined
+
+  const result = projectsMapped.filter(
+    project => project.startDate !== null && project.endDate !== null
+  );
+
+  // Normalize dates to compare only date components
+  const normalizeDate = (date: any): Date => {
+    if (!(date instanceof Date)) {
+      date = new Date(date); // Unsere Dates waren manchmal keine valid Dates?
+    }
+    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  };
+
+  const normalizedStartDate = normalizeDate(startDate);
+
+  const boolresult = result.some(range => {
+    const normalizedRangeStart = normalizeDate(range.startDate as Date);
+    const normalizedRangeEnd = normalizeDate(range.endDate as Date);
+    return normalizedStartDate >= normalizedRangeStart && normalizedStartDate <= normalizedRangeEnd;
+  });
 
   return boolresult;
 };
@@ -126,8 +143,15 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     const startDate = control.value;
     if (this.selectedProject !== undefined) {
       if (isStartDateInRange(this.projects, startDate, this.selectedProject) && startDate !== null) {
-        this.SnackBarSerivce.open('Das Startdatum darf sich nicht mit einem Projekt überschneiden')
-        return {startDateInvalid: true}
+        this.SnackBarSerivce.open('Das Startdatum darf sich nicht mit einem Projekt überschneiden');
+  
+        // Immediately reset the control value | emitEvent: false so calculateEndDate does not get called
+        control.setValue(this.selectedProject?.startDate || null, { emitEvent: false });
+  
+        // Mark the control as touched to prevent user confusion
+        control.markAsTouched();
+  
+        return { startDateInvalid: true };
       }
     }
     return null;
@@ -383,8 +407,6 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
       this.updated = true
     }
   }
-
-
 
   async onSubmit() {
     try {

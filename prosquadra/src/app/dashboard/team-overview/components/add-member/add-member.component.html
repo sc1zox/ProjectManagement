@@ -1,5 +1,6 @@
 <h1 mat-dialog-title>Mitglieder von {{ data.team.name }} bearbeiten</h1>
 <div mat-dialog-content>
+  <p class="team-req-status">{{ teamRequirementStatus }}</p>
   <mat-form-field>
     <mat-label>Neues Mitglied</mat-label>
     <input [(ngModel)]="newMemberName" [matAutocompleteDisabled]="newMemberName.length === 0" [matAutocomplete]="auto" matInput

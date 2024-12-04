@@ -35,11 +35,17 @@ export class EndDateComponent implements AfterViewInit{
     this.developers = this.currentTeam?.members?.filter(member => member.role === UserRole.Developer);
 
     this.startDateControl.valueChanges.subscribe(() => {
-      this.calculateEndDate();
+      if(this.startDateControl.valid) {
+        this.calculateEndDate();
+      }
     });
   }
 
   async calculateEndDate () {
+    if (this.startDateControl.invalid) {
+      this.SnackBarService.open('Das Startdatum ist ungültig. Bitte korrigieren Sie es, bevor Sie fortfahren.');
+      return;
+    }
     this.progressBar.start();
     if(this.startDateControl.value && this.currentProject && this.currentProject.avgEstimationHours && this.developers) {
       this.result = this.calculateProjectEndDate(this.startDateControl.value, this.currentProject?.avgEstimationHours, this.developers)
