@@ -54,8 +54,8 @@ export class CreateProjectComponent implements OnInit{
     private readonly UserService: UserService,
   ) {
     this.projectForm = this.fb.group({
-      projectName: ['', [Validators.required, Validators.maxLength(20)]], // Correct maxLength usage
-      description: ['', Validators.required],
+      projectName: ['', [Validators.required, Validators.maxLength(15)]], // Correct maxLength usage
+      description: ['', [Validators.required, Validators.maxLength(50)]],
       teamName: ['', Validators.required],
     });
   }
@@ -71,7 +71,6 @@ export class CreateProjectComponent implements OnInit{
       if(!this.user) {
         this.user = await this.UserService.getCurrentUser();
       }
-
       this.teams = await this.TeamService.getTeamsByUserId(this.user!.id);
     }catch (error){
       this.SnackBarService.open('Konnte die Teams nicht laden')
@@ -83,10 +82,16 @@ export class CreateProjectComponent implements OnInit{
     if (this.projectForm.valid && this.teams) {
       const selectedTeam = this.teams.find(team => team.id === this.projectForm.value.teamName);
       if (selectedTeam) {
-        const existingProjects = await this.projectService.getProjectsByTeamId(selectedTeam.id);
+        let existingProjects;
+        try {
+          existingProjects = await this.projectService.getProjectsByTeamId(selectedTeam.id);
+        }catch (error){
+          this.SnackBarService.open('Konnte spezifisches Projekt nicht laden');
+          return;
+        }
 
-        const maxPriorityPosition = existingProjects.length > 0
-          ? Math.max(...existingProjects.map(project => project.priorityPosition || 0))
+        const maxPriorityPosition = existingProjects!.length > 0
+          ? Math.max(...existingProjects!.map(project => project.priorityPosition || 0))
           : 0;
         const newPriorityPosition = maxPriorityPosition + 1;
         const newProject: Project = {
@@ -103,7 +108,6 @@ export class CreateProjectComponent implements OnInit{
           this.SnackBarService.open('Projekt konnte nicht erstellt werden');
         }
         this.selectedTeam = selectedTeam;
-        if (selectedTeam) {
           try {
             this.currentTeam = await this.TeamService.getTeamById(selectedTeam.id);
           }catch (error){
@@ -111,6 +115,7 @@ export class CreateProjectComponent implements OnInit{
           }
           this.roadmap = this.currentTeam?.roadmap;
         }
+      if (this.selectedTeam) {
         this.selectedTeam.members?.forEach((member) => {
           this.NotificationService.createNotification('Deinem Team wurde ein Projekt hinzugefügt', member.id);
         });

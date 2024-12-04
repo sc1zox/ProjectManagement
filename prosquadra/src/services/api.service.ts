@@ -1,5 +1,4 @@
-// api.service.ts
-import {Injectable} from '@angular/core';
+import {Injectable, OnInit} from '@angular/core';
 import {ApiResponse} from '../types/api-response';
 import {ApiError} from '../../error/ApiError';
 
@@ -7,9 +6,10 @@ import {ApiError} from '../../error/ApiError';
 @Injectable({
   providedIn: 'root'
 })
-export class ApiService {
+export class ApiService{
   private readonly apiUrl = 'http://localhost:3000/api';
   private readonly baseUrl: string = 'http://localhost:3000';
+  private readonly tokenKey = 'authToken';
 
   constructor() {
   }
@@ -31,7 +31,11 @@ export class ApiService {
   }
 
   async fetch<T>(endpoint: string): Promise<ApiResponse<T>> {
-    const response: Response = await fetch(this.apiUrl + endpoint);
+    const response: Response = await fetch(this.apiUrl + endpoint,{
+      headers: {
+        'Authorization': `Bearer ${this.getToken()}`
+      }
+    });
 
     if (!response.ok) {
       const errorData = await response.json();
@@ -46,6 +50,7 @@ export class ApiService {
     const response:Response = await fetch(this.apiUrl+endpoint, {
       method: 'POST',
       headers: {
+        'Authorization': `Bearer ${this.getToken()}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(body),
@@ -62,6 +67,9 @@ export class ApiService {
   async delete<T>(endpoint: string): Promise<ApiResponse<T>> {
     const response = await fetch(this.apiUrl+endpoint, {
       method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${this.getToken()}`,
+      }
     });
 
     if (!response.ok) {
@@ -76,6 +84,7 @@ export class ApiService {
     const response: Response = await fetch(this.apiUrl + endpoint, {
       method: 'PUT',
       headers: {
+        'Authorization': `Bearer ${this.getToken()}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(body),
@@ -93,6 +102,7 @@ export class ApiService {
     const response: Response = await fetch(this.apiUrl + endpoint, {
       method: 'PUT',
       headers: {
+        'Authorization': `Bearer ${this.getToken()}`,
         'Content-Type': 'application/json',
       },
     });
@@ -109,6 +119,7 @@ export class ApiService {
     const response = await fetch(url, {
       method: 'POST',
       headers: {
+        'Authorization': `Bearer ${this.getToken()}`,
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(body),
@@ -120,5 +131,11 @@ export class ApiService {
     }
 
     return response.json();
+  }
+
+
+  //helper to avoid circular DI
+  private getToken(): string | null {
+    return localStorage.getItem(this.tokenKey);
   }
 }

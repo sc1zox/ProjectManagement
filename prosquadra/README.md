@@ -44,9 +44,6 @@ COLOR SCHEME USED:
 
 ### BUGS
 - BUG: Urlaub speichert nicht im Frontend ohne neuzuladen. Also wenn man zwischen Seiten navigiert
-- BUG: team edit: Ich kann einen User der kein Team hat mehreren Teams zuweisen, da die UI nicht updated bis refreshed wird. Hier sollte ein reload passieren bzw verifiziert werden, dass der user kein sm ist und teams.length === 0 ist
-- BUG: BL ist unauthorized bei Team-overview? + darf auch wie PO drag&drop machen
-- BUG: Bei create project stimmt die Schätzung nicht. Fehlende Daten vermutlich. 
 - BUG: Bei my team roadmap stimmt die Reihenfolge nicht nach dem Löschen
 
 ### SOLVED

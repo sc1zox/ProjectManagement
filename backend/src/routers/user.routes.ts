@@ -10,52 +10,51 @@ import NotificationsController from "../controllers/notifications.controller";
 import checkRole from '../middleware/roleChecker';
 import {UserRole} from "@prisma/client";
 import PdfController from "../controllers/pdf.controller";
+import isAuthenticated from "../middleware/checkToken";
 
 const userRouter = Router();
 
-// routen absicherung ist implementiert, jedoch schickt das frontend momentan nicht überall auth mit. Bei Bedarf: checkRole(UserRole.Admin)
-
 userRouter.get('/users', rescue(userController.getAllUser));
 userRouter.get('/users/:id', rescue(userController.getUserById));
-userRouter.post('/users/create', rescue(userController.createUser));
-userRouter.put('/users/update/arbeitszeit', rescue(UserController.updateArbeitszeit));
-userRouter.put('/users/update/urlaubstage', rescue(UserController.updateUrlaubstage));
+userRouter.post('/users/create', checkRole(UserRole.Admin, rescue(userController.createUser)));
+userRouter.put('/users/update/arbeitszeit', isAuthenticated,rescue(UserController.updateArbeitszeit));
+userRouter.put('/users/update/urlaubstage', isAuthenticated,rescue(UserController.updateUrlaubstage));
 userRouter.get('/users/estimations/:id', rescue(UserController.getEstimationsByUserId));
 userRouter.get('/users/vacations/:id', rescue(UserController.getUserVacationsById));
-userRouter.post('/users/vacations/set', rescue(UserController.addVacation));
+userRouter.post('/users/vacations/set',isAuthenticated,rescue(UserController.addVacation));
 userRouter.delete('/users/vacations/delete/:id', rescue(UserController.deleteVacation));
 
 userRouter.get('/projects', rescue(ProjectController.getProjects));
 userRouter.get('/projects/:id', rescue(ProjectController.getProjectById));
-userRouter.delete('/project/delete/:id', rescue(ProjectController.deleteProject));
+userRouter.delete('/project/delete/:id', checkRole(UserRole.PO,rescue(ProjectController.deleteProject)));
 userRouter.get('/team/projects/:id', rescue(ProjectController.getProjectsByTeam));
-userRouter.post('/project/create', rescue(ProjectController.createProject));
-userRouter.put('/project/update', rescue(ProjectController.updateProject));
+userRouter.post('/project/create', checkRole(UserRole.PO,rescue(ProjectController.createProject)));
+userRouter.put('/project/update', isAuthenticated,rescue(ProjectController.updateProject));
 userRouter.get('/project/current/:id', rescue(ProjectController.getProjectWithLowestPriorityByUserId));
-userRouter.post('/project/create/estimation', rescue(ProjectController.addEstimationToProject));
+userRouter.post('/project/create/estimation', checkRole(UserRole.Developer,rescue(ProjectController.addEstimationToProject)));
 userRouter.get('/project/estimation/:id', rescue(ProjectController.getEstimationsWithAverage));
-userRouter.put('/project/status/update', rescue(ProjectController.updateProjectStatus));
+userRouter.put('/project/status/update', checkRole(UserRole.PO,rescue(ProjectController.updateProjectStatus)));
 
 userRouter.get('/team', rescue(TeamController.getTeams));
 userRouter.get('/team/:id', rescue(TeamController.getTeamByID));
-userRouter.post('/team/create', rescue(TeamController.createTeam));
+userRouter.post('/team/create', checkRole(UserRole.Admin,rescue(TeamController.createTeam)));
 userRouter.get('/team/user/:id', rescue(TeamController.getTeamByUserID));
-userRouter.post('/team/user/delete', rescue(TeamController.removeUserFromTeam));
-userRouter.post('/team/user/add', rescue(TeamController.addUserToTeam));
+userRouter.post('/team/user/delete', checkRole(UserRole.Admin,rescue(TeamController.removeUserFromTeam)));
+userRouter.post('/team/user/add', checkRole(UserRole.SM,rescue(TeamController.addUserToTeam)));
 
 userRouter.get('/roadmaps', rescue(RoadmapController.getAllRoadmaps));
 userRouter.get('/roadmaps/:id', rescue(RoadmapController.getRoadmapById));
-userRouter.put('/roadmaps/update', rescue(RoadmapController.updateProjectsPriority));
+userRouter.put('/roadmaps/update', isAuthenticated,rescue(RoadmapController.updateProjectsPriority));
 
-userRouter.post('/skills/add', rescue(SkillsController.addOrCreateSkillToUser));
+userRouter.post('/skills/add', isAuthenticated,rescue(SkillsController.addOrCreateSkillToUser));
 userRouter.get('/skills/:id', rescue(SkillsController.getUserSkills));
-userRouter.post('/skills/remove', rescue(SkillsController.removeSkillFromUser));
+userRouter.post('/skills/remove', isAuthenticated,rescue(SkillsController.removeSkillFromUser));
 
 userRouter.get('/notifications/:id', rescue(NotificationsController.getNotificationsByUserId));
-userRouter.post('/notifications', rescue(NotificationsController.setNotification));
-userRouter.put('/notifications/read/:id', rescue(NotificationsController.markNotificationAsRead));
-userRouter.delete('/notifications/delete/:id', rescue(NotificationsController.deleteNotification));
-userRouter.post('/notifications/create', rescue(NotificationsController.createNotification));
+userRouter.post('/notifications', isAuthenticated,rescue(NotificationsController.setNotification));
+userRouter.put('/notifications/read/:id', isAuthenticated,rescue(NotificationsController.markNotificationAsRead));
+userRouter.delete('/notifications/delete/:id', isAuthenticated,rescue(NotificationsController.deleteNotification));
+userRouter.post('/notifications/create', isAuthenticated,rescue(NotificationsController.createNotification));
 
 userRouter.get('/export/:id', rescue(PdfController.exportUserPDF));
 

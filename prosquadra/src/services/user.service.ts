@@ -5,6 +5,7 @@ import { ApiResponse } from '../types/api-response';
 import { Login } from '../types/login';
 import { Estimation } from '../types/estimation';
 import {Urlaub} from '../types/urlaub';
+import {log} from '@angular-devkit/build-angular/src/builders/ssr-dev-server';
 
 @Injectable({
   providedIn: 'root',
@@ -13,7 +14,8 @@ export class UserService {
   private User?: User;
   private userPromise?: Promise<User>;
 
-  constructor(private readonly ApiService: ApiService) {}
+  constructor(private readonly ApiService: ApiService) {
+  }
 
   async getUsers(): Promise<User[]> {
     try {

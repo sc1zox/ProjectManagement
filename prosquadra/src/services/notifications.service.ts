@@ -29,7 +29,11 @@ export class NotificationsService {
 
     toast.onHidden.subscribe(() => {
       if (notification.id) {
-        this.markNotificationAsRead(notification.id);
+        try {
+          this.markNotificationAsRead(notification.id);
+        }catch (error){
+          console.log("Something went wrong")
+        }
       }
     });
   }
@@ -53,7 +57,11 @@ export class NotificationsService {
       toast.onHidden.subscribe(() => {
         const notificationId = this.activeToasts[toast.toastId];
         if (notificationId) {
-          this.deleteNotification(notificationId);
+          try {
+            this.deleteNotification(notificationId);
+          }catch (error){
+            console.log("Something went wrong")
+          }
           delete this.activeToasts[toast.toastId];
         }
       });
@@ -90,7 +98,7 @@ export class NotificationsService {
   }
 
   // hier einen return type definieren? anstatt any?
-  async createNotification(notificationMessage: string, userId: number): Promise<ApiResponse<any>> {
+  async createNotification(notificationMessage: string, userId: number): Promise<ApiResponse<void>> {
     const notification: Notification = {
       message: notificationMessage,
       isRead: false,

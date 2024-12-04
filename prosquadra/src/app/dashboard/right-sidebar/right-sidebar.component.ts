@@ -79,7 +79,6 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
     try {
       this.user = await this.UserService.getCurrentUser();
       if (this.user) {
-        console.log('Der aktuelle Nutzer', this.user);
         this.userInitials = this.user.vorname.charAt(0).toUpperCase() + this.user.nachname.charAt(0).toUpperCase();
         if(this.user.role === UserRole.Admin || this.user.role === UserRole.Bereichsleiter){
           this.noTeamAndProject = true;
@@ -146,7 +145,7 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
 
   showNotifications() {
     if (this.notifications)
-      if(this.notificationsAmount === 0 || !!this.notifications){
+      if(this.notificationsAmount === 0){
         this.SnackBarService.open('Keine Notifications vorhanden');
       }
       this.notifications.forEach((notification) => {

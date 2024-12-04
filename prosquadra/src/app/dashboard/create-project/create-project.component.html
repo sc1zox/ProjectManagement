@@ -7,13 +7,16 @@
       <mat-label>Projekt Name</mat-label>
       <input formControlName="projectName" matInput placeholder="Projekt Name">
       <mat-error *ngIf="projectForm.get('projectName')?.hasError('maxlength')">
-        Maximal 10 Zeichen erlaubt.
+        Maximal 15 Zeichen erlaubt.
       </mat-error>
     </mat-form-field>
 
     <mat-form-field class="full-width">
       <mat-label>Projekt Beschreibung</mat-label>
       <textarea formControlName="description" matInput placeholder="Projekt Beschreibung"></textarea>
+      <mat-error *ngIf="projectForm.get('description')?.hasError('maxlength')">
+        Maximal 50 Zeichen erlaubt.
+      </mat-error>
     </mat-form-field>
 
     <mat-form-field class="full-width">
