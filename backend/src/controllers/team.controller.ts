@@ -77,6 +77,7 @@ class TeamController {
                 include: {
                     teams: {
                         include: {
+                            members: true,
                             projects: true,
                         }
                     }

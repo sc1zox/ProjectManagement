@@ -1,5 +1,4 @@
 import {Injectable} from '@angular/core';
-import {ApiService} from './api.service';
 import {UserService} from './user.service';
 import {UserRole} from '../types/user';
 
@@ -9,10 +8,9 @@ import {UserRole} from '../types/user';
 export class AuthService {
 
   private readonly tokenKey = 'authToken';
-  private apiUrl: string = '';
+  private apiUrl: string = 'http://localhost:3000/auth';
 
-  constructor(private readonly ApiService: ApiService, private readonly UserService: UserService) {
-    this.apiUrl = this.ApiService.getAuthUrl();
+  constructor(private readonly UserService: UserService) {
   }
 
   setToken(token: string): void {

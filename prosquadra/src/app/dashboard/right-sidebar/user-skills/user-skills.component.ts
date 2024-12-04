@@ -48,6 +48,9 @@ export class UserSkillsComponent implements OnChanges {
   }
 
   async ngOnChanges(changes: SimpleChanges) {
+    if(this.progressBar) {
+      this.progressBar.complete();
+    }
     if (changes['user'] && this.user) {
       try {
         this.skills = await this.SkillService.getSkill(this.user.id);
@@ -67,7 +70,6 @@ export class UserSkillsComponent implements OnChanges {
           this.skills = updatedSkills;
           this.result.set(this.skills.map(skill => skill.name));
         });
-        this.progressBar.complete();
       }catch (error){
         this.SnackBarService.open('Error beim hinzufügen der Skills');
       }finally {
@@ -75,6 +77,7 @@ export class UserSkillsComponent implements OnChanges {
       }
       }
     event.chipInput!.clear();
+    this.progressBar.complete();
   }
 
   remove(skillName: string): void {
@@ -85,6 +88,7 @@ export class UserSkillsComponent implements OnChanges {
           this.skills = updatedSkills;
           this.result.set(this.skills.map(skill => skill.name));
           this.announcer.announce(`Removed ${skillName}`);
+          this.progressBar.complete();
         });
       }catch (error){
         this.SnackBarService.open('Fehler bei der Skillentfernung')
