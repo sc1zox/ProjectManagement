@@ -30,7 +30,7 @@ export const routes: Routes = [
         path: 'team-roadmap',
         loadComponent: () => import('./dashboard/my-team-roadmap/my-team-roadmap.component').then(m => m.MyTeamRoadmapComponent),
         canActivate: [AuthGuard],
-        data: { role: [UserRole.PO , UserRole.Bereichsleiter, UserRole.SM, UserRole.Developer]}
+        data: { role: [UserRole.PO, UserRole.SM, UserRole.Developer]}
       },
       {
         path: 'admin-panel',

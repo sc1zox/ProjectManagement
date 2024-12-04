@@ -4,7 +4,7 @@
   <h2>{{ teams?.name }}</h2>
 
   <div class="project-list" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListData]="projects"
-       [cdkDropListDisabled]="user?.role !== UserRole.PO || !notDraggableInDashboardHome"
+       [cdkDropListDisabled]="(user?.role !== UserRole.PO && user?.role !== UserRole.Bereichsleiter) || !notDraggableInDashboardHome"
        (cdkDropListDropped)="drop($event)">
 
     <div *ngFor="let project of projects;" class="project-box"
@@ -92,10 +92,10 @@
 
     <!-- Action Buttons -->
     <div class="actions">
-      <button *ngIf="hideInDashboard && user?.role === UserRole.PO" mat-raised-button color="primary"
+      <button *ngIf="(user?.role === UserRole.Bereichsleiter || user?.role === UserRole.PO) && hideInDashboard" mat-raised-button color="primary"
               (click)="onSubmit()" class="roadmap-button">Prioriät speichern
       </button>
-      <button *ngIf="user?.role === UserRole.PO && hideInDashboard" mat-raised-button color="warn" (click)="onDelete()"
+      <button *ngIf="(user?.role === UserRole.Bereichsleiter || user?.role === UserRole.PO) && hideInDashboard" mat-raised-button color="warn" (click)="onDelete()"
               class="roadmap-button">Delete
         Project
       </button>
