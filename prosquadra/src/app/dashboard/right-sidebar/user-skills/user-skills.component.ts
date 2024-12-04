@@ -67,6 +67,7 @@ export class UserSkillsComponent implements OnChanges {
           this.skills = updatedSkills;
           this.result.set(this.skills.map(skill => skill.name));
         });
+        this.progressBar.complete();
       }catch (error){
         this.SnackBarService.open('Error beim hinzufügen der Skills');
       }finally {
