@@ -41,6 +41,7 @@ export class TeamOverviewComponent implements OnInit {
     try {
       this.users = await this.UserService.getUsers();
       this.teams = await this.TeamService.getTeams();
+      this.teams = this.teams.filter(team => team.id !== 1);
       this.currentUser = await this.UserService.getCurrentUser();
     }catch (error){
       this.SnackBarService.open('Es gab ein Fehler bei der Initalisierung')

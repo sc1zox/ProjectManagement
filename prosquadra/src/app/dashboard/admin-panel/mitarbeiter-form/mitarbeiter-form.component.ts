@@ -46,7 +46,7 @@ import {Login} from '../../../../types/login';
 })
 export class MitarbeiterFormComponent implements OnInit, OnChanges {
 
-  Teams: Team[] = [];
+  Team: Team[] = [];
   user: User = {
     id: 0,
     vorname: '',
@@ -84,7 +84,8 @@ export class MitarbeiterFormComponent implements OnInit, OnChanges {
 
   async ngOnInit() {
     try {
-      this.Teams = await this.TeamService.getTeams();
+      this.Team = await this.TeamService.getTeams();
+      this.Team = this.Team.filter(team => team.id !== 1);
     }catch (error){
       this.SnackBarService.open('Konnte die Teams nicht laden')
     }
@@ -96,7 +97,8 @@ export class MitarbeiterFormComponent implements OnInit, OnChanges {
 
   async ngOnChanges() {
     try {
-      this.Teams = await this.TeamService.getTeams();
+      this.Team = await this.TeamService.getTeams();
+      this.Team = this.Team.filter(team => team.id !== 1);
     }catch (error){
       this.SnackBarService.open('Konnte die Teams nicht laden')
     }
