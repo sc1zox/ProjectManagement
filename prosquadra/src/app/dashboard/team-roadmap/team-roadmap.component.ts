@@ -125,6 +125,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   startDateValidator(control: AbstractControl): ValidationErrors | null {
     const startDate = control.value;
     if (this.selectedProject !== undefined) {
+      console.log('res ', isStartDateInRange(this.projects, startDate, this.selectedProject))
       if (isStartDateInRange(this.projects, startDate, this.selectedProject) && startDate !== null) {
         this.SnackBarSerivce.open('Das Startdatum darf sich nicht mit einem Projekt überschneiden')
         return {startDateInvalid: true}
