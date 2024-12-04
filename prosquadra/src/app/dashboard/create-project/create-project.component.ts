@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Signal, ViewChild, viewChild} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from '@angular/forms';
 import {CommonModule} from '@angular/common';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -30,15 +30,15 @@ import {NgProgressbar, NgProgressRef} from 'ngx-progressbar';
     MatSelect,
     MatOption,
     NgProgressbar,
-    NgProgressRef,
   ],
   templateUrl: './create-project.component.html',
   styleUrls: ['./create-project.component.scss']
 })
-export class CreateProjectComponent implements AfterViewInit {
+export class CreateProjectComponent implements OnInit{
 
   projectForm: FormGroup;
-  teams: Team[] = [];
+  teams?: Team[];
+  userTeam?: Team;
   selectedTeam?: Team; // Variable to hold the selected team
   roadmap?: Roadmap;
   currentTeam?: Team;
@@ -54,14 +54,17 @@ export class CreateProjectComponent implements AfterViewInit {
     private readonly UserService: UserService,
   ) {
     this.projectForm = this.fb.group({
-      projectName: ['', [Validators.required, Validators.maxLength(10)]], // Correct maxLength usage
+      projectName: ['', [Validators.required, Validators.maxLength(20)]], // Correct maxLength usage
       description: ['', Validators.required],
       teamName: ['', Validators.required],
     });
   }
 
-  async ngAfterViewInit() {
+  async ngOnInit() {
     await this.loadTeams();
+    if(this.user && this.user.teams)
+    this.userTeam = this.user?.teams[0];
+    console.log(this.userTeam)
   }
 
   async loadTeams() {
@@ -78,7 +81,7 @@ export class CreateProjectComponent implements AfterViewInit {
 
   async onSubmit(): Promise<void> {
     this.progressBar.start();
-    if (this.projectForm.valid) {
+    if (this.projectForm.valid && this.teams) {
       const selectedTeam = this.teams.find(team => team.id === this.projectForm.value.teamName);
       if (selectedTeam) {
         const existingProjects = await this.projectService.getProjectsByTeamId(selectedTeam.id);
@@ -119,5 +122,4 @@ export class CreateProjectComponent implements AfterViewInit {
     }
     this.progressBar.complete();
   }
-
 }
