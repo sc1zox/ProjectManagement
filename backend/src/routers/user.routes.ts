@@ -17,6 +17,7 @@ const userRouter = Router();
 userRouter.get('/users', rescue(userController.getAllUser));
 userRouter.get('/users/:id', rescue(userController.getUserById));
 userRouter.post('/users/create', checkRole(UserRole.Admin, rescue(userController.createUser)));
+userRouter.delete('/users/delete/:id', rescue(userController.deleteUser));
 userRouter.put('/users/update/arbeitszeit', isAuthenticated,rescue(UserController.updateArbeitszeit));
 userRouter.put('/users/update/urlaubstage', isAuthenticated,rescue(UserController.updateUrlaubstage));
 userRouter.get('/users/estimations/:id', rescue(UserController.getEstimationsByUserId));
@@ -41,6 +42,7 @@ userRouter.post('/team/create', checkRole(UserRole.Admin,rescue(TeamController.c
 userRouter.get('/team/user/:id', rescue(TeamController.getTeamByUserID));
 userRouter.post('/team/user/delete', checkRole(UserRole.Admin,rescue(TeamController.removeUserFromTeam)));
 userRouter.post('/team/user/add', checkRole(UserRole.SM,rescue(TeamController.addUserToTeam)));
+userRouter.delete('/team/delete/:id', checkRole(UserRole.Admin, rescue(TeamController.deleteTeam)));
 
 userRouter.get('/roadmaps', rescue(RoadmapController.getAllRoadmaps));
 userRouter.get('/roadmaps/:id', rescue(RoadmapController.getRoadmapById));

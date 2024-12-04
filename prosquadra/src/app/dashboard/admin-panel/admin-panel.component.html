@@ -1,7 +1,13 @@
 <div id="admin-panel">
   <h1>Admin Panel</h1>
+  <h3>Mitarbeiter: </h3>
   <div class="button-box">
     <button [routerLink]="['mitarbeiter-form']" class="button" mat-raised-button>Neuen Mitarbeiter anlegen</button>
+    <button [routerLink]="['mitarbeiter-delete']" class="button" mat-raised-button>Mitarbeiter löschen</button>
+  </div>
+  <h3>Team: </h3>
+  <div class="button-box">
     <button [routerLink]="['teams-form']" class="button" mat-raised-button>Neues Team anlegen</button>
+    <button [routerLink]="['teams-delete']" class="button" mat-raised-button>Team löschen</button>
   </div>
 </div>

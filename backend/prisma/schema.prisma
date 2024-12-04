@@ -31,7 +31,7 @@ model Notifications {
   createdAt DateTime @default(now())
   isRead    Boolean
   userId    Int
-  user      User     @relation("UserNotifications", fields: [userId], references: [id])
+  user      User     @relation("UserNotifications", fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Skill {
@@ -47,7 +47,7 @@ model Team {
   name      String
   members   User[]    @relation("TeamMembers")
   roadmapId Int?      @unique
-  roadmap   Roadmap?  @relation(fields: [roadmapId], references: [id])
+  roadmap   Roadmap?  @relation(fields: [roadmapId], references: [id], onDelete: Cascade)
   projects  Project[] @relation("TeamProjects")
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -68,8 +68,8 @@ model Project {
   startDate        DateTime?
   endDate          DateTime?
   roadmapId        Int?
-  roadmap          Roadmap?      @relation("RoadmapProjects", fields: [roadmapId], references: [id])
-  team             Team?         @relation("TeamProjects", fields: [teamid], references: [id])
+  roadmap          Roadmap?      @relation("RoadmapProjects", fields: [roadmapId], references: [id], onDelete: Cascade)
+  team             Team?         @relation("TeamProjects", fields: [teamid], references: [id], onDelete: Cascade)
   teamid           Int
   estimations      Estimation[]  @relation("ProjectEstimations")
   priorityPosition Int?
@@ -83,8 +83,8 @@ model Estimation {
   hours     Int
   projectId Int
   userId    Int
-  project   Project @relation("ProjectEstimations", fields: [projectId], references: [id])
-  user      User    @relation("UserEstimations", fields: [userId], references: [id])
+  project   Project @relation("ProjectEstimations", fields: [projectId], references: [id], onDelete: Cascade)
+  user      User    @relation("UserEstimations", fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([projectId, userId])
 }
@@ -94,13 +94,13 @@ model Login {
   username String @unique
   password String
   userId   Int    @unique
-  user     User   @relation(fields: [userId], references: [id])
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Urlaub {
   id         Int      @id @default(autoincrement())
   userId     Int
-  user       User     @relation("Urlaub", fields: [userId], references: [id])
+  user       User     @relation("Urlaub", fields: [userId], references: [id], onDelete: Cascade)
   startDatum DateTime
   endDatum   DateTime
 }

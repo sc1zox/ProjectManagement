@@ -1,0 +1,17 @@
+<div class="arrow-navigation">
+  <button [routerLink]="['..']" aria-label="Go Backward" mat-icon-button>
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+</div>
+
+<div class="user-delete-container">
+  <h2>User Übersicht</h2>
+  <mat-list>
+    <mat-list-item *ngFor="let user of users">
+      <span>{{ user.vorname }} {{ user.nachname }}</span>
+      <button mat-icon-button color="warn" (click)="deleteUser(user.id)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </mat-list-item>
+  </mat-list>
+</div>

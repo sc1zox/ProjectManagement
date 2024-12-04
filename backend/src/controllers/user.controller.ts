@@ -107,6 +107,43 @@ class UserController {
         }
     }
 
+    async deleteUser(req: Request, res: Response, next: NextFunction): Promise<void> {
+        const userId: number = Number(req.params.id);
+
+        if (!userId) {
+            return next({
+                status: StatusCodes.BAD_REQUEST,
+                message: 'provide a valid userId',
+            });
+        }
+
+        try {
+            await prisma.user.update({
+                where: { id: userId },
+                data: {
+                    teams: {
+                        set: []
+                    },
+                    skills: {
+                        set: []
+                    }
+                }
+            });
+
+
+            const deletedUser = await prisma.user.delete({
+                where: { id: userId },
+            });
+
+            res.status(StatusCodes.OK).json({
+                code: StatusCodes.OK,
+                data: deletedUser,
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
     async updateArbeitszeit(req: Request, res: Response, next: NextFunction): Promise<void> {
         const {userID, arbeitszeit} = req.body;
 
