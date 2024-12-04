@@ -60,6 +60,14 @@ export class EditTeamsComponent {
       data: {team, user},
     });
 
+    dialogRef.componentInstance.memberAdded.subscribe((addedUser: User) => {
+      this.updateTeamMembers(team.id, addedUser, 'add');
+    });
+
+    dialogRef.componentInstance.memberRemoved.subscribe((removedUserID: number) => {
+      this.updateTeamMembers(team.id, removedUserID, 'remove');
+    });
+
     dialogRef.componentInstance.memberRefreshed.subscribe(() => {
       this.reloadTeamData();
     });
@@ -70,6 +78,24 @@ export class EditTeamsComponent {
       this.teams = await this.TeamService.getTeams();
     }catch (error){
       this.SnackBarService.open('Konnte die Teams nicht laden')
+    }
+  }
+
+  updateTeamMembers(teamId: number, user: User | number, action: 'add' | 'remove'): void {
+    const team = this.teams.find((t) => t.id === teamId);
+    if (!team) {
+      return;
+    }
+
+    if (action === 'add' && typeof user !== 'number') {
+      const alreadyInTeam = team.members?.some((member) => member.id === user.id);
+      if (!alreadyInTeam) {
+        team.members = [...(team.members || []), user];
+      }
+    }
+
+    if (action === 'remove' && typeof user === 'number') {
+      team.members = team.members?.filter((member) => member.id !== user) || [];
     }
   }
 }

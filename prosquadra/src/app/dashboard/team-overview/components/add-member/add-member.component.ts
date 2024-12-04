@@ -1,4 +1,4 @@
-import {ChangeDetectorRef, Component, EventEmitter, Inject, OnInit, Output} from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialogActions,
@@ -6,18 +6,18 @@ import {
   MatDialogRef,
   MatDialogTitle
 } from '@angular/material/dialog';
-import {MatFormField, MatLabel} from '@angular/material/form-field';
-import {MatInput} from '@angular/material/input';
-import {FormsModule} from '@angular/forms';
-import {MatButton, MatIconButton} from '@angular/material/button';
-import {MatList, MatListItem} from '@angular/material/list';
-import {MatIcon} from '@angular/material/icon';
-import {NgForOf} from '@angular/common';
-import {Team} from '../../../../../types/team';
-import {User, UserRole} from '../../../../../types/user';
-import {MatAutocomplete, MatAutocompleteTrigger, MatOption} from '@angular/material/autocomplete';
-import {TeamService} from '../../../../../services/team.service';
-import {SnackbarService} from '../../../../../services/snackbar.service';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { FormsModule } from '@angular/forms';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatList, MatListItem } from '@angular/material/list';
+import { MatIcon } from '@angular/material/icon';
+import { NgForOf } from '@angular/common';
+import { Team } from '../../../../../types/team';
+import { User, UserRole } from '../../../../../types/user';
+import { MatAutocomplete, MatAutocompleteTrigger, MatOption } from '@angular/material/autocomplete';
+import { TeamService } from '../../../../../services/team.service';
+import { SnackbarService } from '../../../../../services/snackbar.service';
 
 @Component({
   selector: 'app-add-member',
@@ -47,7 +47,11 @@ export class AddMemberComponent implements OnInit {
   newMemberName: string = '';
   options?: string[];
   selectedUser?: User;
+  teamRequirementStatus: string = '';
+  private optionsCache: string[] = [];
   @Output() memberRefreshed = new EventEmitter<void>();
+  @Output() memberAdded = new EventEmitter<User>();
+  @Output() memberRemoved = new EventEmitter<number>();
 
   constructor(
     public dialogRef: MatDialogRef<AddMemberComponent>,
@@ -63,6 +67,8 @@ export class AddMemberComponent implements OnInit {
     this.options = this.data.user
       .filter(member => member.teams!.length === 0 || member.role === UserRole.SM)
       .map(member => member.vorname + ' ' + member.nachname);
+
+    this.updateTeamRequirementStatus();
   }
 
   async addMember(): Promise<void> {
@@ -73,46 +79,98 @@ export class AddMemberComponent implements OnInit {
       this.SnackbarService.open('Benutzer wurde nicht gefunden!');
       return;
     }
+  
     if (this.data.team.members) {
       const alreadyInTeam = this.data.team.members.some(
         (member) => member.id === this.selectedUser!.id
       );
-
+  
       if (alreadyInTeam) {
         this.SnackbarService.open('Benutzer ist bereits im Team!');
         return;
       }
     }
+  
     if (this.selectedUser.teams!.length > 0 && this.selectedUser.role !== UserRole.SM) {
       this.SnackbarService.open('Benutzer ist bereits in einem Team!');
       return;
     }
+  
     if (this.selectedUser) {
       try {
         await this.TeamService.addUserToTeam(this.selectedUser.id, this.data.team.id);
-      }catch (error){
-        this.SnackbarService.open('Konnte Nutzer nicht zum Team hinzufügen')
+        if (this.data.team.members) {
+          this.data.team.members.push(this.selectedUser);
+          this.memberAdded.emit(this.selectedUser);
+          this.updateOptionsList();
+          this.updateTeamRequirementStatus();
+        }
+        this.newMemberName = '';
+        this.cdr.detectChanges();
+      } catch (error) {
+        this.SnackbarService.open('Konnte Nutzer nicht zum Team hinzufügen');
       }
-      if (this.data.team.members)
-        this.data.team.members.push(this.selectedUser);
-      this.newMemberName = '';
-      this.cdr.detectChanges();
     }
-  }
+  }  
 
   async removeMember(userID: number): Promise<void> {
     try {
       await this.TeamService.removeUserFromTeam(userID, this.data.team.id);
-    }catch (error)
-    {
+
+      const updatedTeam = await this.TeamService.getTeamById(this.data.team.id);
+
+      this.data.team = updatedTeam;
+
+      const removedUser = this.data.user.find((user) => user.id === userID);
+      if (removedUser && removedUser.teams) {
+        removedUser.teams = removedUser.teams.filter((team) => team.id !== this.data.team.id);
+      }
+
+      this.memberRemoved.emit(userID);
+      this.updateOptionsList();
+      this.updateTeamRequirementStatus();
+      this.cdr.detectChanges();
+    } catch (error) {
       this.SnackbarService.open('Konnte Nutzer nicht aus dem Team entfernen')
-    }
-    if (this.data.team.members)
-      this.data.team.members = this.data.team.members.filter((member) => member.id !== userID);
-    this.cdr.detectChanges();
+    }   
   }
 
   onCancel(): void {
     this.dialogRef.close();
+  }
+
+  updateOptionsList(): void { 
+    const teamMembers = this.data.team.members ?? [];
+    this.options = this.data.user
+      .filter(
+        (member) =>
+          !teamMembers.some((teamMember) => teamMember.id === member.id) &&
+          (member.teams?.length === 0 || member.role === UserRole.SM)
+      )
+      .map((member) => member.vorname + ' ' + member.nachname);
+  }
+  
+  
+  updateTeamRequirementStatus(): void {
+    const members = this.data.team.members || [];
+    const missingRoles: string[] = [];
+  
+    // Check for each role
+    if (!members.some((member) => member.role === UserRole.SM)) {
+      missingRoles.push('Scrum Master');
+    }
+    if (!members.some((member) => member.role === UserRole.PO)) {
+      missingRoles.push('Product Owner');
+    }
+    if (!members.some((member) => member.role === UserRole.Developer)) {
+      missingRoles.push('Developer');
+    }
+  
+    // Construct the status message based on missing roles
+    if (missingRoles.length > 0) {
+      this.teamRequirementStatus = `Missing ${missingRoles.join(', ')}`;
+    } else {
+      this.teamRequirementStatus = 'Team: Valid';
+    }
   }
 }
