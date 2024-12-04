@@ -1,0 +1,16 @@
+.team-delete-container {
+  padding: var(--content-padding);
+}
+
+.arrow-navigation {
+  margin-bottom: var(--content-margin);
+}
+
+.team-card {
+  margin-bottom: calc(var(--content-margin)*2);
+  padding: calc(var(--content-padding)/2);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}

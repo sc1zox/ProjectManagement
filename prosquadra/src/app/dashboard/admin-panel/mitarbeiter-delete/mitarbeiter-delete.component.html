@@ -6,12 +6,12 @@
 
 <div class="user-delete-container">
   <h2>User Übersicht</h2>
-  <mat-list>
-    <mat-list-item *ngFor="let user of users">
-      <span>{{ user.vorname }} {{ user.nachname }}</span>
-      <button mat-icon-button color="warn" (click)="deleteUser(user.id)">
-        <mat-icon>delete</mat-icon>
+  <mat-card *ngFor="let user of users" class="user-card">
+    <mat-card-title>{{ user.vorname }} {{ user.nachname }}</mat-card-title>
+    <mat-card-actions>
+      <button mat-raised-button color="warn" (click)="deleteUser(user.id)">
+        <mat-icon>delete</mat-icon> Löschen
       </button>
-    </mat-list-item>
-  </mat-list>
+    </mat-card-actions>
+  </mat-card>
 </div>

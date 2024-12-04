@@ -6,12 +6,12 @@
 
 <div class="team-delete-container">
   <h2>Team Übersicht</h2>
-  <mat-list>
-    <mat-list-item *ngFor="let team of teams">
-      <span>{{ team.name }}</span>
-      <button mat-icon-button color="warn" (click)="deleteTeam(team.id)">
-        <mat-icon>delete</mat-icon>
+  <mat-card *ngFor="let team of teams" class="team-card">
+    <mat-card-title>{{ team.name }}</mat-card-title>
+    <mat-card-actions>
+      <button mat-raised-button color="warn" (click)="deleteTeam(team.id)">
+        <mat-icon>delete</mat-icon> Löschen
       </button>
-    </mat-list-item>
-  </mat-list>
+    </mat-card-actions>
+  </mat-card>
 </div>

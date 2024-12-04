@@ -43,7 +43,7 @@ export class UserDetailsModalComponent implements OnInit {
     this.currentUser = this.data.currentUser;
     if (this.currentUser) {
       try {
-        this.teams = await this.TeamService.getTeamsByUserId(this.currentUser.id)
+        this.teams = await this.TeamService.getTeamsByUserId(this.user.id)
       }catch (error){
         this.SnackBarService.open('Konnte Nutzer nicht laden')
       }

@@ -19,6 +19,7 @@ import {MatDialog} from '@angular/material/dialog';
 import {MatButton} from '@angular/material/button';
 import {TeamPlanungComponent} from '../components/team-planung/team-planung.component';
 import {UserService} from '../../../../services/user.service';
+import {MatIcon} from '@angular/material/icon';
 
 @Component({
   selector: 'app-user-table',
@@ -38,6 +39,7 @@ import {UserService} from '../../../../services/user.service';
     MatHeaderRowDef,
     MatButton,
     TeamPlanungComponent,
+    MatIcon,
 
   ],
   templateUrl: './user-table.component.html',

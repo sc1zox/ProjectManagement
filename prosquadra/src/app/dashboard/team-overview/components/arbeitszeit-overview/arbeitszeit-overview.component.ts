@@ -1,11 +1,14 @@
-import {Component, Input, OnInit} from '@angular/core';
-import {User, UserRole} from '../../../../../types/user';
-import {AsyncPipe, NgIf} from '@angular/common';
-import {FormsModule} from '@angular/forms';
-import {SnackbarService} from '../../../../../services/snackbar.service';
-import {UserService} from '../../../../../services/user.service';
-import {BehaviorSubject} from 'rxjs';
-import {MatInput} from '@angular/material/input';
+import { Component, Input, OnInit } from '@angular/core';
+import { MatDialog } from '@angular/material/dialog';
+import { User, UserRole } from '../../../../../types/user';
+import { AsyncPipe, NgIf } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { SnackbarService } from '../../../../../services/snackbar.service';
+import { UserService } from '../../../../../services/user.service';
+import { BehaviorSubject } from 'rxjs';
+import { MatInput } from '@angular/material/input';
+import { MatButton } from '@angular/material/button';
+import { ArbeitszeitModalComponent } from '../arbeitszeit-modal/arbeitszeit-modal.component';
 
 const defaultUrlaubstage: number = 28;
 const defaultArbeitszeit: number = 38.5;
@@ -17,20 +20,24 @@ const defaultArbeitszeit: number = 38.5;
     NgIf,
     FormsModule,
     AsyncPipe,
-    MatInput
+    MatInput,
+    MatButton
   ],
   templateUrl: './arbeitszeit-overview.component.html',
-  styleUrl: './arbeitszeit-overview.component.scss'
+  styleUrls: ['./arbeitszeit-overview.component.scss']
 })
-export class ArbeitszeitOverviewComponent implements OnInit{
+export class ArbeitszeitOverviewComponent implements OnInit {
 
   @Input() user?: User;
   arbeitszeit = new BehaviorSubject<number>(0);
   @Input() currentUser?: User;
   protected readonly UserRole = UserRole;
 
-  constructor(private readonly UserService: UserService,private readonly SnackBarService: SnackbarService) {
-  }
+  constructor(
+    private readonly UserService: UserService,
+    private readonly SnackBarService: SnackbarService,
+    private dialog: MatDialog
+  ) {}
 
   ngOnInit() {
     if (this.user?.arbeitszeit) {
@@ -41,35 +48,50 @@ export class ArbeitszeitOverviewComponent implements OnInit{
 
   updateArbeitszeit(value: number) {
     if (isNaN(value) || value < 0 || value > 100 || value === null) {
-      this.SnackBarService.open('Die Arbeitszeit muss zwischen 0 und 100 sein.')
+      this.SnackBarService.open('Die Arbeitszeit muss zwischen 0 und 100 sein.');
       return;
     }
     this.arbeitszeit.next(value);
     this.updateUrlaubstage();
+
     if (this.user) {
       try {
         this.UserService.updateArbeitszeit(this.user.id, this.arbeitszeit.value);
       } catch (error) {
-        this.SnackBarService.open('Error beim Aktualisieren der Arbeitszeit')
+        this.SnackBarService.open('Error beim Aktualisieren der Arbeitszeit');
       }
-
     }
   }
-  updateUrlaubstage(){
-    if(this.arbeitszeit && this.user) {
+
+  updateUrlaubstage() {
+    if (this.arbeitszeit && this.user) {
       let newUrlaubstage: number = defaultUrlaubstage / (defaultArbeitszeit / this.arbeitszeit.value);
       try {
-        if(this.arbeitszeit.value !== null) {
+        if (this.arbeitszeit.value !== null) {
           this.UserService.updateUrlaubstage(this.user?.id, newUrlaubstage);
         }
         this.user.urlaubstage = Math.trunc(newUrlaubstage);
         this.user.arbeitszeit = this.arbeitszeit.value;
-      }catch (error){
-        this.SnackBarService.open('Error bei der Aktualisierung der Urlaubstage')
+      } catch (error) {
+        this.SnackBarService.open('Error bei der Aktualisierung der Urlaubstage');
       }
-    }else{
-      this.SnackBarService.open('Die neuen Urlaubstage konnten nicht berechnet werden')
+    } else {
+      this.SnackBarService.open('Die neuen Urlaubstage konnten nicht berechnet werden');
     }
   }
 
+
+  openArbeitszeitModal(user: User): void {
+    const dialogRef = this.dialog.open(ArbeitszeitModalComponent, {
+      width: '400px',
+      data: { user: user }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result !== undefined) {
+        this.arbeitszeit.next(result);
+        this.updateArbeitszeit(result);
+      }
+    });
+  }
 }

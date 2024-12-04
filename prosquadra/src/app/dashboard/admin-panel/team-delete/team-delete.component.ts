@@ -1,12 +1,13 @@
 import {Component, OnInit} from '@angular/core';
 import {MatIcon} from '@angular/material/icon';
-import {MatIconButton} from '@angular/material/button';
+import {MatButton, MatIconButton} from '@angular/material/button';
 import {RouterLink} from '@angular/router';
 import {MatList, MatListItem} from '@angular/material/list';
 import {NgForOf} from '@angular/common';
 import {Team} from '../../../../types/team';
 import {TeamService} from '../../../../services/team.service';
 import {SnackbarService} from '../../../../services/snackbar.service';
+import {MatCard, MatCardActions, MatCardTitle} from '@angular/material/card';
 
 @Component({
   selector: 'app-team-delete',
@@ -17,7 +18,11 @@ import {SnackbarService} from '../../../../services/snackbar.service';
     RouterLink,
     MatList,
     MatListItem,
-    NgForOf
+    NgForOf,
+    MatCard,
+    MatCardTitle,
+    MatCardActions,
+    MatButton
   ],
   templateUrl: './team-delete.component.html',
   styleUrl: './team-delete.component.scss'
@@ -32,6 +37,7 @@ export class TeamDeleteComponent implements OnInit {
   async ngOnInit() {
     try {
       this.teams = await this.TeamService.getTeams();
+      this.removeInitTeam();
     }catch (error){
       this.SnackBarService.open('Konnte Teams nicht laden')
     }
@@ -42,9 +48,12 @@ export class TeamDeleteComponent implements OnInit {
       await this.TeamService.deleteTeam(teamId);
       this.SnackBarService.open('Team wurde erfolgreich gelöscht');
       this.teams = await this.TeamService.getTeams();
+      this.removeInitTeam();
     }catch (error){
       this.SnackBarService.open('Team konnte nicht gelöscht werden');
     }
   }
-
+  removeInitTeam(){
+    this.teams = this.teams.filter(team => team.id !== 1)
+  }
 }

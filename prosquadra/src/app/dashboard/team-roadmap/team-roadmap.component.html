@@ -98,10 +98,10 @@
     <!-- Action Buttons -->
     <div class="actions">
       <button *ngIf="(user?.role === UserRole.Bereichsleiter || user?.role === UserRole.PO) && hideInDashboard"
-        mat-raised-button color="primary" (click)="onSubmit()" class="roadmap-button">Prioriät speichern
+        mat-raised-button class="primaryColor" (click)="onSubmit()">Prioriät speichern
       </button>
       <button *ngIf="(user?.role === UserRole.Bereichsleiter || user?.role === UserRole.PO) && hideInDashboard"
-        mat-raised-button color="warn" (click)="onDelete()" class="roadmap-button">Delete
+        mat-raised-button class="buttonOrange" (click)="onDelete()">Delete
         Project
       </button>
     </div>

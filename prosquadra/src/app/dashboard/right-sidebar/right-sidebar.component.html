@@ -54,7 +54,7 @@
   </ng-container>
   <app-user-skills [user]="user" *ngIf="user?.role !== UserRole.Admin && user?.role !== UserRole.Bereichsleiter"></app-user-skills>
 
-  <button (click)="triggerLogout()" mat-raised-button class="buttonsSidebar">Logout</button>
+  <button (click)="triggerLogout()" mat-raised-button class="buttonsSidebar" id="logout">Logout</button>
 
   <div class="footer">
     <br>
