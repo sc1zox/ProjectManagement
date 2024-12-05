@@ -377,6 +377,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     this.progressBar.start();
     if (this.roadmap?.projects && !(this.roadmap?.projects.length > 1)) {
       this.SnackBarService.open('Löschen fehlgeschlagen! Die Roadmap enthält nur ein Projekt')
+      this.progressBar.complete();
       return;
     }
     if (this.selectedProject?.id) {
