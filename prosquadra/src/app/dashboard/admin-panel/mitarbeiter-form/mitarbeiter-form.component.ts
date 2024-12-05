@@ -16,7 +16,6 @@ import {TeamService} from '../../../../services/team.service';
 import {Team} from '../../../../types/team';
 import {MatStep, MatStepLabel, MatStepper, MatStepperNext, MatStepperPrevious} from '@angular/material/stepper';
 import {Login} from '../../../../types/login';
-import {BehaviorSubject} from 'rxjs';
 
 
 const defaultUrlaubstage: number = 28;
