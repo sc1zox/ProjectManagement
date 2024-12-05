@@ -16,7 +16,7 @@ const userRouter = Router();
 
 userRouter.get('/users', rescue(userController.getAllUser));
 userRouter.get('/users/:id', rescue(userController.getUserById));
-userRouter.post('/users/create', checkRole(UserRole.Admin, rescue(userController.createUser)));
+userRouter.post('/users/create', checkRole([UserRole.Admin], rescue(userController.createUser)));
 userRouter.delete('/users/delete/:id', rescue(userController.deleteUser));
 userRouter.put('/users/update/arbeitszeit', isAuthenticated,rescue(UserController.updateArbeitszeit));
 userRouter.put('/users/update/urlaubstage', isAuthenticated,rescue(UserController.updateUrlaubstage));
@@ -27,22 +27,22 @@ userRouter.delete('/users/vacations/delete/:id', rescue(UserController.deleteVac
 
 userRouter.get('/projects', rescue(ProjectController.getProjects));
 userRouter.get('/projects/:id', rescue(ProjectController.getProjectById));
-userRouter.delete('/project/delete/:id', checkRole(UserRole.PO,rescue(ProjectController.deleteProject)));
+userRouter.delete('/project/delete/:id', checkRole([UserRole.PO,UserRole.Bereichsleiter],rescue(ProjectController.deleteProject)));
 userRouter.get('/team/projects/:id', rescue(ProjectController.getProjectsByTeam));
-userRouter.post('/project/create', checkRole(UserRole.PO,rescue(ProjectController.createProject)));
+userRouter.post('/project/create', checkRole([UserRole.PO,UserRole.Bereichsleiter],rescue(ProjectController.createProject)));
 userRouter.put('/project/update', isAuthenticated,rescue(ProjectController.updateProject));
 userRouter.get('/project/current/:id', rescue(ProjectController.getProjectWithLowestPriorityByUserId));
-userRouter.post('/project/create/estimation', checkRole(UserRole.Developer,rescue(ProjectController.addEstimationToProject)));
+userRouter.post('/project/create/estimation', checkRole([UserRole.Developer],rescue(ProjectController.addEstimationToProject)));
 userRouter.get('/project/estimation/:id', rescue(ProjectController.getEstimationsWithAverage));
-userRouter.put('/project/status/update', checkRole(UserRole.PO,rescue(ProjectController.updateProjectStatus)));
+userRouter.put('/project/status/update', checkRole([UserRole.PO,UserRole.Bereichsleiter],rescue(ProjectController.updateProjectStatus)));
 
 userRouter.get('/team', rescue(TeamController.getTeams));
 userRouter.get('/team/:id', rescue(TeamController.getTeamByID));
-userRouter.post('/team/create', checkRole(UserRole.Admin,rescue(TeamController.createTeam)));
+userRouter.post('/team/create', checkRole([UserRole.Admin,UserRole.Bereichsleiter],rescue(TeamController.createTeam)));
 userRouter.get('/team/user/:id', rescue(TeamController.getTeamByUserID));
-userRouter.post('/team/user/delete', checkRole(UserRole.Admin,rescue(TeamController.removeUserFromTeam)));
-userRouter.post('/team/user/add', checkRole(UserRole.SM,rescue(TeamController.addUserToTeam)));
-userRouter.delete('/team/delete/:id', checkRole(UserRole.Admin, rescue(TeamController.deleteTeam)));
+userRouter.post('/team/user/delete', checkRole([UserRole.Admin],rescue(TeamController.removeUserFromTeam)));
+userRouter.post('/team/user/add', checkRole([UserRole.SM],rescue(TeamController.addUserToTeam)));
+userRouter.delete('/team/delete/:id', checkRole([UserRole.Admin], rescue(TeamController.deleteTeam)));
 
 userRouter.get('/roadmaps', rescue(RoadmapController.getAllRoadmaps));
 userRouter.get('/roadmaps/:id', rescue(RoadmapController.getRoadmapById));
