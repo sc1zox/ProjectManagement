@@ -7,8 +7,8 @@ import {
   Input,
   OnChanges,
   OnInit,
-  Output, Signal,
-  SimpleChanges, viewChild,
+  Output,
+  SimpleChanges,
   ViewChild
 } from '@angular/core';
 import {CommonModule} from '@angular/common';
@@ -34,14 +34,16 @@ import {User, UserRole} from '../../../types/user';
 import {RoadmapService} from '../../../services/roadmap.service';
 import {SnackbarService} from '../../../services/snackbar.service';
 import {Team} from '../../../types/team';
-import {parseProjects} from '../../../mapper/projectDatesToDate';
+import {normalizeDate, parseProjects} from '../../../mapper/projectDatesToDate';
 import {TimeEstimatorComponent} from '../../components/time-estimator/time-estimator.component';
 import {MatSelectChange, MatSelectModule} from '@angular/material/select';
 import {Router} from '@angular/router';
 import {EndDateComponent} from '../../components/end-date/end-date.component';
-import { MatSelect } from '@angular/material/select';
-import {SpinnerService} from '../../../services/spinner.service';
+import {MatSelect} from '@angular/material/select';
 import {NgProgressbar, NgProgressRef} from 'ngx-progressbar';
+import {debounceTime} from 'rxjs';
+import {canEditDate, canEditInDashboard, canEditStatus} from '../../../permissions/permissionHandler';
+import {getStatusLabel} from '../../../helper/roadmapHelper';
 
 const isStartDateInRange = (projects: Project[], startDate: Date, selectedProject: Project): boolean => {
   const projectsWithoutItself = projects.filter(project => project.id !== selectedProject.id);
@@ -50,15 +52,6 @@ const isStartDateInRange = (projects: Project[], startDate: Date, selectedProjec
   const result = projectsMapped.filter(
     project => project.startDate !== null && project.endDate !== null
   );
-
-  // Normalize dates to compare only date components
-  const normalizeDate = (date: any): Date => {
-    if (!(date instanceof Date)) {
-      date = new Date(date); // Unsere Dates waren manchmal keine valid Dates?
-    }
-    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
-  };
-
   const normalizedStartDate = normalizeDate(startDate);
 
   const boolresult = result.some(range => {
@@ -132,7 +125,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
 
   constructor(private readonly ProjectService: ProjectService,
               private readonly UserService: UserService, private readonly fb: FormBuilder,
-              private readonly RoadmapService: RoadmapService, private SnackBarSerivce: SnackbarService, private cdr: ChangeDetectorRef, private router: Router,private readonly SpinnerService: SpinnerService) {
+              private readonly RoadmapService: RoadmapService, private SnackBarService: SnackbarService, private cdr: ChangeDetectorRef, private router: Router) {
     this.dateForm = this.fb.group({
       startDate: this.startDateControl,
     });
@@ -143,15 +136,15 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     const startDate = control.value;
     if (this.selectedProject !== undefined) {
       if (isStartDateInRange(this.projects, startDate, this.selectedProject) && startDate !== null) {
-        this.SnackBarSerivce.open('Das Startdatum darf sich nicht mit einem Projekt überschneiden');
-  
+        this.SnackBarService.open('Das Startdatum darf sich nicht mit einem Projekt überschneiden');
+
         // Immediately reset the control value | emitEvent: false so calculateEndDate does not get called
-        control.setValue(this.selectedProject?.startDate || null, { emitEvent: false });
-  
+        control.setValue(this.selectedProject?.startDate || null, {emitEvent: false});
+
         // Mark the control as touched to prevent user confusion
         control.markAsTouched();
-  
-        return { startDateInvalid: true };
+
+        return {startDateInvalid: true};
       }
     }
     return null;
@@ -193,39 +186,15 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     this.selectInitialProject();
     this.updateDateControls();
     this.showTimeEstimator = this.router.url.includes('dashboard/team-roadmap');
-    this.hideInDashboard = this.router.url.includes('dashboard/team-roadmap') || this.router.url.includes('dashboard/create-project') || this.canEditInDashboard();
-    this.notDraggableInDashboardHome = this.router.url.includes('dashboard/team-roadmap') || this.router.url.includes('dashboard/create-project') || this.canEditInDashboard();
-  }
-
-  canEditStatus(): boolean {
-    switch (this.user?.role) {
-      case UserRole.Admin:
-      case UserRole.PO:
-      case UserRole.Bereichsleiter:
-        return true;
-      default:
-        return false;
+    if (this.user) {
+      this.hideInDashboard = this.router.url.includes('dashboard/team-roadmap') || this.router.url.includes('dashboard/create-project') || canEditInDashboard(this.user);
+      this.notDraggableInDashboardHome = this.router.url.includes('dashboard/team-roadmap') || this.router.url.includes('dashboard/create-project') || canEditInDashboard(this.user);
     }
-  }
-
-  canEditInDashboard(): boolean {
-    switch (this.user?.role) {
-      case UserRole.Bereichsleiter:
-        return true;
-      default:
-        return false;
-    }
-  }
-
-  canEditDate(): boolean {
-    switch (this.user?.role) {
-      case UserRole.Admin:
-      case UserRole.SM:
-      case UserRole.Bereichsleiter:
-        return true;
-      default:
-        return false;
-    }
+    this.startDateControl.valueChanges.pipe(debounceTime(300)).subscribe(async (startDate) => {
+      if (startDate) {
+        await this.refreshDates();
+      }
+    });
   }
 
   onStatusDropdownOpened(): void {
@@ -237,8 +206,8 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   async onStatusChange(event: MatSelectChange, select: MatSelect): Promise<void> {
     const newStatus = event.value as ProjectStatus;
 
-    if(this.countEstimatesByUser !== this.maxEstimates /*&& select.value !== ProjectStatus.geschlossen*/){ //soll schließen hier möglich sein?
-     this.SnackBarSerivce.open('Aktualisierung fehlgeschlagen, fehlende Entwickler Schätzungen')
+    if (this.countEstimatesByUser !== this.maxEstimates /*&& select.value !== ProjectStatus.geschlossen*/) { //soll schließen hier möglich sein?
+      this.SnackBarService.open('Aktualisierung fehlgeschlagen, fehlende Entwickler Schätzungen')
       if (this.selectedProject) {
         select.writeValue(this.originalStatus);
       }
@@ -250,7 +219,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
       try {
         await this.ProjectService.setProjectStatus(this.selectedProject.id!, newStatus);
       } catch (error) {
-        this.SnackBarSerivce.open("Status konnte nicht geupdated werden");
+        this.SnackBarService.open("Status konnte nicht geupdated werden");
         select.writeValue(this.originalStatus);
         return;
       }
@@ -283,42 +252,15 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     this.cdr.detectChanges();
   }
 
-  getStatusLabel(status: ProjectStatus): string {
-    switch (status) {
-      case ProjectStatus.offen:
-        return 'Offen';
-      case ProjectStatus.inBearbeitung:
-        return 'In Bearbeitung';
-      case ProjectStatus.geschlossen:
-        return 'Geschlossen';
-      default:
-        return status;
-    }
-  }
-
   async setSelectedProjectAvgEstimation() {
     if (this.selectedProject && this.selectedProject.id) {
       try {
         this.selectedProject.avgEstimationHours = await this.ProjectService.getProjectEstimationAvg(this.selectedProject?.id);
       } catch (error) {
-        this.SnackBarSerivce.open("Schätzungen konnte nicht abgerufen werden");
+        this.SnackBarService.open("Schätzungen konnte nicht abgerufen werden");
       }
     }
   }
-
-  /*
-    getUserEstimationForSelectedProject(): number | undefined {
-      if (this.selectedProject && this.selectedProject.id) {
-        this.currentEstimation = this.userEstimates.find(est => est.projectId === this.selectedProject!.id);
-        return this.currentEstimation ? this.currentEstimation.hours : undefined;
-      }
-      return undefined;
-    }
-
-    updateUserEstimation(estimatedTime: Estimation): void {
-      this.currentEstimation = estimatedTime;
-    }
-  */
   async selectProject(project: Project): Promise<void> {
     this.selectedProject = project;
 
@@ -331,25 +273,16 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     try {
       await this.setSelectedProjectAvgEstimation();
     } catch (error) {
-      this.SnackBarSerivce.open('Konnte Schätzung nicht laden');
+      this.SnackBarService.open('Konnte Schätzung nicht laden');
     }
 
     if (this.selectedProject && this.selectedProject.estimations) {
       this.countEstimatesByUser = this.selectedProject?.estimations?.length;
     }
-    if (this.teams?.members){
+    if (this.teams?.members) {
       this.maxEstimates = this.teams?.members?.filter(member => member.role === UserRole.Developer).length;
     }
-
-    if (this.selectedProject?.id) {
-      try {
-        let tmpProjectFromBackend = await this.ProjectService.getProjectsById(this.selectedProject?.id)
-        this.endDateFromBackendForCurrentProject = tmpProjectFromBackend.endDate;
-        this.startDateFromBackendForCurrentProject = tmpProjectFromBackend.startDate;
-      } catch (error) {
-        console.log(error)
-      }
-    }
+    await this.refreshDates();
   }
 
   onMouseDown(event: MouseEvent): void {
@@ -408,7 +341,20 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     }
   }
 
+  async refreshDates() {
+    if (this.selectedProject?.id) {
+      try {
+        let tmpProjectFromBackend = await this.ProjectService.getProjectsById(this.selectedProject?.id)
+        this.endDateFromBackendForCurrentProject = tmpProjectFromBackend.endDate;
+        this.startDateFromBackendForCurrentProject = tmpProjectFromBackend.startDate;
+      } catch (error) {
+        console.log(error)
+      }
+    }
+  }
+
   async onSubmit() {
+    this.progressBar.start();
     try {
       if (this.roadmap) {
         await this.RoadmapService.updateRoadmap(this.roadmap);
@@ -417,9 +363,12 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
       if (this.user?.role === UserRole.Developer) {
         this.dataUpdated.emit(); // das hier verursacht ein doppeltes rendern der ersten roadmap. Unsicher ob es weggelassen werden kann für andere Updates.Scheint mir momentan nicht essenziell zu sein. Doch wenn es fehlt wird für Dev die Zeit nicht aktualisiert deshalb die if clause
       }
-      this.SnackBarSerivce.open('Projekt Priorität wurde erfolgreich geändert')
+      this.SnackBarService.open('Projekt Priorität wurde erfolgreich geändert')
     } catch (error) {
-      this.SnackBarSerivce.open('Bei der Projektpriorisierung ist ein Fehler aufgetreten')
+      this.SnackBarService.open('Bei der Projektpriorisierung ist ein Fehler aufgetreten')
+      this.progressBar.complete();
+    }finally {
+      this.progressBar.complete();
     }
   }
 
@@ -427,7 +376,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   async onDelete() {
     this.progressBar.start();
     if (this.roadmap?.projects && !(this.roadmap?.projects.length > 1)) {
-      this.SnackBarSerivce.open('Löschen fehlgeschlagen! Die Roadmap enthält nur ein Projekt')
+      this.SnackBarService.open('Löschen fehlgeschlagen! Die Roadmap enthält nur ein Projekt')
       return;
     }
     if (this.selectedProject?.id) {
@@ -443,10 +392,11 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
 
         this.dataUpdated.emit();
 
-        this.SnackBarSerivce.open('Projekt erfolgreich gelöscht');
+        this.SnackBarService.open('Projekt erfolgreich gelöscht');
       } catch (error) {
-        this.SnackBarSerivce.open('Fehler beim Löschen des Projekts');
-      }finally {
+        this.SnackBarService.open('Fehler beim Löschen des Projekts');
+        this.progressBar.complete();
+      } finally {
         this.progressBar.complete();
       }
     }
@@ -460,7 +410,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
         this.projects = [...this.roadmap.projects];
       }
     } catch (error) {
-      this.SnackBarSerivce.open('Fehler bei refetch roadmap')
+      this.SnackBarService.open('Fehler bei refetch roadmap')
     }
   }
 
@@ -472,8 +422,12 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
           this.selectedProject.avgEstimationHours = updatedEstimation;
         }
       } catch (error) {
-        this.SnackBarSerivce.open('Fehler bei fetchen von getProjectEstimationAvg')
+        this.SnackBarService.open('Fehler bei fetchen von getProjectEstimationAvg')
       }
     }
   }
+
+  protected readonly getStatusLabel = getStatusLabel;
+  protected readonly canEditStatus = canEditStatus;
+  protected readonly canEditDate = canEditDate;
 }
