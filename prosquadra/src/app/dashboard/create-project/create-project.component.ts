@@ -87,6 +87,7 @@ export class CreateProjectComponent implements OnInit{
           existingProjects = await this.projectService.getProjectsByTeamId(selectedTeam.id);
         }catch (error){
           this.SnackBarService.open('Konnte spezifisches Projekt nicht laden');
+          this.progressBar.complete();
           return;
         }
 
@@ -106,12 +107,14 @@ export class CreateProjectComponent implements OnInit{
           await this.projectService.setProjects(newProject);
         }catch (error){
           this.SnackBarService.open('Projekt konnte nicht erstellt werden');
+          this.progressBar.complete();
         }
         this.selectedTeam = selectedTeam;
           try {
             this.currentTeam = await this.TeamService.getTeamById(selectedTeam.id);
           }catch (error){
             this.SnackBarService.open('Konnte das Team nicht laden')
+            this.progressBar.complete();
           }
           this.roadmap = this.currentTeam?.roadmap;
         }

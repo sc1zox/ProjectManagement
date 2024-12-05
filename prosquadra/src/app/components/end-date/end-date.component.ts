@@ -58,6 +58,7 @@ export class EndDateComponent implements AfterViewInit{
         this.SnackBarService.open('Projektdaten wurden aktualisiert!')
       }catch (error){
         this.SnackBarService.open('Projektdaten konnte nicht aktualisiert werden');
+        this.progressBar.complete();
       }finally {
         this.progressBar.complete();
       }

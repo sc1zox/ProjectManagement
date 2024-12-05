@@ -1,0 +1,17 @@
+<div class="arrow-navigation">
+  <button [routerLink]="['..']" aria-label="Go Backward" mat-icon-button>
+    <mat-icon>arrow_back</mat-icon>
+  </button>
+</div>
+
+<div class="team-delete-container">
+  <h2>Team Übersicht</h2>
+  <mat-card *ngFor="let team of teams" class="team-card">
+    <mat-card-title>{{ team.name }}</mat-card-title>
+    <mat-card-actions>
+      <button mat-raised-button color="warn" (click)="deleteTeam(team.id)">
+        <mat-icon>delete</mat-icon> Löschen
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>

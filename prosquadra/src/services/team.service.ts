@@ -57,6 +57,14 @@ export class TeamService implements OnInit {
     }
   }
 
+  async deleteTeam(teamId: number): Promise<void>{
+    try{
+      await this.apiService.delete('/team/delete/'+ teamId);
+    }catch (error){
+      throw error;
+    }
+  }
+
   async removeUserFromTeam(userId: number, teamId: number): Promise<void> {
     const body = { userId, teamId };
     try {

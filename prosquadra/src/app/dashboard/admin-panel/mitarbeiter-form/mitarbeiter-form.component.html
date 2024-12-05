@@ -10,7 +10,6 @@
       <form [formGroup]="firstFormGroup" class="mitarbeiter-form">
         <ng-template matStepLabel>Nutzer erstellung</ng-template>
 
-        <!-- Vorname -->
         <mat-form-field class="full-width">
           <mat-label>Vorname</mat-label>
           <input formControlName="vorname" matInput required>
@@ -18,7 +17,6 @@
           <mat-error *ngIf="firstFormGroup.get('vorname')?.hasError('pattern')">Vorname darf nur Buchstaben enthalten.</mat-error>
         </mat-form-field>
 
-        <!-- Nachname -->
         <mat-form-field class="full-width">
           <mat-label>Nachname</mat-label>
           <input formControlName="nachname" matInput required>
@@ -26,7 +24,6 @@
           <mat-error *ngIf="firstFormGroup.get('nachname')?.hasError('pattern')">Nachname darf nur Buchstaben enthalten.</mat-error>
         </mat-form-field>
 
-        <!-- Benutzerrolle -->
         <mat-form-field class="full-width">
           <mat-label>Benutzerrolle</mat-label>
           <mat-select formControlName="role" required>
@@ -37,7 +34,6 @@
           <mat-error *ngIf="firstFormGroup.get('role')?.hasError('required')">Rolle wird benötigt.</mat-error>
         </mat-form-field>
 
-        <!-- Arbeitszeit -->
         <mat-form-field class="full-width">
           <mat-label>Arbeitszeit</mat-label>
           <input formControlName="arbeitszeit" matInput required type="number">
@@ -46,7 +42,6 @@
           <mat-error *ngIf="firstFormGroup.get('arbeitszeit')?.hasError('max')">Arbeitszeit darf maximal 100 Stunden betragen.</mat-error>
         </mat-form-field>
 
-        <!-- Urlaubstage -->
         <mat-form-field class="full-width">
           <mat-label>Urlaubstage</mat-label>
           <input formControlName="urlaubstage" matInput type="number" placeholder="28">
@@ -58,7 +53,7 @@
           <mat-form-field class="full-width">
             <mat-label>Team auswählen</mat-label>
             <mat-select formControlName="selectedSingleTeam" required>
-              <mat-option *ngFor="let team of Teams" [value]="team.id">
+              <mat-option *ngFor="let team of Team" [value]="team.id">
                 {{ team.name }}
               </mat-option>
             </mat-select>
@@ -71,7 +66,7 @@
           <mat-form-field class="full-width">
             <mat-label>Teams auswählen</mat-label>
             <mat-select formControlName="selectedMultipleTeams" multiple required>
-              <mat-option *ngFor="let team of Teams" [value]="team.id">
+              <mat-option *ngFor="let team of Team" [value]="team.id">
                 {{ team.name }}
               </mat-option>
             </mat-select>
@@ -89,14 +84,12 @@
       <form [formGroup]="loginFormGroup" class="mitarbeiter-form">
         <ng-template matStepLabel>Login erstellung</ng-template>
 
-        <!-- Username -->
         <mat-form-field class="full-width">
           <mat-label>Username</mat-label>
           <input formControlName="username" matInput required>
           <mat-error *ngIf="loginFormGroup.get('username')?.hasError('required')">Username wird benötigt.</mat-error>
         </mat-form-field>
 
-        <!-- Passwort -->
         <mat-form-field class="full-width">
           <mat-label>Password</mat-label>
           <input formControlName="password" matInput required type="password">

@@ -38,7 +38,16 @@ body {
   justify-content: center;
   align-items: center;
 }
-
+.buttonOrange{
+  background: var(--main-color) !important;
+  color: white !important;
+  padding: var(--content-padding) !important;
+}
+.primaryColor{
+  background: var(--sidebar-color) !important;
+  color: white !important;
+  padding: var(--content-padding) !important;
+}
 
 
 

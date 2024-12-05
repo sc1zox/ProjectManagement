@@ -1,7 +1,29 @@
-<div id="admin-panel">
-  <h1>Admin Panel</h1>
-  <div class="button-box">
-    <button [routerLink]="['mitarbeiter-form']" class="button" mat-raised-button>Neuen Mitarbeiter anlegen</button>
-    <button [routerLink]="['teams-form']" class="button" mat-raised-button>Neues Team anlegen</button>
-  </div>
+<mat-toolbar>
+  <span>Admin Panel</span>
+</mat-toolbar>
+
+<div class="admin-panel-container">
+  <mat-card class="admin-card">
+    <mat-card-header>
+      <mat-card-title>Mitarbeiter verwalten: </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="button-box">
+        <button [routerLink]="['mitarbeiter-form']" mat-raised-button class="primaryColor">Neuen Mitarbeiter erstellen</button>
+        <button [routerLink]="['mitarbeiter-delete']" mat-raised-button class="buttonOrange">Mitarbeiter löschen</button>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="admin-card">
+    <mat-card-header>
+      <mat-card-title>Teams verwalten: </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="button-box">
+        <button [routerLink]="['teams-form']" mat-raised-button class="primaryColor">Neues Team erstellen</button>
+        <button [routerLink]="['teams-delete']" mat-raised-button class="buttonOrange">Team löschen</button>
+      </div>
+    </mat-card-content>
+  </mat-card>
 </div>

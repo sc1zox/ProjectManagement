@@ -167,6 +167,7 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
       window.location.href = this.getPdfUrl();
     }catch (error){
       this.SnackBarService.open('PDF konnte nicht geladen werden')
+      this.progressBar.complete();
     }finally {
       this.progressBar.complete();
     }

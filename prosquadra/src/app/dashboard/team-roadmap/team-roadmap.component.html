@@ -19,7 +19,7 @@
     <div class="header">
       <h3><strong>Projekt: </strong>{{ selectedProject.name }}</h3>
       <div class="status">
-        <mat-form-field *ngIf="canEditStatus() && hideInDashboard; else displayStatus" appearance="outline">
+        <mat-form-field *ngIf="canEditStatus(user!) && hideInDashboard; else displayStatus" appearance="outline">
           <mat-label>Status</mat-label>
           <mat-select #statusSelect [(value)]="selectedProject.projectStatus"
             (selectionChange)="onStatusChange($event,statusSelect)" (opened)="onStatusDropdownOpened()">
@@ -37,7 +37,7 @@
     <div *ngIf="selectedProject.projectStatus === ProjectStatus.inBearbeitung" class="dates-section">
 
       <!-- Start Date Logic -->
-      <div *ngIf="canEditDate() && hideInDashboard; else displayStartDate">
+      <div *ngIf="canEditDate(user!) && hideInDashboard; else displayStartDate">
         <mat-form-field appearance="outline" class="date-picker">
           <mat-label>Start Date</mat-label>
           <input [formControl]="startDateControl" [matDatepicker]="startPicker" matInput />
@@ -98,10 +98,10 @@
     <!-- Action Buttons -->
     <div class="actions">
       <button *ngIf="(user?.role === UserRole.Bereichsleiter || user?.role === UserRole.PO) && hideInDashboard"
-        mat-raised-button color="primary" (click)="onSubmit()" class="roadmap-button">Prioriät speichern
+        mat-raised-button class="primaryColor" (click)="onSubmit()">Prioriät speichern
       </button>
       <button *ngIf="(user?.role === UserRole.Bereichsleiter || user?.role === UserRole.PO) && hideInDashboard"
-        mat-raised-button color="warn" (click)="onDelete()" class="roadmap-button">Delete
+        mat-raised-button class="buttonOrange" (click)="onDelete()">Delete
         Project
       </button>
     </div>
@@ -109,5 +109,4 @@
 </div>
 
 <ng-template #noRoadmap>
-  <p></p>
 </ng-template>

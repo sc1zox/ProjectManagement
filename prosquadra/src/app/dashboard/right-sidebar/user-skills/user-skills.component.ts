@@ -72,6 +72,7 @@ export class UserSkillsComponent implements OnChanges {
         });
       }catch (error){
         this.SnackBarService.open('Error beim hinzufügen der Skills');
+        this.progressBar.complete();
       }finally {
         this.progressBar.complete();
       }

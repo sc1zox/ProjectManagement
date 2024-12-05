@@ -61,6 +61,44 @@ class TeamController {
         }
     }
 
+    async deleteTeam(req: Request, res: Response, next: NextFunction): Promise<void> {
+        const teamId: number = Number(req.params.id);
+
+        if (isNaN(teamId) || !teamId) {
+            return next({
+                status: StatusCodes.BAD_REQUEST,
+                message: 'Provide a valid teamId',
+            });
+        }
+
+        try {
+            const teamToDelete = await prisma.team.findUnique({
+                where: { id: teamId },
+                include: {
+                    members: true,
+                    projects: true,
+                },
+            });
+
+            if (!teamToDelete) {
+                return next({
+                    status: StatusCodes.NOT_FOUND,
+                    message: 'Team not found',
+                });
+            }
+            const deletedTeam = await prisma.team.delete({
+                where: { id: teamId },
+            });
+
+            res.status(StatusCodes.OK).json({
+                code: StatusCodes.OK,
+                data: deletedTeam,
+            });
+        } catch (error) {
+            next(error);
+        }
+    }
+
     async getTeamByUserID(req: Request, res: Response, next: NextFunction): Promise<void> {
         const userId: number = Number(req.params.id);
 

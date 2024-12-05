@@ -1,7 +1,4 @@
 <ng-progress></ng-progress>
-  <div *ngIf="currentProject && currentProject.projectStatus === 'inBearbeitung' && result; else wrongStatusOrUndefined">
-    <p><strong>Project End Date:</strong> {{ result | date}}</p>
-  </div>
 
   <ng-template #wrongStatusOrUndefined>
   </ng-template>

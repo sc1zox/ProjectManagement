@@ -3,9 +3,9 @@ import {MatInputModule} from '@angular/material/input';
 import {MAT_DATE_LOCALE, MatNativeDateModule, MatOptionModule, provideNativeDateAdapter} from '@angular/material/core';
 import {MatDatepickerInputEvent, MatDatepickerModule} from '@angular/material/datepicker';
 import {CommonModule} from '@angular/common';
-import {MatButton, MatFabButton} from '@angular/material/button';
+import {MatFabButton} from '@angular/material/button';
 import {MatSelectModule} from '@angular/material/select';
-import {MatError, MatLabel} from '@angular/material/form-field';
+import {MatLabel} from '@angular/material/form-field';
 import {BehaviorSubject, combineLatest, map, Subject} from 'rxjs';
 import {User} from '../../../types/user';
 import {UserService} from '../../../services/user.service';
@@ -119,6 +119,7 @@ export class UrlaubsPlanungComponent implements OnInit {
           } else {
             this.resetDatePickers();
             this.SnackBarService.open('Urlaub konnte nicht eingetragen werden');
+            this.progressBar.complete();
           }
         } finally {
           this.progressBar.complete();
@@ -138,6 +139,7 @@ export class UrlaubsPlanungComponent implements OnInit {
       window.location.reload() // Bad fix in the meanwhile
     } catch (error) {
       this.SnackBarService.open('Urlaub konnte nicht gelöscht werden');
+      this.progressBar.complete();
     }finally {
       this.progressBar.complete();
     }

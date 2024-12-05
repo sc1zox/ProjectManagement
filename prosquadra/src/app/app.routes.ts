@@ -51,6 +51,18 @@ export const routes: Routes = [
         data: { role: [UserRole.Admin] }
       },
       {
+        path: 'admin-panel/mitarbeiter-delete',
+        loadComponent: () => import('./dashboard/admin-panel/mitarbeiter-delete/mitarbeiter-delete.component').then(m => m.MitarbeiterDeleteComponent),
+        canActivate: [AuthGuard],
+        data: { role: [UserRole.Admin] }
+      },
+      {
+        path: 'admin-panel/teams-delete',
+        loadComponent: () => import('./dashboard/admin-panel/team-delete/team-delete.component').then(m => m.TeamDeleteComponent),
+        canActivate: [AuthGuard],
+        data: { role: [UserRole.Admin] }
+      },
+      {
         path: 'analyse-board',
         loadComponent: () => import('./dashboard/analyse-board/analyse-board.component').then(m => m.AnalyseBoardComponent),
         canActivate: [AuthGuard],

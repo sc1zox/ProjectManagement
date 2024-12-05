@@ -1,5 +1,5 @@
 <div id="UserTable">
-  <h2>Team Übersicht</h2>
+  <h2>Nutzer Übersicht</h2>
   <table [dataSource]="filteredUsers" class="mat-elevation-z10" mat-table >
     <ng-container matColumnDef="userVorname">
       <th *matHeaderCellDef mat-header-cell> Vorname</th>
@@ -46,7 +46,7 @@
     <ng-container matColumnDef="modal">
       <th *matHeaderCellDef mat-header-cell> Details anzeigen</th>
       <td *matCellDef="let user" mat-cell>
-        <button (click)="openModal(user,currentUser)" id="modalButton" mat-button>Details anzeigen</button>
+        <button (click)="openModal(user,currentUser)" id="modalButton" mat-raised-button>Details anzeigen</button>
       </td>
     </ng-container>
 

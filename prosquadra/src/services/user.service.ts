@@ -44,6 +44,14 @@ export class UserService {
     }
   }
 
+  async deleteUser(userId: number): Promise<void>{
+    try{
+      await this.ApiService.delete('/users/delete/'+userId);
+    }catch (error){
+      throw error;
+    }
+  }
+
   async createLogin(login: Login): Promise<Login> {
     try {
       const loginUrl = this.ApiService.getAuthUrl() + '/create';
