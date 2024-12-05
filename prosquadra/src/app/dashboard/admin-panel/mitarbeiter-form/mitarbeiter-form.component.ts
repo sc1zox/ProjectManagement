@@ -17,6 +17,11 @@ import {Team} from '../../../../types/team';
 import {MatStep, MatStepLabel, MatStepper, MatStepperNext, MatStepperPrevious} from '@angular/material/stepper';
 import {Login} from '../../../../types/login';
 
+
+const defaultUrlaubstage: number = 28;
+const defaultArbeitszeit: number = 38.5;
+
+
 @Component({
   selector: 'app-mitarbeiter-form',
   standalone: true,
@@ -70,7 +75,7 @@ export class MitarbeiterFormComponent implements OnInit, OnChanges {
       nachname: ['', [Validators.required, Validators.pattern('^[A-Za-z]+$')]],
       arbeitszeit: ['', [Validators.required, Validators.min(0), Validators.max(100)]],
       role: ['', Validators.required],
-      urlaubstage: [28],
+      urlaubstage: [28, [Validators.required, Validators.min(0)]],
       selectedSingleTeam: [''],
       selectedMultipleTeams: [[]]
     });
@@ -93,6 +98,14 @@ export class MitarbeiterFormComponent implements OnInit, OnChanges {
     this.firstFormGroup.get('role')?.valueChanges.subscribe((role) => {
       this.adjustTeamSelectionValidators(role);
     });
+    this.firstFormGroup.get('arbeitszeit')?.valueChanges.subscribe((arbeitszeit) => {
+      this.calculateUrlaubstage(arbeitszeit);
+    });
+  }
+
+  calculateUrlaubstage(arbeitszeit: number){
+    const urlaubstage: number = Math.trunc(defaultUrlaubstage / (defaultArbeitszeit / arbeitszeit));
+    this.firstFormGroup.get('urlaubstage')?.setValue(urlaubstage, { emitEvent: false });
   }
 
   async ngOnChanges() {

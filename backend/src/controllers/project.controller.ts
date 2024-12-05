@@ -7,10 +7,10 @@ import {Estimation} from "../types/estimation";
 
 class ProjectController {
     async createProject(req: Request, res: Response, next: NextFunction): Promise<void> {
-        const {name, description, team, PriorityPosition} = req.body;
+        const {name, description, team, priorityPosition} = req.body;
         console.log("CREATED: ",req.body)
 
-        if (!name || !description || !team || !team.id || !team.roadmapId) {
+        if (!name || !description || !team || !team.id || !team.roadmapId || isNaN(priorityPosition)) {
             return next({
                 status: StatusCodes.BAD_REQUEST,
                 message: 'Alle Felder (name, description, team, teamid, team.roadmapId) sind erforderlich.',
@@ -41,7 +41,7 @@ class ProjectController {
                         }
                     },
                     projectStatus: 'offen',
-                    priorityPosition: PriorityPosition,
+                    priorityPosition: priorityPosition,
                 },
             });
 

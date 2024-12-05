@@ -45,7 +45,7 @@
         <mat-form-field class="full-width">
           <mat-label>Urlaubstage</mat-label>
           <input formControlName="urlaubstage" matInput type="number" placeholder="28">
-          <mat-error *ngIf="firstFormGroup.get('urlaubstage')?.hasError('pattern')">Ungültige Anzahl von Urlaubstagen.</mat-error>
+          <mat-error *ngIf="firstFormGroup.get('urlaubstage')?.hasError('min')">Urlaubstage muss mindestens 0 betragen.</mat-error>
         </mat-form-field>
 
         <!-- Single selection für Nicht-Scrum Master -->
