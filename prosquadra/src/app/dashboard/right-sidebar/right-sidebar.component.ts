@@ -74,7 +74,6 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
 
   }
 
-// the current project fetch only works for roles other then SM as SM can have multiple teams. Maybe display something else for SM here
   async ngOnInit() {
     try {
       this.user = await this.UserService.getCurrentUser();
@@ -112,7 +111,7 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
         }
       }
     } catch (error) {
-      throw error;
+      console.log(error);
     }
   }
 
