@@ -76,7 +76,7 @@ export class MitarbeiterFormComponent implements OnInit, OnChanges {
       nachname: ['', [Validators.required, Validators.pattern('^[A-Za-z]+$')]],
       arbeitszeit: ['', [Validators.required, Validators.min(0), Validators.max(100)]],
       role: ['', Validators.required],
-      urlaubstage: [28],
+      urlaubstage: [28, [Validators.required, Validators.min(0)]],
       selectedSingleTeam: [''],
       selectedMultipleTeams: [[]]
     });
