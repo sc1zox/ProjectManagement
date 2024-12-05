@@ -6,7 +6,7 @@ import { AuthenticatedRequest } from '../types/AuthenticateRequest';
 import { Callback } from 'express-rescue';
 import { JwtPayload } from 'jsonwebtoken';
 
-const checkRole = (requiredRole: string, rescue: Callback) => {
+const checkRole = (requiredRole: string[], rescue: Callback) => {
     return async (req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> => {
         try {
             const token = req.headers.authorization?.replace('Bearer ', '');
@@ -33,7 +33,7 @@ const checkRole = (requiredRole: string, rescue: Callback) => {
                     message: 'User not found',
                 });
             }
-            if (user.role !== requiredRole) {
+            if (!requiredRole.some(requiredRole => requiredRole === user.role)) {
                 return next({
                     status: StatusCodes.FORBIDDEN,
                     message: 'Access denied',
