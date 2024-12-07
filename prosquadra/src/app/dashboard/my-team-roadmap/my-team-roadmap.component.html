@@ -1,6 +1,7 @@
 <div class="spinner">
   <app-spinner></app-spinner>
 </div>
+<ng-container *ngIf="userTeams.length>0; else noTeams">
 <div>
   <app-team-roadmap (dataUpdated)="refetch()" *ngIf="roadmap" [enableDragDrop]="isPo" [estimatableDEV]="isDev" [teams]="currentTeam"
                     [roadmap]="roadmap"></app-team-roadmap>
@@ -13,3 +14,7 @@
     </div>
   </div>
 </div>
+</ng-container>
+<ng-template #noTeams>
+  <h3>{{errorMessageNoTeams}}</h3>
+</ng-template>

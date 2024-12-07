@@ -31,6 +31,7 @@ export class MyTeamRoadmapComponent implements OnInit {
   isPo: boolean = false;
   isScrum: boolean = false;
   isDev: boolean = false
+  errorMessageNoTeams: string = "";
 
   constructor(
     private readonly TeamService: TeamService,
@@ -60,6 +61,7 @@ export class MyTeamRoadmapComponent implements OnInit {
     }
     if (this.userTeams.length === 0) {
       console.error('User is not part of any team');
+      this.errorMessageNoTeams = "Fehler! Dieser Nutzer gehört keinem Team an";
       return;
     }
 

@@ -12,7 +12,7 @@
   </div>
 
 
-  <mat-accordion class="ProjectListContainer" *ngIf="(userProject || userProjects) && !noTeamAndProject">
+  <mat-accordion class="ProjectListContainer" *ngIf="(userProject || userProjects.length !== 0) && !noTeamAndProject; else noProjectAvailable">
     <div *ngIf="user?.role !== UserRole.SM">
       <mat-expansion-panel class="currentProject">
         <mat-expansion-panel-header>
@@ -43,9 +43,9 @@
 
   </mat-accordion>
 
-  <div class="buttonsSidebar">
-  <button mat-raised-button (click)="showQrCode()">Toggle QR-Code</button>
-    <button mat-raised-button (click)="getPDF()">Download Benutzerdaten</button>
+  <div class="buttonsSidebarContainer">
+  <button mat-raised-button (click)="showQrCode()" class="buttonSidebar">Toggle QR-Code</button>
+    <button mat-raised-button (click)="getPDF()" class="buttonSidebar">Download Benutzerdaten</button>
   </div>
 
   <ng-container *ngIf="QrCodeVisible">
@@ -61,3 +61,6 @@
     <p> Deine Rolle: {{ user?.role }} </p>
   </div>
 </div>
+<ng-template #noProjectAvailable>
+  <p> Kein valides Projekt anzeigbar</p>
+</ng-template>

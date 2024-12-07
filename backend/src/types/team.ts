@@ -7,5 +7,6 @@ export interface Team {
   name: string;
   members?: User[];
   roadmap?: Roadmap | null;
+  roadmapId: number | null;
   projects?: Project[];
 }
