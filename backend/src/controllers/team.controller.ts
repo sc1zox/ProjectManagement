@@ -77,6 +77,7 @@ class TeamController {
                 include: {
                     members: true,
                     projects: true,
+                    roadmap: true,
                 },
             });
 
@@ -86,9 +87,16 @@ class TeamController {
                     message: 'Team not found',
                 });
             }
-            const deletedTeam = await prisma.team.delete({
-                where: { id: teamId },
-            });
+            let deletedTeam;
+            if (teamToDelete.roadmapId !== null) {
+                await prisma.roadmap.delete({
+                    where: { id: teamToDelete.roadmapId as number },
+                });
+            } else{
+                deletedTeam = await prisma.team.delete({
+                    where: { id: teamId },
+                });
+            }
 
             res.status(StatusCodes.OK).json({
                 code: StatusCodes.OK,

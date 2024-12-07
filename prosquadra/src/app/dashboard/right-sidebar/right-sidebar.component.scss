@@ -43,12 +43,13 @@
 .user-avatar {
   height: 60px;
   width: 60px;
-  border: 2px solid black;
+  border: 2px solid var(--roadmap-color);
+  box-shadow: var(--box-shadow-light);
   border-radius: 50%;
   background: linear-gradient(
       to bottom,
-      grey,
-      white
+      #50707d,
+      #6c98aa
   );
   display: flex;
   justify-content: center;
@@ -63,7 +64,11 @@
   padding: var(--content-padding);
 }
 
-.buttonsSidebar{
+.buttonSidebar{
+  background-color: rgba(255, 255, 255, 0.74);
+}
+
+.buttonsSidebarContainer{
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -88,5 +93,10 @@ button{
   padding-bottom: calc(var(--content-margin)*3);
 }
 #logout{
+  margin-top: calc(var(--content-margin)*3);
   background: var(--main-color);
+}
+
+p{
+  margin-top: calc(var(--content-margin)*3);
 }

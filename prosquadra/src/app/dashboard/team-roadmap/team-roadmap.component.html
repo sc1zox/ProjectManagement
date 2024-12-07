@@ -1,6 +1,7 @@
 <ng-progress />
 
-<div *ngIf="roadmap && roadmap.projects.length > 0; else noRoadmap" class="roadmap-card">
+<div *ngIf="roadmap; else noRoadmap" class="roadmap-card">
+  <div *ngIf="roadmap.projects.length > 0;else noProject">
   <h2>{{ teams?.name }}</h2>
 
   <div class="project-list" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListData]="projects"
@@ -106,7 +107,12 @@
       </button>
     </div>
   </div>
+  </div>
 </div>
 
 <ng-template #noRoadmap>
+</ng-template>
+<ng-template #noProject>
+  <h2>{{ teams?.name }}</h2>
+  <p>Noch keine Projekte in der Roadmap vorhanden</p>
 </ng-template>

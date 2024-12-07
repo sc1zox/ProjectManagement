@@ -85,7 +85,6 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
         }
 
         await this.fetchProject();
-
         this.projectPollingInterval = setInterval(() => {
           this.fetchProject();
           this.fetchNotifications();
