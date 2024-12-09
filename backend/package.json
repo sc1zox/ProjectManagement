@@ -9,6 +9,7 @@
     "build": "tsc",
     "seed": "ts-node prisma/seed.ts",
     "emptySeed": "ts-node prisma/seedEMPTY.ts",
+    "prototype": "ts-node prisma/seedPrototype.ts",
     "start": "node dist/server.js",
     "dev": "npx nodemon --exec ts-node src/api/server.ts"
   },
