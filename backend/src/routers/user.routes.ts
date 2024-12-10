@@ -34,7 +34,7 @@ userRouter.put('/project/update', isAuthenticated,rescue(ProjectController.updat
 userRouter.get('/project/current/:id', rescue(ProjectController.getProjectWithLowestPriorityByUserId));
 userRouter.post('/project/create/estimation', checkRole([UserRole.Developer],rescue(ProjectController.addEstimationToProject)));
 userRouter.get('/project/estimation/:id', rescue(ProjectController.getEstimationsWithAverage));
-userRouter.put('/project/status/update', checkRole([UserRole.PO,UserRole.Bereichsleiter],rescue(ProjectController.updateProjectStatus)));
+userRouter.put('/project/status/update', checkRole([UserRole.PO,UserRole.Bereichsleiter,UserRole.SM],rescue(ProjectController.updateProjectStatus)));
 
 userRouter.get('/team', rescue(TeamController.getTeams));
 userRouter.get('/team/:id', rescue(TeamController.getTeamByID));

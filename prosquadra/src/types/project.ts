@@ -16,6 +16,7 @@ export interface Project {
 
 export enum ProjectStatus {
   offen = 'offen',
+  inPlanung = 'inPlanung',
   inBearbeitung = 'inBearbeitung',
   geschlossen = 'geschlossen',
 }

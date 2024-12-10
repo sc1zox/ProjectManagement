@@ -51,7 +51,7 @@ export class EndDateComponent implements AfterViewInit{
       this.result = this.calculateProjectEndDate(this.startDateControl.value, this.currentProject?.avgEstimationHours, this.developers)
     }
     if(this.result) {
-      console.log(this.result)
+      //console.log(this.result)
       let body = {id: this.currentProject?.id,endDate: this.result,startDate:this.startDateControl.value}
       try {
         await this.ProjectService.updateProject(body);
