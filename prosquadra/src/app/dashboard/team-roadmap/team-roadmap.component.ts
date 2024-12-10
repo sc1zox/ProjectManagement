@@ -242,6 +242,10 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
         this.startDateControl.disable({ emitEvent: false });
         break;
 
+      case ProjectStatus.inPlanung:
+        this.startDateControl.enable({ emitEvent: false });
+        break;
+
       case ProjectStatus.inBearbeitung:
         this.startDateControl.enable({ emitEvent: false });
         break;
@@ -339,8 +343,10 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
         project.priorityPosition = index + 1;
       });
 
+      this.projects = this.sortedProjects;
+
       if (this.roadmap) {
-        this.roadmap.projects = this.projects;
+        this.roadmap.projects = [...this.projects];
       }
       this.updated = true
     }
@@ -435,34 +441,54 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   }
 
   // Comparing dates is so confusing
-  private updateProjectStatusOnDate(): void {
-    const today = normalizeDate(new Date());
-  
-    this.projects.forEach(project => {
-      if (project.startDate) {
-        const projectStartDate = normalizeDate(new Date(project.startDate));
-  
-        // Project should be "in Planung" if start date is after today
-        if (projectStartDate > today) {
-          project.projectStatus = ProjectStatus.inPlanung;
-  
-          this.ProjectService.setProjectStatus(project.id!, ProjectStatus.inPlanung)
-            //.then(() => console.log(`Persisted '${project.name}' as 'in Planung'`))
-            .catch(error => console.error('Error updating project status:', error));
-        }
-  
-        // Project should be "in Bearbeitung" if start date is today or earlier
-        if (projectStartDate <= today) {
-          project.projectStatus = ProjectStatus.inBearbeitung;
-  
-          this.ProjectService.setProjectStatus(project.id!, ProjectStatus.inBearbeitung)
-            //.then(() => console.log(`Persisted '${project.name}' as 'in Bearbeitung'`))
-            .catch(error => console.error('Error updating project status:', error));
-        }
+private updateProjectStatusOnDate(): void {
+  const today = normalizeDate(new Date());
+
+  this.projects.forEach(project => {
+    if (project.startDate) {
+      const projectStartDate = normalizeDate(new Date(project.startDate));
+      const projectEndDate = project.endDate ? normalizeDate(new Date(project.endDate)) : null;
+
+      // Project should be "geschlossen" if the end date is today or earlier
+      if (projectEndDate && projectEndDate <= today) {
+        project.projectStatus = ProjectStatus.geschlossen;
+
+        this.ProjectService.setProjectStatus(project.id!, ProjectStatus.geschlossen)
+          //.then(() => console.log(`Persisted '${project.name}' as 'geschlossen'`))
+          .catch(error => console.error('Error updating project status:', error));
+        return; // Exit early as "geschlossen" takes precedence
       }
+
+      // Project should be "in Planung" if start date is after today
+      if (projectStartDate > today) {
+        project.projectStatus = ProjectStatus.inPlanung;
+
+        this.ProjectService.setProjectStatus(project.id!, ProjectStatus.inPlanung)
+          //.then(() => console.log(`Persisted '${project.name}' as 'in Planung'`))
+          .catch(error => console.error('Error updating project status:', error));
+      }
+
+      // Project should be "in Bearbeitung" if start date is today or earlier
+      if (projectStartDate <= today) {
+        project.projectStatus = ProjectStatus.inBearbeitung;
+
+        this.ProjectService.setProjectStatus(project.id!, ProjectStatus.inBearbeitung)
+          //.then(() => console.log(`Persisted '${project.name}' as 'in Bearbeitung'`))
+          .catch(error => console.error('Error updating project status:', error));
+      }
+    }
+  });
+  this.cdr.detectChanges();
+}
+
+  get sortedProjects(): Project[] {
+    return this.projects.slice().sort((a, b) => {
+      if (a.projectStatus === ProjectStatus.inBearbeitung) return -1; // Prioritize inBearbeitung
+      if (b.projectStatus === ProjectStatus.inBearbeitung) return 1;
+      return 0; // Maintain relative order for others
     });
-    this.cdr.detectChanges();
   }
+  
 
   protected readonly getStatusLabel = getStatusLabel;
   protected readonly canEditStatus = canEditStatus;

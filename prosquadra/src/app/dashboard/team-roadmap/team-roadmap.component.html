@@ -4,31 +4,18 @@
   <div *ngIf="roadmap.projects.length > 0;else noProject">
     <h2>{{ teams?.name }}</h2>
 
-    <div class="project-list" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListData]="projects"
+    <div class="project-list" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListData]="sortedProjects"
       [cdkDropListDisabled]="(user?.role !== UserRole.PO && user?.role !== UserRole.Bereichsleiter) || !notDraggableInDashboardHome"
       (cdkDropListDropped)="drop($event)">
-
-      <div *ngFor="let project of projects;" class="project-box" cdkDrag
-        [cdkDragDisabled]="project.projectStatus === ProjectStatus.inBearbeitung"
-        matTooltipDisabled="project.projectStatus !== ProjectStatus.inBearbeitung" (mousedown)="onMouseDown($event)"
-        (click)="handleProjectClick($event, project)" [ngClass]="{ 'selected': project === selectedProject }"
-        cdkDragBoundary=".roadmap-card">
+    
+      <div *ngFor="let project of sortedProjects; index as i;" class="project-box" cdkDrag
+        [cdkDragDisabled]="(user?.role !== UserRole.PO && user?.role !== UserRole.Bereichsleiter) || project.projectStatus === ProjectStatus.inBearbeitung || i === 0"
+        matTooltip="Cannot move this project" matTooltipDisabled="project.projectStatus !== ProjectStatus.inBearbeitung"
+        (mousedown)="onMouseDown($event)" (click)="handleProjectClick($event, project)"
+        [ngClass]="{ 'selected': project === selectedProject }" cdkDragBoundary=".roadmap-card">
         {{ project.name }}
       </div>
     </div>
-
-    <!-- 
-  <div class="project-list" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListData]="projects"
-    [cdkDropListDisabled]="(user?.role !== UserRole.PO && user?.role !== UserRole.Bereichsleiter) || !notDraggableInDashboardHome"
-    (cdkDropListDropped)="drop($event)">
-
-    <div *ngFor="let project of projects;" class="project-box" cdkDrag (mousedown)="onMouseDown($event)"
-      (click)="handleProjectClick($event, project)" [ngClass]="{ 'selected': project === selectedProject }"
-      cdkDragBoundary=".roadmap-card">
-      {{ project.name }}
-    </div>
-  </div>
-  -->
 
     <!-- Selected Project Details -->
     <div *ngIf="selectedProject" class="project-details">
@@ -52,7 +39,7 @@
 
       <!-- Dates Section -->
       <div
-        *ngIf="selectedProject.projectStatus === ProjectStatus.inBearbeitung || selectedProject.projectStatus === ProjectStatus.inPlanung"
+        *ngIf="selectedProject.projectStatus === ProjectStatus.inBearbeitung || selectedProject.projectStatus === ProjectStatus.inPlanung || selectedProject.projectStatus === ProjectStatus.geschlossen"
         class="dates-section">
 
         <!-- Start Date Logic -->
