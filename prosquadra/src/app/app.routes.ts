@@ -66,7 +66,7 @@ export const routes: Routes = [
         path: 'analyse-board',
         loadComponent: () => import('./dashboard/analyse-board/analyse-board.component').then(m => m.AnalyseBoardComponent),
         canActivate: [AuthGuard],
-        data: { role: [UserRole.SM] }
+        data: { role: [UserRole.SM, UserRole.Bereichsleiter] }
       },
       {
         path: 'team-overview',
