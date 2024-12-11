@@ -3,17 +3,20 @@
 <div *ngIf="roadmap; else noRoadmap" class="roadmap-card">
   <div *ngIf="roadmap.projects.length > 0;else noProject">
     <h2>{{ teams?.name }}</h2>
-
     <div class="project-list" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListData]="sortedProjects"
       [cdkDropListDisabled]="(user?.role !== UserRole.PO && user?.role !== UserRole.Bereichsleiter) || !notDraggableInDashboardHome"
       (cdkDropListDropped)="drop($event)">
-    
+
       <div *ngFor="let project of sortedProjects; index as i;" class="project-box" cdkDrag
-        [cdkDragDisabled]="(user?.role !== UserRole.PO && user?.role !== UserRole.Bereichsleiter) || project.projectStatus === ProjectStatus.inBearbeitung || i === 0"
+        [cdkDragDisabled]="(user?.role !== UserRole.PO && user?.role !== UserRole.Bereichsleiter) || project.projectStatus === ProjectStatus.inBearbeitung"
         matTooltip="Cannot move this project" matTooltipDisabled="project.projectStatus !== ProjectStatus.inBearbeitung"
-        (mousedown)="onMouseDown($event)" (click)="handleProjectClick($event, project)"
-        [ngClass]="{ 'selected': project === selectedProject }" cdkDragBoundary=".roadmap-card">
+        (mousedown)="onMouseDown($event)" (click)="handleProjectClick($event, project)" [ngClass]="{ 'selected': project === selectedProject,
+          'offen': project.projectStatus === ProjectStatus.offen,
+          'in-planung': project.projectStatus === ProjectStatus.inPlanung,
+          'in-bearbeitung': project.projectStatus === ProjectStatus.inBearbeitung,
+          'geschlossen': project.projectStatus === ProjectStatus.geschlossen }" cdkDragBoundary=".roadmap-card">
         {{ project.name }}
+        <span class="status-label">{{ getStatusLabel(project.projectStatus) }}</span>
       </div>
     </div>
 
