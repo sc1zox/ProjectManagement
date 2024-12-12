@@ -22,7 +22,6 @@ import {UserService} from '../../../../services/user.service';
 import {User} from '../../../../types/user';
 import { TeamService } from '../../../../services/team.service';
 import { SnackbarService } from '../../../../services/snackbar.service';
-import { TeamDeleteComponent } from '../../admin-panel/team-delete/team-delete.component';
 
 @Component({
   selector: 'app-gantt-chart',
@@ -68,7 +67,7 @@ export class GanttChartComponent implements OnInit, AfterViewInit {
     },
   };
 
-  constructor(private readonly UserService:UserService, 
+  constructor(private readonly UserService:UserService,
     private readonly TeamService:TeamService,
     private readonly SnackBarService: SnackbarService) {
   }
@@ -76,7 +75,7 @@ export class GanttChartComponent implements OnInit, AfterViewInit {
 
   async ngOnInit() {
     this.currentUser = await this.UserService.getCurrentUser();
-    this.populateItems();
+    await this.populateItems();
   }
 
   ngAfterViewInit() {
@@ -97,18 +96,21 @@ export class GanttChartComponent implements OnInit, AfterViewInit {
       try {
         teamsToDisplay = await this.TeamService.getTeams();
         teamsToDisplay = teamsToDisplay.filter(team => team.id !== 1); // Filter Admin / Initialiser Team
+        this.groups = teamsToDisplay.map((team) => ({
+          id: team.id.toString(),
+          title: team.name,
+        }));
       } catch (error) {
         this.SnackBarService.open('Error fetching teams');
         teamsToDisplay = [];
       }
     } else {
       teamsToDisplay = this.teams;
+      this.groups = this.teams.filter(team => team.members?.some(member => member.id === this.currentUser?.id)).map((team) => ({
+        id: team.id.toString(),
+        title: team.name,
+      }));
     }
-
-    this.groups = teamsToDisplay.map((team) => ({
-      id: team.id.toString(),
-      title: team.name,
-    }));
 
     this.items = [];
     for (const team of teamsToDisplay) {
