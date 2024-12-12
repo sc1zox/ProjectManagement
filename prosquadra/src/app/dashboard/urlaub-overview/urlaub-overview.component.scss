@@ -1,0 +1,54 @@
+.user-name {
+  display: flex;
+  align-items: center;
+  font-weight: bold;
+  color: white;
+  margin: var(--content-margin);
+  background-color: var(--sidebar-color) !important;
+  border-radius: 8px;
+
+  &:hover{
+    background-color: var(--sidebar-color) !important;
+  }
+
+  mat-icon {
+    margin-right: 10px;
+    color: white;
+  }
+}
+
+
+.urlaub-category {
+  margin-bottom: calc(var(--content-margin) * 10);
+}
+
+h3 {
+  font-weight: bold;
+}
+
+.urlaub-container {
+  border: 2px solid black;
+  border-radius: 8px;
+}
+
+.accepted {
+  margin-bottom: calc(var(--content-margin) * 2);
+  padding: var(--content-padding);
+  color: white;
+  background: #5ce65c;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.waiting {
+  margin-bottom: calc(var(--content-margin) * 2);
+  padding: var(--content-padding);
+  color: white;
+  background: gray;
+  border-radius: 8px;
+  text-align: center;
+}
+
+::ng-deep #user-container {
+  margin-bottom: calc(var(--content-margin) * 5);
+}

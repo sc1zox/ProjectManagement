@@ -18,16 +18,6 @@
   </div>
 </div>
 <ng-container *ngFor="let urlaub of urlaub$ | async">
-<div class="urlaub-anzeige"  [@slideIn]>
-  <div class="urlaub-datum">
-  <p>Urlaubsbeginn: {{ urlaub.startDatum | date }}</p>
-  <p>Urlaubsende: {{urlaub.endDatum | date }}</p>
-  </div>
-  <div class="urlaub-button" *ngIf="urlaub">
-  <button mat-fab aria-label="delete icon" id="deleteButton" (click)=deleteUrlaub(urlaub)>
-    <mat-icon>delete</mat-icon>
-  </button>
-  </div>
-</div>
+  <app-urlaub [urlaub]="urlaub" (delete)="deleteUrlaub($event)" [mode]="'user'"></app-urlaub>
 </ng-container>
 </div>

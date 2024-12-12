@@ -1,0 +1,33 @@
+<ng-progress></ng-progress>
+<ng-container *ngFor="let user of allUser">
+  <div id="user-container">
+    <ng-container>
+
+      <mat-expansion-panel [expanded]="!userCollapseState.get(user)">
+        <mat-expansion-panel-header class="user-name">
+          <mat-icon>person</mat-icon>
+          <span>{{ user.vorname }} {{ user.nachname }}</span>
+        </mat-expansion-panel-header>
+
+        <div *ngIf="groupedVacationsSignal().get(user)?.accepted!.length > 0" class="urlaub-category">
+          <h3 class="accepted">Akzeptierte Urlaubsanfragen</h3>
+          <div class="urlaub-container">
+            <ng-container *ngFor="let vacation of groupedVacationsSignal().get(user)?.accepted">
+              <app-urlaub [urlaub]="vacation" [mode]="'bereichsleiter'" (deny)="denyUrlaub($event)" (accept)="acceptUrlaub($event)"></app-urlaub>
+            </ng-container>
+          </div>
+        </div>
+
+        <div *ngIf="groupedVacationsSignal().get(user)?.waiting!.length > 0">
+          <h3 class="waiting">Ausstehende Urlaubsanfragen</h3>
+          <div class="urlaub-container">
+            <ng-container *ngFor="let vacation of groupedVacationsSignal().get(user)?.waiting">
+              <app-urlaub [urlaub]="vacation" [mode]="'bereichsleiter'" (deny)="denyUrlaub($event)" (accept)="acceptUrlaub($event)"></app-urlaub>
+            </ng-container>
+          </div>
+        </div>
+
+      </mat-expansion-panel>
+    </ng-container>
+  </div>
+</ng-container>

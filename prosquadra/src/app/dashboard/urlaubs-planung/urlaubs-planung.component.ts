@@ -9,14 +9,14 @@ import {MatLabel} from '@angular/material/form-field';
 import {BehaviorSubject, combineLatest, map, Subject} from 'rxjs';
 import {User} from '../../../types/user';
 import {UserService} from '../../../services/user.service';
-import {Urlaub} from '../../../types/urlaub';
+import {Urlaub, vacationState} from '../../../types/urlaub';
 import {SnackbarService} from '../../../services/snackbar.service';
 import {MatIconModule} from '@angular/material/icon';
-import {slideIn} from '../../../animations/slideIn';
 import {UrlaubPlanungService} from '../../../services/urlaub.planung.service';
 import {ApiError} from '../../../error/ApiError';
 import {SpinnerService} from '../../../services/spinner.service';
 import {NgProgressbar, NgProgressRef} from 'ngx-progressbar';
+import {UrlaubComponent} from '../../components/urlaub/urlaub.component';
 
 
 @Component({
@@ -34,9 +34,7 @@ import {NgProgressbar, NgProgressRef} from 'ngx-progressbar';
     MatIconModule,
     MatFabButton,
     NgProgressbar,
-  ],
-  animations: [
-    slideIn
+    UrlaubComponent,
   ],
   templateUrl: './urlaubs-planung.component.html',
   styleUrl: './urlaubs-planung.component.scss'
@@ -99,12 +97,14 @@ export class UrlaubsPlanungComponent implements OnInit {
             userId: this.currentUser.id,
             startDatum: data.start.value,
             endDatum: data.end.value,
+            stateOfAcception: vacationState.Waiting
           };
 
           const urlaubMitId: Urlaub = await this.UserService.sendUrlaubRequest(
             this.currentUser.id,
             data.start.value,
-            data.end.value
+            data.end.value,
+            vacationState.Waiting,
           );
           newUrlaub.id = urlaubMitId.id;
           const updatedUrlaub = [...this.urlaub$.getValue(), newUrlaub];
