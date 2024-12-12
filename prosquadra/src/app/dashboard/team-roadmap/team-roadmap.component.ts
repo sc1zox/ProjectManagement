@@ -399,10 +399,9 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
         if (this.roadmap) {
           this.roadmap.projects = [...this.projects];
         }
-
         this.selectedProject = undefined;
 
-        this.dataUpdated.emit();
+        // this.dataUpdated.emit(); this causes prio position bug. But deleting might cause new unwanted behaviour. Observe
 
         this.SnackBarService.open('Projekt erfolgreich gelöscht');
       } catch (error) {
@@ -488,7 +487,7 @@ private updateProjectStatusOnDate(): void {
       return 0; // Maintain relative order for others
     });
   }
-  
+
 
   protected readonly getStatusLabel = getStatusLabel;
   protected readonly canEditStatus = canEditStatus;
