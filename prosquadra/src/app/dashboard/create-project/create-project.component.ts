@@ -16,6 +16,7 @@ import {SnackbarService} from '../../../services/snackbar.service';
 import { UserService } from '../../../services/user.service';
 import { User } from '../../../types/user';
 import {NgProgressbar, NgProgressRef} from 'ngx-progressbar';
+import {RoadmapService} from '../../../services/roadmap.service';
 
 @Component({
   selector: 'app-create-project',
@@ -52,6 +53,7 @@ export class CreateProjectComponent implements OnInit{
     private readonly NotificationService: NotificationsService,
     private readonly SnackBarService: SnackbarService,
     private readonly UserService: UserService,
+    private readonly RoadmapService: RoadmapService,
   ) {
     this.projectForm = this.fb.group({
       projectName: ['', [Validators.required, Validators.maxLength(15)]], // Correct maxLength usage
@@ -92,7 +94,7 @@ export class CreateProjectComponent implements OnInit{
         }
 
         const maxPriorityPosition = existingProjects!.length > 0
-          ? Math.max(...existingProjects!.map(project => project.priorityPosition || 0))
+          ? Math.max(...existingProjects?.map(project => project.priorityPosition || 0))
           : 0;
         const newPriorityPosition = maxPriorityPosition + 1;
         const newProject: Project = {
@@ -112,11 +114,11 @@ export class CreateProjectComponent implements OnInit{
         this.selectedTeam = selectedTeam;
           try {
             this.currentTeam = await this.TeamService.getTeamById(selectedTeam.id);
+            this.roadmap = await this.RoadmapService.getRoadmapById(this.currentTeam.roadmap?.id)
           }catch (error){
             this.SnackBarService.open('Konnte das Team nicht laden')
             this.progressBar.complete();
           }
-          this.roadmap = this.currentTeam?.roadmap;
         }
       if (this.selectedTeam) {
         this.selectedTeam.members?.forEach((member) => {

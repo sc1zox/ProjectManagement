@@ -14,7 +14,7 @@ import {SnackbarService} from '../../../services/snackbar.service';
 import {MatIconModule} from '@angular/material/icon';
 import {slideIn} from '../../../animations/slideIn';
 import {UrlaubPlanungService} from '../../../services/urlaub.planung.service';
-import {ApiError} from '../../../../error/ApiError';
+import {ApiError} from '../../../error/ApiError';
 import {SpinnerService} from '../../../services/spinner.service';
 import {NgProgressbar, NgProgressRef} from 'ngx-progressbar';
 
@@ -128,7 +128,6 @@ export class UrlaubsPlanungComponent implements OnInit {
     });
   }
 
-// nach dieser Methode und weg bzw. zurück navigieren ist der Urlaub immernoch im FE da. Erst on reload verschwindet er
   async deleteUrlaub(urlaub: Urlaub) {
     this.progressBar.start();
     try {
@@ -136,7 +135,6 @@ export class UrlaubsPlanungComponent implements OnInit {
       const updatedUrlaub = this.urlaub$.getValue().filter(u => u !== urlaub);
       this.urlaub$.next(updatedUrlaub);
       this.SnackBarService.open('Urlaub wurde gelöscht');
-      window.location.reload() // Bad fix in the meanwhile
     } catch (error) {
       this.SnackBarService.open('Urlaub konnte nicht gelöscht werden');
       this.progressBar.complete();

@@ -11,13 +11,13 @@ import {
   SimpleChanges,
   ViewChild
 } from '@angular/core';
-import {CommonModule} from '@angular/common';
-import {ProjectService} from '../../../services/project.service';
-import {Project, ProjectStatus} from '../../../types/project';
-import {CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray} from '@angular/cdk/drag-drop';
-import {MatDatepickerModule} from '@angular/material/datepicker';
-import {MAT_DATE_LOCALE, MatNativeDateModule, MatOptionModule, provideNativeDateAdapter} from '@angular/material/core';
-import {MatInputModule} from '@angular/material/input';
+import { CommonModule } from '@angular/common';
+import { ProjectService } from '../../../services/project.service';
+import { Project, ProjectStatus } from '../../../types/project';
+import { CdkDrag, CdkDragDrop, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MAT_DATE_LOCALE, MatNativeDateModule, MatOptionModule, provideNativeDateAdapter } from '@angular/material/core';
+import { MatInputModule } from '@angular/material/input';
 import {
   AbstractControl,
   FormBuilder,
@@ -27,23 +27,24 @@ import {
   ReactiveFormsModule,
   ValidationErrors
 } from '@angular/forms';
-import {UserService} from '../../../services/user.service';
-import {MatButton} from '@angular/material/button';
-import {Roadmap} from '../../../types/roadmap';
-import {User, UserRole} from '../../../types/user';
-import {RoadmapService} from '../../../services/roadmap.service';
-import {SnackbarService} from '../../../services/snackbar.service';
-import {Team} from '../../../types/team';
-import {normalizeDate, parseProjects} from '../../../mapper/projectDatesToDate';
-import {TimeEstimatorComponent} from '../../components/time-estimator/time-estimator.component';
-import {MatSelectChange, MatSelectModule} from '@angular/material/select';
-import {Router} from '@angular/router';
-import {EndDateComponent} from '../../components/end-date/end-date.component';
-import {MatSelect} from '@angular/material/select';
-import {NgProgressbar, NgProgressRef} from 'ngx-progressbar';
-import {debounceTime} from 'rxjs';
-import {canEditDate, canEditInDashboard, canEditStatus} from '../../../permissions/permissionHandler';
-import {getStatusLabel} from '../../../helper/roadmapHelper';
+import { UserService } from '../../../services/user.service';
+import { MatButton } from '@angular/material/button';
+import { Roadmap } from '../../../types/roadmap';
+import { User, UserRole } from '../../../types/user';
+import { RoadmapService } from '../../../services/roadmap.service';
+import { SnackbarService } from '../../../services/snackbar.service';
+import { Team } from '../../../types/team';
+import { normalizeDate, parseProjects } from '../../../mapper/projectDatesToDate';
+import { TimeEstimatorComponent } from '../../components/time-estimator/time-estimator.component';
+import { MatSelectChange, MatSelectModule } from '@angular/material/select';
+import { Router } from '@angular/router';
+import { EndDateComponent } from '../../components/end-date/end-date.component';
+import { MatSelect } from '@angular/material/select';
+import { NgProgressbar, NgProgressRef } from 'ngx-progressbar';
+import { debounceTime } from 'rxjs';
+import { canEditDate, canEditInDashboard, canEditStatus } from '../../../permissions/permissionHandler';
+import { getStatusLabel } from '../../../helper/roadmapHelper';
+import {MatTooltip} from '@angular/material/tooltip';
 
 const isStartDateInRange = (projects: Project[], startDate: Date, selectedProject: Project): boolean => {
   const projectsWithoutItself = projects.filter(project => project.id !== selectedProject.id);
@@ -79,10 +80,10 @@ const isStartDateInRange = (projects: Project[], startDate: Date, selectedProjec
     MatSelectModule,
     MatOptionModule,
     EndDateComponent,
-    NgProgressbar,
+    NgProgressbar, MatTooltip,
   ],
   providers: [provideNativeDateAdapter(),
-    {provide: MAT_DATE_LOCALE, useValue: 'de-DE'}
+  { provide: MAT_DATE_LOCALE, useValue: 'de-DE' }
   ],
   templateUrl: './team-roadmap.component.html',
   styleUrls: ['./team-roadmap.component.scss']
@@ -124,8 +125,8 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   private isDragging = false;
 
   constructor(private readonly ProjectService: ProjectService,
-              private readonly UserService: UserService, private readonly fb: FormBuilder,
-              private readonly RoadmapService: RoadmapService, private SnackBarService: SnackbarService, private cdr: ChangeDetectorRef, private router: Router) {
+    private readonly UserService: UserService, private readonly fb: FormBuilder,
+    private readonly RoadmapService: RoadmapService, private SnackBarService: SnackbarService, private cdr: ChangeDetectorRef, private router: Router) {
     this.dateForm = this.fb.group({
       startDate: this.startDateControl,
     });
@@ -139,12 +140,12 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
         this.SnackBarService.open('Das Startdatum darf sich nicht mit einem Projekt überschneiden');
 
         // Immediately reset the control value | emitEvent: false so calculateEndDate does not get called
-        control.setValue(this.selectedProject?.startDate || null, {emitEvent: false});
+        control.setValue(this.selectedProject?.startDate || null, { emitEvent: false });
 
         // Mark the control as touched to prevent user confusion
         control.markAsTouched();
 
-        return {startDateInvalid: true};
+        return { startDateInvalid: true };
       }
     }
     return null;
@@ -157,7 +158,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     }
 
     if (changes['selectedProject'] && this.selectedProject) {
-      this.startDateControl.setValue(this.selectedProject.startDate, {emitEvent: false});
+      this.startDateControl.setValue(this.selectedProject.startDate, { emitEvent: false });
       this.updateDateControls();
     }
   }
@@ -175,6 +176,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     }
     if (this.roadmap) {
       this.extractProjectsFromRoadmaps();
+      this.updateProjectStatusOnDate();
       // sort projects after prioposition and if undefined set very high value to put at the end but this should not be able to happen anyway as prio is always set on frontend
       this.roadmap.projects.sort((a, b) => {
         const priorityA = a.priorityPosition ?? Number.MAX_VALUE;
@@ -191,8 +193,12 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
       this.notDraggableInDashboardHome = this.router.url.includes('dashboard/team-roadmap') || this.router.url.includes('dashboard/create-project') || canEditInDashboard(this.user);
     }
     this.startDateControl.valueChanges.pipe(debounceTime(300)).subscribe(async (startDate) => {
-      if (startDate) {
+      if (startDate && this.selectedProject) {
+        // Update the selected project's start date
+        this.selectedProject.startDate = startDate;
+
         await this.refreshDates();
+        this.updateProjectStatusOnDate();
       }
     });
   }
@@ -234,15 +240,19 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
 
     switch (this.selectedProject.projectStatus) {
       case ProjectStatus.geschlossen:
-        this.startDateControl.disable({emitEvent: false});
+        this.startDateControl.disable({ emitEvent: false });
+        break;
+
+      case ProjectStatus.inPlanung:
+        this.startDateControl.enable({ emitEvent: false });
         break;
 
       case ProjectStatus.inBearbeitung:
-        this.startDateControl.enable({emitEvent: false});
+        this.startDateControl.enable({ emitEvent: false });
         break;
 
       case ProjectStatus.offen:
-        this.startDateControl.disable({emitEvent: false});
+        this.startDateControl.disable({ emitEvent: false });
         break;
 
       default:
@@ -265,7 +275,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     this.selectedProject = project;
 
     // Update the form controls to reflect the selected project
-    this.startDateControl.setValue(project.startDate, {emitEvent: false});
+    this.startDateControl.setValue(project.startDate, { emitEvent: false });
 
     // Update control locking state based on the selected project's status
     this.updateDateControls();
@@ -334,8 +344,10 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
         project.priorityPosition = index + 1;
       });
 
+      this.projects = this.sortedProjects;
+
       if (this.roadmap) {
-        this.roadmap.projects = this.projects;
+        this.roadmap.projects = [...this.projects];
       }
       this.updated = true
     }
@@ -367,7 +379,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     } catch (error) {
       this.SnackBarService.open('Bei der Projektpriorisierung ist ein Fehler aufgetreten')
       this.progressBar.complete();
-    }finally {
+    } finally {
       this.progressBar.complete();
     }
   }
@@ -388,10 +400,9 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
         if (this.roadmap) {
           this.roadmap.projects = [...this.projects];
         }
-
         this.selectedProject = undefined;
 
-        this.dataUpdated.emit();
+        // this.dataUpdated.emit(); this causes prio position bug. But deleting might cause new unwanted behaviour. Observe
 
         this.SnackBarService.open('Projekt erfolgreich gelöscht');
       } catch (error) {
@@ -409,6 +420,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
       if (this.roadmap) {
         this.roadmap = await this.RoadmapService.getRoadmapById(this.roadmap.id);
         this.projects = [...this.roadmap.projects];
+        this.updateProjectStatusOnDate();
       }
     } catch (error) {
       this.SnackBarService.open('Fehler bei refetch roadmap')
@@ -427,6 +439,56 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
       }
     }
   }
+
+  // Comparing dates is so confusing
+private updateProjectStatusOnDate(): void {
+  const today = normalizeDate(new Date());
+
+  this.projects.forEach(project => {
+    if (project.startDate) {
+      const projectStartDate = normalizeDate(new Date(project.startDate));
+      const projectEndDate = project.endDate ? normalizeDate(new Date(project.endDate)) : null;
+
+      // Project should be "geschlossen" if the end date is today or earlier
+      if (projectEndDate && projectEndDate <= today) {
+        project.projectStatus = ProjectStatus.geschlossen;
+
+        this.ProjectService.setProjectStatus(project.id!, ProjectStatus.geschlossen)
+          //.then(() => console.log(`Persisted '${project.name}' as 'geschlossen'`))
+          .catch(error => console.error('Error updating project status:', error));
+        return; // Exit early as "geschlossen" takes precedence
+      }
+
+      // Project should be "in Planung" if start date is after today
+      if (projectStartDate > today) {
+        project.projectStatus = ProjectStatus.inPlanung;
+
+        this.ProjectService.setProjectStatus(project.id!, ProjectStatus.inPlanung)
+          //.then(() => console.log(`Persisted '${project.name}' as 'in Planung'`))
+          .catch(error => console.error('Error updating project status:', error));
+      }
+
+      // Project should be "in Bearbeitung" if start date is today or earlier
+      if (projectStartDate <= today) {
+        project.projectStatus = ProjectStatus.inBearbeitung;
+
+        this.ProjectService.setProjectStatus(project.id!, ProjectStatus.inBearbeitung)
+          //.then(() => console.log(`Persisted '${project.name}' as 'in Bearbeitung'`))
+          .catch(error => console.error('Error updating project status:', error));
+      }
+    }
+  });
+  this.cdr.detectChanges();
+}
+
+  get sortedProjects(): Project[] {
+    return this.projects.slice().sort((a, b) => {
+      if (a.projectStatus === ProjectStatus.inBearbeitung) return -1; // Prioritize inBearbeitung
+      if (b.projectStatus === ProjectStatus.inBearbeitung) return 1;
+      return 0; // Maintain relative order for others
+    });
+  }
+
 
   protected readonly getStatusLabel = getStatusLabel;
   protected readonly canEditStatus = canEditStatus;

@@ -1,6 +1,6 @@
 import {Injectable, OnInit} from '@angular/core';
 import {ApiResponse} from '../types/api-response';
-import {ApiError} from '../../error/ApiError';
+import {ApiError} from '../error/ApiError';
 
 
 @Injectable({

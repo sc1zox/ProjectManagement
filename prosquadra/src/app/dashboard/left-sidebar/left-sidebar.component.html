@@ -16,7 +16,7 @@
 
       <mat-list-item *ngIf="user?.role===UserRole.Admin" [routerLink]="['admin-panel']">Admin-Panel</mat-list-item>
 
-      <mat-list-item *ngIf="user?.role===UserRole.SM" [routerLink]="['analyse-board']">Analyse</mat-list-item>
+      <mat-list-item *ngIf="user?.role===UserRole.SM || user?.role===UserRole.Bereichsleiter" [routerLink]="['analyse-board']">Analysebereich</mat-list-item>
 
       <mat-list-item *ngIf="user?.role!==UserRole.Admin" [routerLink]="['urlaubs-planung']">Urlaubsplanung</mat-list-item>
 

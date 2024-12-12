@@ -65,7 +65,7 @@ CREATE TABLE `Project` (
     `roadmapId` INTEGER NULL,
     `teamid` INTEGER NOT NULL,
     `priorityPosition` INTEGER NULL,
-    `projectStatus` ENUM('offen', 'inBearbeitung', 'geschlossen') NOT NULL,
+    `projectStatus` ENUM('offen', 'inPlanung', 'inBearbeitung', 'geschlossen') NOT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 

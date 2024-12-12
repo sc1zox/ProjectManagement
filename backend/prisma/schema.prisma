@@ -115,6 +115,7 @@ enum UserRole {
 
 enum ProjectStatus {
   offen
+  inPlanung
   inBearbeitung
   geschlossen
 }

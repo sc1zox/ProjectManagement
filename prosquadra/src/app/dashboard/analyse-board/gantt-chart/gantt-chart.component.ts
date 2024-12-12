@@ -20,6 +20,8 @@ import {Team} from '../../../../types/team';
 import {projectToGantt} from '../../../../mapper/projectToGantt';
 import {UserService} from '../../../../services/user.service';
 import {User} from '../../../../types/user';
+import { TeamService } from '../../../../services/team.service';
+import { SnackbarService } from '../../../../services/snackbar.service';
 
 @Component({
   selector: 'app-gantt-chart',
@@ -65,13 +67,15 @@ export class GanttChartComponent implements OnInit, AfterViewInit {
     },
   };
 
-  constructor(private readonly UserService:UserService) {
+  constructor(private readonly UserService:UserService,
+    private readonly TeamService:TeamService,
+    private readonly SnackBarService: SnackbarService) {
   }
 
 
   async ngOnInit() {
     this.currentUser = await this.UserService.getCurrentUser();
-    this.populateItems();
+    await this.populateItems();
   }
 
   ngAfterViewInit() {
@@ -84,14 +88,32 @@ export class GanttChartComponent implements OnInit, AfterViewInit {
   }
 
 
-  private populateItems() {
-    this.groups = this.teams.filter(team => team.members?.some(member => member.id === this.currentUser?.id)).map((team) => ({
-      id: team.id.toString(),
-      title: team.name,
-    }));
+  private async populateItems() {
+    let teamsToDisplay: Team[] = []
+
+    if (this.currentUser?.role == "Bereichsleiter")
+    {
+      try {
+        teamsToDisplay = await this.TeamService.getTeams();
+        teamsToDisplay = teamsToDisplay.filter(team => team.id !== 1); // Filter Admin / Initialiser Team
+        this.groups = teamsToDisplay.map((team) => ({
+          id: team.id.toString(),
+          title: team.name,
+        }));
+      } catch (error) {
+        this.SnackBarService.open('Error fetching teams');
+        teamsToDisplay = [];
+      }
+    } else {
+      teamsToDisplay = this.teams;
+      this.groups = this.teams.filter(team => team.members?.some(member => member.id === this.currentUser?.id)).map((team) => ({
+        id: team.id.toString(),
+        title: team.name,
+      }));
+    }
 
     this.items = [];
-    for (const team of this.teams) {
+    for (const team of teamsToDisplay) {
       if (team.projects && team.projects.length > 0) {
         this.items.push(
           ...team.projects.map((project) =>
@@ -101,5 +123,4 @@ export class GanttChartComponent implements OnInit, AfterViewInit {
       }
     }
   }
-
 }

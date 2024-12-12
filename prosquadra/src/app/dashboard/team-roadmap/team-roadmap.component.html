@@ -2,111 +2,119 @@
 
 <div *ngIf="roadmap; else noRoadmap" class="roadmap-card">
   <div *ngIf="roadmap.projects.length > 0;else noProject">
-  <h2>{{ teams?.name }}</h2>
+    <h2>{{ teams?.name }}</h2>
+    <div class="project-list" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListData]="sortedProjects"
+      [cdkDropListDisabled]="(user?.role !== UserRole.PO && user?.role !== UserRole.Bereichsleiter) || !notDraggableInDashboardHome"
+      (cdkDropListDropped)="drop($event)">
 
-  <div class="project-list" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListData]="projects"
-    [cdkDropListDisabled]="(user?.role !== UserRole.PO && user?.role !== UserRole.Bereichsleiter) || !notDraggableInDashboardHome"
-    (cdkDropListDropped)="drop($event)">
-
-    <div *ngFor="let project of projects;" class="project-box" cdkDrag (mousedown)="onMouseDown($event)"
-      (click)="handleProjectClick($event, project)" [ngClass]="{ 'selected': project === selectedProject }"
-      cdkDragBoundary=".roadmap-card">
-      {{ project.name }}
+      <div *ngFor="let project of sortedProjects; index as i;" class="project-box" cdkDrag
+        [cdkDragDisabled]="(user?.role !== UserRole.PO && user?.role !== UserRole.Bereichsleiter) || project.projectStatus === ProjectStatus.inBearbeitung"
+        matTooltip="Cannot move this project" matTooltipDisabled="project.projectStatus !== ProjectStatus.inBearbeitung"
+        (mousedown)="onMouseDown($event)" (click)="handleProjectClick($event, project)" [ngClass]="{ 'selected': project === selectedProject,
+          'offen': project.projectStatus === ProjectStatus.offen,
+          'in-planung': project.projectStatus === ProjectStatus.inPlanung,
+          'in-bearbeitung': project.projectStatus === ProjectStatus.inBearbeitung,
+          'geschlossen': project.projectStatus === ProjectStatus.geschlossen }" cdkDragBoundary=".roadmap-card">
+        {{ project.name }}
+        <span class="status-label">{{ getStatusLabel(project.projectStatus) }}</span>
+      </div>
     </div>
-  </div>
 
-  <!-- Selected Project Details -->
-  <div *ngIf="selectedProject" class="project-details">
-    <div class="header">
-      <h3><strong>Projekt: </strong>{{ selectedProject.name }}</h3>
-      <div class="status">
-        <mat-form-field *ngIf="canEditStatus(user!) && hideInDashboard; else displayStatus" appearance="outline">
-          <mat-label>Status</mat-label>
-          <mat-select #statusSelect [(value)]="selectedProject.projectStatus"
-            (selectionChange)="onStatusChange($event,statusSelect)" (opened)="onStatusDropdownOpened()">
-            <mat-option *ngFor="let status of projectStatuses" [value]="status">{{ getStatusLabel(status) }}
-            </mat-option>
-          </mat-select>
-        </mat-form-field>
-        <ng-template #displayStatus>
-          <p class="status-display"><strong>Status:</strong> {{ getStatusLabel(selectedProject.projectStatus) }}</p>
+    <!-- Selected Project Details -->
+    <div *ngIf="selectedProject" class="project-details">
+      <div class="header">
+        <h3><strong>Projekt: </strong>{{ selectedProject.name }}</h3>
+        <div class="status">
+          <mat-form-field *ngIf="canEditStatus(user!) && hideInDashboard; else displayStatus" appearance="outline">
+            <mat-label>Status</mat-label>
+            <mat-select #statusSelect [(value)]="selectedProject.projectStatus"
+              (selectionChange)="onStatusChange($event,statusSelect)" (opened)="onStatusDropdownOpened()">
+              <mat-option *ngFor="let status of projectStatuses" [value]="status"
+                [disabled]="status === ProjectStatus.inBearbeitung">{{ getStatusLabel(status) }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <ng-template #displayStatus>
+            <p class="status-display"><strong>Status:</strong> {{ getStatusLabel(selectedProject.projectStatus) }}</p>
+          </ng-template>
+        </div>
+      </div>
+
+      <!-- Dates Section -->
+      <div
+        *ngIf="selectedProject.projectStatus === ProjectStatus.inBearbeitung || selectedProject.projectStatus === ProjectStatus.inPlanung || selectedProject.projectStatus === ProjectStatus.geschlossen"
+        class="dates-section">
+
+        <!-- Start Date Logic -->
+        <div *ngIf="canEditDate(user!) && hideInDashboard; else displayStartDate">
+          <mat-form-field appearance="outline" class="date-picker">
+            <mat-label>Start Date</mat-label>
+            <input [formControl]="startDateControl" [matDatepicker]="startPicker" matInput />
+            <mat-datepicker-toggle [for]="startPicker" matSuffix></mat-datepicker-toggle>
+            <mat-datepicker #startPicker></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+        <!-- Start Date Display -->
+        <ng-template #displayStartDate>
+          <div *ngIf="startDateFromBackendForCurrentProject !== undefined">
+            <p class="date-display">
+              <strong>Project Start Date:</strong> {{ startDateFromBackendForCurrentProject | date }}
+            </p>
+          </div>
         </ng-template>
-      </div>
-    </div>
 
-    <!-- Dates Section -->
-    <div *ngIf="selectedProject.projectStatus === ProjectStatus.inBearbeitung" class="dates-section">
-
-      <!-- Start Date Logic -->
-      <div *ngIf="canEditDate(user!) && hideInDashboard; else displayStartDate">
-        <mat-form-field appearance="outline" class="date-picker">
-          <mat-label>Start Date</mat-label>
-          <input [formControl]="startDateControl" [matDatepicker]="startPicker" matInput />
-          <mat-datepicker-toggle [for]="startPicker" matSuffix></mat-datepicker-toggle>
-          <mat-datepicker #startPicker></mat-datepicker>
-        </mat-form-field>
-      </div>
-
-      <!-- Start Date Display -->
-      <ng-template #displayStartDate>
-        <div *ngIf="startDateFromBackendForCurrentProject !== undefined">
+        <!-- End Date Display (Always shown if exists) -->
+        <div *ngIf="endDateFromBackendForCurrentProject !== undefined">
           <p class="date-display">
-            <strong>Project Start Date:</strong> {{ startDateFromBackendForCurrentProject | date }}
+            <strong>Project End Date:</strong> {{ endDateFromBackendForCurrentProject | date }}
           </p>
         </div>
-      </ng-template>
 
-      <!-- End Date Display (Always shown if exists) -->
-      <div *ngIf="endDateFromBackendForCurrentProject !== undefined">
-        <p class="date-display">
-          <strong>Project End Date:</strong> {{ endDateFromBackendForCurrentProject | date }}
-        </p>
       </div>
 
+
+      <!-- Description -->
+      <div class="description">
+        <p><strong>Beschreibung:</strong> {{ selectedProject.description }}</p>
+      </div>
+
+      <div *ngIf="selectedProject.projectStatus === ProjectStatus.offen">
+        <p><strong>Anzahl Schätzungen:</strong> {{ countEstimatesByUser }} / {{ maxEstimates }}</p>
+      </div>
+
+      <!-- Estimation Section -->
+      <div class="estimation">
+        <ng-container
+          *ngIf="selectedProject.avgEstimationHours !== -1337 && selectedProject.avgEstimationHours !== -1; else errorKeineSchaetzungen">
+          <p><strong>Projekt Zeitschätzung:</strong> {{ selectedProject.avgEstimationHours }} h</p>
+        </ng-container>
+
+        <!-- Render the TimeEstimatorComponent -->
+        <app-time-estimator
+          *ngIf="showTimeEstimator && user?.role === UserRole.Developer && selectedProject.projectStatus === ProjectStatus.offen"
+          [currentProject]="selectedProject" (myTimeEstimate)="updateTimeEstimate()"></app-time-estimator>
+
+        <ng-template #errorKeineSchaetzungen>
+        </ng-template>
+      </div>
+
+      <div>
+        <app-end-date [currentProject]="selectedProject" [currentTeam]="teams"
+          [startDateControl]="startDateControl"></app-end-date>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="actions">
+        <button *ngIf="(user?.role === UserRole.Bereichsleiter || user?.role === UserRole.PO) && hideInDashboard"
+          mat-raised-button class="primaryColor" (click)="onSubmit()">Prioriät speichern
+        </button>
+        <button *ngIf="(user?.role === UserRole.Bereichsleiter || user?.role === UserRole.PO) && hideInDashboard"
+          mat-raised-button class="buttonOrange" (click)="onDelete()">Delete
+          Project
+        </button>
+      </div>
     </div>
-
-
-    <!-- Description -->
-    <div class="description">
-      <p><strong>Beschreibung:</strong> {{ selectedProject.description }}</p>
-    </div>
-
-    <div *ngIf="selectedProject.projectStatus === ProjectStatus.offen">
-      <p><strong>Anzahl Schätzungen:</strong> {{ countEstimatesByUser }} / {{ maxEstimates }}</p>
-    </div>
-
-    <!-- Estimation Section -->
-    <div class="estimation">
-      <ng-container
-        *ngIf="selectedProject.avgEstimationHours !== -1337 && selectedProject.avgEstimationHours !== -1; else errorKeineSchaetzungen">
-        <p><strong>Projekt Zeitschätzung:</strong> {{ selectedProject.avgEstimationHours }} h</p>
-      </ng-container>
-
-      <!-- Render the TimeEstimatorComponent -->
-      <app-time-estimator
-        *ngIf="showTimeEstimator && user?.role === UserRole.Developer && selectedProject.projectStatus === ProjectStatus.offen"
-        [currentProject]="selectedProject" (myTimeEstimate)="updateTimeEstimate()"></app-time-estimator>
-
-      <ng-template #errorKeineSchaetzungen>
-      </ng-template>
-    </div>
-
-    <div>
-      <app-end-date [currentProject]="selectedProject" [currentTeam]="teams"
-        [startDateControl]="startDateControl"></app-end-date>
-    </div>
-
-    <!-- Action Buttons -->
-    <div class="actions">
-      <button *ngIf="(user?.role === UserRole.Bereichsleiter || user?.role === UserRole.PO) && hideInDashboard"
-        mat-raised-button class="primaryColor" (click)="onSubmit()">Prioriät speichern
-      </button>
-      <button *ngIf="(user?.role === UserRole.Bereichsleiter || user?.role === UserRole.PO) && hideInDashboard"
-        mat-raised-button class="buttonOrange" (click)="onDelete()">Delete
-        Project
-      </button>
-    </div>
-  </div>
   </div>
 </div>
 
