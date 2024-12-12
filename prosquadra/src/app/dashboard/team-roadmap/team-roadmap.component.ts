@@ -44,6 +44,7 @@ import { NgProgressbar, NgProgressRef } from 'ngx-progressbar';
 import { debounceTime } from 'rxjs';
 import { canEditDate, canEditInDashboard, canEditStatus } from '../../../permissions/permissionHandler';
 import { getStatusLabel } from '../../../helper/roadmapHelper';
+import {MatTooltip} from '@angular/material/tooltip';
 
 const isStartDateInRange = (projects: Project[], startDate: Date, selectedProject: Project): boolean => {
   const projectsWithoutItself = projects.filter(project => project.id !== selectedProject.id);
@@ -79,7 +80,7 @@ const isStartDateInRange = (projects: Project[], startDate: Date, selectedProjec
     MatSelectModule,
     MatOptionModule,
     EndDateComponent,
-    NgProgressbar,
+    NgProgressbar, MatTooltip,
   ],
   providers: [provideNativeDateAdapter(),
   { provide: MAT_DATE_LOCALE, useValue: 'de-DE' }
