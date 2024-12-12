@@ -14,7 +14,7 @@ import {SnackbarService} from '../../../services/snackbar.service';
 import {MatIconModule} from '@angular/material/icon';
 import {slideIn} from '../../../animations/slideIn';
 import {UrlaubPlanungService} from '../../../services/urlaub.planung.service';
-import {ApiError} from '../../../../error/ApiError';
+import {ApiError} from '../../../error/ApiError';
 import {SpinnerService} from '../../../services/spinner.service';
 import {NgProgressbar, NgProgressRef} from 'ngx-progressbar';
 
