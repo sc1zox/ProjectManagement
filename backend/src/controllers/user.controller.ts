@@ -1,9 +1,10 @@
-import {NextFunction, Request, Response} from 'express';
+import {NextFunction, Request, response, Response} from 'express';
 import {StatusCodes} from 'http-status-codes';
 import prisma from '../lib/prisma';
 import {ApiResponse} from "../types/api-response";
 import {User} from "../types/user";
 import {Urlaub} from "../types/Urlaub";
+import {vacationState} from "@prisma/client";
 
 class UserController {
 
@@ -233,12 +234,12 @@ class UserController {
         }
     }
     async addVacation(req: Request, res: Response, next: NextFunction): Promise<void> {
-        const { userId, startDatum, endDatum } = req.body;
+        const { userId, startDatum, endDatum, stateOfAcception	 } = req.body;
 
-        if (!userId || !startDatum || !endDatum) {
+        if (!userId || !startDatum || !endDatum || !stateOfAcception	) {
             return next({
                 status: StatusCodes.BAD_REQUEST,
-                message: 'userId, startDate, and endDate are required.',
+                message: 'userId, startDate, endDate and state are required.',
             });
         }
 
@@ -294,6 +295,7 @@ class UserController {
                     userId: Number(userId),
                     startDatum: new Date(startDatum),
                     endDatum: new Date(endDatum),
+                    stateOfAcception: vacationState.Waiting
                 },
             });
             res.status(StatusCodes.CREATED).json({
@@ -304,6 +306,29 @@ class UserController {
             next(error);
         }
     }
+
+    async updateVacationStatus(req: Request, res: Response, next: NextFunction): Promise<void> {
+        const { urlaubId, vacationState } = req.body;
+
+        if (!urlaubId || !vacationState) {
+            return next({
+                status: StatusCodes.BAD_REQUEST,
+                message: 'urlaubId and vacationState are required.',
+            });
+        }
+
+        try {
+            const updatedStatus = await prisma.urlaub.update({
+                where: { id: Number(urlaubId) },
+                data: { stateOfAcception: vacationState },
+            });
+
+            res.status(StatusCodes.OK).json(updatedStatus);
+        } catch (error) {
+            next(error);
+        }
+    }
+
     async updateUrlaubstage(req: Request, res: Response, next: NextFunction): Promise<void> {
         const { userID, urlaubstage } = req.body;
 

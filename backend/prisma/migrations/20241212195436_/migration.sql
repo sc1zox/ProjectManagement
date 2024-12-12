@@ -101,6 +101,7 @@ CREATE TABLE `Urlaub` (
     `userId` INTEGER NOT NULL,
     `startDatum` DATETIME(3) NOT NULL,
     `endDatum` DATETIME(3) NOT NULL,
+    `stateOfAcception` ENUM('Accepted', 'Waiting', 'Denied') NOT NULL,
 
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

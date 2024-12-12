@@ -1,0 +1,28 @@
+.urlaub-anzeige{
+  border: 2px rgba(242, 108, 59, 0.66) solid;
+  box-shadow: var(--box-shadow-light);
+  border-radius: 5px;
+  padding: var(--content-padding);
+  margin: var(--content-margin);
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  background: rgb(242, 108, 59);
+  width: auto;
+  color: white;
+}
+#deleteButton{
+  color: white;
+  background: black;
+}
+#denyButton{
+  color: white;
+  background: black;
+  margin-right: var(--content-margin);
+}
+
+#acceptButton{
+  color: white;
+  background: black;
+}
+

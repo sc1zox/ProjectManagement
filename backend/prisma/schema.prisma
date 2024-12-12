@@ -98,11 +98,18 @@ model Login {
 }
 
 model Urlaub {
-  id         Int      @id @default(autoincrement())
-  userId     Int
-  user       User     @relation("Urlaub", fields: [userId], references: [id], onDelete: Cascade)
-  startDatum DateTime
-  endDatum   DateTime
+  id               Int           @id @default(autoincrement())
+  userId           Int
+  user             User          @relation("Urlaub", fields: [userId], references: [id], onDelete: Cascade)
+  startDatum       DateTime
+  endDatum         DateTime
+  stateOfAcception vacationState
+}
+
+enum vacationState {
+  Accepted
+  Waiting
+  Denied
 }
 
 enum UserRole {

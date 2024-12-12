@@ -6,4 +6,11 @@ export interface Urlaub {
   user?: User;
   startDatum: Date;
   endDatum: Date;
+  stateOfAcception: vacationState;
+}
+
+export enum vacationState {
+  Accepted = 'Accepted',
+  Waiting = 'Waiting',
+  Denied = 'Denied',
 }

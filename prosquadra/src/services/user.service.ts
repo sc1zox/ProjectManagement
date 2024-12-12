@@ -4,7 +4,7 @@ import { ApiService } from './api.service';
 import { ApiResponse } from '../types/api-response';
 import { Login } from '../types/login';
 import { Estimation } from '../types/estimation';
-import {Urlaub} from '../types/urlaub';
+import {Urlaub, vacationState} from '../types/urlaub';
 import {log} from '@angular-devkit/build-angular/src/builders/ssr-dev-server';
 
 @Injectable({
@@ -28,7 +28,7 @@ export class UserService {
 
   async getUser(userId: number): Promise<User> {
     try {
-      const response: ApiResponse<User> = await this.ApiService.fetch(`/users/`+userId);
+      const response: ApiResponse<User> = await this.ApiService.fetch(`/users/` + userId);
       return response.data;
     } catch (error) {
       throw error;
@@ -44,10 +44,10 @@ export class UserService {
     }
   }
 
-  async deleteUser(userId: number): Promise<void>{
-    try{
-      await this.ApiService.delete('/users/delete/'+userId);
-    }catch (error){
+  async deleteUser(userId: number): Promise<void> {
+    try {
+      await this.ApiService.delete('/users/delete/' + userId);
+    } catch (error) {
       throw error;
     }
   }
@@ -90,7 +90,7 @@ export class UserService {
 
   async getUserEstimation(userId: number): Promise<Estimation[]> {
     try {
-      const response: ApiResponse<Estimation[]> = await this.ApiService.fetch(`/users/estimations/`+userId);
+      const response: ApiResponse<Estimation[]> = await this.ApiService.fetch(`/users/estimations/` + userId);
       return response.data;
     } catch (error) {
       throw error;
@@ -102,7 +102,7 @@ export class UserService {
       throw new Error('Invalid userId und Arbeitszeit');
     }
     try {
-      const data = { userID, arbeitszeit };
+      const data = {userID, arbeitszeit};
       const response: ApiResponse<number> = await this.ApiService.put('/users/update/arbeitszeit', data);
       return response.data;
     } catch (error) {
@@ -115,23 +115,37 @@ export class UserService {
       throw new Error('Invalid userId und Urlaubstage');
     }
     try {
-      const data = { userID, urlaubstage };
+      const data = {userID, urlaubstage};
       const response: ApiResponse<number> = await this.ApiService.put('/users/update/urlaubstage', data);
       return response.data;
     } catch (error) {
       throw error;
     }
   }
-  async sendUrlaubRequest(userId: number, startDatum: Date, endDatum: Date): Promise<Urlaub> {
-    if (!userId || !startDatum || !endDatum) {
-      throw new Error('Invalid userId, startDate, or endDate');
+
+  async sendUrlaubRequest(userId: number, startDatum: Date, endDatum: Date, state: vacationState): Promise<Urlaub> {
+    if (!userId || !startDatum || !endDatum || !state) {
+      throw new Error('Invalid userId, startDate,state or endDate');
     }
     try {
-      const data: Urlaub = { userId, startDatum, endDatum };
+      const data: Urlaub = { userId, startDatum, endDatum, stateOfAcception: state};
       const response: ApiResponse<Urlaub> = await this.ApiService.post('/users/vacations/set', data);
       return response.data;
     } catch (error) {
       throw error;
+    }
+  }
+
+  async updateVacationState(urlaubId: number,vacationState: vacationState){
+    if(isNaN(urlaubId) || !vacationState){
+      throw new Error('Invalid userId or vacationState')
+    }
+    try {
+      const data= {urlaubId,vacationState};
+      const response:ApiResponse<Urlaub> = await this.ApiService.put('/users/vacations/update-state',data);
+      return response.data;
+    }catch (error){
+      throw error
     }
   }
 

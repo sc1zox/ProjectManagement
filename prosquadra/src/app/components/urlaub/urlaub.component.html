@@ -1,0 +1,18 @@
+<div class="urlaub-anzeige"  [@slideIn]>
+  <div class="urlaub-datum">
+    <p>Urlaubsbeginn: {{ urlaub?.startDatum | date }}</p>
+    <p>Urlaubsende: {{urlaub?.endDatum | date }}</p>
+  </div>
+
+  <div class="urlaub-button" *ngIf="urlaub">
+    <button mat-fab aria-label="delete icon" id="deleteButton" (click)=deleteUrlaub() *ngIf="mode === 'user'">
+      <mat-icon>delete</mat-icon>
+    </button>
+    <button mat-fab aria-label="deny icon" id="denyButton" (click)=denyUrlaub() *ngIf="mode === 'bereichsleiter'">
+      <mat-icon>cancel</mat-icon>
+    </button>
+    <button mat-fab aria-label="accept icon" id="acceptButton" (click)=acceptUrlaub() *ngIf="mode === 'bereichsleiter'" [disabled]="urlaub.stateOfAcception === vacationState.Accepted">
+      <mat-icon>check</mat-icon>
+    </button>
+  </div>
+</div>

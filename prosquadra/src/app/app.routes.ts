@@ -84,6 +84,12 @@ export const routes: Routes = [
         canActivate: [AuthGuard],
         data: { role: [UserRole.PO , UserRole.Developer, UserRole.SM, UserRole.Bereichsleiter]}
       },
+      {
+        path: 'urlaubs-overview',
+        loadComponent: () => import('./dashboard/urlaub-overview/urlaub-overview.component').then(m => m.UrlaubOverviewComponent),
+        canActivate: [AuthGuard],
+        data: { role: [UserRole.Bereichsleiter]}
+      },
     ]
   },
   {

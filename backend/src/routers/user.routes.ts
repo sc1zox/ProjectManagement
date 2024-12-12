@@ -23,7 +23,8 @@ userRouter.put('/users/update/urlaubstage', isAuthenticated,rescue(UserControlle
 userRouter.get('/users/estimations/:id', rescue(UserController.getEstimationsByUserId));
 userRouter.get('/users/vacations/:id', rescue(UserController.getUserVacationsById));
 userRouter.post('/users/vacations/set',isAuthenticated,rescue(UserController.addVacation));
-userRouter.delete('/users/vacations/delete/:id', rescue(UserController.deleteVacation));
+userRouter.delete('/users/vacations/delete/:id', isAuthenticated,rescue(UserController.deleteVacation));
+userRouter.put('/users/vacations/update-state', isAuthenticated,rescue(UserController.updateVacationStatus))
 
 userRouter.get('/projects', rescue(ProjectController.getProjects));
 userRouter.get('/projects/:id', rescue(ProjectController.getProjectById));
