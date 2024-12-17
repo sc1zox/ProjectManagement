@@ -373,7 +373,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
         await this.refreshProjectOrder();
       }
       if (this.user?.role === UserRole.Developer) {
-        this.dataUpdated.emit(); // das hier verursacht ein doppeltes rendern der ersten roadmap. Unsicher ob es weggelassen werden kann für andere Updates.Scheint mir momentan n
+        this.dataUpdated.emit(); // das hier verursacht ein doppeltes rendern der ersten roadmap. Unsicher ob es weggelassen werden kann für andere Updates.Scheint mir momentan nicht essenziell zu sein. Doch wenn es fehlt wird für Dev die Zeit nicht aktualisiert deshalb die if clause
       }
       this.SnackBarService.open('Projekt Priorität wurde erfolgreich geändert')
     } catch (error) {
