@@ -7,6 +7,7 @@ import {SnackbarService} from '../../../services/snackbar.service';
 import {FormControl} from '@angular/forms';
 import {ProjectService} from '../../../services/project.service';
 import {NgProgressbar, NgProgressRef} from 'ngx-progressbar';
+import {ApiError} from '../../../error/ApiError';
 
 @Component({
   selector: 'app-end-date',
@@ -57,6 +58,10 @@ export class EndDateComponent implements AfterViewInit{
         this.SnackBarService.open('Projektdaten wurden aktualisiert!')
       }catch (error){
         this.SnackBarService.open('Projektdaten konnte nicht aktualisiert werden');
+
+        if(error instanceof ApiError && error.code === 409){
+          this.SnackBarService.open("Fehler! Das errechnete Enddatum überschneidet sich mit einem Projekt!")
+        }
         this.progressBar.complete();
       }finally {
         this.progressBar.complete();

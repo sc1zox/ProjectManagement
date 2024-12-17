@@ -254,6 +254,26 @@ class ProjectController {
                     message: 'Das Projekt wurde nicht gefunden.',
                 });
             }
+            console.log("EXISTING", existingProject)
+            const overlappingProjects = await prisma.project.findMany({
+                where: {
+                    teamid: existingProject.teamid,
+                    id: { not: Number(id) },
+                    OR: [
+                        {
+                            startDate: { lte: new Date(endDate) },
+                            endDate: { gte: new Date(startDate) },
+                        },
+                    ],
+                },
+            });
+
+            if (overlappingProjects.length > 0) {
+                return next({
+                    status: StatusCodes.CONFLICT,
+                    message: 'Das Projekt überschneidet sich mit einem bestehenden Projekt innerhalb des Teams.',
+                });
+            }
 
             const updatedProject = await prisma.project.update({
                 where: {id: Number(id)},
