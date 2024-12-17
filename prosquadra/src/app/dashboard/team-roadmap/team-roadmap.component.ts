@@ -34,7 +34,7 @@ import {User, UserRole} from '../../../types/user';
 import {RoadmapService} from '../../../services/roadmap.service';
 import {SnackbarService} from '../../../services/snackbar.service';
 import {Team} from '../../../types/team';
-import {normalizeDate, parseProjects} from '../../../mapper/projectDatesToDate';
+import {normalizeDate} from '../../../mapper/projectDatesToDate';
 import {TimeEstimatorComponent} from '../../components/time-estimator/time-estimator.component';
 import {MatSelectChange, MatSelectModule} from '@angular/material/select';
 import {Router} from '@angular/router';
@@ -48,26 +48,12 @@ import {
   getProjectClasses,
   handleDisabledStatus,
   handleDisabledTooltip,
-  isProjectEstimated, isProjectEstimatedAndNotInPlanningOrClosed
+  isProjectEstimated,
+  isProjectEstimatedAndNotInPlanningOrClosed,
+  isStartDateInRange
 } from '../../../helper/projectHelper';
 
-const isStartDateInRange = (projects: Project[], startDate: Date, selectedProject: Project): boolean => {
-  const projectsWithoutItself = projects.filter(project => project.id !== selectedProject.id);
-  const projectsMapped = parseProjects(projectsWithoutItself);
-
-  const result = projectsMapped.filter(
-    project => project.startDate !== null && project.endDate !== null
-  );
-  const normalizedStartDate = normalizeDate(startDate);
-
-  const boolresult = result.some(range => {
-    const normalizedRangeStart = normalizeDate(range.startDate as Date);
-    const normalizedRangeEnd = normalizeDate(range.endDate as Date);
-    return normalizedStartDate >= normalizedRangeStart && normalizedStartDate <= normalizedRangeEnd;
-  });
-
-  return boolresult;
-};
+const today = normalizeDate(new Date());
 
 @Component({
   selector: 'app-team-roadmap',
@@ -108,6 +94,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   selectedProject?: Project;
   endDateFromBackendForCurrentProject?: Date;
   startDateFromBackendForCurrentProject?: Date;
+  errorWarningProjectOverdue: string = ''
   @Output() dataUpdated = new EventEmitter<void>();
   @ViewChild(NgProgressRef) progressBar!: NgProgressRef;
   hours?: number;
@@ -274,9 +261,9 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   }
 
   async selectProject(project: Project): Promise<void> {
-    this.selectedProject = project;
+    this.errorWarningProjectOverdue = '';
 
-    console.log(this.selectedProject)
+    this.selectedProject = project;
 
     // Update the form controls to reflect the selected project
     this.startDateControl.setValue(project.startDate, {emitEvent: false});
@@ -296,6 +283,8 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     } catch (error) {
       this.SnackBarService.open('Konnte Schätzung nicht laden');
     }
+
+    this.createWarningForOverDueProjects(project)
   }
 
   onMouseDown(event: MouseEvent): void {
@@ -473,35 +462,23 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     });
   }
 
+  createWarningForOverDueProjects(project: Project){
+    const projectEndDate = project.endDate ? normalizeDate(new Date(project.endDate)) : null;
+
+    if (projectEndDate && projectEndDate <= today) {
+      this.errorWarningProjectOverdue='Das Projektenddatum ist überschritten'
+    }
+  }
+
   // Comparing dates is so confusing
   private updateProjectStatusOnDate(): void {
-    const today = normalizeDate(new Date());
 
     this.projects.forEach(project => {
       if (project.startDate) {
         const projectStartDate = normalizeDate(new Date(project.startDate));
-        const projectEndDate = project.endDate ? normalizeDate(new Date(project.endDate)) : null;
 
-        // Project should be "geschlossen" if the end date is today or earlier
-        if (projectEndDate && projectEndDate <= today) {
-          project.projectStatus = ProjectStatus.geschlossen;
-
-          this.ProjectService.setProjectStatus(project.id!, ProjectStatus.geschlossen)
-            //.then(() => console.log(`Persisted '${project.name}' as 'geschlossen'`))
-            .catch(error => console.error('Error updating project status:', error));
-          return; // Exit early as "geschlossen" takes precedence
-        }
-        // Project should be "in Planung" if start date is after today and estimations are there otherwise do it manually
-        if (projectStartDate > today) {
-          project.projectStatus = ProjectStatus.inPlanung;
-
-          this.ProjectService.setProjectStatus(project.id!, ProjectStatus.inPlanung)
-            //.then(() => console.log(`Persisted '${project.name}' as 'in Planung'`))
-            .catch(error => console.error('Error updating project status:', error));
-        }
-
-        // Project should be "in Bearbeitung" if start date is today or earlier
-        if (projectStartDate <= today) {
+        // Project should be "in Bearbeitung" if start date is today or earlier and project is not closed
+        if (projectStartDate <= today && project.projectStatus !== ProjectStatus.geschlossen) {
           project.projectStatus = ProjectStatus.inBearbeitung;
 
           this.ProjectService.setProjectStatus(project.id!, ProjectStatus.inBearbeitung)
@@ -515,7 +492,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   }
 
   getWarning(): string {
-    if (this.selectedProject?.projectStatus === ProjectStatus.offen && isProjectEstimated(this.selectedProject)) {
+    if (this.selectedProject?.projectStatus === ProjectStatus.offen && !isProjectEstimatedAndNotInPlanningOrClosed(this.selectedProject)) {
       return "Fehlende Schätzungen";
     }
     return '';

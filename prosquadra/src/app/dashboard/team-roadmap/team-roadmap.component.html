@@ -53,7 +53,7 @@
 
         <!-- Start Date Display -->
         <ng-template #displayStartDate>
-          <div *ngIf="startDateFromBackendForCurrentProject !== undefined && selectedProject.projectStatus !== ProjectStatus.inPlanung">
+          <div *ngIf="startDateFromBackendForCurrentProject !== undefined && startDateFromBackendForCurrentProject !== null">
             <p class="date-display">
               <strong>Project Start Date:</strong> {{ startDateFromBackendForCurrentProject | date }}
             </p>
@@ -61,10 +61,11 @@
         </ng-template>
 
         <!-- End Date Display (Always shown if exists) -->
-        <div *ngIf="endDateFromBackendForCurrentProject !== undefined && selectedProject.projectStatus !== ProjectStatus.inPlanung">
+        <div *ngIf="endDateFromBackendForCurrentProject !== undefined && startDateFromBackendForCurrentProject !== null">
           <p class="date-display">
             <strong>Project End Date:</strong> {{ endDateFromBackendForCurrentProject | date }}
           </p>
+          <p *ngIf="errorWarningProjectOverdue.length>0 && selectedProject.projectStatus !== ProjectStatus.geschlossen" id="errorMessage">{{ errorWarningProjectOverdue }}</p>
         </div>
 
       </div>

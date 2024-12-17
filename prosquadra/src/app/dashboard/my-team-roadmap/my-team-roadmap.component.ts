@@ -100,7 +100,9 @@ export class MyTeamRoadmapComponent implements OnInit {
     }catch (error){
       this.SnackBarService.open('Konnte das Team nicht laden')
     }
-    this.roadmap = this.currentTeam?.roadmap;
+    let roadmapTmp = roadmaps?.filter(roadmap => roadmap?.teams?.id === this.currentTeam?.id)
+    if(roadmapTmp)
+    this.roadmap = roadmapTmp[0];
   }
 
   private async fetchRoadmapsForTeams(userTeams: Team[]) {
