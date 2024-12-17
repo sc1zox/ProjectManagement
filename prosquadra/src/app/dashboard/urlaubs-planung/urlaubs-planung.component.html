@@ -23,7 +23,7 @@
 
     <mat-divider></mat-divider>
 
-    <mat-card class="vacation-section">
+    <mat-card class="vacation-section" *ngIf="waitingVacations$.value.length!==0;else noWaitingVacation">
       <mat-card-title id="waiting">Ausstehend</mat-card-title>
       <mat-card-content>
         <ng-container *ngFor="let urlaub of waitingVacations$ | async">
@@ -38,7 +38,7 @@
 
     <mat-divider></mat-divider>
 
-    <mat-card class="vacation-section">
+    <mat-card class="vacation-section" *ngIf="acceptedVacations$.value.length!==0;else noAcceptedVacation">
       <mat-card-title id="accepted">Genehmigt</mat-card-title>
       <mat-card-content>
         <ng-container *ngFor="let urlaub of acceptedVacations$ | async">
@@ -52,3 +52,19 @@
     </mat-card>
   </div>
 </div>
+<ng-template #noWaitingVacation>
+  <mat-card class="vacation-section">
+    <mat-card-title>Ausstehend</mat-card-title>
+    <mat-card-content>
+      <h3>No waiting vacation to display</h3>
+    </mat-card-content>
+  </mat-card>
+</ng-template>
+<ng-template #noAcceptedVacation>
+  <mat-card class="vacation-section">
+    <mat-card-title>Genehmigt</mat-card-title>
+    <mat-card-content>
+      <h3>No accepted vacation to display</h3>
+    </mat-card-content>
+  </mat-card>
+</ng-template>
