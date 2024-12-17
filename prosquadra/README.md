@@ -33,10 +33,7 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 ### TODO:
 
-- BL+Admin in keinem Team?
-- Safe project Button führt 5 network requests + (Meldung) aus auch ohne Änderungen weil er alle roadmaps neu pulled -> unnötig. Entweder gar keine ohne changes oder nur die affected Roadmap neu pullen 
-- Bei Projekterstellung sollte PO nur sein Team als Auswahl bekommen
-- generell Berechtigungen überprüfen, wer darf wo was sehen bearbeiten usw.
+- Safe project Button führt 5 network requests + (Meldung) aus auch ohne Änderungen weil er alle roadmaps neu pulled -> unnötig. Entweder gar keine ohne changes oder nur die affected Roadmap neu pullen
 
 COLOR SCHEME USED:
 
