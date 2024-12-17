@@ -21,6 +21,10 @@
   padding: var(--content-padding);
   width: 100%;
   padding-bottom: calc(var(--content-padding) * 2);
+
+  h3{
+    padding: var(--content-padding);
+  }
 }
 
 @media screen and (max-width: 1000px) {

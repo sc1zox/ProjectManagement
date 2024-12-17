@@ -43,8 +43,6 @@ COLOR SCHEME USED:
 ![img.png](img.png)
 
 ### BUGS
-- BUG: Urlaub speichert nicht im Frontend ohne neuzuladen. Also wenn man zwischen Seiten navigiert
-- BUG: Bei my team roadmap stimmt die Reihenfolge nicht nach dem Löschen
 
 ### SOLVED
 - BUG: sm plant projekt ein und submitted. Datepicker verschwindet.+ fehlermeldung "Die Dauer darf nicht 0 Stunden und 0 Tage sein" aber erstes datumsetzen funktioniert und ab fresh wieder -> **i think this is solved**
@@ -58,7 +56,7 @@ COLOR SCHEME USED:
 
 ### perspektivisch
 
-- current project in der rechten sidebar wird momentan gepolled also alle 30 sekunden gefetched. Funktioniert aber ist das gut?
+- current project in der rechten sidebar wird momentan gepolled also alle 30 sekunden gefetched. Funktioniert aber ist das gut? Reicht
 - breakpoints sind momentan bei 1000px.
 - backend route checking ist implementiert aber wird momentan nicht benutzt, da es 1. im frontend gemacht wird und 2. das FE momentan kein auth daten mitschickt bei requests
 - calc(var()) durch neue variable ersetzen?
