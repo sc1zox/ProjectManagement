@@ -87,6 +87,7 @@ export class UrlaubsPlanungComponent implements OnInit {
 
     this.urlaub$.subscribe(() => this.updateFilteredVacations());
 
+    //refined with chatgpt
     combineLatest([this.startDatePicker, this.endDatePicker]).subscribe(async ([startEvent, endEvent]) => {
       if (startEvent.value && endEvent.value && this.currentUser) {
         if (!await this.UrlaubsPlanungService.checkIfVacationIsValid(startEvent.value, endEvent.value, this.currentUser.id)) {
