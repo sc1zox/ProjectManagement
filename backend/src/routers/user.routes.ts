@@ -35,13 +35,13 @@ userRouter.put('/project/update', isAuthenticated,rescue(ProjectController.updat
 userRouter.get('/project/current/:id', rescue(ProjectController.getProjectWithLowestPriorityByUserId));
 userRouter.post('/project/create/estimation', checkRole([UserRole.Developer],rescue(ProjectController.addEstimationToProject)));
 userRouter.get('/project/estimation/:id', rescue(ProjectController.getEstimationsWithAverage));
-userRouter.put('/project/status/update', checkRole([UserRole.PO,UserRole.Bereichsleiter,UserRole.SM],rescue(ProjectController.updateProjectStatus)));
+userRouter.put('/project/status/update', checkRole([UserRole.PO,UserRole.Bereichsleiter,UserRole.SM,UserRole.Developer],rescue(ProjectController.updateProjectStatus)));
 
 userRouter.get('/team', rescue(TeamController.getTeams));
 userRouter.get('/team/:id', rescue(TeamController.getTeamByID));
 userRouter.post('/team/create', checkRole([UserRole.Admin,UserRole.Bereichsleiter],rescue(TeamController.createTeam)));
 userRouter.get('/team/user/:id', rescue(TeamController.getTeamByUserID));
-userRouter.post('/team/user/delete', checkRole([UserRole.Admin],rescue(TeamController.removeUserFromTeam)));
+userRouter.post('/team/user/delete', checkRole([UserRole.Admin,UserRole.SM],rescue(TeamController.removeUserFromTeam)));
 userRouter.post('/team/user/add', checkRole([UserRole.SM],rescue(TeamController.addUserToTeam)));
 userRouter.delete('/team/delete/:id', checkRole([UserRole.Admin], rescue(TeamController.deleteTeam)));
 
