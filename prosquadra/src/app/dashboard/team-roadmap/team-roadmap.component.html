@@ -7,14 +7,10 @@
       [cdkDropListDisabled]="(user?.role !== UserRole.PO && user?.role !== UserRole.Bereichsleiter) || !notDraggableInDashboardHome"
       (cdkDropListDropped)="drop($event)">
 
-      <div *ngFor="let project of sortedProjects; index as i;" class="project-box" cdkDrag
+      <div *ngFor="let project of sortedProjects" class="project-box" cdkDrag
         [cdkDragDisabled]="(user?.role !== UserRole.PO && user?.role !== UserRole.Bereichsleiter) || project.projectStatus === ProjectStatus.inBearbeitung"
-        matTooltip="Cannot move this project" matTooltipDisabled="project.projectStatus !== ProjectStatus.inBearbeitung"
-        (mousedown)="onMouseDown($event)" (click)="handleProjectClick($event, project)" [ngClass]="{ 'selected': project === selectedProject,
-          'offen': project.projectStatus === ProjectStatus.offen,
-          'in-planung': project.projectStatus === ProjectStatus.inPlanung,
-          'in-bearbeitung': project.projectStatus === ProjectStatus.inBearbeitung,
-          'geschlossen': project.projectStatus === ProjectStatus.geschlossen }" cdkDragBoundary=".roadmap-card">
+        matTooltip="Cannot move this project" [matTooltipDisabled]="handleDisabledTooltip(project)"
+        (mousedown)="onMouseDown($event)" (click)="handleProjectClick($event, project)" [ngClass]="getProjectClasses(project,selectedProject)" cdkDragBoundary=".roadmap-card">
         {{ project.name }}
         <span class="status-label">{{ getStatusLabel(project.projectStatus) }}</span>
       </div>
@@ -27,10 +23,10 @@
         <div class="status">
           <mat-form-field *ngIf="canEditStatus(user!) && hideInDashboard; else displayStatus" appearance="outline">
             <mat-label>Status</mat-label>
-            <mat-select #statusSelect [(value)]="selectedProject.projectStatus"
-              (selectionChange)="onStatusChange($event,statusSelect)" (opened)="onStatusDropdownOpened()">
+            <mat-select [(value)]="selectedProject.projectStatus"
+              (selectionChange)="onStatusChange($event)">
               <mat-option *ngFor="let status of projectStatuses" [value]="status"
-                [disabled]="status === ProjectStatus.inBearbeitung">{{ getStatusLabel(status) }}
+                [disabled]="handleDisabledStatus(selectedProject,status)" [matTooltip]="getWarning()">{{ getStatusLabel(status) }}
               </mat-option>
             </mat-select>
           </mat-form-field>
@@ -57,7 +53,7 @@
 
         <!-- Start Date Display -->
         <ng-template #displayStartDate>
-          <div *ngIf="startDateFromBackendForCurrentProject !== undefined">
+          <div *ngIf="startDateFromBackendForCurrentProject !== undefined && selectedProject.projectStatus !== ProjectStatus.inPlanung">
             <p class="date-display">
               <strong>Project Start Date:</strong> {{ startDateFromBackendForCurrentProject | date }}
             </p>
@@ -65,7 +61,7 @@
         </ng-template>
 
         <!-- End Date Display (Always shown if exists) -->
-        <div *ngIf="endDateFromBackendForCurrentProject !== undefined">
+        <div *ngIf="endDateFromBackendForCurrentProject !== undefined && selectedProject.projectStatus !== ProjectStatus.inPlanung">
           <p class="date-display">
             <strong>Project End Date:</strong> {{ endDateFromBackendForCurrentProject | date }}
           </p>
@@ -107,7 +103,7 @@
       <!-- Action Buttons -->
       <div class="actions">
         <button *ngIf="(user?.role === UserRole.Bereichsleiter || user?.role === UserRole.PO) && hideInDashboard"
-          mat-raised-button class="primaryColor" (click)="onSubmit()">Prioriät speichern
+          mat-raised-button class="primaryColor" (click)="onSubmit()">Priorität speichern
         </button>
         <button *ngIf="(user?.role === UserRole.Bereichsleiter || user?.role === UserRole.PO) && hideInDashboard"
           mat-raised-button class="buttonOrange" (click)="onDelete()">Delete

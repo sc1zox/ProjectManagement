@@ -93,8 +93,10 @@ export class MyTeamRoadmapComponent implements OnInit {
 
 
   private async fetchRoadmapForTeam(teamId: number) {
+    let roadmaps;
     try {
       this.currentTeam = await this.TeamService.getTeamById(teamId);
+      roadmaps = await this.RoadmapService.getRoadmaps()
     }catch (error){
       this.SnackBarService.open('Konnte das Team nicht laden')
     }

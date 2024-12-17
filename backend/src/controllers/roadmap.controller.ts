@@ -12,6 +12,11 @@ class RoadmapController {
                     projects: {
                         include: {
                             estimations: true,
+                            team: {
+                                include: {
+                                    members: true,
+                                }
+                            }
                         }
                     },
                     teams: {
