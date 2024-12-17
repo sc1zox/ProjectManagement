@@ -3,8 +3,24 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: calc(var(--content-margin)*5);
-  padding: calc(var(--content-padding)*5);
+  margin: calc(var(--content-margin)*2);
+  padding: calc(var(--content-padding));
+}
+
+.dates-section{
+  margin: var(--content-margin);
+  padding: var(--content-padding);
+
+  .mat-mdc-card-title{
+    padding: var(--content-padding);
+  }
+}
+
+.vacation-section {
+  margin: var(--content-margin);
+  padding: var(--content-padding);
+  width: 100%;
+  padding-bottom: calc(var(--content-padding) * 2);
 }
 
 @media screen and (max-width: 1000px) {
@@ -13,5 +29,13 @@
   }
   .urlaubs-planung{
     margin-bottom: var(--content-margin);
+    padding: 0;
+  }
+  .vacation-section{
+    padding: 0;
+
+    .mat-mdc-card-title{
+      padding: var(--content-padding);
+    }
   }
 }

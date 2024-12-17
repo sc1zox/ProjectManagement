@@ -1,28 +1,27 @@
-import {Component, OnInit, signal, ViewChild} from '@angular/core';
-import {MatInputModule} from '@angular/material/input';
-import {MAT_DATE_LOCALE, MatNativeDateModule, MatOptionModule, provideNativeDateAdapter} from '@angular/material/core';
-import {MatDatepickerInputEvent, MatDatepickerModule} from '@angular/material/datepicker';
-import {CommonModule} from '@angular/common';
-import {MatFabButton} from '@angular/material/button';
-import {MatSelectModule} from '@angular/material/select';
-import {MatLabel} from '@angular/material/form-field';
-import {BehaviorSubject, combineLatest, map, Subject} from 'rxjs';
-import {User} from '../../../types/user';
-import {UserService} from '../../../services/user.service';
-import {Urlaub, vacationState} from '../../../types/urlaub';
-import {SnackbarService} from '../../../services/snackbar.service';
-import {MatIconModule} from '@angular/material/icon';
-import {UrlaubPlanungService} from '../../../services/urlaub.planung.service';
-import {ApiError} from '../../../error/ApiError';
-import {SpinnerService} from '../../../services/spinner.service';
+import { Component, OnInit, signal, ViewChild } from '@angular/core';
+import { BehaviorSubject, combineLatest, Subject } from 'rxjs';
+import { Urlaub, vacationState } from '../../../types/urlaub';
+import { UserService } from '../../../services/user.service';
+import { SnackbarService } from '../../../services/snackbar.service';
+import { UrlaubPlanungService } from '../../../services/urlaub.planung.service';
+import { SpinnerService } from '../../../services/spinner.service';
 import {NgProgressbar, NgProgressRef} from 'ngx-progressbar';
+import {MatDatepickerInputEvent, MatDatepickerModule} from '@angular/material/datepicker';
+import {ApiError} from '../../../error/ApiError';
+import {User} from '../../../types/user';
+import {MAT_DATE_LOCALE, MatNativeDateModule, MatOptionModule, provideNativeDateAdapter} from '@angular/material/core';
+import {MatInputModule} from '@angular/material/input';
+import {MatSelectModule} from '@angular/material/select';
+import {CommonModule} from '@angular/common';
+import {MatIconModule} from '@angular/material/icon';
 import {UrlaubComponent} from '../../components/urlaub/urlaub.component';
-
+import {MatDivider} from '@angular/material/divider';
+import {MatCard, MatCardContent, MatCardTitle} from '@angular/material/card';
 
 @Component({
   selector: 'app-urlaubs-planung',
   standalone: true,
-  providers: [provideNativeDateAdapter(), {provide: MAT_DATE_LOCALE, useValue: 'de-DE'},],
+  providers: [provideNativeDateAdapter(), { provide: MAT_DATE_LOCALE, useValue: 'de-DE' }],
   imports: [
     MatDatepickerModule,
     MatNativeDateModule,
@@ -30,11 +29,13 @@ import {UrlaubComponent} from '../../components/urlaub/urlaub.component';
     MatSelectModule,
     MatOptionModule,
     CommonModule,
-    MatLabel,
     MatIconModule,
-    MatFabButton,
     NgProgressbar,
     UrlaubComponent,
+    MatDivider,
+    MatCard,
+    MatCardTitle,
+    MatCardContent,
   ],
   templateUrl: './urlaubs-planung.component.html',
   styleUrl: './urlaubs-planung.component.scss'
@@ -46,47 +47,50 @@ export class UrlaubsPlanungComponent implements OnInit {
   urlaub$ = new BehaviorSubject<Urlaub[]>([]);
   @ViewChild(NgProgressRef) progressBar!: NgProgressRef;
 
-// https://stackoverflow.com/questions/63823557/angular-material-datepickerrange-get-value-on-change
-  constructor(private UserService: UserService, private readonly SnackBarService: SnackbarService, private UrlaubsPlanungService: UrlaubPlanungService,private readonly SpinnerService: SpinnerService,) {
-  }
-
   startDatePicker = new Subject<MatDatepickerInputEvent<any>>();
   endDatePicker = new Subject<MatDatepickerInputEvent<any>>();
+
+
+  waitingVacations$ = new BehaviorSubject<Urlaub[]>([]);
+  acceptedVacations$ = new BehaviorSubject<Urlaub[]>([]);
+
+  constructor(
+    private UserService: UserService,
+    private readonly SnackBarService: SnackbarService,
+    private UrlaubsPlanungService: UrlaubPlanungService,
+    private readonly SpinnerService: SpinnerService
+  ) { }
 
   async ngOnInit(): Promise<void> {
     this.SpinnerService.show();
 
     try {
       this.currentUser = await this.UserService.getCurrentUser();
-    }catch (error){
-      this.SnackBarService.open('User konnte nicht abgerufen werden')
+    } catch (error) {
+      this.SnackBarService.open('User konnte nicht abgerufen werden');
     }
 
-    try{
-      if(this.currentUser) {
+    try {
+      if (this.currentUser) {
         this.currentUser.urlaub = await this.UserService.getUserUrlaub(this.currentUser);
       }
-    }catch (error){
-      console.log(error)
-    }finally {
+    } catch (error) {
+      console.log(error);
+    } finally {
       this.SpinnerService.hide();
     }
 
-    const dateChange$ = combineLatest([this.startDatePicker, this.endDatePicker]).pipe(
-      map(([a$, b$]) => ({
-        start: a$,
-        end: b$
-      }))
-    );
-
     if (this.currentUser?.urlaub) {
-      this.urlaub$.next(this.currentUser.urlaub); //das hier hält den gecachten User
+      this.urlaub$.next(this.currentUser.urlaub);
+      this.updateFilteredVacations();
     }
 
+    this.urlaub$.subscribe(() => this.updateFilteredVacations());
 
-    dateChange$.subscribe(async (data) => {
-      if (data.start.value && data.end.value && this.currentUser) {
-        if (!await this.UrlaubsPlanungService.checkIfVacationIsValid(data.start.value, data.end.value, this.currentUser.id)) {
+    //refined with chatgpt
+    combineLatest([this.startDatePicker, this.endDatePicker]).subscribe(async ([startEvent, endEvent]) => {
+      if (startEvent.value && endEvent.value && this.currentUser) {
+        if (!await this.UrlaubsPlanungService.checkIfVacationIsValid(startEvent.value, endEvent.value, this.currentUser.id)) {
           this.SnackBarService.open('Urlaub liegt im Projektzeitraum!');
           this.resetDatePickers();
           return;
@@ -95,17 +99,18 @@ export class UrlaubsPlanungComponent implements OnInit {
           this.progressBar.start();
           let newUrlaub: Urlaub = {
             userId: this.currentUser.id,
-            startDatum: data.start.value,
-            endDatum: data.end.value,
+            startDatum: startEvent.value,
+            endDatum: endEvent.value,
             stateOfAcception: vacationState.Waiting
           };
 
           const urlaubMitId: Urlaub = await this.UserService.sendUrlaubRequest(
             this.currentUser.id,
-            data.start.value,
-            data.end.value,
+            startEvent.value,
+            endEvent.value,
             vacationState.Waiting,
           );
+
           newUrlaub.id = urlaubMitId.id;
           const updatedUrlaub = [...this.urlaub$.getValue(), newUrlaub];
           this.urlaub$.next(updatedUrlaub);
@@ -115,11 +120,10 @@ export class UrlaubsPlanungComponent implements OnInit {
         } catch (error: unknown) {
           if (error instanceof ApiError && error.code === 409) {
             this.resetDatePickers();
-            this.SnackBarService.open('Urlaub exisitert bereits');
+            this.SnackBarService.open('Urlaub existiert bereits');
           } else {
             this.resetDatePickers();
             this.SnackBarService.open('Urlaub konnte nicht eingetragen werden');
-            this.progressBar.complete();
           }
         } finally {
           this.progressBar.complete();
@@ -128,19 +132,17 @@ export class UrlaubsPlanungComponent implements OnInit {
     });
   }
 
-  async deleteUrlaub(urlaub: Urlaub) {
+  deleteUrlaub(urlaub: Urlaub) {
     this.progressBar.start();
-    try {
-      await this.UserService.deleteUrlaub(urlaub);
+    this.UserService.deleteUrlaub(urlaub).then(() => {
       const updatedUrlaub = this.urlaub$.getValue().filter(u => u !== urlaub);
       this.urlaub$.next(updatedUrlaub);
       this.SnackBarService.open('Urlaub wurde gelöscht');
-    } catch (error) {
+    }).catch(() => {
       this.SnackBarService.open('Urlaub konnte nicht gelöscht werden');
+    }).finally(() => {
       this.progressBar.complete();
-    }finally {
-      this.progressBar.complete();
-    }
+    });
   }
 
   resetDatePickers() {
@@ -148,4 +150,9 @@ export class UrlaubsPlanungComponent implements OnInit {
     this.endDatePicker.next({} as MatDatepickerInputEvent<any>);
   }
 
+  updateFilteredVacations() {
+    const vacations = this.urlaub$.getValue();
+    this.waitingVacations$.next(vacations.filter(v => v.stateOfAcception === vacationState.Waiting));
+    this.acceptedVacations$.next(vacations.filter(v => v.stateOfAcception === vacationState.Accepted));
+  }
 }
