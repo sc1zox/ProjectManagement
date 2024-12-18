@@ -13,7 +13,7 @@ export class NotificationsService {
 
   constructor(
     private toastr: ToastrService,
-    private apiService: ApiService
+    private apiService: ApiService,
   ) {
     this.isMobile = window.innerWidth < 1000;
   }
@@ -90,6 +90,12 @@ export class NotificationsService {
   async deleteNotification(notificationId: number): Promise<void> {
     try {
       const response: ApiResponse<void> = await this.apiService.delete(`/notifications/delete/` + notificationId);
+
+      if(notificationId.toString() == localStorage.getItem("notificationId")){
+       localStorage.removeItem('notificationId')
+        localStorage.removeItem('notificationFlag')
+      }
+
       return response.data;
     }catch (error){
       throw error;
@@ -97,8 +103,7 @@ export class NotificationsService {
 
   }
 
-  // hier einen return type definieren? anstatt any?
-  async createNotification(notificationMessage: string, userId: number): Promise<ApiResponse<void>> {
+  async createNotification(notificationMessage: string, userId: number,flag?: boolean): Promise<ApiResponse<void>> {
     const notification: Notification = {
       message: notificationMessage,
       isRead: false,
@@ -106,6 +111,12 @@ export class NotificationsService {
     };
     try {
       const response: ApiResponse<any> = await this.apiService.post('/notifications/create', notification);
+
+      if (flag) {
+        localStorage.setItem('notificationId', response.data.id);
+        localStorage.setItem('notificationFlag', 'true');
+      }
+
       return response.data;
     }catch (error){
       throw error;

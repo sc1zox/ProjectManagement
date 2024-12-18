@@ -1,17 +1,18 @@
-<ng-progress />
+<ng-progress/>
 
 <div *ngIf="roadmap; else noRoadmap" class="roadmap-card">
   <div *ngIf="roadmap.projects.length > 0;else noProject">
     <h2>{{ teams?.name }}</h2>
     <div class="project-list" cdkDropList cdkDropListOrientation="horizontal" [cdkDropListData]="sortedProjects"
-      [cdkDropListDisabled]="(user?.role !== UserRole.PO && user?.role !== UserRole.Bereichsleiter) || !notDraggableInDashboardHome"
-      (cdkDropListDropped)="drop($event)">
-
+         [cdkDropListDisabled]="(user?.role !== UserRole.PO && user?.role !== UserRole.Bereichsleiter) || !notDraggableInDashboardHome"
+         (cdkDropListDropped)="drop($event)">
       <div *ngFor="let project of sortedProjects" class="project-box" cdkDrag
-        [cdkDragDisabled]="(user?.role !== UserRole.PO && user?.role !== UserRole.Bereichsleiter) || project.projectStatus === ProjectStatus.inBearbeitung"
-        matTooltip="Cannot move this project" [matTooltipDisabled]="handleDisabledTooltip(project)"
-        (mousedown)="onMouseDown($event)" (click)="handleProjectClick($event, project)" [ngClass]="getProjectClasses(project,selectedProject)" cdkDragBoundary=".roadmap-card">
-        {{ project.name }}
+           [cdkDragDisabled]="(user?.role !== UserRole.PO && user?.role !== UserRole.Bereichsleiter) || project.projectStatus === ProjectStatus.inBearbeitung"
+           matTooltip="Cannot move this project" [matTooltipDisabled]="handleDisabledTooltip(project)"
+           (mousedown)="onMouseDown($event)" (click)="handleProjectClick($event, project)"
+           [ngClass]="getProjectClasses(project,selectedProject)" cdkDragBoundary=".roadmap-card">
+        <mat-icon [ngClass]="setOverdueClassIcon(project,selectedProject)" class="overdueIcon">flash_on</mat-icon>
+        <div [ngClass]="setOverdueClassName(project,selectedProject)">{{ project.name }}</div>
         <span class="status-label">{{ getStatusLabel(project.projectStatus) }}</span>
       </div>
     </div>
@@ -24,9 +25,10 @@
           <mat-form-field *ngIf="canEditStatus(user!) && hideInDashboard; else displayStatus" appearance="outline">
             <mat-label>Status</mat-label>
             <mat-select [(value)]="selectedProject.projectStatus"
-              (selectionChange)="onStatusChange($event)">
+                        (selectionChange)="onStatusChange($event)">
               <mat-option *ngFor="let status of projectStatuses" [value]="status"
-                [disabled]="handleDisabledStatus(selectedProject,status)" [matTooltip]="getWarning()">{{ getStatusLabel(status) }}
+                          [disabled]="handleDisabledStatus(selectedProject,status)"
+                          [matTooltip]="getWarning()">{{ getStatusLabel(status) }}
               </mat-option>
             </mat-select>
           </mat-form-field>
@@ -45,7 +47,7 @@
         <div *ngIf="canEditDate(user!) && hideInDashboard; else displayStartDate">
           <mat-form-field appearance="outline" class="date-picker">
             <mat-label>Start Date</mat-label>
-            <input [formControl]="startDateControl" [matDatepicker]="startPicker" matInput />
+            <input [formControl]="startDateControl" [matDatepicker]="startPicker" matInput/>
             <mat-datepicker-toggle [for]="startPicker" matSuffix></mat-datepicker-toggle>
             <mat-datepicker #startPicker></mat-datepicker>
           </mat-form-field>
@@ -53,7 +55,8 @@
 
         <!-- Start Date Display -->
         <ng-template #displayStartDate>
-          <div *ngIf="startDateFromBackendForCurrentProject !== undefined && startDateFromBackendForCurrentProject !== null">
+          <div
+            *ngIf="startDateFromBackendForCurrentProject !== undefined && startDateFromBackendForCurrentProject !== null">
             <p class="date-display">
               <strong>Project Start Date:</strong> {{ startDateFromBackendForCurrentProject | date }}
             </p>
@@ -61,11 +64,13 @@
         </ng-template>
 
         <!-- End Date Display (Always shown if exists) -->
-        <div *ngIf="endDateFromBackendForCurrentProject !== undefined && startDateFromBackendForCurrentProject !== null">
+        <div
+          *ngIf="endDateFromBackendForCurrentProject !== undefined && startDateFromBackendForCurrentProject !== null">
           <p class="date-display">
             <strong>Project End Date:</strong> {{ endDateFromBackendForCurrentProject | date }}
           </p>
-          <p *ngIf="errorWarningProjectOverdue.length>0 && selectedProject.projectStatus !== ProjectStatus.geschlossen" id="errorMessage">{{ errorWarningProjectOverdue }}</p>
+          <p *ngIf="errorWarningProjectOverdue.length>0 && selectedProject.projectStatus !== ProjectStatus.geschlossen"
+             id="errorMessage">{{ errorWarningProjectOverdue }}</p>
         </div>
 
       </div>
@@ -98,16 +103,16 @@
 
       <div>
         <app-end-date [currentProject]="selectedProject" [currentTeam]="teams"
-          [startDateControl]="startDateControl"></app-end-date>
+                      [startDateControl]="startDateControl"></app-end-date>
       </div>
 
       <!-- Action Buttons -->
       <div class="actions">
         <button *ngIf="(user?.role === UserRole.Bereichsleiter || user?.role === UserRole.PO) && hideInDashboard"
-          mat-raised-button class="primaryColor" (click)="onSubmit()">Priorität speichern
+                mat-raised-button class="primaryColor" (click)="onSubmit()">Priorität speichern
         </button>
         <button *ngIf="(user?.role === UserRole.Bereichsleiter || user?.role === UserRole.PO) && hideInDashboard"
-          mat-raised-button class="buttonOrange" (click)="onDelete()">Delete
+                mat-raised-button class="buttonOrange" (click)="onDelete()">Delete
           Project
         </button>
       </div>
