@@ -50,8 +50,10 @@ import {
   handleDisabledTooltip,
   isProjectEstimated,
   isProjectEstimatedAndNotInPlanningOrClosed,
-  isStartDateInRange
+  isStartDateInRange, setOverdueClassIcon, setOverdueClassName
 } from '../../../helper/projectHelper';
+import {MatIcon} from '@angular/material/icon';
+import {NotificationsService} from '../../../services/notifications.service';
 
 const today = normalizeDate(new Date());
 
@@ -71,7 +73,7 @@ const today = normalizeDate(new Date());
     MatSelectModule,
     MatOptionModule,
     EndDateComponent,
-    NgProgressbar, MatTooltip,
+    NgProgressbar, MatTooltip, MatIcon,
   ],
   providers: [provideNativeDateAdapter(),
     {provide: MAT_DATE_LOCALE, useValue: 'de-DE'}
@@ -111,6 +113,9 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   protected readonly getProjectClasses = getProjectClasses;
   protected readonly handleDisabledTooltip = handleDisabledTooltip;
   protected readonly handleDisabledStatus = handleDisabledStatus;
+  protected readonly setOverdueClassIcon = setOverdueClassIcon;
+  protected readonly setOverdueClassName = setOverdueClassName;
+
 
   readonly ProjectStatus = ProjectStatus;
   projectStatuses: ProjectStatus[] = Object.values(ProjectStatus);
@@ -122,8 +127,14 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   private isDragging = false;
 
   constructor(private readonly ProjectService: ProjectService,
-              private readonly UserService: UserService, private readonly fb: FormBuilder,
-              private readonly RoadmapService: RoadmapService, private SnackBarService: SnackbarService, private cdr: ChangeDetectorRef, private router: Router) {
+              private readonly UserService: UserService,
+              private readonly fb: FormBuilder,
+              private readonly RoadmapService: RoadmapService,
+              private SnackBarService: SnackbarService,
+              private cdr: ChangeDetectorRef,
+              private router: Router,
+              private NotificationService: NotificationsService,
+              ) {
     this.dateForm = this.fb.group({
       startDate: this.startDateControl,
     });
@@ -441,7 +452,6 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   }
 
   private updateProjectStatusOnEstimates(): void {
-    console.log(this.projects)
     this.projects.forEach(project => {
       if (isProjectEstimatedAndNotInPlanningOrClosed(project)) {
         try {
@@ -466,14 +476,16 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     const projectEndDate = project.endDate ? normalizeDate(new Date(project.endDate)) : null;
 
     if (projectEndDate && projectEndDate <= today) {
-      this.errorWarningProjectOverdue='Das Projektenddatum ist überschritten'
+      this.errorWarningProjectOverdue='Das Projektenddatum ist überschritten';
     }
   }
 
   // Comparing dates is so confusing
   private updateProjectStatusOnDate(): void {
 
+
     this.projects.forEach(project => {
+      const projectEndDate = project.endDate ? normalizeDate(new Date(project.endDate)) : null;
       if (project.startDate) {
         const projectStartDate = normalizeDate(new Date(project.startDate));
 
@@ -486,6 +498,13 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
             .catch(error => console.error('Error updating project status:', error));
         }
 
+        if (projectEndDate && projectEndDate <= today) {
+          let flag = localStorage.getItem('notificationFlag');
+          if(project.team?.members && flag===null) {
+              this.NotificationService.createNotification(project.name+ ' ist überfällig in deinem Team: '+project.team.name,this.user!.id,true);
+            localStorage.setItem('notificationFlag','flagged')
+          }
+        }
       }
     });
     this.cdr.detectChanges();

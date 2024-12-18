@@ -59,6 +59,8 @@ userRouter.put('/notifications/read/:id', isAuthenticated,rescue(NotificationsCo
 userRouter.delete('/notifications/delete/:id', isAuthenticated,rescue(NotificationsController.deleteNotification));
 userRouter.post('/notifications/create', isAuthenticated,rescue(NotificationsController.createNotification));
 
-userRouter.get('/export/:id', rescue(PdfController.exportUserPDF));
+
+userRouter.get('/export/roadmap/:id', rescue(PdfController.exportRoadmapPDF));
+userRouter.get('/export/user/:id', rescue(PdfController.exportUserPDF));
 
 export default userRouter;

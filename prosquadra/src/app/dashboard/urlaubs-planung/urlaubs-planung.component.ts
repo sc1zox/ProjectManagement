@@ -90,11 +90,14 @@ export class UrlaubsPlanungComponent implements OnInit {
     //refined with chatgpt
     combineLatest([this.startDatePicker, this.endDatePicker]).subscribe(async ([startEvent, endEvent]) => {
       if (startEvent.value && endEvent.value && this.currentUser) {
+        /*
         if (!await this.UrlaubsPlanungService.checkIfVacationIsValid(startEvent.value, endEvent.value, this.currentUser.id)) {
           this.SnackBarService.open('Urlaub liegt im Projektzeitraum!');
           this.resetDatePickers();
           return;
         }
+        With Vacation planning implemented and bereichsleiter accepting requests, this check is probably abundant
+         */
         try {
           this.progressBar.start();
           let newUrlaub: Urlaub = {

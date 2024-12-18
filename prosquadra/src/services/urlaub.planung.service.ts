@@ -9,7 +9,6 @@ import {Team} from '../types/team';
 })
 export class UrlaubPlanungService{
 
-  projects: Project[] = [];
   roadmap?: Roadmap;
   team?: Team[];
 
@@ -45,12 +44,6 @@ export class UrlaubPlanungService{
     }
 
     return true; // Kein Konflikt gefunden
-  }
-
-
-
-  checkIfProjectIsOverlapping() {
-
   }
 }
 

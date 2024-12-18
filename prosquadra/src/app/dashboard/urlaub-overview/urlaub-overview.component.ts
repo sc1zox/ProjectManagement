@@ -89,7 +89,7 @@ export class UrlaubOverviewComponent implements OnInit {
       if (urlaub.id) {
         await this.UserService.deleteUrlaub(urlaub);
         this.SnackBarService.open('Urlaub wurde abgelehnt');
-        await this.NotificationService.createNotification('Ihr Urlaub wurde abgelehnt',urlaub.userId)
+        await this.NotificationService.createNotification('Ihr Urlaub wurde abgelehnt',urlaub.userId,false)
 
         this.groupedVacations.forEach((vacations, user) => {
           vacations.accepted = vacations.accepted.filter(v => v.id !== urlaub.id);
@@ -115,7 +115,7 @@ export class UrlaubOverviewComponent implements OnInit {
       if (urlaub.id) {
         await this.UserService.updateVacationState(urlaub.id, vacationState.Accepted);
         this.SnackBarService.open('Urlaub wurde akzeptiert');
-        await this.NotificationService.createNotification('Ihr Urlaub wurde akzeptiert',urlaub.userId)
+        await this.NotificationService.createNotification('Ihr Urlaub wurde akzeptiert',urlaub.userId,false)
 
         this.groupedVacations.forEach((vacations, user) => {
           if (user.urlaub?.some(v => v.id === urlaub.id)) {

@@ -21,22 +21,42 @@ export function getEarliestStartDate(teams: Team[]): GanttDate {
   return new GanttDate(earliestStartDate);
 }
 
-export function isProjectEstimated(project: Project){
+export function isProjectEstimated(project: Project) {
   return project.estimations?.length === project.team?.members?.filter(member => member.role === UserRole.Developer).length
 }
 
-export function isProjectEstimatedAndNotInPlanningOrClosed(project: Project){
+export function isProjectEstimatedAndNotInPlanningOrClosed(project: Project) {
   return project.estimations?.length === project.team?.members?.filter(member => member.role === UserRole.Developer).length && (project.projectStatus !== ProjectStatus.inBearbeitung && project.projectStatus !== ProjectStatus.geschlossen)
 }
 
-export function getProjectClasses(project: Project,selectedProject: Project | undefined): { [key: string]: boolean } {
+export function getProjectClasses(project: Project, selectedProject: Project | undefined): {
+  [key: string]: boolean | null
+} {
+  const projectEndDate = project.endDate ? normalizeDate(new Date(project.endDate)) : null;
+  const today = normalizeDate(new Date())
   return {
     'selected': project === selectedProject,
     'offen': project.projectStatus === ProjectStatus.offen,
     'in-planung': project.projectStatus === ProjectStatus.inPlanung,
     'in-bearbeitung': project.projectStatus === ProjectStatus.inBearbeitung,
-    'geschlossen': project.projectStatus === ProjectStatus.geschlossen
+    'geschlossen': project.projectStatus === ProjectStatus.geschlossen,
   };
+}
+
+export function setOverdueClassIcon(project: Project, selectedProject: Project | undefined) {
+  const projectEndDate = project.endDate ? normalizeDate(new Date(project.endDate)) : null;
+  const today = normalizeDate(new Date())
+  return {
+    'overdue-icon-on': project.projectStatus !== ProjectStatus.geschlossen && (projectEndDate && projectEndDate <= today),
+  }
+}
+
+export function setOverdueClassName(project: Project, selectedProject: Project | undefined) {
+  const projectEndDate = project.endDate ? normalizeDate(new Date(project.endDate)) : null;
+  const today = normalizeDate(new Date())
+  return {
+    'project-name': project.projectStatus !== ProjectStatus.geschlossen && (projectEndDate && projectEndDate <= today)
+  }
 }
 
 export function handleDisabledTooltip(project: Project) {
@@ -68,7 +88,7 @@ export function handleDisabledStatus(project: Project, status: ProjectStatus): b
   }
 }
 
-export function isStartDateInRange (projects: Project[], startDate: Date, selectedProject: Project): boolean {
+export function isStartDateInRange(projects: Project[], startDate: Date, selectedProject: Project): boolean {
   const projectsWithoutItself = projects.filter(project => project.id !== selectedProject.id);
   const projectsMapped = parseProjects(projectsWithoutItself);
 

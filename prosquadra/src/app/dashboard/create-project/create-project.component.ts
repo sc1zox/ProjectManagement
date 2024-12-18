@@ -122,7 +122,7 @@ export class CreateProjectComponent implements OnInit{
         }
       if (this.selectedTeam) {
         this.selectedTeam.members?.forEach((member) => {
-          this.NotificationService.createNotification('Deinem Team wurde ein Projekt hinzugefügt', member.id);
+          this.NotificationService.createNotification('Deinem Team wurde ein Projekt hinzugefügt', member.id,false);
         });
         this.projectForm.reset();
       } else {
