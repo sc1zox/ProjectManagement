@@ -500,9 +500,8 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
 
         if (projectEndDate && projectEndDate <= today) {
           let flag = localStorage.getItem('notificationFlag');
-          if(project.team?.members && !flag) {
-            for (let user of project.team?.members)
-              this.NotificationService.createNotification(project.name+ ' ist überfällig in deinem Team: '+project.team.name,user.id,true);
+          if(project.team?.members && flag===null) {
+              this.NotificationService.createNotification(project.name+ ' ist überfällig in deinem Team: '+project.team.name,this.user!.id,true);
             localStorage.setItem('notificationFlag','flagged')
           }
         }

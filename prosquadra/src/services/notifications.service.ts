@@ -103,7 +103,7 @@ export class NotificationsService {
 
   }
 
-  async createNotification(notificationMessage: string, userId: number,flag?: boolean): Promise<ApiResponse<void>> {
+  async createNotification(notificationMessage: string, userId: number,flag: boolean): Promise<ApiResponse<void>> {
     const notification: Notification = {
       message: notificationMessage,
       isRead: false,
