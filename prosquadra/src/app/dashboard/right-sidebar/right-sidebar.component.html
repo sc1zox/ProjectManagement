@@ -44,12 +44,13 @@
   </mat-accordion>
 
   <div class="buttonsSidebarContainer">
-  <button mat-raised-button (click)="showQrCode()" class="buttonSidebar">Toggle QR-Code</button>
-    <button mat-raised-button (click)="getPDF()" class="buttonSidebar">Download Benutzerdaten</button>
+  <!-- <button mat-raised-button (click)="showQrCode()" class="buttonSidebar">Toggle QR-Code</button> dieser Button gibt ein QR-code um das pdf runterzuladen. -->
+    <button mat-raised-button (click)="getPdfUser()" class="buttonSidebar">Download Benutzer-Daten</button>
+    <button mat-raised-button (click)="getPdfRoadmap()" class="buttonSidebar" *ngIf="user?.role !== (UserRole.Bereichsleiter || UserRole.Admin)">Download Roadmap-Daten</button>
   </div>
 
   <ng-container *ngIf="QrCodeVisible">
-  <qr-code [value]=getPdfUrl()
+  <qr-code [value]=getPdfUrlUser()
            errorCorrectionLevel="M" />
   </ng-container>
   <app-user-skills [user]="user" *ngIf="user?.role !== UserRole.Admin && user?.role !== UserRole.Bereichsleiter"></app-user-skills>

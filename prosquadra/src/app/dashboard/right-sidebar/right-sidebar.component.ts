@@ -151,18 +151,33 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
       });
   }
 
-  getPdfUrl() {
-    return this.ApiService.getApiUrl() + '/export/' + this.user?.id
+  getPdfUrlUser() {
+    return this.ApiService.getApiUrl() + '/export/user/' + this.user?.id
+  }
+  getPdfUrlRoadmap() {
+    return this.ApiService.getApiUrl() + '/export/roadmap/' + this.user?.id
   }
 
   showQrCode() {
     this.QrCodeVisible = !this.QrCodeVisible;
   }
 
-  getPDF() {
+  getPdfUser() {
     this.progressBar.start();
     try {
-      window.location.href = this.getPdfUrl();
+      window.location.href = this.getPdfUrlUser();
+    }catch (error){
+      this.SnackBarService.open('PDF konnte nicht geladen werden')
+      this.progressBar.complete();
+    }finally {
+      this.progressBar.complete();
+    }
+  }
+
+  getPdfRoadmap() {
+    this.progressBar.start();
+    try {
+      window.location.href = this.getPdfUrlRoadmap();
     }catch (error){
       this.SnackBarService.open('PDF konnte nicht geladen werden')
       this.progressBar.complete();
