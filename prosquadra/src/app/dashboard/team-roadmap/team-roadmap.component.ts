@@ -501,7 +501,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
           if(project.team?.members && flag===null) {
             let result = await this.NotificationService.createNotification(project.name + ' ist in Bearbeitung in deinem Team: ' + project.team.name, this.user!.id);
 
-            localStorage.setItem('notificationInBearbeitungId',String(result.id));
+            localStorage.setItem('notificationInBearbeitungId'+String(result.id),String(result.id));
           }
         }
 
@@ -510,7 +510,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
           if(project.team?.members && flag===null) {
               let result = await this.NotificationService.createNotification(project.name + ' ist überfällig in deinem Team: ' + project.team.name, this.user!.id);
 
-            localStorage.setItem('notificationOverdueId',String(result.id));
+            localStorage.setItem('notificationOverdueId'+String(result.id),String(result.id));
           }
         }
       }

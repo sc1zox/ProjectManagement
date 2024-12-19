@@ -92,11 +92,11 @@ export class NotificationsService {
       const response: ApiResponse<void> = await this.apiService.delete(`/notifications/delete/` + notificationId);
 
       switch (notificationId.toString()){
-        case localStorage.getItem('notificationInBearbeitungId'):
-          localStorage.removeItem('notificationInBearbeitungId')
+        case localStorage.getItem('notificationInBearbeitungId'+notificationId):
+          localStorage.removeItem('notificationInBearbeitungId'+notificationId)
           break;
-        case localStorage.getItem("notificationOverdueId"):
-          localStorage.removeItem('notificationOverdueId')
+        case localStorage.getItem("notificationOverdueId"+notificationId):
+          localStorage.removeItem('notificationOverdueId'+notificationId)
           break;
 
         default:
