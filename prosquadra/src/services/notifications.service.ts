@@ -91,9 +91,16 @@ export class NotificationsService {
     try {
       const response: ApiResponse<void> = await this.apiService.delete(`/notifications/delete/` + notificationId);
 
-      if(notificationId.toString() == localStorage.getItem("notificationId")){
-       localStorage.removeItem('notificationId')
-        localStorage.removeItem('notificationFlag')
+      switch (notificationId.toString()){
+        case localStorage.getItem('notificationInBearbeitungId'):
+          localStorage.removeItem('notificationInBearbeitungId')
+          break;
+        case localStorage.getItem("notificationOverdueId"):
+          localStorage.removeItem('notificationOverdueId')
+          break;
+
+        default:
+          break;
       }
 
       return response.data;
@@ -103,19 +110,14 @@ export class NotificationsService {
 
   }
 
-  async createNotification(notificationMessage: string, userId: number,flag: boolean): Promise<ApiResponse<void>> {
+  async createNotification(notificationMessage: string, userId: number): Promise<Notification> {
     const notification: Notification = {
       message: notificationMessage,
       isRead: false,
       userId: userId,
     };
     try {
-      const response: ApiResponse<any> = await this.apiService.post('/notifications/create', notification);
-
-      if (flag) {
-        localStorage.setItem('notificationId', response.data.id);
-        localStorage.setItem('notificationFlag', 'true');
-      }
+      const response: ApiResponse<Notification> = await this.apiService.post('/notifications/create', notification);
 
       return response.data;
     }catch (error){

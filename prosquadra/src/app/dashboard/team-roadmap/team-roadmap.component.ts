@@ -50,7 +50,9 @@ import {
   handleDisabledTooltip,
   isProjectEstimated,
   isProjectEstimatedAndNotInPlanningOrClosed,
-  isStartDateInRange, setOverdueClassIcon, setOverdueClassName
+  isStartDateInRange,
+  setOverdueClassIcon,
+  setOverdueClassName
 } from '../../../helper/projectHelper';
 import {MatIcon} from '@angular/material/icon';
 import {NotificationsService} from '../../../services/notifications.service';
@@ -482,27 +484,33 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
 
   // Comparing dates is so confusing
   private updateProjectStatusOnDate(): void {
-
-
-    this.projects.forEach(project => {
+    this.projects.forEach(async project => {
       const projectEndDate = project.endDate ? normalizeDate(new Date(project.endDate)) : null;
       if (project.startDate) {
         const projectStartDate = normalizeDate(new Date(project.startDate));
 
         // Project should be "in Bearbeitung" if start date is today or earlier and project is not closed
-        if (projectStartDate <= today && project.projectStatus !== ProjectStatus.geschlossen) {
+        if (projectStartDate <= today && project.projectStatus !== ProjectStatus.geschlossen && project.projectStatus !== ProjectStatus.inBearbeitung) {
           project.projectStatus = ProjectStatus.inBearbeitung;
 
           this.ProjectService.setProjectStatus(project.id!, ProjectStatus.inBearbeitung)
             //.then(() => console.log(`Persisted '${project.name}' as 'in Bearbeitung'`))
             .catch(error => console.error('Error updating project status:', error));
+
+          let flag = localStorage.getItem('notificationInBearbeitungId');
+          if(project.team?.members && flag===null) {
+            let result = await this.NotificationService.createNotification(project.name + ' ist in Bearbeitung in deinem Team: ' + project.team.name, this.user!.id);
+
+            localStorage.setItem('notificationInBearbeitungId',String(result.id));
+          }
         }
 
         if (projectEndDate && projectEndDate <= today) {
-          let flag = localStorage.getItem('notificationFlag');
+          let flag = localStorage.getItem('notificationOverdueId');
           if(project.team?.members && flag===null) {
-              this.NotificationService.createNotification(project.name+ ' ist überfällig in deinem Team: '+project.team.name,this.user!.id,true);
-            localStorage.setItem('notificationFlag','flagged')
+              let result = await this.NotificationService.createNotification(project.name + ' ist überfällig in deinem Team: ' + project.team.name, this.user!.id);
+
+            localStorage.setItem('notificationOverdueId',String(result.id));
           }
         }
       }

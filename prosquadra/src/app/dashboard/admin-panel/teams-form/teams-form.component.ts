@@ -96,10 +96,10 @@ export class TeamsFormComponent implements OnInit {
             try {
               await this.TeamService.createTeam(this.Team);
               this.selectedUser?.forEach((user) => {
-                this.NotificationService.createNotification('Du wurdest einem neuen Team hinzugefügt', user,false);
+                this.NotificationService.createNotification('Du wurdest einem neuen Team hinzugefügt', user);
               })
               this.bereichsleiter?.forEach(user => {
-                this.NotificationService.createNotification('Es wurde ein neues Team erstellt', user.id,false)
+                this.NotificationService.createNotification('Es wurde ein neues Team erstellt', user.id)
               })
               this.SnackBarService.open('Die Teamerstellung war erfolgreich');
             } catch (error) {
