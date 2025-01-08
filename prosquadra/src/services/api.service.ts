@@ -1,4 +1,4 @@
-import {Injectable, OnInit} from '@angular/core';
+import {Injectable} from '@angular/core';
 import {ApiResponse} from '../types/api-response';
 import {ApiError} from '../error/ApiError';
 
@@ -7,8 +7,8 @@ import {ApiError} from '../error/ApiError';
   providedIn: 'root'
 })
 export class ApiService{
-  private readonly apiUrl = 'http://localhost:3000/api';
-  private readonly baseUrl: string = 'http://localhost:3000';
+  private readonly apiUrl = 'http://localhost:3010/api';
+  private readonly baseUrl: string = 'http://localhost:3010';
   private readonly tokenKey = 'authToken';
 
   constructor() {
