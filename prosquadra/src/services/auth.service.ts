@@ -8,7 +8,7 @@ import {UserRole} from '../types/user';
 export class AuthService {
 
   private readonly tokenKey = 'authToken';
-  private apiUrl: string = 'http://localhost:3010/auth';
+  private apiUrl: string = 'http://web06.iis.uni-bamberg.de:3010/auth';
 
   constructor(private readonly UserService: UserService) {
   }
