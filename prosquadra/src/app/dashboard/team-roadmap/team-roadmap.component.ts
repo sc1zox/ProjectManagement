@@ -135,7 +135,6 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
               private SnackBarService: SnackbarService,
               private cdr: ChangeDetectorRef,
               private router: Router,
-              private NotificationService: NotificationsService,
               ) {
     this.dateForm = this.fb.group({
       startDate: this.startDateControl,
@@ -496,22 +495,6 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
           this.ProjectService.setProjectStatus(project.id!, ProjectStatus.inBearbeitung)
             //.then(() => console.log(`Persisted '${project.name}' as 'in Bearbeitung'`))
             .catch(error => console.error('Error updating project status:', error));
-
-          let flag = localStorage.getItem('notificationInBearbeitungId');
-          if(project.team?.members && flag===null) {
-            let result = await this.NotificationService.createNotification(project.name + ' ist in Bearbeitung in deinem Team: ' + project.team.name, this.user!.id);
-
-            localStorage.setItem('notificationInBearbeitungId'+String(result.id),String(result.id));
-          }
-        }
-
-        if (projectEndDate && projectEndDate <= today) {
-          let flag = localStorage.getItem('notificationOverdueId');
-          if(project.team?.members && flag===null) {
-              let result = await this.NotificationService.createNotification(project.name + ' ist überfällig in deinem Team: ' + project.team.name, this.user!.id);
-
-            localStorage.setItem('notificationOverdueId'+String(result.id),String(result.id));
-          }
         }
       }
     });
