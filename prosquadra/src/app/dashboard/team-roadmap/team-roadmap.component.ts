@@ -359,7 +359,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   get sortedProjects(): Project[] {
     return this.projects.sort((a, b) => {
       if (a.projectStatus === ProjectStatus.inBearbeitung) return -1; // Prioritize inBearbeitung
-      if (b.projectStatus === ProjectStatus.inBearbeitung) return 0;
+      if (b.projectStatus === ProjectStatus.inBearbeitung) return 1;
       return 0; // Maintain relative order for others
     });
   }
