@@ -80,7 +80,7 @@ export class NotificationsService {
 
   async markNotificationAsRead(notificationId: number): Promise<void> {
     try {
-      const response: ApiResponse<void> = await this.apiService.putWithoutBody(`/notifications/read/` + notificationId)
+      const response: ApiResponse<void> = await this.apiService.putWithoutBody(`/notifications/read/` + notificationId);
       return response.data;
     }catch (error){
       throw error;
@@ -90,19 +90,6 @@ export class NotificationsService {
   async deleteNotification(notificationId: number): Promise<void> {
     try {
       const response: ApiResponse<void> = await this.apiService.delete(`/notifications/delete/` + notificationId);
-
-      switch (notificationId.toString()){
-        case localStorage.getItem('notificationInBearbeitungId'+notificationId):
-          localStorage.removeItem('notificationInBearbeitungId'+notificationId)
-          break;
-        case localStorage.getItem("notificationOverdueId"+notificationId):
-          localStorage.removeItem('notificationOverdueId'+notificationId)
-          break;
-
-        default:
-          break;
-      }
-
       return response.data;
     }catch (error){
       throw error;
