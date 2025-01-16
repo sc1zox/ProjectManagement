@@ -55,7 +55,6 @@ import {
   setOverdueClassName
 } from '../../../helper/projectHelper';
 import {MatIcon} from '@angular/material/icon';
-import {NotificationsService} from '../../../services/notifications.service';
 
 const today = normalizeDate(new Date());
 
@@ -358,7 +357,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   }
 
   get sortedProjects(): Project[] {
-    return this.projects.slice().sort((a, b) => {
+    return this.projects.sort((a, b) => {
       if (a.projectStatus === ProjectStatus.inBearbeitung) return -1; // Prioritize inBearbeitung
       if (b.projectStatus === ProjectStatus.inBearbeitung) return 1;
       return 0; // Maintain relative order for others
