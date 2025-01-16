@@ -7,8 +7,8 @@ import {ApiError} from '../error/ApiError';
   providedIn: 'root'
 })
 export class ApiService{
-  private readonly apiUrl = 'http://web06.iis.uni-bamberg.de:3010/api';
-  private readonly baseUrl: string = 'http://web06.iis.uni-bamberg.de:3010';
+  private readonly apiUrl = 'http://localhost:3010/api';
+  private readonly baseUrl: string = 'http://localhost:3010';
   private readonly tokenKey = 'authToken';
 
   constructor() {
