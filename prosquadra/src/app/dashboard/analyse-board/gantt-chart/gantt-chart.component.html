@@ -9,7 +9,12 @@
   <ngx-gantt-table>
     <ngx-gantt-column name="Title" title="Project Title" width="300px">
       <ng-template #cell let-item="item">
-        {{ item.title }}
+          {{ item.title }}
+      </ng-template>
+      <ng-template #bar let-item="item">
+        <div class="tooltip">
+          {{ item.duration + " days" }}
+        </div>
       </ng-template>
     </ngx-gantt-column>
   </ngx-gantt-table>
