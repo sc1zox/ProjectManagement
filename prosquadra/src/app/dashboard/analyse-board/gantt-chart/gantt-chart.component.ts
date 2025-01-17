@@ -39,7 +39,6 @@ import { SnackbarService } from '../../../../services/snackbar.service';
     NgxGanttTableColumnComponent,
   ],
   providers: [
-    GanttPrintService,
     {
       provide: GANTT_GLOBAL_CONFIG,
       useValue: {

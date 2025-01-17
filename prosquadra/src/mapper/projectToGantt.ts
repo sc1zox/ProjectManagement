@@ -1,12 +1,26 @@
-import {Project} from '../types/project';
-import {GanttDate, GanttItem} from '@worktile/gantt';
+import { Project } from '../types/project';
+import { GanttDate, GanttItem } from '@worktile/gantt';
 
-export function projectToGantt(source: Project, teamId: string): GanttItem {
+export interface ExtendedGanttItem extends GanttItem {
+  duration: number;
+}
+
+export function projectToGantt(source: Project, teamId: string): ExtendedGanttItem {
+  const startDate = source.startDate ? new Date(source.startDate) : null;
+  const endDate = source.endDate ? new Date(source.endDate) : null;
+
+  let duration = 0;
+  if (startDate && endDate) {
+    const durationInMilliseconds = endDate.getTime() - startDate.getTime();
+    duration = Math.floor(durationInMilliseconds / (1000 * 60 * 60 * 24)); // in Tagen
+  }
+
   return {
     id: source.id!.toString(),
     title: source.name,
-    start: source.startDate ? Math.floor(new Date(source.startDate).getTime() / 1000) : 0,
-    end: source.endDate ? new GanttDate(new Date(source.endDate)).getUnixTime() : 0,
+    start: startDate ? Math.floor(startDate.getTime() / 1000) : 0, // Unix-Zeit in Sekunden
+    end: endDate ? Math.floor(endDate.getTime() / 1000) : 0,       // Unix-Zeit in Sekunden
+    duration,
     group_id: teamId,
   };
 }
