@@ -1,29 +1,41 @@
 <div class="sidebar-left">
-  <mat-action-list>
-    <mat-expansion-panel [expanded]=expanded>
-      <mat-expansion-panel-header>
+  <mat-action-list id="sidebar-menu">
+    <mat-expansion-panel id="sidebar-panel" [expanded]="expanded">
+      <mat-expansion-panel-header id="sidebar-header">
         <mat-panel-title>Menu</mat-panel-title>
       </mat-expansion-panel-header>
 
-      <mat-list-item *ngIf="user?.role !== UserRole.Admin" [routerLink]="['home']">Dashboard</mat-list-item>
-
-      <mat-list-item *ngIf="user?.role===UserRole.PO" [routerLink]="['create-project']">Create project
+      <mat-list-item id="menu-item" [routerLink]="['home']" [ngClass]="{'active': activeRoute === 'home'}">
+        Dashboard
       </mat-list-item>
 
-      <mat-list-item *ngIf="user?.role!==UserRole.Admin && user?.role!==UserRole.Bereichsleiter"  [routerLink]="['team-roadmap']">Team roadmap</mat-list-item>
+      <mat-list-item id="menu-item" [routerLink]="['create-project']" *ngIf="user?.role === UserRole.PO">
+        Create Project
+      </mat-list-item>
 
-      <mat-list-item *ngIf="user?.role===UserRole.Admin || user?.role===UserRole.SM || user?.role===UserRole.Bereichsleiter" [routerLink]="['team-overview']">Team overview</mat-list-item>
+      <mat-list-item id="menu-item" [routerLink]="['team-roadmap']" *ngIf="user?.role !== UserRole.Admin && user?.role !== UserRole.Bereichsleiter">
+        Team Roadmap
+      </mat-list-item>
 
-      <mat-list-item *ngIf="user?.role===UserRole.Admin" [routerLink]="['admin-panel']">Admin-Panel</mat-list-item>
+      <mat-list-item id="menu-item" [routerLink]="['team-overview']" *ngIf="user?.role === UserRole.Admin || user?.role === UserRole.SM || user?.role === UserRole.Bereichsleiter">
+        Team Overview
+      </mat-list-item>
 
-      <mat-list-item *ngIf="user?.role===UserRole.SM || user?.role===UserRole.Bereichsleiter" [routerLink]="['analyse-board']">Analysis area</mat-list-item>
+      <mat-list-item id="menu-item" [routerLink]="['admin-panel']" *ngIf="user?.role === UserRole.Admin">
+        Admin Panel
+      </mat-list-item>
 
-      <mat-list-item *ngIf="user?.role!==UserRole.Admin" [routerLink]="['urlaubs-planung']">Holiday planning</mat-list-item>
+      <mat-list-item id="menu-item" [routerLink]="['analyse-board']" *ngIf="user?.role === UserRole.SM || user?.role === UserRole.Bereichsleiter">
+        Analysis Area
+      </mat-list-item>
 
-      <mat-list-item *ngIf="user?.role===UserRole.Bereichsleiter" [routerLink]="['urlaubs-overview']">Holiday overview</mat-list-item>
+      <mat-list-item id="menu-item" [routerLink]="['urlaubs-planung']" *ngIf="user?.role !== UserRole.Admin">
+        Holiday Planning
+      </mat-list-item>
 
+      <mat-list-item id="menu-item" [routerLink]="['urlaubs-overview']" *ngIf="user?.role === UserRole.Bereichsleiter">
+        Holiday Overview
+      </mat-list-item>
     </mat-expansion-panel>
   </mat-action-list>
-
-
 </div>
