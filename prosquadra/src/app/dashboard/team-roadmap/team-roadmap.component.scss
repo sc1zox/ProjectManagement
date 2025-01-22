@@ -1,11 +1,12 @@
 /* Base Styles */
-$border-color: #e0e0e0;
+$border-color: #4c566a8e; // #e0e0e0;
 $accent-color: #00b894;
 $text-color: #333;
 $text-light-color: #555;
 
 /* Containers */
 .roadmap-card {
+  background-color: #eceff4;
   border-radius: 10px;
   box-shadow: var(--box-shadow-light);
   padding: 2rem;
@@ -190,6 +191,13 @@ h2 {
 #errorMessage{
   color: red;
   font-weight: bold;
+  font-style: italic;
+}
+
+.date-container {
+  display: flex;
+  align-items: center; /* Aligns items vertically */
+  gap: 10px; /* Adds spacing between date and error message */
 }
 
 .overdueIcon{

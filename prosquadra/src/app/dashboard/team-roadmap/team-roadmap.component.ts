@@ -476,7 +476,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     const projectEndDate = project.endDate ? normalizeDate(new Date(project.endDate)) : null;
 
     if (projectEndDate && projectEndDate <= today) {
-      this.errorWarningProjectOverdue='The project end date has been exceeded';
+      this.errorWarningProjectOverdue='Deadline Exceeded!';
     }
   }
 
