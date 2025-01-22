@@ -145,7 +145,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     const startDate = control.value;
     if (this.selectedProject !== undefined) {
       if (isStartDateInRange(this.projects, startDate, this.selectedProject) && startDate !== null) {
-        this.SnackBarService.open('Das Startdatum darf sich nicht mit einem Projekt überschneiden');
+        this.SnackBarService.open('The start date must not overlap with a project');
 
         // Immediately reset the control value | emitEvent: false so calculateEndDate does not get called
         control.setValue(this.selectedProject?.startDate || null, {emitEvent: false});
@@ -215,7 +215,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     const newStatus = event.value as ProjectStatus;
 
     if (this.countEstimatesByUser !== this.maxEstimates /*&& select.value !== ProjectStatus.geschlossen*/) { //soll schließen hier möglich sein?
-      this.SnackBarService.open('Aktualisierung fehlgeschlagen, fehlende Entwickler Schätzungen')
+      this.SnackBarService.open('Update failed, missing developer estimates')
       return;
     }
     if (this.selectedProject) {
@@ -223,7 +223,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
       try {
         await this.ProjectService.setProjectStatus(this.selectedProject.id!, newStatus);
       } catch (error) {
-        this.SnackBarService.open("Status konnte nicht geupdated werden");
+        this.SnackBarService.open("Status could not be updated");
         return;
       }
       this.updateDateControls();
@@ -266,7 +266,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
       try {
         this.selectedProject.avgEstimationHours = await this.ProjectService.getProjectEstimationAvg(this.selectedProject?.id);
       } catch (error) {
-        this.SnackBarService.open("Schätzungen konnte nicht abgerufen werden");
+        this.SnackBarService.open("Estimates could not be retrieved");
       }
     }
   }
@@ -292,7 +292,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
       }
       await this.refreshDates();
     } catch (error) {
-      this.SnackBarService.open('Konnte Schätzung nicht laden');
+      this.SnackBarService.open('Could not load estimate');
     }
 
     this.createWarningForOverDueProjects(project)
@@ -386,9 +386,9 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
       if (this.user?.role === UserRole.Developer) {
         this.dataUpdated.emit(); // das hier verursacht ein doppeltes rendern der ersten roadmap. Unsicher ob es weggelassen werden kann für andere Updates.Scheint mir momentan nicht essenziell zu sein. Doch wenn es fehlt wird für Dev die Zeit nicht aktualisiert deshalb die if clause
       }
-      this.SnackBarService.open('Projekt Priorität wurde erfolgreich geändert')
+      this.SnackBarService.open('Project priority was successfully changed')
     } catch (error) {
-      this.SnackBarService.open('Bei der Projektpriorisierung ist ein Fehler aufgetreten')
+      this.SnackBarService.open('An error has occurred during project prioritisation')
       this.progressBar.complete();
     } finally {
       this.progressBar.complete();
@@ -399,7 +399,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   async onDelete() {
     this.progressBar.start();
     if (this.roadmap?.projects && !(this.roadmap?.projects.length > 1)) {
-      this.SnackBarService.open('Löschen fehlgeschlagen! Die Roadmap enthält nur ein Projekt')
+      this.SnackBarService.open('Delete failed! The roadmap contains only one project')
       this.progressBar.complete();
       return;
     }
@@ -415,9 +415,9 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
 
         // this.dataUpdated.emit(); this causes prio position bug. But deleting might cause new unwanted behaviour. Observe
 
-        this.SnackBarService.open('Projekt erfolgreich gelöscht');
+        this.SnackBarService.open('Project successfully deleted');
       } catch (error) {
-        this.SnackBarService.open('Fehler beim Löschen des Projekts');
+        this.SnackBarService.open('Error when deleting the project');
         this.progressBar.complete();
       } finally {
         this.progressBar.complete();
@@ -434,7 +434,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
         this.updateProjectStatusOnDate();
       }
     } catch (error) {
-      this.SnackBarService.open('Fehler bei refetch roadmap')
+      this.SnackBarService.open('Error during refetch roadmap')
     }
   }
 
@@ -446,7 +446,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
           this.selectedProject.avgEstimationHours = updatedEstimation;
         }
       } catch (error) {
-        this.SnackBarService.open('Fehler bei fetchen von getProjectEstimationAvg')
+        this.SnackBarService.open('Error when fetching getProjectEstimationAvg')
       }
     }
   }
@@ -476,7 +476,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     const projectEndDate = project.endDate ? normalizeDate(new Date(project.endDate)) : null;
 
     if (projectEndDate && projectEndDate <= today) {
-      this.errorWarningProjectOverdue='Das Projektenddatum ist überschritten';
+      this.errorWarningProjectOverdue='The project end date has been exceeded';
     }
   }
 
@@ -502,7 +502,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
 
   getWarning(): string {
     if (this.selectedProject?.projectStatus === ProjectStatus.offen && !isProjectEstimatedAndNotInPlanningOrClosed(this.selectedProject)) {
-      return "Fehlende Schätzungen";
+      return "Missing estimates";
     }
     return '';
   }

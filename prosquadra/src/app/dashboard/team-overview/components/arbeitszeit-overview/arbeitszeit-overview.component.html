@@ -1,6 +1,6 @@
 <div class="container">
-  <p>{{ arbeitszeit | async }} Stunden</p>
+  <p>{{ arbeitszeit | async }} Hours</p>
   <button mat-raised-button (click)="openArbeitszeitModal(user!)" *ngIf="user?.role === UserRole.Developer && ( currentUser?.role === UserRole.Admin || currentUser?.role === UserRole.Bereichsleiter)"
-          id="arbeitszeitButton">Arbeitszeit ändern
+          id="arbeitszeitButton">Update working hours
   </button>
 </div>

@@ -2,14 +2,14 @@
 
 <div class="mobile-view">
   <div class="urlaubs-planung">
-    <h1 class="mat-headline-4">Urlaubsplanung</h1>
+    <h1 class="mat-headline-4">Holiday planning</h1>
 
     <div class="dates-section">
       <mat-card class="date-picker-card">
-        <mat-card-title>Urlaubszeitraum auswählen</mat-card-title>
+        <mat-card-title>Select holiday period</mat-card-title>
         <mat-card-content>
           <mat-form-field appearance="outline" class="date-range-field">
-            <mat-label>Urlaubsdaten</mat-label>
+            <mat-label>Holiday dates</mat-label>
             <mat-date-range-input [rangePicker]="picker">
               <input #startDate matStartDate placeholder="Start date" (dateChange)="startDatePicker.next($event)">
               <input #endDate matEndDate placeholder="End date" (dateChange)="endDatePicker.next($event)">
@@ -24,7 +24,7 @@
     <mat-divider></mat-divider>
 
     <mat-card class="vacation-section" *ngIf="waitingVacations$.value.length!==0;else noWaitingVacation">
-      <mat-card-title id="waiting">Ausstehend</mat-card-title>
+      <mat-card-title id="waiting">Pending</mat-card-title>
       <mat-card-content>
         <ng-container *ngFor="let urlaub of waitingVacations$ | async">
           <app-urlaub
@@ -39,7 +39,7 @@
     <mat-divider></mat-divider>
 
     <mat-card class="vacation-section" *ngIf="acceptedVacations$.value.length!==0;else noAcceptedVacation">
-      <mat-card-title id="accepted">Genehmigt</mat-card-title>
+      <mat-card-title id="accepted">Approved</mat-card-title>
       <mat-card-content>
         <ng-container *ngFor="let urlaub of acceptedVacations$ | async">
           <app-urlaub
@@ -54,17 +54,17 @@
 </div>
 <ng-template #noWaitingVacation>
   <mat-card class="vacation-section">
-    <mat-card-title>Ausstehend</mat-card-title>
+    <mat-card-title>Pending</mat-card-title>
     <mat-card-content>
-      <h3>Es gibt keinen ausstehenden Urlaub anzuzeigen</h3>
+      <h3>There is no outstanding holiday to display</h3>
     </mat-card-content>
   </mat-card>
 </ng-template>
 <ng-template #noAcceptedVacation>
   <mat-card class="vacation-section">
-    <mat-card-title>Genehmigt</mat-card-title>
+    <mat-card-title>Approved</mat-card-title>
     <mat-card-content>
-      <h3>Es gibt keinen genehmigten Urlaub anzuzeigen</h3>
+      <h3>There is no authorised holiday to display</h3>
     </mat-card-content>
   </mat-card>
 </ng-template>

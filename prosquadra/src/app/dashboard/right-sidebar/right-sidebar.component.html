@@ -5,7 +5,7 @@
   </button>
 
   <div class="user-info">
-    <p>Benutzer</p>
+    <p id="user-text">User</p>
     <div class="user-avatar">
       <div class="name">{{ userInitials }}</div>
     </div>
@@ -23,7 +23,7 @@
         <p>{{ userProject?.startDate | date }}</p>
         <p class="bold">End Date:</p>
         <p>{{ userProject?.endDate | date }}</p>
-        <button [routerLink]="['home']" class="button" mat-raised-button>Zur Projektübersicht</button>
+        <button [routerLink]="['home']" class="button" mat-raised-button>Project overview</button>
       </mat-expansion-panel>
     </div>
 
@@ -37,7 +37,7 @@
         <p>{{ project.startDate | date }}</p>
         <p class="bold">End Date:</p>
         <p>{{ project.endDate | date }}</p>
-        <button [routerLink]="['/home']" class="button" mat-raised-button>Zur Projektübersicht</button>
+        <button [routerLink]="['/home']" class="button" mat-raised-button>Project overview</button>
       </mat-expansion-panel>
     </div>
 
@@ -45,8 +45,8 @@
 
   <div class="buttonsSidebarContainer">
   <!-- <button mat-raised-button (click)="showQrCode()" class="buttonSidebar">Toggle QR-Code</button> dieser Button gibt ein QR-code um das pdf runterzuladen. -->
-    <button mat-raised-button (click)="getPdfUser()" class="buttonSidebar">Download Benutzer-Daten</button>
-    <button mat-raised-button (click)="getPdfRoadmap()" class="buttonSidebar" *ngIf="user?.role !== (UserRole.Bereichsleiter || UserRole.Admin)">Download Roadmap-Daten</button>
+    <button mat-raised-button (click)="getPdfUser()" class="buttonSidebar">Download user data</button>
+    <button mat-raised-button (click)="getPdfRoadmap()" class="buttonSidebar" *ngIf="user?.role !== (UserRole.Bereichsleiter || UserRole.Admin)">Download roadmap data</button>
   </div>
 
   <ng-container *ngIf="QrCodeVisible">
@@ -59,9 +59,9 @@
 
   <div class="footer">
     <br>
-    <p> Deine Rolle: {{ user?.role }} </p>
+    <p> Your Role: {{ user?.role }} </p>
   </div>
 </div>
 <ng-template #noProjectAvailable>
-  <p> Kein valides Projekt anzeigbar</p>
+  <p>No valid project can be displayed</p>
 </ng-template>

@@ -92,7 +92,7 @@ export class MitarbeiterFormComponent implements OnInit, OnChanges {
       this.Team = await this.TeamService.getTeams();
       this.Team = this.Team.filter(team => team.id !== 1);
     }catch (error){
-      this.SnackBarService.open('Konnte die Teams nicht laden')
+      this.SnackBarService.open('Could not load the teams')
     }
 
     this.firstFormGroup.get('role')?.valueChanges.subscribe((role) => {
@@ -113,7 +113,7 @@ export class MitarbeiterFormComponent implements OnInit, OnChanges {
       this.Team = await this.TeamService.getTeams();
       this.Team = this.Team.filter(team => team.id !== 1);
     }catch (error){
-      this.SnackBarService.open('Konnte die Teams nicht laden')
+      this.SnackBarService.open('Could not load the teams')
     }
   }
 
@@ -141,7 +141,7 @@ export class MitarbeiterFormComponent implements OnInit, OnChanges {
 
     if (this.firstFormGroup.valid) {
       const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-        data: {message: 'Wollen Sie diesen Nutzer wirklich erstellen?'}
+        data: {message: 'Do you really want to create this user?'}
       });
 
       dialogRef.afterClosed().subscribe(async result => {
@@ -163,13 +163,13 @@ export class MitarbeiterFormComponent implements OnInit, OnChanges {
             let responseUser = await this.UserService.createUser(this.user);
             this.Login.userId = responseUser.id;
             await this.UserService.createLogin(this.Login);
-            this.SnackBarService.open('Die Nutzererstellung war erfolgreich');
+            this.SnackBarService.open('The user creation was successful');
             this.router.navigate(['/dashboard/admin-panel']);
           } catch (error) {
-            this.SnackBarService.open('Die Mitarbeitererstellung ist schiefgelaufen');
+            this.SnackBarService.open('Employee creation has gone wrong');
           }
         } else {
-          this.SnackBarService.open("Sie haben die Nutzererstellung abgebrochen");
+          this.SnackBarService.open("You have cancelled the user creation");
         }
       });
     }

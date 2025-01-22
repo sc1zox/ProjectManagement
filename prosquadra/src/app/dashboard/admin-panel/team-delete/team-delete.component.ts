@@ -39,18 +39,18 @@ export class TeamDeleteComponent implements OnInit {
       this.teams = await this.TeamService.getTeams();
       this.removeInitTeam();
     }catch (error){
-      this.SnackBarService.open('Konnte Teams nicht laden')
+      this.SnackBarService.open('Could not load teams')
     }
   }
 
   async deleteTeam(teamId: number) {
     try{
       await this.TeamService.deleteTeam(teamId);
-      this.SnackBarService.open('Team wurde erfolgreich gelöscht');
+      this.SnackBarService.open('Team was successfully deleted');
       this.teams = await this.TeamService.getTeams();
       this.removeInitTeam();
     }catch (error){
-      this.SnackBarService.open('Team konnte nicht gelöscht werden');
+      this.SnackBarService.open('Team could not be deleted');
     }
   }
   removeInitTeam(){

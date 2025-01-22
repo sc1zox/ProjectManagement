@@ -76,7 +76,7 @@ export class AddMemberComponent implements OnInit {
       (user) => user.vorname + ' ' + user.nachname === this.newMemberName
     );
     if (!this.selectedUser) {
-      this.SnackbarService.open('Benutzer wurde nicht gefunden!');
+      this.SnackbarService.open('User was not found!');
       return;
     }
   
@@ -86,13 +86,13 @@ export class AddMemberComponent implements OnInit {
       );
   
       if (alreadyInTeam) {
-        this.SnackbarService.open('Benutzer ist bereits im Team!');
+        this.SnackbarService.open('User is already in the team!');
         return;
       }
     }
   
     if (this.selectedUser.teams!.length > 0 && this.selectedUser.role !== UserRole.SM) {
-      this.SnackbarService.open('Benutzer ist bereits in einem Team!');
+      this.SnackbarService.open('User is already in a team!');
       return;
     }
   
@@ -108,7 +108,7 @@ export class AddMemberComponent implements OnInit {
         this.newMemberName = '';
         this.cdr.detectChanges();
       } catch (error) {
-        this.SnackbarService.open('Konnte Nutzer nicht zum Team hinzufügen');
+        this.SnackbarService.open('Could not add user to the team');
       }
     }
   }  
@@ -131,7 +131,7 @@ export class AddMemberComponent implements OnInit {
       this.updateTeamRequirementStatus();
       this.cdr.detectChanges();
     } catch (error) {
-      this.SnackbarService.open('Konnte Nutzer nicht aus dem Team entfernen')
+      this.SnackbarService.open('Could not remove user from the team')
     }   
   }
 

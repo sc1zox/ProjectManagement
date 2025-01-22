@@ -56,7 +56,7 @@ export class UserSkillsComponent implements OnChanges {
         this.skills = await this.SkillService.getSkill(this.user.id);
         this.result.set(this.skills.map(skill => skill.name));
       }catch (error){
-        this.SnackBarService.open('Error beim Laden der Skills')
+        this.SnackBarService.open('Error when loading the skills')
       }
     }
   }
@@ -71,7 +71,7 @@ export class UserSkillsComponent implements OnChanges {
           this.result.set(this.skills.map(skill => skill.name));
         });
       }catch (error){
-        this.SnackBarService.open('Error beim hinzufügen der Skills');
+        this.SnackBarService.open('Error when adding the skills');
         this.progressBar.complete();
       }finally {
         this.progressBar.complete();
@@ -92,7 +92,7 @@ export class UserSkillsComponent implements OnChanges {
           this.progressBar.complete();
         });
       }catch (error){
-        this.SnackBarService.open('Fehler bei der Skillentfernung')
+        this.SnackBarService.open('Skill removal error')
       }finally {
         this.progressBar.complete();
       }

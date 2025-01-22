@@ -56,7 +56,7 @@ export class UrlaubOverviewComponent implements OnInit {
       this.groupVacationsByStatus();
       this.allUser.forEach(user => this.userCollapseState.set(user, false));
     } catch (error) {
-      this.SnackBarService.open('Konnte Urlaub nicht laden');
+      this.SnackBarService.open('Could not load holiday');
     }
   }
 
@@ -88,8 +88,8 @@ export class UrlaubOverviewComponent implements OnInit {
     try {
       if (urlaub.id) {
         await this.UserService.deleteUrlaub(urlaub);
-        this.SnackBarService.open('Urlaub wurde abgelehnt');
-        await this.NotificationService.createNotification('Ihr Urlaub wurde abgelehnt',urlaub.userId)
+        this.SnackBarService.open('Leave was refused');
+        await this.NotificationService.createNotification('Your holiday has been refused',urlaub.userId)
 
         this.groupedVacations.forEach((vacations, user) => {
           vacations.accepted = vacations.accepted.filter(v => v.id !== urlaub.id);
@@ -103,7 +103,7 @@ export class UrlaubOverviewComponent implements OnInit {
       }
     } catch (error) {
       this.progressBar.complete();
-      this.SnackBarService.open('Status konnte nicht geupdated werden!');
+      this.SnackBarService.open('Status could not be updated!');
     } finally {
       this.progressBar.complete();
     }
@@ -114,8 +114,8 @@ export class UrlaubOverviewComponent implements OnInit {
     try {
       if (urlaub.id) {
         await this.UserService.updateVacationState(urlaub.id, vacationState.Accepted);
-        this.SnackBarService.open('Urlaub wurde akzeptiert');
-        await this.NotificationService.createNotification('Ihr Urlaub wurde akzeptiert',urlaub.userId)
+        this.SnackBarService.open('Holiday was accepted');
+        await this.NotificationService.createNotification('Your holiday has been accepted',urlaub.userId)
 
         this.groupedVacations.forEach((vacations, user) => {
           if (user.urlaub?.some(v => v.id === urlaub.id)) {
@@ -133,7 +133,7 @@ export class UrlaubOverviewComponent implements OnInit {
       }
     } catch (error) {
       this.progressBar.complete();
-      this.SnackBarService.open('Status konnte nicht geupdated werden!');
+      this.SnackBarService.open('Status could not be updated!');
     } finally {
       this.progressBar.complete();
     }

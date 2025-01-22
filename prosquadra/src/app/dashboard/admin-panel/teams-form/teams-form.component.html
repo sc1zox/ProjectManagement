@@ -8,14 +8,14 @@
 <div id="form-container">
   <form (ngSubmit)="onSubmit()" [formGroup]="teamForm" class="team-form">
     <mat-form-field class="full-width">
-      <mat-label>Team Name</mat-label>
+      <mat-label>Team name</mat-label>
       <input formControlName="teamName" matInput required>
-      <mat-error *ngIf="teamForm.get('teamName')?.hasError('required')">Teamname wird benötigt.</mat-error>
+      <mat-error *ngIf="teamForm.get('teamName')?.hasError('required')">Team name is required.</mat-error>
     </mat-form-field>
 
     <div>
       <mat-form-field class="full-width">
-        <mat-label>Mitglieder hinzufügen</mat-label>
+        <mat-label>Add members</mat-label>
         <mat-select [multiple]="true" formControlName="selectedUser">
           <mat-option *ngFor="let user of filteredUsers" [value]="user.id">
             {{ user.vorname }} {{ user.nachname }}
@@ -23,7 +23,7 @@
         </mat-select>
       </mat-form-field>
     </div>
-    <button [disabled]="teamForm.invalid" mat-raised-button type="submit">Team erstellen</button>
+    <button [disabled]="teamForm.invalid" mat-raised-button type="submit">Create team</button>
   </form>
 </div>
 <!-- Hier muss man überprüfen, wenn es kein SM ist, dann darf er nicht in mehr als einem Team sein -->

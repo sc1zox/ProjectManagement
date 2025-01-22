@@ -1,14 +1,14 @@
 <div class="team-overview">
-  <h1>Team Bearbeitung</h1>
+  <h2>Edit team</h2>
 
   <mat-table [dataSource]="teams" class="mat-elevation-z10">
     <ng-container matColumnDef="Name">
-      <mat-header-cell *matHeaderCellDef>Teamname</mat-header-cell>
+      <mat-header-cell *matHeaderCellDef>Team name</mat-header-cell>
       <mat-cell *matCellDef="let team">{{ team.name }}</mat-cell>
     </ng-container>
 
     <ng-container matColumnDef="AnzahlTeammitglieder">
-      <mat-header-cell *matHeaderCellDef>Anzahl Mitglieder</mat-header-cell>
+      <mat-header-cell *matHeaderCellDef>Number of members</mat-header-cell>
       <mat-cell *matCellDef="let team" class="customPadding">
         <ng-container *ngIf="team.members && team.members.length > 0; else noMembers">
           {{ team.members.length }}
@@ -20,7 +20,7 @@
     <ng-container matColumnDef="edit">
       <mat-header-cell *matHeaderCellDef class="centerCell">Edit</mat-header-cell>
       <mat-cell *matCellDef="let team" class="centerCell">
-        <button (click)="openMemberDialog(team,user)" mat-button>Mitglieder bearbeiten</button>
+        <button (click)="openMemberDialog(team,user)" mat-button>Edit members</button>
       </mat-cell>
     </ng-container>
 

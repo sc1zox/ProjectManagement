@@ -12,20 +12,20 @@
         <mat-label>Username</mat-label>
         <input formControlName="username" matInput placeholder="Username">
         <mat-error *ngIf="loginForm.get('username')?.invalid && loginForm.get('username')?.touched">
-          Username ist erforderlich.
+          Username is required.
         </mat-error>
       </mat-form-field>
 
       <mat-form-field appearance="fill">
-        <mat-label>Passwort</mat-label>
-        <input formControlName="password" matInput placeholder="Passwort" type="password">
+        <mat-label>Password</mat-label>
+        <input formControlName="password" matInput placeholder="Password" type="password">
         <mat-error *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">
-          Passwort ist erforderlich.
+          Password is required.
         </mat-error>
       </mat-form-field>
 
       <button [disabled]="loginForm.invalid" color="primary" mat-raised-button type="submit">
-        Anmelden
+        Login
       </button>
     </form>
   </div>

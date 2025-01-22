@@ -13,7 +13,7 @@
     </ul>
   </div>
   <ng-container *ngIf="isAdmin && user?.role===UserRole.Developer">
-    <label for="arbeitszeit">Arbeitszeit (in Stunden):</label>
+    <label for="arbeitszeit">Working hours (in hours):</label>
     <input
       [ngModel]="arbeitszeit | async"
       (ngModelChange)="updateArbeitszeit($event)"
@@ -21,12 +21,12 @@
       max="100"
       min="0"
       name="arbeitszeit"
-      placeholder="Arbeitszeit in Stunden eingeben"
+      placeholder="Enter working time in hours"
       type="number"
     />
   </ng-container>
-  <p><strong>Arbeitszeit:</strong> {{ arbeitszeit?.value }} Stunden</p>
-  <p><strong>Urlaubstage:</strong> {{ user?.urlaubstage }} Tage</p>
+  <p><strong>Working hours:</strong> {{ arbeitszeit?.value }} </p>
+  <p><strong>Holiday days:</strong> {{ user?.urlaubstage }} </p>
   <p><strong>Teams:</strong></p>
   <ul>
     <li *ngFor="let team of teams">
@@ -34,6 +34,6 @@
     </li>
   </ul>
   <div id="modalButton">
-    <button (click)="closeModal()" mat-raised-button>Schließen</button>
+    <button (click)="closeModal()" mat-raised-button>Close</button>
   </div>
 </div>

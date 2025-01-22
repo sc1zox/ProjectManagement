@@ -39,18 +39,18 @@ export class MitarbeiterDeleteComponent implements OnInit{
       this.users = await this.UserService.getUsers();
       this.removeAdminUndBL();
     }catch (error){
-      this.SnackBarService.open('Konnte Nutzer nicht abrufen');
+      this.SnackBarService.open('Could not retrieve user!');
     }
   }
 
   async deleteUser(userId: number) {
     try {
       await this.UserService.deleteUser(userId);
-      this.SnackBarService.open('Der Nutzer wurde erfolgreich gelöscht')
+      this.SnackBarService.open('The user has been successfully deleted!')
       this.users = await this.UserService.getUsers();
       this.removeAdminUndBL();
     } catch (error) {
-      this.SnackBarService.open('Konnte den Nutzer nicht löschen')
+      this.SnackBarService.open('Could not delete the user!')
     }
   }
 

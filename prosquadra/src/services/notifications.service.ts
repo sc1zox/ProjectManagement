@@ -19,7 +19,7 @@ export class NotificationsService {
   }
 
   showNotification(notification: Notification) {
-    const toast: ActiveToast<any> = this.toastr.info(notification.message, 'Neue Benachrichtigung', {
+    const toast: ActiveToast<any> = this.toastr.info(notification.message, 'New notification', {
       timeOut: 5000,
       positionClass: 'toast-bottom-right',
       closeButton: true,
@@ -43,7 +43,7 @@ export class NotificationsService {
       if (Object.values(this.activeToasts).includes(notification.id)) {
         return;
       }
-      const toast: ActiveToast<any> = this.toastr.info(notification.message, 'Neue Benachrichtigung', {
+      const toast: ActiveToast<any> = this.toastr.info(notification.message, 'New notification', {
         timeOut: 0,
         closeButton: true,
         positionClass: this.isMobile ? 'toast-bottom-center' : 'toast-bottom-right',

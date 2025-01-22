@@ -75,7 +75,7 @@ export class CreateProjectComponent implements OnInit{
       }
       this.teams = await this.TeamService.getTeamsByUserId(this.user!.id);
     }catch (error){
-      this.SnackBarService.open('Konnte die Teams nicht laden')
+      this.SnackBarService.open('Could not load the teams')
     }
   }
 
@@ -88,7 +88,7 @@ export class CreateProjectComponent implements OnInit{
         try {
           existingProjects = await this.projectService.getProjectsByTeamId(selectedTeam.id);
         }catch (error){
-          this.SnackBarService.open('Konnte spezifisches Projekt nicht laden');
+          this.SnackBarService.open('Could not load specified project');
           this.progressBar.complete();
           return;
         }
@@ -108,7 +108,7 @@ export class CreateProjectComponent implements OnInit{
         try {
           await this.projectService.setProjects(newProject);
         }catch (error){
-          this.SnackBarService.open('Projekt konnte nicht erstellt werden');
+          this.SnackBarService.open('Project could not be created');
           this.progressBar.complete();
         }
         this.selectedTeam = selectedTeam;
@@ -116,13 +116,13 @@ export class CreateProjectComponent implements OnInit{
             this.currentTeam = await this.TeamService.getTeamById(selectedTeam.id);
             this.roadmap = await this.RoadmapService.getRoadmapById(this.currentTeam.roadmap?.id)
           }catch (error){
-            this.SnackBarService.open('Konnte das Team nicht laden')
+            this.SnackBarService.open('Could not load the team')
             this.progressBar.complete();
           }
         }
       if (this.selectedTeam) {
         this.selectedTeam.members?.forEach((member) => {
-          this.NotificationService.createNotification('Deinem Team wurde ein Projekt hinzugefügt', member.id);
+          this.NotificationService.createNotification('A project has been added to your team', member.id);
         });
         this.projectForm.reset();
       } else {

@@ -99,7 +99,7 @@ export class UserService {
 
   async updateArbeitszeit(userID: number, arbeitszeit: number): Promise<number> {
     if (!userID || !arbeitszeit) {
-      throw new Error('Invalid userId und Arbeitszeit');
+      throw new Error('Invalid userId and working hours');
     }
     try {
       const data = {userID, arbeitszeit};
@@ -112,7 +112,7 @@ export class UserService {
 
   async updateUrlaubstage(userID: number, urlaubstage: number): Promise<number> {
     if (!userID || !urlaubstage) {
-      throw new Error('Invalid userId und Urlaubstage');
+      throw new Error('Invalid userId and holiday days');
     }
     try {
       const data = {userID, urlaubstage};
@@ -125,7 +125,7 @@ export class UserService {
 
   async sendUrlaubRequest(userId: number, startDatum: Date, endDatum: Date, state: vacationState): Promise<Urlaub> {
     if (!userId || !startDatum || !endDatum || !state) {
-      throw new Error('Invalid userId, startDate,state or endDate');
+      throw new Error('Invalid userId, startDate, state or endDate');
     }
     try {
       const data: Urlaub = { userId, startDatum, endDatum, stateOfAcception: state};

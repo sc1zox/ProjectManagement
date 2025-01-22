@@ -48,7 +48,7 @@ export class ArbeitszeitOverviewComponent implements OnInit {
 
   updateArbeitszeit(value: number) {
     if (isNaN(value) || value < 0 || value > 100 || value === null) {
-      this.SnackBarService.open('Die Arbeitszeit muss zwischen 0 und 100 sein.');
+      this.SnackBarService.open('The working time must be between 0 and 100.');
       return;
     }
     this.arbeitszeit.next(value);
@@ -58,7 +58,7 @@ export class ArbeitszeitOverviewComponent implements OnInit {
       try {
         this.UserService.updateArbeitszeit(this.user.id, this.arbeitszeit.value);
       } catch (error) {
-        this.SnackBarService.open('Error beim Aktualisieren der Arbeitszeit');
+        this.SnackBarService.open('Error when updating the working time');
       }
     }
   }
@@ -73,10 +73,10 @@ export class ArbeitszeitOverviewComponent implements OnInit {
         this.user.urlaubstage = Math.trunc(newUrlaubstage);
         this.user.arbeitszeit = this.arbeitszeit.value;
       } catch (error) {
-        this.SnackBarService.open('Error bei der Aktualisierung der Urlaubstage');
+        this.SnackBarService.open('Error when updating holiday days');
       }
     } else {
-      this.SnackBarService.open('Die neuen Urlaubstage konnten nicht berechnet werden');
+      this.SnackBarService.open('The new holiday days could not be calculated');
     }
   }
 
