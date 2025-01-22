@@ -43,7 +43,7 @@ export class AnalyseBoardComponent implements OnInit {
     try {
       this.teams = await this.TeamService.getTeams();
     }catch (error){
-      this.SnackBarService.open('Konnte die Teams nicht laden')
+      this.SnackBarService.open('Could not load the teams')
     }finally {
       this.SpinnerService.hide();
     }

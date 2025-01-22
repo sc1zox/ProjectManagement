@@ -1,52 +1,52 @@
 <div id="UserTable">
-  <h2>Mitarbeiter Übersicht</h2>
+  <h2>Employees overview</h2>
   <table [dataSource]="filteredUsers" class="mat-elevation-z10" mat-table >
     <ng-container matColumnDef="userVorname">
-      <th *matHeaderCellDef mat-header-cell> Vorname</th>
+      <th *matHeaderCellDef mat-header-cell>First Name</th>
       <td *matCellDef="let user" mat-cell>
         {{ user.vorname }}
       </td>
     </ng-container>
 
     <ng-container matColumnDef="userNachname">
-      <th *matHeaderCellDef mat-header-cell> Nachname</th>
+      <th *matHeaderCellDef mat-header-cell>Last Name</th>
       <td *matCellDef="let user" mat-cell>
         {{ user.nachname }}
       </td>
     </ng-container>
 
     <ng-container matColumnDef="skills">
-      <th *matHeaderCellDef mat-header-cell> Skills</th>
+      <th *matHeaderCellDef mat-header-cell>Skills</th>
       <td *matCellDef="let user" mat-cell>
         <app-skill-overview [userSkills]="user.skills"></app-skill-overview>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="workHours">
-      <th *matHeaderCellDef mat-header-cell> Arbeitszeit</th>
+      <th *matHeaderCellDef mat-header-cell>Working hours</th>
       <td *matCellDef="let user" mat-cell>
         <app-arbeitszeit-overview [currentUser]="currentUser" [user]="user"></app-arbeitszeit-overview>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="vacationDays">
-      <th *matHeaderCellDef mat-header-cell> Urlaubstage</th>
+      <th *matHeaderCellDef mat-header-cell>Holiday days</th>
       <td *matCellDef="let user" mat-cell>
           {{ user.urlaubstage}}
       </td>
     </ng-container>
 
     <ng-container matColumnDef="teamPlanning">
-      <th *matHeaderCellDef mat-header-cell> Team</th>
+      <th *matHeaderCellDef mat-header-cell>Team</th>
       <td *matCellDef="let user" mat-cell>
         <app-team-planung [user]="user"></app-team-planung>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="modal">
-      <th *matHeaderCellDef mat-header-cell> Details anzeigen</th>
+      <th *matHeaderCellDef mat-header-cell>Show details</th>
       <td *matCellDef="let user" mat-cell>
-        <button (click)="openModal(user,currentUser)" id="modalButton" mat-raised-button>Details anzeigen</button>
+        <button (click)="openModal(user,currentUser)" id="modalButton" mat-raised-button>Show details</button>
       </td>
     </ng-container>
 

@@ -1,8 +1,8 @@
 import {Component, HostListener, OnInit} from '@angular/core';
 import {MatActionList, MatListItem} from "@angular/material/list";
-import {RouterLink} from '@angular/router';
+import {Router, RouterLink} from '@angular/router';
 import {MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle} from '@angular/material/expansion';
-import {NgIf} from '@angular/common';
+import {NgIf, NgClass} from '@angular/common';
 import {UserService} from '../../../services/user.service';
 import {User, UserRole} from '../../../types/user';
 
@@ -17,7 +17,8 @@ import {User, UserRole} from '../../../types/user';
     MatExpansionPanelHeader,
     MatExpansionPanel,
     MatExpansionPanelTitle,
-    NgIf
+    NgIf,
+    NgClass
   ],
   templateUrl: './left-sidebar.component.html',
   styleUrls: ['./left-sidebar.component.scss']
@@ -26,8 +27,12 @@ export class LeftSidebarComponent implements OnInit {
   public expanded: boolean = true;
   public user?: User;
   protected readonly UserRole = UserRole;
+  public activeRoute: string = '';
 
-  constructor(private readonly Userservice: UserService) {
+  constructor(private readonly Userservice: UserService, private router: Router) {
+    this.router.events.subscribe(() => {
+      this.activeRoute = this.router.url.split('/')[1];
+    });
   }
 
   async ngOnInit() {

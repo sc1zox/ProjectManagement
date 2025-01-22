@@ -1,7 +1,7 @@
 <div class="urlaub-anzeige"  [@slideIn]>
   <div class="urlaub-datum">
-    <p>Urlaubsbeginn: {{ urlaub?.startDatum | date }}</p>
-    <p>Urlaubsende: {{urlaub?.endDatum | date }}</p>
+    <p>Start of holiday: {{ urlaub?.startDatum | date }}</p>
+    <p>End of holiday: {{urlaub?.endDatum | date }}</p>
   </div>
 
   <div class="urlaub-button" *ngIf="urlaub">

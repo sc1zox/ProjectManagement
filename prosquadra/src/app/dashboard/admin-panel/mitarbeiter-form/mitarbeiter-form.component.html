@@ -8,69 +8,69 @@
   <mat-stepper #stepper [linear]="true">
     <mat-step [stepControl]="firstFormGroup">
       <form [formGroup]="firstFormGroup" class="mitarbeiter-form">
-        <ng-template matStepLabel>Nutzer erstellung</ng-template>
+        <ng-template matStepLabel>User creation</ng-template>
 
         <mat-form-field class="full-width">
-          <mat-label>Vorname</mat-label>
+          <mat-label>First Name</mat-label>
           <input formControlName="vorname" matInput required>
-          <mat-error *ngIf="firstFormGroup.get('vorname')?.hasError('required')">Vorname wird benötigt.</mat-error>
-          <mat-error *ngIf="firstFormGroup.get('vorname')?.hasError('pattern')">Vorname darf nur Buchstaben enthalten.</mat-error>
+          <mat-error *ngIf="firstFormGroup.get('vorname')?.hasError('required')">First name is required.</mat-error>
+          <mat-error *ngIf="firstFormGroup.get('vorname')?.hasError('pattern')">First name may only contain letters.</mat-error>
         </mat-form-field>
 
         <mat-form-field class="full-width">
-          <mat-label>Nachname</mat-label>
+          <mat-label>Last Name</mat-label>
           <input formControlName="nachname" matInput required>
-          <mat-error *ngIf="firstFormGroup.get('nachname')?.hasError('required')">Nachname wird benötigt.</mat-error>
-          <mat-error *ngIf="firstFormGroup.get('nachname')?.hasError('pattern')">Nachname darf nur Buchstaben enthalten.</mat-error>
+          <mat-error *ngIf="firstFormGroup.get('nachname')?.hasError('required')">Last Name is required.</mat-error>
+          <mat-error *ngIf="firstFormGroup.get('nachname')?.hasError('pattern')">Last name may only contain letters.</mat-error>
         </mat-form-field>
 
         <mat-form-field class="full-width">
-          <mat-label>Benutzerrolle</mat-label>
+          <mat-label>User role</mat-label>
           <mat-select formControlName="role" required>
             <mat-option *ngFor="let role of userRoles" [value]="role">
               {{ role }}
             </mat-option>
           </mat-select>
-          <mat-error *ngIf="firstFormGroup.get('role')?.hasError('required')">Rolle wird benötigt.</mat-error>
+          <mat-error *ngIf="firstFormGroup.get('role')?.hasError('required')">Role is required.</mat-error>
         </mat-form-field>
 
         <mat-form-field class="full-width">
-          <mat-label>Arbeitszeit</mat-label>
+          <mat-label>Working hours</mat-label>
           <input formControlName="arbeitszeit" matInput required type="number">
-          <mat-error *ngIf="firstFormGroup.get('arbeitszeit')?.hasError('required')">Arbeitszeit wird benötigt.</mat-error>
-          <mat-error *ngIf="firstFormGroup.get('arbeitszeit')?.hasError('min')">Arbeitszeit muss mindestens 0 Stunden betragen.</mat-error>
-          <mat-error *ngIf="firstFormGroup.get('arbeitszeit')?.hasError('max')">Arbeitszeit darf maximal 100 Stunden betragen.</mat-error>
+          <mat-error *ngIf="firstFormGroup.get('arbeitszeit')?.hasError('required')">Working hours is required.</mat-error>
+          <mat-error *ngIf="firstFormGroup.get('arbeitszeit')?.hasError('min')">Working hours must be at least 0 hours.</mat-error>
+          <mat-error *ngIf="firstFormGroup.get('arbeitszeit')?.hasError('max')">Working hours may not exceed 100 hours.</mat-error>
         </mat-form-field>
 
         <mat-form-field class="full-width">
-          <mat-label>Urlaubstage</mat-label>
+          <mat-label>Holiday days</mat-label>
           <input formControlName="urlaubstage" matInput type="number" placeholder="28">
-          <mat-error *ngIf="firstFormGroup.get('urlaubstage')?.hasError('min')">Urlaubstage muss mindestens 0 betragen.</mat-error>
+          <mat-error *ngIf="firstFormGroup.get('urlaubstage')?.hasError('min')">Holiday days must be at least 0.</mat-error>
         </mat-form-field>
 
         <!-- Single selection für Nicht-Scrum Master -->
         <div *ngIf="firstFormGroup.get('role')?.value !== 'SM'">
           <mat-form-field class="full-width">
-            <mat-label>Team auswählen</mat-label>
+            <mat-label>Select team</mat-label>
             <mat-select formControlName="selectedSingleTeam" required>
               <mat-option *ngFor="let team of Team" [value]="team.id">
                 {{ team.name }}
               </mat-option>
             </mat-select>
-            <mat-error *ngIf="firstFormGroup.get('selectedSingleTeam')?.hasError('required')">Mindestens ein Team ist erforderlich.</mat-error>
+            <mat-error *ngIf="firstFormGroup.get('selectedSingleTeam')?.hasError('required')">At least one team is required.</mat-error>
           </mat-form-field>
         </div>
 
         <!-- Multiple selection für Scrum Master -->
         <div *ngIf="firstFormGroup.get('role')?.value === 'SM'">
           <mat-form-field class="full-width">
-            <mat-label>Teams auswählen</mat-label>
+            <mat-label>Select teams</mat-label>
             <mat-select formControlName="selectedMultipleTeams" multiple required>
               <mat-option *ngFor="let team of Team" [value]="team.id">
                 {{ team.name }}
               </mat-option>
             </mat-select>
-            <mat-error *ngIf="firstFormGroup.get('selectedMultipleTeams')?.hasError('required')">Mindestens ein Team ist erforderlich.</mat-error>
+            <mat-error *ngIf="firstFormGroup.get('selectedMultipleTeams')?.hasError('required')">At least one team is required.</mat-error>
           </mat-form-field>
         </div>
 
@@ -82,18 +82,18 @@
 
     <mat-step [stepControl]="loginFormGroup">
       <form [formGroup]="loginFormGroup" class="mitarbeiter-form">
-        <ng-template matStepLabel>Login erstellung</ng-template>
+        <ng-template matStepLabel>Login creation</ng-template>
 
         <mat-form-field class="full-width">
           <mat-label>Username</mat-label>
           <input formControlName="username" matInput required>
-          <mat-error *ngIf="loginFormGroup.get('username')?.hasError('required')">Username wird benötigt.</mat-error>
+          <mat-error *ngIf="loginFormGroup.get('username')?.hasError('required')">Username is required.</mat-error>
         </mat-form-field>
 
         <mat-form-field class="full-width">
           <mat-label>Password</mat-label>
           <input formControlName="password" matInput required type="password">
-          <mat-error *ngIf="loginFormGroup.get('password')?.hasError('required')">Password wird benötigt.</mat-error>
+          <mat-error *ngIf="loginFormGroup.get('password')?.hasError('required')">Password is required.</mat-error>
         </mat-form-field>
 
         <div>
@@ -104,10 +104,10 @@
     </mat-step>
 
     <mat-step>
-      <ng-template matStepLabel>Fertig</ng-template>
+      <ng-template matStepLabel>Done</ng-template>
       <div>
         <button mat-button matStepperPrevious>Back</button>
-        <button (click)="onSubmit()" [disabled]="firstFormGroup.invalid || loginFormGroup.invalid" mat-raised-button>Mitarbeiter anlegen</button>
+        <button (click)="onSubmit()" [disabled]="firstFormGroup.invalid || loginFormGroup.invalid" mat-raised-button>Create employee</button>
         <button (click)="stepper.reset()" mat-button>Reset</button>
       </div>
     </mat-step>

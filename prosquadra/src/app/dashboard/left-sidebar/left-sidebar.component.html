@@ -2,28 +2,26 @@
   <mat-action-list>
     <mat-expansion-panel [expanded]=expanded>
       <mat-expansion-panel-header>
-        <mat-panel-title> Menu</mat-panel-title>
+        <mat-panel-title>Menu</mat-panel-title>
       </mat-expansion-panel-header>
 
       <mat-list-item *ngIf="user?.role !== UserRole.Admin" [routerLink]="['home']">Dashboard</mat-list-item>
 
-      <mat-list-item *ngIf="user?.role===UserRole.PO" [routerLink]="['create-project']">Projekt erstellen
+      <mat-list-item *ngIf="user?.role===UserRole.PO" [routerLink]="['create-project']">Create project
       </mat-list-item>
 
-      <mat-list-item *ngIf="user?.role!==UserRole.Admin && user?.role!==UserRole.Bereichsleiter"  [routerLink]="['team-roadmap']">Team Roadmap</mat-list-item>
+      <mat-list-item *ngIf="user?.role!==UserRole.Admin && user?.role!==UserRole.Bereichsleiter"  [routerLink]="['team-roadmap']">Team roadmap</mat-list-item>
 
-      <mat-list-item *ngIf="user?.role===UserRole.Admin || user?.role===UserRole.SM || user?.role===UserRole.Bereichsleiter" [routerLink]="['team-overview']">Teamübersicht</mat-list-item>
+      <mat-list-item *ngIf="user?.role===UserRole.Admin || user?.role===UserRole.SM || user?.role===UserRole.Bereichsleiter" [routerLink]="['team-overview']">Team overview</mat-list-item>
 
       <mat-list-item *ngIf="user?.role===UserRole.Admin" [routerLink]="['admin-panel']">Admin-Panel</mat-list-item>
 
-      <mat-list-item *ngIf="user?.role===UserRole.SM || user?.role===UserRole.Bereichsleiter" [routerLink]="['analyse-board']">Analysebereich</mat-list-item>
+      <mat-list-item *ngIf="user?.role===UserRole.SM || user?.role===UserRole.Bereichsleiter" [routerLink]="['analyse-board']">Analysis area</mat-list-item>
 
-      <mat-list-item *ngIf="user?.role!==UserRole.Admin" [routerLink]="['urlaubs-planung']">Urlaubsplanung</mat-list-item>
+      <mat-list-item *ngIf="user?.role!==UserRole.Admin" [routerLink]="['urlaubs-planung']">Holiday planning</mat-list-item>
 
-      <mat-list-item *ngIf="user?.role===UserRole.Bereichsleiter" [routerLink]="['urlaubs-overview']">Urlaubsübersicht</mat-list-item>
+      <mat-list-item *ngIf="user?.role===UserRole.Bereichsleiter" [routerLink]="['urlaubs-overview']">Holiday overview</mat-list-item>
 
     </mat-expansion-panel>
   </mat-action-list>
-
-
 </div>

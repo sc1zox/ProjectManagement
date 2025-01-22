@@ -34,7 +34,7 @@ class PDFController {
             if (!user) {
                 return next({
                     status: StatusCodes.NOT_FOUND,
-                    message: 'Benutzer nicht gefunden.',
+                    message: 'User not found.',
                 });
             }
 
@@ -52,16 +52,16 @@ class PDFController {
             // Title
             doc.fontSize(24).fillColor('#283593').text('ProSquadra', {align: 'center'});
             doc.moveDown(0.5);
-            doc.fontSize(18).fillColor('#283593').text('Benutzerdaten', {align: 'center', underline: true});
+            doc.fontSize(18).fillColor('#283593').text('User data', {align: 'center', underline: true});
             doc.moveDown(2);
 
             // User Information
             doc.fontSize(14).fillColor('black').text(`ID: ${user.id}`, {align: 'center'});
-            doc.text(`Vorname: ${user.vorname}`, {align: 'center'});
-            doc.text(`Nachname: ${user.nachname}`, {align: 'center'});
-            doc.text(`Rolle: ${user.role}`, {align: 'center'});
-            doc.text(`Arbeitszeit: ${user.arbeitszeit} Stunden`, {align: 'center'});
-            doc.text(`Urlaubstage: ${user.urlaubstage}`, {align: 'center'});
+            doc.text(`First name: ${user.vorname}`, {align: 'center'});
+            doc.text(`Last name: ${user.nachname}`, {align: 'center'});
+            doc.text(`Role: ${user.role}`, {align: 'center'});
+            doc.text(`Working Hours: ${user.arbeitszeit}`, {align: 'center'});
+            doc.text(`Holiday days: ${user.urlaubstage}`, {align: 'center'});
             doc.moveDown(2);
 
             // Skills Section
@@ -88,12 +88,12 @@ class PDFController {
 
             // Estimations Section
             if (user.estimations.length > 0) {
-                doc.fontSize(16).fillColor('#232323').text('Meine Schätzungen:', {underline: true});
+                doc.fontSize(16).fillColor('#232323').text('My estimates:', {underline: true});
                 doc.moveDown(1);
 
                 user.estimations.forEach((estimation) => {
-                    doc.fontSize(14).fillColor('#283593').text(`Projekt: ${estimation.project.name}`, {indent: 20});
-                    doc.fontSize(12).fillColor('black').text(`  Geschätzte Stunden: ${estimation.hours}`, {indent: 40});
+                    doc.fontSize(14).fillColor('#283593').text(`Project: ${estimation.project.name}`, {indent: 20});
+                    doc.fontSize(12).fillColor('black').text(`Estimated hours: ${estimation.hours}`, {indent: 40});
                     doc.moveDown(1);
                 });
             }
@@ -104,11 +104,11 @@ class PDFController {
             doc.moveDown(1);
 
             // Summary Section
-            doc.fontSize(16).fillColor('#283593').text('Zusammenfassung:', {align: 'center'});
+            doc.fontSize(16).fillColor('#283593').text('Summary:', {align: 'center'});
             doc.moveDown(1);
 
-            doc.fontSize(12).fillColor('black').text(`Gesamte Arbeitszeit: ${user.arbeitszeit} Stunden`, {align: 'center'});
-            doc.text(`Gesamte Urlaubstage: ${user.urlaubstage} Tage`, {align: 'center'});
+            doc.fontSize(12).fillColor('black').text(`Total working time: ${user.arbeitszeit}`, {align: 'center'});
+            doc.text(`Total holiday days: ${user.urlaubstage}`, {align: 'center'});
             doc.moveDown(1);
 
             doc.fillColor('gray').text('============================================', {align: 'center'});
@@ -179,14 +179,14 @@ class PDFController {
             // Title
             doc.fontSize(24).fillColor('#283593').text('ProSquadra', {align: 'center'});
             doc.moveDown(0.5);
-            doc.fontSize(18).fillColor('#283593').text('Roadmap Daten für Benutzer', {
+            doc.fontSize(18).fillColor('#283593').text('Roadmap data for users', {
                 align: 'center',
                 underline: true
             });
             doc.moveDown(2);
 
             // User Information
-            doc.fontSize(14).fillColor('black').text(`Benutzer ID: ${user.id}`, {align: 'center'});
+            doc.fontSize(14).fillColor('black').text(`UserID: ${user.id}`, {align: 'center'});
             doc.text(`Name: ${user.vorname} ${user.nachname}`, {align: 'center'});
             doc.moveDown(2);
 
@@ -201,7 +201,7 @@ class PDFController {
 
                 // Projects Section
                 if (team.roadmap.projects.length > 0) {
-                    doc.fontSize(16).fillColor('#232323').text('Projekte:', {underline: true});
+                    doc.fontSize(16).fillColor('#232323').text('Projects:', {underline: true});
                     doc.moveDown(1);
 
                     team.roadmap.projects.forEach((project) => {
@@ -214,7 +214,7 @@ class PDFController {
 
                         // Project Details
                         doc.fontSize(12).fillColor('black');
-                        doc.text(`Beschreibung: ${project.description}`, {indent: 40});
+                        doc.text(`Description: ${project.description}`, {indent: 40});
                         doc.text(`Priorität: ${project.priorityPosition}`, {indent: 40});
                         doc.text(`Status: ${project.projectStatus}`, {indent: 40});
                         doc.text(`Startdatum: ${startDate}`, {indent: 40});
@@ -223,18 +223,18 @@ class PDFController {
 
                         // Estimations
                         if (project.estimations.length > 0) {
-                            doc.fontSize(12).fillColor('#283593').text('Schätzungen:', {indent: 40, underline: true});
+                            doc.fontSize(12).fillColor('#283593').text('Estimates:', {indent: 40, underline: true});
                             doc.moveDown(0.5);
 
                             project.estimations.forEach((estimation) => {
-                                doc.fontSize(12).fillColor('black').text(`- ${estimation.hours} Stunden`, {indent: 60});
+                                doc.fontSize(12).fillColor('black').text(`- ${estimation.hours} Hours`, {indent: 60});
                             });
                         }
 
                         doc.moveDown(1);
                     });
                 } else {
-                    doc.fontSize(12).fillColor('gray').text('Keine Projekte gefunden.', {align: 'center'});
+                    doc.fontSize(12).fillColor('gray').text('No Projects found.', {align: 'center'});
                 }
             }
 

@@ -45,7 +45,7 @@ export class EndDateComponent implements AfterViewInit{
 
   async calculateEndDate () {
     if (this.startDateControl.invalid) {
-      this.SnackBarService.open('Das Startdatum ist ungültig. Bitte korrigieren Sie es, bevor Sie fortfahren.');
+      this.SnackBarService.open('The start date is invalid. Please correct it before continuing.');
       return;
     }
     this.progressBar.start();
@@ -56,12 +56,12 @@ export class EndDateComponent implements AfterViewInit{
       let body = {id: this.currentProject?.id,endDate: this.result,startDate:this.startDateControl.value}
       try {
         await this.ProjectService.updateProject(body);
-        this.SnackBarService.open('Projektdaten wurden aktualisiert!')
+        this.SnackBarService.open('Project data has been updated!')
       }catch (error){
-        this.SnackBarService.open('Projektdaten konnte nicht aktualisiert werden');
+        this.SnackBarService.open('Project data could not be updated!');
 
         if(error instanceof ApiError && error.code === 409){
-          this.SnackBarService.open("Fehler! Das errechnete Enddatum überschneidet sich mit einem Projekt!")
+          this.SnackBarService.open("Error! The calculated end date overlaps with a project!")
           this.startDateControl.setErrors(invalid,{emitEvent: false})
           this.startDateControl.markAsTouched()
         }
@@ -78,11 +78,11 @@ export class EndDateComponent implements AfterViewInit{
     developers: User[]
   ): Date | undefined {
     if (!startDate) {
-      this.SnackBarService.open('Es wurde noch kein Startdatum vergeben')
+      this.SnackBarService.open('No start date has been assigned yet!')
       return;
     }
     if(estimationHours <= 0){
-      this.SnackBarService.open('Es wurden noch keine Schätzungen abgegeben');
+      this.SnackBarService.open('No estimates have yet been made');
       return;
     }
 

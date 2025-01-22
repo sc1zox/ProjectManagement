@@ -49,7 +49,7 @@ class AuthController {
         if (!username || !password || !userId) {
             return next({
                 status: StatusCodes.BAD_REQUEST,
-                message: 'Benutzername, Passwort und UserID sind erforderlich.',
+                message: 'Username, password and UserID are required.',
             });
         }
 
@@ -73,7 +73,7 @@ class AuthController {
             if (!user) {
                 return next({
                     status: StatusCodes.BAD_REQUEST,
-                    message: 'Benutzer nicht gefunden.',
+                    message: 'User not found.',
                 });
             }
 
@@ -85,7 +85,7 @@ class AuthController {
             if (error.code === 'P2002') {
                 return next({
                     status: StatusCodes.CONFLICT,
-                    message: 'Der Benutzername existiert bereits.',
+                    message: 'The user name already exists.',
                 });
             }
             next(error);

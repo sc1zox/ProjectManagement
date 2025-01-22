@@ -45,7 +45,7 @@ export class UserDetailsModalComponent implements OnInit {
       try {
         this.teams = await this.TeamService.getTeamsByUserId(this.user.id)
       }catch (error){
-        this.SnackBarService.open('Konnte Nutzer nicht laden')
+        this.SnackBarService.open('Could not load user')
       }
     }
 
@@ -65,7 +65,7 @@ export class UserDetailsModalComponent implements OnInit {
       try {
         this.UserService.updateArbeitszeit(this.user.id, this.arbeitszeit.value)
       } catch (error){
-        this.SnackBarService.open('Arbeitszeit konnte nicht geupdated werden')
+        this.SnackBarService.open('Working hours could not be updated')
       }
     }
   }

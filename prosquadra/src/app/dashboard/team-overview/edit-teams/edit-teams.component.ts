@@ -77,7 +77,7 @@ export class EditTeamsComponent {
     try {
       this.teams = await this.TeamService.getTeams();
     }catch (error){
-      this.SnackBarService.open('Konnte die Teams nicht laden')
+      this.SnackBarService.open('Could not load the teams')
     }
   }
 

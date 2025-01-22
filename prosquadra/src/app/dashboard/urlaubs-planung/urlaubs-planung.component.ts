@@ -67,7 +67,7 @@ export class UrlaubsPlanungComponent implements OnInit {
     try {
       this.currentUser = await this.UserService.getCurrentUser();
     } catch (error) {
-      this.SnackBarService.open('User konnte nicht abgerufen werden');
+      this.SnackBarService.open('User could not be retrieved');
     }
 
     try {
@@ -92,7 +92,7 @@ export class UrlaubsPlanungComponent implements OnInit {
       if (startEvent.value && endEvent.value && this.currentUser) {
         /*
         if (!await this.UrlaubsPlanungService.checkIfVacationIsValid(startEvent.value, endEvent.value, this.currentUser.id)) {
-          this.SnackBarService.open('Urlaub liegt im Projektzeitraum!');
+          this.SnackBarService.open('Holidays are within the project period!');
           this.resetDatePickers();
           return;
         }
@@ -119,14 +119,14 @@ export class UrlaubsPlanungComponent implements OnInit {
           this.urlaub$.next(updatedUrlaub);
           this.isVisible.set(!this.isVisible());
           this.resetDatePickers();
-          this.SnackBarService.open('Urlaub wurde erfolgreich eingetragen');
+          this.SnackBarService.open('Holiday has been successfully entered');
         } catch (error: unknown) {
           if (error instanceof ApiError && error.code === 409) {
             this.resetDatePickers();
-            this.SnackBarService.open('Urlaub existiert bereits');
+            this.SnackBarService.open('Holiday already exists');
           } else {
             this.resetDatePickers();
-            this.SnackBarService.open('Urlaub konnte nicht eingetragen werden');
+            this.SnackBarService.open('Holiday could not be entered');
           }
         } finally {
           this.progressBar.complete();
@@ -140,9 +140,9 @@ export class UrlaubsPlanungComponent implements OnInit {
     this.UserService.deleteUrlaub(urlaub).then(() => {
       const updatedUrlaub = this.urlaub$.getValue().filter(u => u !== urlaub);
       this.urlaub$.next(updatedUrlaub);
-      this.SnackBarService.open('Urlaub wurde gelöscht');
+      this.SnackBarService.open('Holiday has been deleted');
     }).catch(() => {
-      this.SnackBarService.open('Urlaub konnte nicht gelöscht werden');
+      this.SnackBarService.open('Holiday could not be deleted');
     }).finally(() => {
       this.progressBar.complete();
     });

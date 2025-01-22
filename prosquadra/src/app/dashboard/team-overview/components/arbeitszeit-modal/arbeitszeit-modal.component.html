@@ -1,9 +1,9 @@
-<h2 mat-dialog-title>Arbeitszeit bearbeiten</h2>
+<h2 mat-dialog-title>Edit working hours</h2>
 <mat-dialog-content>
-  <label for="arbeitszeit">Arbeitszeit (in Stunden):</label>
-  <input matInput [(ngModel)]="arbeitszeit" id="arbeitszeit" type="number" max="100" min="0" placeholder="Arbeitszeit in Stunden eingeben">
+  <label for="arbeitszeit">Working hours (in hours):</label>
+  <input matInput [(ngModel)]="arbeitszeit" id="arbeitszeit" type="number" max="100" min="0" placeholder="Enter working time in hours">
 </mat-dialog-content>
 <mat-dialog-actions>
-  <button mat-button (click)="onCancel()">Abbrechen</button>
-  <button mat-raised-button (click)="onSave()" id="saveTime">Speichern</button>
+  <button mat-button (click)="onCancel()">Cancel</button>
+  <button mat-raised-button (click)="onSave()" id="saveTime">Save</button>
 </mat-dialog-actions>

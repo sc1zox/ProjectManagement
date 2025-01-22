@@ -13,7 +13,7 @@ class ProjectController {
         if (!name || !description || !team || !team.id || !team.roadmapId || isNaN(priorityPosition)) {
             return next({
                 status: StatusCodes.BAD_REQUEST,
-                message: 'Alle Felder (name, description, team, teamid, team.roadmapId) sind erforderlich.',
+                message: 'All fields (name, description, team, teamid, team.roadmapId) are required.',
             });
         }
 
@@ -25,7 +25,7 @@ class ProjectController {
             if (!existingTeam) {
                 return next({
                     status: StatusCodes.NOT_FOUND,
-                    message: 'Das Team wurde nicht gefunden.',
+                    message: 'Team was not found.',
                 });
             }
             const newProject = await prisma.project.create({
@@ -251,7 +251,7 @@ class ProjectController {
             if (!existingProject) {
                 return next({
                     status: StatusCodes.NOT_FOUND,
-                    message: 'Das Projekt wurde nicht gefunden.',
+                    message: 'The project was not found.',
                 });
             }
             console.log("EXISTING", existingProject)
@@ -271,7 +271,7 @@ class ProjectController {
             if (overlappingProjects.length > 0) {
                 return next({
                     status: StatusCodes.CONFLICT,
-                    message: 'Das Projekt überschneidet sich mit einem bestehenden Projekt innerhalb des Teams.',
+                    message: 'The project overlaps with an existing project within the team.',
                 });
             }
 

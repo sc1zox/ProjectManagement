@@ -144,7 +144,7 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
   showNotifications() {
     if (this.notifications)
       if(this.notificationsAmount === 0){
-        this.SnackBarService.open('Keine Notifications vorhanden');
+        this.SnackBarService.open('No notifications available');
       }
       this.notifications.forEach((notification) => {
         this.NotificationService.showNotificationPermanent(notification);
@@ -167,7 +167,7 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
     try {
       window.location.href = this.getPdfUrlUser();
     }catch (error){
-      this.SnackBarService.open('PDF konnte nicht geladen werden')
+      this.SnackBarService.open('PDF could not be loaded')
       this.progressBar.complete();
     }finally {
       this.progressBar.complete();
@@ -179,7 +179,7 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
     try {
       window.location.href = this.getPdfUrlRoadmap();
     }catch (error){
-      this.SnackBarService.open('PDF konnte nicht geladen werden')
+      this.SnackBarService.open('PDF could not be loaded')
       this.progressBar.complete();
     }finally {
       this.progressBar.complete();

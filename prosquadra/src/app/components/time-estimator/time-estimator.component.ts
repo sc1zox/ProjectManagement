@@ -92,7 +92,7 @@ export class TimeEstimatorComponent implements OnInit {
         });
       }
     } catch (error) {
-      this.SnackBarService.open("Einschätzung konnte nicht geladen werden");
+      this.SnackBarService.open("Estimate could not be loaded!");
       this.progressBar.complete();
     }finally {
       this.progressBar.complete();

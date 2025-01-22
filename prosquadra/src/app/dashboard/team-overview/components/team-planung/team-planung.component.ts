@@ -28,7 +28,7 @@ export class TeamPlanungComponent implements OnInit {
       try {
         this.teams = await this.TeamService.getTeamsByUserId(this.user.id)
       }catch (error){
-        this.SnackBarService.open('Konnte Team des Nutzers nicht laden')
+        this.SnackBarService.open("Could not load the user's team")
       }
     }
   }

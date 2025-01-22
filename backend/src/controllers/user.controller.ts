@@ -80,7 +80,7 @@ class UserController {
         if (!vorname || !nachname || !role || !arbeitszeit || !teams) {
             return next({
                 code: StatusCodes.BAD_REQUEST,
-                message: 'Alle Felder (vorname, nachname, role, arbeitszeit, teamID) sind erforderlich.',
+                message: 'All fields (first name, last name, role, working hours, teamID) are required.',
             });
         }
 
@@ -151,7 +151,7 @@ class UserController {
         if (!userID || !arbeitszeit) {
             return next({
                 status: StatusCodes.BAD_REQUEST,
-                message: 'userID und arbeitszeit sind erforderlich.',
+                message: 'userID and working hours are required.',
             });
         }
 

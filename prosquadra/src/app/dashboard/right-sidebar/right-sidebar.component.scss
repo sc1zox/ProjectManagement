@@ -1,4 +1,5 @@
 .sidebar-right {
+  background: linear-gradient(to left, #3b4252, #434c5e);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -99,4 +100,8 @@ button{
 
 p{
   margin-top: calc(var(--content-margin)*3);
+}
+
+#user-text {
+  margin-left: 15px;
 }

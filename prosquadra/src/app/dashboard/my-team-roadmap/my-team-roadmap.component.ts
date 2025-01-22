@@ -55,13 +55,13 @@ export class MyTeamRoadmapComponent implements OnInit {
     try {
       this.userTeams = await this.TeamService.getTeamsByUserId(user.id);
     }catch (error){
-      this.SnackBarService.open('Konnte die Teams nicht abrufen');
+      this.SnackBarService.open('Could not retrieve the teams');
     }finally {
       this.SpinnerService.hide();
     }
     if (this.userTeams.length === 0) {
       console.error('User is not part of any team');
-      this.errorMessageNoTeams = "Fehler! Dieser Nutzer gehört keinem Team an";
+      this.errorMessageNoTeams = "Error! This user does not belong to a team";
       return;
     }
 
@@ -87,7 +87,7 @@ export class MyTeamRoadmapComponent implements OnInit {
       if (this.firstTeam)
         await this.fetchRoadmapForTeam(this.firstTeam.id);
     } catch (error) {
-      this.SnackBarService.open('Es gab ein Fehler bei der Teamaktualisierung')
+      this.SnackBarService.open('There was an error during the team update')
     }
   }
 
@@ -98,7 +98,7 @@ export class MyTeamRoadmapComponent implements OnInit {
       this.currentTeam = await this.TeamService.getTeamById(teamId);
       roadmaps = await this.RoadmapService.getRoadmaps()
     }catch (error){
-      this.SnackBarService.open('Konnte das Team nicht laden')
+      this.SnackBarService.open('Could not retrieve the team')
     }
     let roadmapTmp = roadmaps?.filter(roadmap => roadmap?.teams?.id === this.currentTeam?.id)
     if(roadmapTmp)
@@ -112,7 +112,7 @@ export class MyTeamRoadmapComponent implements OnInit {
         roadmap.teams && userTeams.some(userTeam => userTeam.id === roadmap.teams!.id)
       );
     } catch (error) {
-      this.SnackBarService.open('Es gab ein Fehler bei der Teamaktualisierung')
+      this.SnackBarService.open('There was an error during the team update')
     }
   }
 }

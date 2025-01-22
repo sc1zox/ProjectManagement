@@ -3,13 +3,13 @@ import {ProjectStatus} from '../types/project';
 export function getStatusLabel(status: ProjectStatus): string {
   switch (status) {
     case ProjectStatus.offen:
-      return 'Offen';
+      return 'Open';
     case ProjectStatus.inPlanung:
-      return 'In Planung';
+      return 'In planning';
     case ProjectStatus.inBearbeitung:
-      return 'In Bearbeitung';
+      return 'In progress';
     case ProjectStatus.geschlossen:
-      return 'Geschlossen';
+      return 'Closed';
     default:
       return status;
   }

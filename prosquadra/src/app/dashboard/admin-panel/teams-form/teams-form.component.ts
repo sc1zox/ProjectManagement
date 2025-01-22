@@ -76,7 +76,7 @@ export class TeamsFormComponent implements OnInit {
 
     if (this.teamForm.valid) {
       const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-        data: {message: 'Wollen Sie dieses Team wirklich anlegen?'}
+        data: {message: 'Do you really want to create this team?'}
       });
 
       dialogRef.afterClosed().subscribe(async result => {
@@ -96,19 +96,19 @@ export class TeamsFormComponent implements OnInit {
             try {
               await this.TeamService.createTeam(this.Team);
               this.selectedUser?.forEach((user) => {
-                this.NotificationService.createNotification('Du wurdest einem neuen Team hinzugefügt', user);
+                this.NotificationService.createNotification('You have been added to a new team', user);
               })
               this.bereichsleiter?.forEach(user => {
-                this.NotificationService.createNotification('Es wurde ein neues Team erstellt', user.id)
+                this.NotificationService.createNotification('A new team has been created', user.id)
               })
-              this.SnackBarService.open('Die Teamerstellung war erfolgreich');
+              this.SnackBarService.open('The team creation was successful');
             } catch (error) {
-              this.SnackBarService.open("Bei der Teamerstellung gab es einen Fehler!")
+              this.SnackBarService.open("There was an error when creating the team!")
             }
             this.router.navigate(['/dashboard/admin-panel']);
           }
         } else {
-          this.SnackBarService.open("Sie haben die Teamerstellung abgebrochen")
+          this.SnackBarService.open("You have cancelled the team creation")
         }
       });
     }

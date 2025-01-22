@@ -156,7 +156,7 @@ class TeamController {
         if (!name || !members) {
             return next({
                 status: StatusCodes.BAD_REQUEST,
-                message: 'Alle Felder (name, members) müssen ausgefüllt sein',
+                message: 'All fields (name, members) must be filled in',
             });
         }
 
@@ -212,7 +212,7 @@ class TeamController {
             if (!teamId || !userId) {
                 return next({
                     status: StatusCodes.BAD_REQUEST,
-                    message: 'Alle Felder (teamID, userID) müssen ausgefüllt sein',
+                    message: 'All fields (teamID, userID) must be filled in',
                 });
             }
 

@@ -16,7 +16,7 @@ class SkillsController {
             });
 
             if (!user) {
-                return next({ status: StatusCodes.NOT_FOUND, message: 'Benutzer nicht gefunden' });
+                return next({ status: StatusCodes.NOT_FOUND, message: 'User not found' });
             }
 
             const response: ApiResponse<Skill[]> = {
@@ -33,7 +33,7 @@ class SkillsController {
         const { userId, skillName } = req.body;
 
         if (!userId || !skillName) {
-            return next({ status: StatusCodes.BAD_REQUEST, message: 'userId und skillName sind erforderlich' });
+            return next({ status: StatusCodes.BAD_REQUEST, message: 'userId and skillName are required' });
         }
 
         try {
@@ -71,7 +71,7 @@ class SkillsController {
         const { userId, skillName } = req.body;
 
         if (!userId || !skillName) {
-            return next({ status: StatusCodes.BAD_REQUEST, message: 'userId und skill Name sind erforderlich' });
+            return next({ status: StatusCodes.BAD_REQUEST, message: 'userId und skill Name are required' });
         }
 
         try {
