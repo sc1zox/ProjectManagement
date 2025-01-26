@@ -189,6 +189,7 @@ export class UrlaubsPlanungComponent implements OnInit, OnDestroy {
       } catch (error) {
         if(error instanceof ApiError && error.code === 404) {
           this.urlaub$.next([]);
+          return;
         }
         console.error('Fehler im Polling:', error);
       }
