@@ -5,29 +5,28 @@ import {UserRole} from '../types/user';
 import {normalizeDate, parseProjects} from '../mapper/projectDatesToDate';
 
 export function getEarliestStartAndEndDate(teams: Team[]): { earliest: GanttDate; latest: GanttDate } {
-  let earliestStartDate: Date | undefined;
-  let latestEndDate: Date | undefined;
+  let earliestStartDate: Date | null = null;
+  let latestEndDate: Date | null = null;
 
   for (const team of teams) {
     if (team.projects && team.projects.length > 0) {
       for (const project of team.projects) {
-        const projectStartDate = project.startDate ? new Date(project.startDate) : new Date();
-        const projectEndDate = project.endDate ? new Date(project.endDate) : new Date();
+        const projectStartDate = project.startDate ? new Date(project.startDate) : null;
+        const projectEndDate = project.endDate ? new Date(project.endDate) : null;
 
-        if (!earliestStartDate || projectStartDate < earliestStartDate) {
+        if (projectStartDate && (earliestStartDate === null || projectStartDate < earliestStartDate)) {
           earliestStartDate = projectStartDate;
         }
-        if (!latestEndDate || projectEndDate > latestEndDate) {
+        if (projectEndDate && (latestEndDate === null || projectEndDate > latestEndDate)) {
           latestEndDate = projectEndDate;
         }
       }
     }
   }
 
-  if (!earliestStartDate) {
+
+  if (earliestStartDate === null || latestEndDate === null) {
     earliestStartDate = new Date();
-  }
-  if (!latestEndDate) {
     latestEndDate = new Date();
     latestEndDate.setMonth(latestEndDate.getMonth() + 3);
   }
@@ -37,6 +36,7 @@ export function getEarliestStartAndEndDate(teams: Team[]): { earliest: GanttDate
     latest: new GanttDate(latestEndDate)
   };
 }
+
 
 export function isProjectEstimated(project: Project) {
   return project.estimations?.length === project.team?.members?.filter(member => member.role === UserRole.Developer).length

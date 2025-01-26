@@ -76,6 +76,7 @@ export class GanttChartComponent implements OnInit {
   async ngOnInit() {
     this.currentUser = await this.UserService.getCurrentUser();
     await this.populateItems();
+    console.log(this.earliestStartAndEndDate)
   }
 
 
