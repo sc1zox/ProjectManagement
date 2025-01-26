@@ -23,6 +23,7 @@ import {QrCodeModule} from 'ng-qrcode';
 import {ApiService} from '../../../services/api.service';
 import {SnackbarService} from '../../../services/snackbar.service';
 import {NgProgressbar, NgProgressRef} from 'ngx-progressbar';
+import {catchError, interval, Subscription, switchMap} from 'rxjs';
 
 
 @Component({
@@ -58,8 +59,8 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
   userInitials: string = '';
   user?: User;
   noTeamAndProject: boolean = false;
-  private projectPollingInterval: any;
   QrCodeVisible: boolean = false
+  pollingSubscription!: Subscription;
   @ViewChild(NgProgressRef) progressBar!: NgProgressRef;
 
 
@@ -79,23 +80,34 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
       this.user = await this.UserService.getCurrentUser();
       if (this.user) {
         this.userInitials = this.user.vorname.charAt(0).toUpperCase() + this.user.nachname.charAt(0).toUpperCase();
-        if(this.user.role === UserRole.Admin || this.user.role === UserRole.Bereichsleiter){
+        if (this.user.role === UserRole.Admin || this.user.role === UserRole.Bereichsleiter) {
           this.noTeamAndProject = true;
           return;
         }
-
-        await this.fetchProject();
-        this.projectPollingInterval = setInterval(async () => {
-          await this.fetchProject();
-          await this.fetchNotifications();
-        }, 5000); // fetch current project + unread notifications every 10 seconds
+        this.startPolling();
       }
     } catch (error) {
       console.error('Error while fetching user or project:', error);
     }
-    if (this.user) {
-      this.notifications = await this.NotificationService.getNotificationsByUserId(this.user?.id)
-      this.notificationsAmount = this.notifications.length;
+  }
+
+  startPolling() {
+    this.pollingSubscription = interval(10000)
+      .pipe(
+        switchMap(() => this.fetchData()),
+        catchError((error) => {
+          console.error('Error during polling:', error);
+          return [];
+        })
+      )
+      .subscribe();
+  }
+
+  async fetchData() {
+    try {
+      await Promise.all([this.fetchProject(), this.fetchNotifications()]);
+    } catch (error) {
+      console.error('Error fetching data during polling:', error);
     }
   }
 
@@ -131,8 +143,8 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy() {
-    if (this.projectPollingInterval) {
-      clearInterval(this.projectPollingInterval);
+    if (this.pollingSubscription) {
+      this.pollingSubscription.unsubscribe();
     }
   }
 
