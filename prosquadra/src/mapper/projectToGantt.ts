@@ -1,5 +1,5 @@
 import { Project } from '../types/project';
-import { GanttDate, GanttItem } from '@worktile/gantt';
+import { GanttItem } from '@worktile/gantt';
 
 export interface ExtendedGanttItem extends GanttItem {
   duration: number;

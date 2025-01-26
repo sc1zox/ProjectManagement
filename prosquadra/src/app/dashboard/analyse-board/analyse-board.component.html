@@ -3,7 +3,7 @@
 </div>
 <app-gantt-chart id="gantt-chart"
   *ngIf="teams.length > 0"
-  [startDate]="startDate"
+  [earliestStartAndEndDate]="earliestStartAndEndDate"
   [teams]="teams"
 ></app-gantt-chart>
 

@@ -4,21 +4,28 @@ import {Project, ProjectStatus} from '../types/project';
 import {UserRole} from '../types/user';
 import {normalizeDate, parseProjects} from '../mapper/projectDatesToDate';
 
-export function getEarliestStartDate(teams: Team[]): GanttDate {
+export function getEarliestStartAndEndDate(teams: Team[]): { earliest: GanttDate; latest: GanttDate } {
   let earliestStartDate;
+  let latestEndDate;
   for (const team of teams) {
     if (team.projects && team.projects.length > 0) {
       for (const project of team.projects) {
         const projectStartDate = project.startDate ? new Date(project.startDate) : null;
+        const projectEndDate = project.endDate ? new Date(project.endDate) : null;
 
         if (projectStartDate && (!earliestStartDate || projectStartDate < earliestStartDate)) {
           earliestStartDate = projectStartDate;
         }
+        if (projectEndDate && (!latestEndDate || projectEndDate > latestEndDate)) {
+          latestEndDate = projectEndDate;
+        }
       }
     }
   }
-
-  return new GanttDate(earliestStartDate);
+  return {
+    earliest: new GanttDate(earliestStartDate),
+    latest: new GanttDate(latestEndDate)
+  };
 }
 
 export function isProjectEstimated(project: Project) {
@@ -97,11 +104,9 @@ export function isStartDateInRange(projects: Project[], startDate: Date, selecte
   );
   const normalizedStartDate = normalizeDate(startDate);
 
-  const boolresult = result.some(range => {
+  return result.some(range => {
     const normalizedRangeStart = normalizeDate(range.startDate as Date);
     const normalizedRangeEnd = normalizeDate(range.endDate as Date);
     return normalizedStartDate >= normalizedRangeStart && normalizedStartDate <= normalizedRangeEnd;
   });
-
-  return boolresult;
 }

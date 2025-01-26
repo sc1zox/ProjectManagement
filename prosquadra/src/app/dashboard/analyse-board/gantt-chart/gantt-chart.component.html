@@ -5,6 +5,9 @@
   [groups]="groups"
   [items]="items"
   [viewOptions]="viewOptions"
+  [end]="earliestStartAndEndDate.latest.getUnixTime()"
+  [start]="earliestStartAndEndDate.earliest.getUnixTime()"
+  [viewType]="GanttViewType.day"
 >
   <ngx-gantt-table>
     <ngx-gantt-column name="Title" title="Project Title" width="300px">
