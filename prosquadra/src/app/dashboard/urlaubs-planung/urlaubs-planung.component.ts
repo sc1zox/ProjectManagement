@@ -79,9 +79,6 @@ export class UrlaubsPlanungComponent implements OnInit, OnDestroy {
     }
 
     try {
-      if (this.currentUser) {
-        this.currentUser.urlaub = await this.UserService.getUserUrlaub(this.currentUser);
-      }
       this.startPolling();
     } catch (error) {
       console.log(error);
