@@ -114,6 +114,10 @@ export class UrlaubsPlanungComponent implements OnInit, OnDestroy {
           if (!this.checkIfUserHasVacationCapacity(startEvent.value, endEvent.value)) {
             return;
           }
+          if(startEvent.value < new Date()){
+            this.SnackBarService.open("Holiday can't be in the past");
+            return;
+          }
 
           let newUrlaub: Urlaub = {
             userId: this.currentUser.id,
@@ -182,6 +186,9 @@ export class UrlaubsPlanungComponent implements OnInit, OnDestroy {
           }
         }
       } catch (error) {
+        if(error instanceof ApiError && error.code === 404) {
+          this.urlaub$.next([]);
+        }
         console.error('Fehler im Polling:', error);
       }
     });
