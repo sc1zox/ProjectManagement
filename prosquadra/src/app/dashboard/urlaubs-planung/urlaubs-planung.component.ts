@@ -116,6 +116,7 @@ export class UrlaubsPlanungComponent implements OnInit, OnDestroy {
           }
           if(startEvent.value < new Date()){
             this.SnackBarService.open("Holiday can't be in the past");
+            this.resetDatePicker();
             return;
           }
 
