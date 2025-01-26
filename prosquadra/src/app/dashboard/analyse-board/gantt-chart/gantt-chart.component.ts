@@ -1,4 +1,4 @@
-import {AfterViewInit, ChangeDetectorRef, Component, Input, OnInit, ViewChild} from '@angular/core';
+import {Component, Input, OnInit, ViewChild} from '@angular/core';
 import {MatGridListModule} from '@angular/material/grid-list';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatIconModule} from '@angular/material/icon';
@@ -9,8 +9,7 @@ import {
   GanttDate,
   GanttGroup,
   GanttItem,
-  GanttPrintService,
-  GanttViewOptions,
+  GanttViewOptions, GanttViewType,
   NgxGanttComponent,
   NgxGanttTableColumnComponent,
   NgxGanttTableComponent,
@@ -48,12 +47,13 @@ import { SnackbarService } from '../../../../services/snackbar.service';
     },
   ],
 })
-export class GanttChartComponent implements OnInit, AfterViewInit {
+export class GanttChartComponent implements OnInit {
 
   @Input() teams: Team[] = [];
-  @Input() startDate!: GanttDate;
+  @Input() earliestStartAndEndDate!: { earliest: GanttDate; latest: GanttDate };
   currentUser?: User;
   @ViewChild('gantt') ganttComponent!: NgxGanttComponent;
+  protected readonly GanttViewType = GanttViewType;
 
   items: GanttItem[] = [];
   groups: GanttGroup[] = [];
@@ -66,6 +66,7 @@ export class GanttChartComponent implements OnInit, AfterViewInit {
     },
   };
 
+
   constructor(private readonly UserService:UserService,
     private readonly TeamService:TeamService,
     private readonly SnackBarService: SnackbarService) {
@@ -75,15 +76,6 @@ export class GanttChartComponent implements OnInit, AfterViewInit {
   async ngOnInit() {
     this.currentUser = await this.UserService.getCurrentUser();
     await this.populateItems();
-  }
-
-  ngAfterViewInit() {
-    setTimeout(() => {
-      if (this.ganttComponent) {
-        this.ganttComponent.ganttRoot.ganttUpper.view.start$.next(this.startDate);
-        this.ganttComponent.ganttRoot.ganttUpper.view.addStartDate()
-      }
-    });
   }
 
 

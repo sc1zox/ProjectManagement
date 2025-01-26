@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, signal } from '@angular/core';
+import {Component, OnInit, ViewChild, signal, OnDestroy} from '@angular/core';
 import { UserService } from '../../../services/user.service';
 import { SnackbarService } from '../../../services/snackbar.service';
 import { User, UserRole } from '../../../types/user';
@@ -10,6 +10,7 @@ import { Urlaub, vacationState } from '../../../types/urlaub';
 import { MatExpansionPanel, MatExpansionPanelHeader } from '@angular/material/expansion';
 import { NgProgressbar, NgProgressRef } from 'ngx-progressbar';
 import {NotificationsService} from '../../../services/notifications.service';
+import {interval, Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-urlaub-overview',
@@ -31,13 +32,15 @@ import {NotificationsService} from '../../../services/notifications.service';
   styleUrls: ['./urlaub-overview.component.scss']
 })
 // Implementation mit Hilfe von Copilot
-export class UrlaubOverviewComponent implements OnInit {
+export class UrlaubOverviewComponent implements OnInit,OnDestroy {
 
   allUser: User[] = [];
   groupedVacations = new Map<User, { accepted: Urlaub[], waiting: Urlaub[], denied: Urlaub[] }>();
   groupedVacationsSignal = signal<Map<User, { accepted: Urlaub[], waiting: Urlaub[], denied: Urlaub[] }>>(new Map());
   userCollapseState: Map<User, boolean> = new Map();
   @ViewChild(NgProgressRef) progressBar!: NgProgressRef;
+  private pollingSubscription?: Subscription;
+  private lastFetchedUserData: User[] = [];
 
   constructor(private readonly UserService: UserService,
               private readonly SnackBarService: SnackbarService,
@@ -46,15 +49,41 @@ export class UrlaubOverviewComponent implements OnInit {
   }
 
   async ngOnInit() {
-    await this.loadUsers();
+    await this.loadUsers()
+    this.pollingSubscription = interval(5000)
+      .subscribe(async () => {
+        console.log('Polling: Daten werden neu geladen...');
+        await this.loadUsers();
+      });
+  }
+
+  private areUsersEqual(newUsers: User[], oldUsers: User[]): boolean {
+    if (newUsers.length !== oldUsers.length) {
+      return false;
+    }
+
+    return newUsers.every((user, index) => {
+      const oldUser = oldUsers[index];
+      return (
+        user.id === oldUser.id &&
+        JSON.stringify(user.urlaub) === JSON.stringify(oldUser.urlaub)
+      );
+    });
   }
 
   private async loadUsers() {
     try {
       let tmpUsers: User[] = await this.UserService.getUsers();
-      this.allUser = tmpUsers.filter(user => user.role !== UserRole.Bereichsleiter && user.role !== UserRole.Admin);
-      this.groupVacationsByStatus();
-      this.allUser.forEach(user => this.userCollapseState.set(user, false));
+
+      if (!this.areUsersEqual(tmpUsers, this.lastFetchedUserData)) {
+        this.allUser = tmpUsers.filter(user => user.role !== UserRole.Bereichsleiter && user.role !== UserRole.Admin);
+        this.groupVacationsByStatus();
+        this.allUser.forEach(user => this.userCollapseState.set(user, false));
+
+        this.lastFetchedUserData = [...tmpUsers];
+      } else {
+        console.log('Daten sind unverändert, keine Aktualisierung erforderlich');
+      }
     } catch (error) {
       this.SnackBarService.open('Could not load holiday');
     }
@@ -138,6 +167,11 @@ export class UrlaubOverviewComponent implements OnInit {
       this.progressBar.complete();
     }
   }
+
+  ngOnDestroy(): void {
+    this.pollingSubscription?.unsubscribe();
+  }
+
 
   protected readonly UserRole = UserRole;
 }

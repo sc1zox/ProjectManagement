@@ -1,6 +1,6 @@
 import {Component, HostListener, OnInit} from '@angular/core';
 import {MatActionList, MatListItem} from "@angular/material/list";
-import {Router, RouterLink} from '@angular/router';
+import {RouterLink} from '@angular/router';
 import {MatExpansionPanel, MatExpansionPanelHeader, MatExpansionPanelTitle} from '@angular/material/expansion';
 import {NgIf, NgClass} from '@angular/common';
 import {UserService} from '../../../services/user.service';
@@ -27,12 +27,8 @@ export class LeftSidebarComponent implements OnInit {
   public expanded: boolean = true;
   public user?: User;
   protected readonly UserRole = UserRole;
-  public activeRoute: string = '';
 
-  constructor(private readonly Userservice: UserService, private router: Router) {
-    this.router.events.subscribe(() => {
-      this.activeRoute = this.router.url.split('/')[1];
-    });
+  constructor(private readonly Userservice: UserService) {
   }
 
   async ngOnInit() {

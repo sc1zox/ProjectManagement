@@ -235,8 +235,6 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
       return;
     }
 
-    //console.log('Updating Date Controls. Current Status:', this.selectedProject.projectStatus);
-
     switch (this.selectedProject.projectStatus) {
       case ProjectStatus.geschlossen:
         this.startDateControl.disable({emitEvent: false});

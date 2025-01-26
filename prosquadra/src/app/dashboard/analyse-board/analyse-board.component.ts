@@ -8,7 +8,7 @@ import {MatCardModule} from '@angular/material/card';
 import {TeamService} from '../../../services/team.service';
 import {Team} from '../../../types/team';
 import {GanttChartComponent} from './gantt-chart/gantt-chart.component';
-import {getEarliestStartDate} from '../../../helper/projectHelper';
+import {getEarliestStartAndEndDate} from '../../../helper/projectHelper';
 import {GanttDate} from '@worktile/gantt';
 import {SnackbarService} from '../../../services/snackbar.service';
 import {SpinnerComponent} from "../../components/spinner/spinner.component";
@@ -32,8 +32,7 @@ import {SpinnerService} from '../../../services/spinner.service';
 })
 export class AnalyseBoardComponent implements OnInit {
   teams: Team[] = [];
-  startDate: GanttDate = new GanttDate();
-  protected readonly getEarliestStartDate = getEarliestStartDate;
+  earliestStartAndEndDate!: { earliest: GanttDate; latest: GanttDate };
 
   constructor(private readonly TeamService: TeamService,private readonly SnackBarService: SnackbarService, private readonly SpinnerService: SpinnerService) {
   }
@@ -47,6 +46,6 @@ export class AnalyseBoardComponent implements OnInit {
     }finally {
       this.SpinnerService.hide();
     }
-    this.startDate = getEarliestStartDate(this.teams);
+    this.earliestStartAndEndDate = getEarliestStartAndEndDate(this.teams);
   }
 }
