@@ -5,23 +5,33 @@ import {UserRole} from '../types/user';
 import {normalizeDate, parseProjects} from '../mapper/projectDatesToDate';
 
 export function getEarliestStartAndEndDate(teams: Team[]): { earliest: GanttDate; latest: GanttDate } {
-  let earliestStartDate;
-  let latestEndDate;
+  let earliestStartDate: Date | undefined;
+  let latestEndDate: Date | undefined;
+
   for (const team of teams) {
     if (team.projects && team.projects.length > 0) {
       for (const project of team.projects) {
-        const projectStartDate = project.startDate ? new Date(project.startDate) : null;
-        const projectEndDate = project.endDate ? new Date(project.endDate) : null;
+        const projectStartDate = project.startDate ? new Date(project.startDate) : new Date();
+        const projectEndDate = project.endDate ? new Date(project.endDate) : new Date();
 
-        if (projectStartDate && (!earliestStartDate || projectStartDate < earliestStartDate)) {
+        if (!earliestStartDate || projectStartDate < earliestStartDate) {
           earliestStartDate = projectStartDate;
         }
-        if (projectEndDate && (!latestEndDate || projectEndDate > latestEndDate)) {
+        if (!latestEndDate || projectEndDate > latestEndDate) {
           latestEndDate = projectEndDate;
         }
       }
     }
   }
+
+  if (!earliestStartDate) {
+    earliestStartDate = new Date();
+  }
+  if (!latestEndDate) {
+    latestEndDate = new Date();
+    latestEndDate.setMonth(latestEndDate.getMonth() + 3);
+  }
+
   return {
     earliest: new GanttDate(earliestStartDate),
     latest: new GanttDate(latestEndDate)
@@ -39,8 +49,6 @@ export function isProjectEstimatedAndNotInPlanningOrClosed(project: Project) {
 export function getProjectClasses(project: Project, selectedProject: Project | undefined): {
   [key: string]: boolean | null
 } {
-  const projectEndDate = project.endDate ? normalizeDate(new Date(project.endDate)) : null;
-  const today = normalizeDate(new Date())
   return {
     'selected': project === selectedProject,
     'offen': project.projectStatus === ProjectStatus.offen,
@@ -50,7 +58,7 @@ export function getProjectClasses(project: Project, selectedProject: Project | u
   };
 }
 
-export function setOverdueClassIcon(project: Project, selectedProject: Project | undefined) {
+export function setOverdueClassIcon(project: Project) {
   const projectEndDate = project.endDate ? normalizeDate(new Date(project.endDate)) : null;
   const today = normalizeDate(new Date())
   return {
@@ -58,7 +66,7 @@ export function setOverdueClassIcon(project: Project, selectedProject: Project |
   }
 }
 
-export function setOverdueClassName(project: Project, selectedProject: Project | undefined) {
+export function setOverdueClassName(project: Project) {
   const projectEndDate = project.endDate ? normalizeDate(new Date(project.endDate)) : null;
   const today = normalizeDate(new Date())
   return {
