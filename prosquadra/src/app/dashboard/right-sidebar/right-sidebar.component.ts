@@ -23,7 +23,7 @@ import {QrCodeModule} from 'ng-qrcode';
 import {ApiService} from '../../../services/api.service';
 import {SnackbarService} from '../../../services/snackbar.service';
 import {NgProgressbar, NgProgressRef} from 'ngx-progressbar';
-import {catchError, interval, Subscription, switchMap} from 'rxjs';
+import {catchError, interval, startWith, Subscription, switchMap} from 'rxjs';
 
 
 @Component({
@@ -61,6 +61,7 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
   noTeamAndProject: boolean = false;
   QrCodeVisible: boolean = false
   pollingSubscription!: Subscription;
+  loading: boolean = true;
   @ViewChild(NgProgressRef) progressBar!: NgProgressRef;
 
 
@@ -82,18 +83,22 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
         this.userInitials = this.user.vorname.charAt(0).toUpperCase() + this.user.nachname.charAt(0).toUpperCase();
         if (this.user.role === UserRole.Admin || this.user.role === UserRole.Bereichsleiter) {
           this.noTeamAndProject = true;
+          this.startPolling();
           return;
         }
         this.startPolling();
       }
     } catch (error) {
       console.error('Error while fetching user or project:', error);
+    } finally {
+      this.loading = false;
     }
   }
 
   startPolling() {
     this.pollingSubscription = interval(10000)
       .pipe(
+        startWith(0),
         switchMap(() => this.fetchData()),
         catchError((error) => {
           console.error('Error during polling:', error);
@@ -108,12 +113,14 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
       await Promise.all([this.fetchProject(), this.fetchNotifications()]);
     } catch (error) {
       console.error('Error fetching data during polling:', error);
+    }finally {
+      this.loading =false;
     }
   }
 
   async fetchProject() {
     try {
-      if (this.user) {
+      if (this.user && (this.user.role !== UserRole.Bereichsleiter && this.user.role !== UserRole.Admin)) {
         const response: Project[] = await this.ProjectService.getProjectWithLowestPriorityByUserId(this.user.id)
         if(Array.isArray(response)){
           this.userProjects = response;
@@ -138,7 +145,7 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
         });
       }
     } catch (error) {
-      console.log("error fetching notifications")
+      console.log(error)
     }
   }
 

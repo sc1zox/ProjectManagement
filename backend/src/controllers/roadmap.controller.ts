@@ -55,6 +55,11 @@ class RoadmapController {
                 where: {id: roadmapId},
                 include: {
                     projects: true,
+                    teams: {
+                        include: {
+                            members: true,
+                        }
+                    },
                 }
             });
             if (!roadmap) {

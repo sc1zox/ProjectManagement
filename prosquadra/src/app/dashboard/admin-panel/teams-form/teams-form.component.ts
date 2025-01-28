@@ -66,7 +66,7 @@ export class TeamsFormComponent implements OnInit {
     } catch (error) {
       console.error('Error while fetching Users:', error);
     } finally {
-      this.getBereichsleiter();
+      this.bereichsleiter = this.UserService.getBereichsleiter(this.Users)
     }
     this.filterUsers()
   }
@@ -99,7 +99,7 @@ export class TeamsFormComponent implements OnInit {
                 this.NotificationService.createNotification('You have been added to a new team', user);
               })
               this.bereichsleiter?.forEach(user => {
-                this.NotificationService.createNotification('A new team has been created', user.id)
+                this.NotificationService.createNotification(`The new team: ${this.Team.name} has been created`, user.id)
               })
               this.SnackBarService.open('The team creation was successful');
             } catch (error) {
@@ -118,9 +118,5 @@ export class TeamsFormComponent implements OnInit {
     this.filteredUsers = this.Users.filter(user => {
       return user.role === UserRole.SM || (user.teams && user.teams.length === 0);
     });
-  }
-
-  private getBereichsleiter(): void {
-    this.bereichsleiter = this.Users.filter(user => user.role === UserRole.Bereichsleiter)
   }
 }

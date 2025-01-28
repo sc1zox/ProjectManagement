@@ -1,4 +1,4 @@
-import {AfterViewInit, Component, Input, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, Input, OnInit, ViewChild} from '@angular/core';
 import {Project} from '../../../types/project';
 import {User, UserRole} from '../../../types/user';
 import {CommonModule} from '@angular/common';
@@ -9,6 +9,8 @@ import {ProjectService} from '../../../services/project.service';
 import {NgProgressbar, NgProgressRef} from 'ngx-progressbar';
 import {ApiError} from '../../../error/ApiError';
 import {invalid} from 'moment';
+import {UserService} from '../../../services/user.service';
+import {NotificationsService} from '../../../services/notifications.service';
 
 @Component({
   selector: 'app-end-date',
@@ -18,7 +20,10 @@ import {invalid} from 'moment';
   styleUrl: './end-date.component.scss'
 })
 
-export class EndDateComponent implements AfterViewInit {
+export class EndDateComponent implements AfterViewInit,OnInit {
+
+  bereichsLeiter: User[] = [];
+  users: User[] = [];
   @Input() currentTeam?: Team;
   @Input() currentProject?: Project;
   @Input() startDateControl = new FormControl();
@@ -26,7 +31,10 @@ export class EndDateComponent implements AfterViewInit {
   result?: Date;
   @ViewChild(NgProgressRef) progressBar!: NgProgressRef;
 
-  constructor(private readonly SnackBarService: SnackbarService, private readonly ProjectService: ProjectService) {
+  constructor(private readonly SnackBarService: SnackbarService,
+              private readonly ProjectService: ProjectService,
+              private readonly UserService: UserService,
+              private readonly NotificationService: NotificationsService) {
   }
 
 // if(this.currentProject?.id) {
@@ -44,6 +52,15 @@ export class EndDateComponent implements AfterViewInit {
     });
   }
 
+  async ngOnInit(){
+    try {
+      this.users = await this.UserService.getUsers();
+    }catch (error){
+      console.log(error)
+    }
+    this.bereichsLeiter = this.UserService.getBereichsleiter(this.users);
+  }
+
   async calculateEndDate() {
     if (this.startDateControl.invalid) {
       this.SnackBarService.open('The start date is invalid. Please correct it before continuing.');
@@ -58,6 +75,12 @@ export class EndDateComponent implements AfterViewInit {
       try {
         await this.ProjectService.updateProject(body);
         this.SnackBarService.open('Project data has been updated!')
+        for (let b of this.bereichsLeiter){
+          await this.NotificationService.createNotification(`An end date has been calculated for the project ${this.currentProject?.name} in the team: ${this.currentProject?.team?.name} for the:  ${this.result.toDateString()}`,b.id);
+        }
+        for (let user of this.currentTeam?.members!){
+          await this.NotificationService.createNotification(`An end date has been calculated for your project ${this.currentProject?.name} for the:  ${this.result.toDateString()}`,user.id);
+        }
       } catch (error) {
         this.SnackBarService.open('Project data could not be updated!');
 

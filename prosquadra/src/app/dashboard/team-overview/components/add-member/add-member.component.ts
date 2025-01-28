@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, EventEmitter, Inject, OnInit, Output } from '@angular/core';
+import {ChangeDetectorRef, Component, EventEmitter, Inject, OnInit, Output} from '@angular/core';
 import {
   MAT_DIALOG_DATA,
   MatDialogActions,
@@ -6,18 +6,19 @@ import {
   MatDialogRef,
   MatDialogTitle
 } from '@angular/material/dialog';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatInput } from '@angular/material/input';
-import { FormsModule } from '@angular/forms';
-import { MatButton, MatIconButton } from '@angular/material/button';
-import { MatList, MatListItem } from '@angular/material/list';
-import { MatIcon } from '@angular/material/icon';
-import { NgForOf } from '@angular/common';
-import { Team } from '../../../../../types/team';
-import { User, UserRole } from '../../../../../types/user';
-import { MatAutocomplete, MatAutocompleteTrigger, MatOption } from '@angular/material/autocomplete';
-import { TeamService } from '../../../../../services/team.service';
-import { SnackbarService } from '../../../../../services/snackbar.service';
+import {MatFormField, MatLabel} from '@angular/material/form-field';
+import {MatInput} from '@angular/material/input';
+import {FormsModule} from '@angular/forms';
+import {MatButton, MatIconButton} from '@angular/material/button';
+import {MatList, MatListItem} from '@angular/material/list';
+import {MatIcon} from '@angular/material/icon';
+import {NgForOf} from '@angular/common';
+import {Team} from '../../../../../types/team';
+import {User, UserRole} from '../../../../../types/user';
+import {MatAutocomplete, MatAutocompleteTrigger, MatOption} from '@angular/material/autocomplete';
+import {TeamService} from '../../../../../services/team.service';
+import {SnackbarService} from '../../../../../services/snackbar.service';
+import {NotificationsService} from '../../../../../services/notifications.service';
 
 @Component({
   selector: 'app-add-member',
@@ -48,7 +49,7 @@ export class AddMemberComponent implements OnInit {
   options?: string[];
   selectedUser?: User;
   teamRequirementStatus: string = '';
-  private optionsCache: string[] = [];
+  bereichsLeiter: User[] = [];
   @Output() memberRefreshed = new EventEmitter<void>();
   @Output() memberAdded = new EventEmitter<User>();
   @Output() memberRemoved = new EventEmitter<number>();
@@ -58,7 +59,8 @@ export class AddMemberComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) public data: { team: Team, user: User[] },
     private readonly TeamService: TeamService,
     private cdr: ChangeDetectorRef,
-    private readonly SnackbarService: SnackbarService
+    private readonly SnackbarService: SnackbarService,
+    private readonly NotificationService: NotificationsService,
   ) {
   }
 
@@ -67,6 +69,8 @@ export class AddMemberComponent implements OnInit {
     this.options = this.data.user
       .filter(member => member.teams!.length === 0 || member.role === UserRole.SM)
       .map(member => member.vorname + ' ' + member.nachname);
+
+    this.bereichsLeiter = this.data.user.filter(user => user.role === UserRole.Bereichsleiter)
 
     this.updateTeamRequirementStatus();
   }
@@ -79,23 +83,23 @@ export class AddMemberComponent implements OnInit {
       this.SnackbarService.open('User was not found!');
       return;
     }
-  
+
     if (this.data.team.members) {
       const alreadyInTeam = this.data.team.members.some(
         (member) => member.id === this.selectedUser!.id
       );
-  
+
       if (alreadyInTeam) {
         this.SnackbarService.open('User is already in the team!');
         return;
       }
     }
-  
+
     if (this.selectedUser.teams!.length > 0 && this.selectedUser.role !== UserRole.SM) {
       this.SnackbarService.open('User is already in a team!');
       return;
     }
-  
+
     if (this.selectedUser) {
       try {
         await this.TeamService.addUserToTeam(this.selectedUser.id, this.data.team.id);
@@ -104,6 +108,14 @@ export class AddMemberComponent implements OnInit {
           this.memberAdded.emit(this.selectedUser);
           this.updateOptionsList();
           this.updateTeamRequirementStatus();
+          let memberWithOutAddedUser = this.data.team.members.filter(member => member.id !== this.selectedUser?.id)
+          for (let member of memberWithOutAddedUser) {
+            await this.NotificationService.createNotification(`The user ${this.selectedUser?.vorname} ${this.selectedUser?.nachname} has been added to your team`, member.id);
+          }
+          await this.NotificationService.createNotification(`You were added to the team: ${this.data.team.name}`,this.selectedUser.id)
+          for (let b of this.bereichsLeiter) {
+            await this.NotificationService.createNotification(`The user: ${this.selectedUser.vorname} ${this.selectedUser.nachname} has been added to the team ${this.data.team.name}`,b.id)
+          }
         }
         this.newMemberName = '';
         this.cdr.detectChanges();
@@ -111,15 +123,13 @@ export class AddMemberComponent implements OnInit {
         this.SnackbarService.open('Could not add user to the team');
       }
     }
-  }  
+  }
 
   async removeMember(userID: number): Promise<void> {
     try {
       await this.TeamService.removeUserFromTeam(userID, this.data.team.id);
 
-      const updatedTeam = await this.TeamService.getTeamById(this.data.team.id);
-
-      this.data.team = updatedTeam;
+      this.data.team = await this.TeamService.getTeamById(this.data.team.id);
 
       const removedUser = this.data.user.find((user) => user.id === userID);
       if (removedUser && removedUser.teams) {
@@ -129,17 +139,21 @@ export class AddMemberComponent implements OnInit {
       this.memberRemoved.emit(userID);
       this.updateOptionsList();
       this.updateTeamRequirementStatus();
+      await this.NotificationService.createNotification(`You were removed from the team: ${this.data.team.name}`,removedUser!.id)
+      for(let b of this.bereichsLeiter) {
+        await this.NotificationService.createNotification(`The user: ${removedUser!.vorname} ${removedUser!.nachname} was removed from the team: ${this.data.team.name}`,b.id)
+      }
       this.cdr.detectChanges();
     } catch (error) {
       this.SnackbarService.open('Could not remove user from the team')
-    }   
+    }
   }
 
   onCancel(): void {
     this.dialogRef.close();
   }
 
-  updateOptionsList(): void { 
+  updateOptionsList(): void {
     const teamMembers = this.data.team.members ?? [];
     this.options = this.data.user
       .filter(
@@ -149,12 +163,12 @@ export class AddMemberComponent implements OnInit {
       )
       .map((member) => member.vorname + ' ' + member.nachname);
   }
-  
-  
+
+
   updateTeamRequirementStatus(): void {
     const members = this.data.team.members || [];
     const missingRoles: string[] = [];
-  
+
     // Check for each role
     if (!members.some((member) => member.role === UserRole.SM)) {
       missingRoles.push('Scrum Master');
@@ -165,7 +179,7 @@ export class AddMemberComponent implements OnInit {
     if (!members.some((member) => member.role === UserRole.Developer)) {
       missingRoles.push('Developer');
     }
-  
+
     // Construct the status message based on missing roles
     if (missingRoles.length > 0) {
       this.teamRequirementStatus = `Missing ${missingRoles.join(', ')}`;

@@ -8,8 +8,6 @@ import {Roadmap} from '../types/roadmap';
 })
 export class RoadmapService {
 
-  private roadmaps: Roadmap[] = [];
-
   constructor(private readonly ApiService: ApiService) {
   }
 

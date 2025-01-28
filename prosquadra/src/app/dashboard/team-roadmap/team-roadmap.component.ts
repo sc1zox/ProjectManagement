@@ -55,6 +55,7 @@ import {
   setOverdueClassName
 } from '../../../helper/projectHelper';
 import {MatIcon} from '@angular/material/icon';
+import {NotificationsService} from '../../../services/notifications.service';
 
 const today = normalizeDate(new Date());
 
@@ -92,6 +93,8 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
   @Input() enableDragDrop: boolean = false;
 
   projects: Project[] = [];
+  bereichsLeiter: User[] = [];
+  users: User[] = [];
   countEstimatesByUser: number = 0;
   maxEstimates: number = 0;
   selectedProject?: Project;
@@ -134,6 +137,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
               private SnackBarService: SnackbarService,
               private cdr: ChangeDetectorRef,
               private router: Router,
+              private NotificationService: NotificationsService,
               ) {
     this.dateForm = this.fb.group({
       startDate: this.startDateControl,
@@ -209,6 +213,12 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
         await this.refreshDates();
       }
     });
+    try {
+      this.users = await this.UserService.getUsers();
+    }catch (error){
+      console.log(error)
+    }
+    this.bereichsLeiter = this.UserService.getBereichsleiter(this.users);
   }
 
   async onStatusChange(event: MatSelectChange): Promise<void> {
@@ -385,8 +395,15 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
         this.dataUpdated.emit(); // das hier verursacht ein doppeltes rendern der ersten roadmap. Unsicher ob es weggelassen werden kann für andere Updates.Scheint mir momentan nicht essenziell zu sein. Doch wenn es fehlt wird für Dev die Zeit nicht aktualisiert deshalb die if clause
       }
       this.SnackBarService.open('Project priority was successfully changed')
+
+      for(let user of this.roadmap!.teams!.members!){
+        await this.NotificationService.createNotification(`The prioritization of your roadmap was changed`,user.id);
+      }
+      for(let b of this.bereichsLeiter){
+        await this.NotificationService.createNotification(`The prioritization of ${this.roadmap?.teams?.name} was changed`,b.id);
+      }
     } catch (error) {
-      this.SnackBarService.open('An error has occurred during project prioritisation')
+      this.SnackBarService.open('An error has occurred during project prioritization')
       this.progressBar.complete();
     } finally {
       this.progressBar.complete();
@@ -404,6 +421,12 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
     if (this.selectedProject?.id) {
       try {
         await this.ProjectService.deleteProjectById(this.selectedProject.id);
+        for (let user of this.roadmap?.teams?.members!){
+          await this.NotificationService.createNotification(`The project ${this.selectedProject.name} in your team: ${this.selectedProject.team?.name} was deleted`,user.id)
+        }
+        for(let b of this.bereichsLeiter){
+          await this.NotificationService.createNotification(`The project ${this.selectedProject.name} in the team: ${this.selectedProject.team?.name} was deleted`,b.id)
+        }
         this.projects = this.projects.filter(project => project.id !== this.selectedProject?.id);
 
         if (this.roadmap) {
@@ -414,6 +437,7 @@ export class TeamRoadmapComponent implements AfterViewInit, OnInit, OnChanges {
         // this.dataUpdated.emit(); this causes prio position bug. But deleting might cause new unwanted behaviour. Observe
 
         this.SnackBarService.open('Project successfully deleted');
+
       } catch (error) {
         this.SnackBarService.open('Error when deleting the project');
         this.progressBar.complete();

@@ -16,6 +16,7 @@ import {TeamService} from '../../../../services/team.service';
 import {Team} from '../../../../types/team';
 import {MatStep, MatStepLabel, MatStepper, MatStepperNext, MatStepperPrevious} from '@angular/material/stepper';
 import {Login} from '../../../../types/login';
+import {NotificationsService} from '../../../../services/notifications.service';
 
 
 const defaultUrlaubstage: number = 28;
@@ -52,6 +53,8 @@ const defaultArbeitszeit: number = 38.5;
 export class MitarbeiterFormComponent implements OnInit, OnChanges {
 
   Team: Team[] = [];
+  bereichsLeiter: User[] = [];
+  users: User[] = [];
   user: User = {
     id: 0,
     vorname: '',
@@ -69,7 +72,13 @@ export class MitarbeiterFormComponent implements OnInit, OnChanges {
   firstFormGroup: FormGroup;
   loginFormGroup: FormGroup;
 
-  constructor(private fb: FormBuilder, private TeamService: TeamService, private UserService: UserService, private dialog: MatDialog, private router: Router, private SnackBarService: SnackbarService) {
+  constructor(private fb: FormBuilder,
+              private TeamService: TeamService,
+              private UserService: UserService,
+              private dialog: MatDialog,
+              private router: Router,
+              private SnackBarService: SnackbarService,
+              private readonly NotificationService: NotificationsService) {
     this.firstFormGroup = this.fb.group({
       vorname: ['', [Validators.required, Validators.pattern('^[A-Za-z]+$')]],
       nachname: ['', [Validators.required, Validators.pattern('^[A-Za-z]+$')]],
@@ -91,6 +100,8 @@ export class MitarbeiterFormComponent implements OnInit, OnChanges {
     try {
       this.Team = await this.TeamService.getTeams();
       this.Team = this.Team.filter(team => team.id !== 1);
+      this.users = await this.UserService.getUsers();
+      this.bereichsLeiter = this.UserService.getBereichsleiter(this.users)
     }catch (error){
       this.SnackBarService.open('Could not load the teams')
     }
@@ -164,6 +175,9 @@ export class MitarbeiterFormComponent implements OnInit, OnChanges {
             this.Login.userId = responseUser.id;
             await this.UserService.createLogin(this.Login);
             this.SnackBarService.open('The user creation was successful');
+            for(let b of this.bereichsLeiter) {
+              await this.NotificationService.createNotification(`A new user has been created: ${this.user.vorname} ${this.user.nachname}`, b.id)
+            }
             this.router.navigate(['/dashboard/admin-panel']);
           } catch (error) {
             this.SnackBarService.open('Employee creation has gone wrong');
