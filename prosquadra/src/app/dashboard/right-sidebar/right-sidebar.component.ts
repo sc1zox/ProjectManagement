@@ -54,7 +54,7 @@ import {catchError, interval, startWith, Subscription, switchMap} from 'rxjs';
 export class RightSidebarComponent implements OnInit, OnDestroy {
   userProject?: Project;
   userProjects: Project[] =[];
-  notificationsAmount: number | undefined = 0;
+  notificationsAmount: number = 0;
   notifications: Notification[] = [];
   userInitials: string = '';
   user?: User;
@@ -77,7 +77,6 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
-    this.notificationsAmount = undefined;
     try {
       this.user = await this.UserService.getCurrentUser();
       if (this.user) {
@@ -90,6 +89,8 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
       }
     } catch (error) {
       console.error('Error while fetching user or project:', error);
+    } finally {
+      this.loading = false;
     }
   }
 
