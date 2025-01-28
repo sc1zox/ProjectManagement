@@ -3,6 +3,7 @@
   <button (click)="showNotifications()" id="notification" mat-icon-button>
     <mat-icon matBadge="{{ notificationsAmount }}">notifications</mat-icon>
   </button>
+  <p *ngIf="loading">initializing...</p>
 
   <div class="user-info">
     <p id="user-text">User</p>

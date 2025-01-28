@@ -23,7 +23,7 @@ import {QrCodeModule} from 'ng-qrcode';
 import {ApiService} from '../../../services/api.service';
 import {SnackbarService} from '../../../services/snackbar.service';
 import {NgProgressbar, NgProgressRef} from 'ngx-progressbar';
-import {catchError, interval, Subscription, switchMap} from 'rxjs';
+import {catchError, interval, startWith, Subscription, switchMap} from 'rxjs';
 
 
 @Component({
@@ -54,13 +54,14 @@ import {catchError, interval, Subscription, switchMap} from 'rxjs';
 export class RightSidebarComponent implements OnInit, OnDestroy {
   userProject?: Project;
   userProjects: Project[] =[];
-  notificationsAmount: number = 0;
+  notificationsAmount: number | undefined = 0;
   notifications: Notification[] = [];
   userInitials: string = '';
   user?: User;
   noTeamAndProject: boolean = false;
   QrCodeVisible: boolean = false
   pollingSubscription!: Subscription;
+  loading: boolean = true;
   @ViewChild(NgProgressRef) progressBar!: NgProgressRef;
 
 
@@ -76,6 +77,7 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
   }
 
   async ngOnInit() {
+    this.notificationsAmount = undefined;
     try {
       this.user = await this.UserService.getCurrentUser();
       if (this.user) {
@@ -94,6 +96,7 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
   startPolling() {
     this.pollingSubscription = interval(10000)
       .pipe(
+        startWith(0),
         switchMap(() => this.fetchData()),
         catchError((error) => {
           console.error('Error during polling:', error);
@@ -108,6 +111,8 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
       await Promise.all([this.fetchProject(), this.fetchNotifications()]);
     } catch (error) {
       console.error('Error fetching data during polling:', error);
+    }finally {
+      this.loading =false;
     }
   }
 
