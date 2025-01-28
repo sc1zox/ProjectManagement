@@ -11,8 +11,8 @@
         matTooltip="Cannot move this project" [matTooltipDisabled]="handleDisabledTooltip(project)"
         (mousedown)="onMouseDown($event)" (click)="handleProjectClick($event, project)"
         [ngClass]="getProjectClasses(project,selectedProject)" cdkDragBoundary=".roadmap-card">
-        <mat-icon [ngClass]="setOverdueClassIcon(project,selectedProject)" class="overdueIcon">flash_on</mat-icon>
-        <div [ngClass]="setOverdueClassName(project,selectedProject)">{{ project.name }}</div>
+        <mat-icon [ngClass]="setOverdueClassIcon(project)" class="overdueIcon">flash_on</mat-icon>
+        <div [ngClass]="setOverdueClassName(project)">{{ project.name }}</div>
         <span class="status-label">{{ getStatusLabel(project.projectStatus) }}</span>
       </div>
     </div>
