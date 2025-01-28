@@ -83,6 +83,7 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
         this.userInitials = this.user.vorname.charAt(0).toUpperCase() + this.user.nachname.charAt(0).toUpperCase();
         if (this.user.role === UserRole.Admin || this.user.role === UserRole.Bereichsleiter) {
           this.noTeamAndProject = true;
+          this.startPolling();
           return;
         }
         this.startPolling();
@@ -119,7 +120,7 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
 
   async fetchProject() {
     try {
-      if (this.user) {
+      if (this.user && (this.user.role !== UserRole.Bereichsleiter && this.user.role !== UserRole.Admin)) {
         const response: Project[] = await this.ProjectService.getProjectWithLowestPriorityByUserId(this.user.id)
         if(Array.isArray(response)){
           this.userProjects = response;
@@ -144,7 +145,7 @@ export class RightSidebarComponent implements OnInit, OnDestroy {
         });
       }
     } catch (error) {
-      console.log("error fetching notifications")
+      console.log(error)
     }
   }
 

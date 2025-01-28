@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
-import { User } from '../types/user';
+import {User, UserRole} from '../types/user';
 import { ApiService } from './api.service';
 import { ApiResponse } from '../types/api-response';
 import { Login } from '../types/login';
 import { Estimation } from '../types/estimation';
 import {Urlaub, vacationState} from '../types/urlaub';
-import {log} from '@angular-devkit/build-angular/src/builders/ssr-dev-server';
 
 @Injectable({
   providedIn: 'root',
@@ -170,5 +169,8 @@ export class UserService {
     } catch (error) {
       throw error;
     }
+  }
+  public getBereichsleiter(users: User[]): User[] {
+    return users.filter(user => user.role === UserRole.Bereichsleiter)
   }
 }
