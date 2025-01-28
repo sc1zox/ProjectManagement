@@ -202,8 +202,8 @@ export class UrlaubsPlanungComponent implements OnInit, OnDestroy {
       const vacationB = vacationsB.find((v) => v.id === vacationA.id);
       return (
         vacationB &&
-        vacationA.startDatum === vacationB.startDatum &&
-        vacationA.endDatum === vacationB.endDatum &&
+        new Date(vacationA.startDatum).getTime() === new Date(vacationB.startDatum).getTime() &&
+        new Date(vacationA.endDatum).getTime() === new Date(vacationB.endDatum).getTime() &&
         vacationA.stateOfAcception === vacationB.stateOfAcception
       );
     });

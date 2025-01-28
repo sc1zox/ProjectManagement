@@ -120,12 +120,13 @@ export class UrlaubOverviewComponent implements OnInit,OnDestroy {
         this.SnackBarService.open('Leave was refused');
         await this.NotificationService.createNotification('Your holiday has been refused',urlaub.userId)
 
-        this.groupedVacations.forEach((vacations, user) => {
+        this.groupedVacations.forEach((vacations) => {
           vacations.accepted = vacations.accepted.filter(v => v.id !== urlaub.id);
           vacations.waiting = vacations.waiting.filter(v => v.id !== urlaub.id);
           vacations.denied.push(urlaub);
         });
 
+        await this.loadUsers();
         this.groupedVacationsSignal.set(this.groupedVacations);
       } else {
         throw new Error('urlaubId not defined');
