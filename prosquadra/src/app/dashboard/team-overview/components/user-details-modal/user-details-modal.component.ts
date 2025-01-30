@@ -29,7 +29,7 @@ export class UserDetailsModalComponent implements OnInit {
   arbeitszeit? = new BehaviorSubject<number>(0);
   currentUser?: User;
   user?: User;
-  isAdmin: boolean = false;
+  isAdminOrBl: boolean = false;
   protected readonly UserRole = UserRole;
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: { user: User, currentUser: User },
@@ -49,8 +49,8 @@ export class UserDetailsModalComponent implements OnInit {
       }
     }
 
-    if (this.currentUser?.role === UserRole.Admin) {
-      this.isAdmin = true;
+    if (this.currentUser?.role === UserRole.Admin  || this.currentUser?.role === UserRole.Bereichsleiter) {
+      this.isAdminOrBl = true;
     }
     if (this.arbeitszeit && this.user.arbeitszeit) {
       this.arbeitszeit.next(this.user.arbeitszeit);

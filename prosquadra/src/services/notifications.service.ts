@@ -21,7 +21,7 @@ export class NotificationsService {
   showNotification(notification: Notification) {
     const toast: ActiveToast<any> = this.toastr.info(notification.message, 'New notification', {
       timeOut: 5000,
-      positionClass: 'toast-bottom-right',
+      positionClass: this.isMobile ? 'toast-bottom-center' : 'toast-bottom-right',
       closeButton: true,
       progressBar: true,
       newestOnTop: true,
