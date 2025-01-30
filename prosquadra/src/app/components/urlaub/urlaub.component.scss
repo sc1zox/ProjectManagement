@@ -26,3 +26,20 @@
   background: black;
 }
 
+@media screen and (max-width: 1000px) {
+  .urlaub-button{
+    display: flex;
+    flex-direction: column;
+    margin-left: 20px;
+  }
+  #acceptButton{
+    color: white;
+    background: black;
+    margin-top: 10px;
+  }
+  .urlaub-anzeige{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+}
