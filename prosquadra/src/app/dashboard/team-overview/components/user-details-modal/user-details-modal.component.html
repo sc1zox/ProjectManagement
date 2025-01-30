@@ -12,7 +12,7 @@
       </li>
     </ul>
   </div>
-  <ng-container *ngIf="isAdmin && user?.role===UserRole.Developer">
+  <ng-container *ngIf="isAdminOrBl && user?.role===UserRole.Developer">
     <label for="arbeitszeit">Working hours (in hours):</label>
     <input
       [ngModel]="arbeitszeit | async"
