@@ -30,8 +30,6 @@ const defaultArbeitszeit: number = 38.5;
 export class ArbeitszeitOverviewComponent implements OnInit {
 
   @Input() user?: User;
-  users: User[] = [];
-  bereichsleiter: User[]=[]
   arbeitszeit = new BehaviorSubject<number>(0);
   @Input() currentUser?: User;
   protected readonly UserRole = UserRole;
@@ -47,8 +45,6 @@ export class ArbeitszeitOverviewComponent implements OnInit {
     if (this.user?.arbeitszeit) {
       this.arbeitszeit.next(this.user.arbeitszeit);
     }
-    this.users = await this.UserService.getUsers();
-    this.bereichsleiter = this.UserService.getBereichsleiter(this.users);
   }
 
 
