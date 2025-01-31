@@ -9,6 +9,7 @@ import { BehaviorSubject } from 'rxjs';
 import { MatInput } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
 import { ArbeitszeitModalComponent } from '../arbeitszeit-modal/arbeitszeit-modal.component';
+import {NotificationsService} from '../../../../../services/notifications.service';
 
 const defaultUrlaubstage: number = 28;
 const defaultArbeitszeit: number = 38.5;
@@ -36,27 +37,29 @@ export class ArbeitszeitOverviewComponent implements OnInit {
   constructor(
     private readonly UserService: UserService,
     private readonly SnackBarService: SnackbarService,
+    private readonly NotificationService: NotificationsService,
     private dialog: MatDialog
   ) {}
 
-  ngOnInit() {
+  async ngOnInit() {
     if (this.user?.arbeitszeit) {
       this.arbeitszeit.next(this.user.arbeitszeit);
     }
   }
 
 
-  updateArbeitszeit(value: number) {
+  async updateArbeitszeit(value: number) {
     if (isNaN(value) || value < 0 || value > 100 || value === null) {
       this.SnackBarService.open('The working time must be between 0 and 100.');
       return;
     }
     this.arbeitszeit.next(value);
     this.updateUrlaubstage();
+    await this.NotificationService.createNotification(`Your working time has been updated to ${value} hours and your vacation days to ${this.arbeitszeit.value}`,this.user!.id)
 
     if (this.user) {
       try {
-        this.UserService.updateArbeitszeit(this.user.id, this.arbeitszeit.value);
+        await this.UserService.updateArbeitszeit(this.user.id, this.arbeitszeit.value);
       } catch (error) {
         this.SnackBarService.open('Error when updating the working time');
       }
