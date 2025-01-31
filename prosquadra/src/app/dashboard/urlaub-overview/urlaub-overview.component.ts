@@ -52,7 +52,6 @@ export class UrlaubOverviewComponent implements OnInit,OnDestroy {
     await this.loadUsers()
     this.pollingSubscription = interval(5000)
       .subscribe(async () => {
-        console.log('Polling: Daten werden neu geladen...');
         await this.loadUsers();
       });
   }
@@ -81,8 +80,6 @@ export class UrlaubOverviewComponent implements OnInit,OnDestroy {
         this.allUser.forEach(user => this.userCollapseState.set(user, false));
 
         this.lastFetchedUserData = [...tmpUsers];
-      } else {
-        console.log('Daten sind unverändert, keine Aktualisierung erforderlich');
       }
     } catch (error) {
       this.SnackBarService.open('Could not load holiday');
@@ -118,7 +115,8 @@ export class UrlaubOverviewComponent implements OnInit,OnDestroy {
       if (urlaub.id) {
         await this.UserService.deleteUrlaub(urlaub);
         this.SnackBarService.open('Leave was refused');
-        await this.NotificationService.createNotification('Your holiday has been refused',urlaub.userId)
+        console.log(new Date(urlaub.startDatum).toDateString());
+        await this.NotificationService.createNotification(`Your holiday from ${new Date(urlaub.startDatum).toLocaleDateString()} to ${new Date(urlaub.endDatum).toLocaleDateString()} has been refused`,urlaub.userId)
 
         this.groupedVacations.forEach((vacations) => {
           vacations.accepted = vacations.accepted.filter(v => v.id !== urlaub.id);
@@ -145,7 +143,7 @@ export class UrlaubOverviewComponent implements OnInit,OnDestroy {
       if (urlaub.id) {
         await this.UserService.updateVacationState(urlaub.id, vacationState.Accepted);
         this.SnackBarService.open('Holiday was accepted');
-        await this.NotificationService.createNotification('Your holiday has been accepted',urlaub.userId)
+        await this.NotificationService.createNotification(`Your holiday from ${new Date(urlaub.startDatum).toLocaleDateString()} to ${new Date(urlaub.endDatum).toLocaleDateString()} has been accepted`,urlaub.userId)
 
         this.groupedVacations.forEach((vacations, user) => {
           if (user.urlaub?.some(v => v.id === urlaub.id)) {

@@ -166,9 +166,7 @@ export class UrlaubsPlanungComponent implements OnInit, OnDestroy {
   }
 
   startPolling(): void {
-    console.log('Polling gestartet...');
     this.pollingSubscription = interval(5000).subscribe(async () => {
-      console.log('Polling-Tick: Request wird ausgelöst...');
       try {
 
         const updatedUser = await this.UserService.getCurrentUser();
@@ -181,7 +179,6 @@ export class UrlaubsPlanungComponent implements OnInit, OnDestroy {
           const isEqual = this.areVacationsEqual(currentUrlaub, updatedUrlaub);
 
           if (!isEqual) {
-            console.log('Daten haben sich geändert, aktualisiere UI...');
             this.currentUser = updatedUser;
             this.currentUser.urlaub = updatedUrlaub;
 
@@ -189,8 +186,6 @@ export class UrlaubsPlanungComponent implements OnInit, OnDestroy {
 
             this.updateFilteredVacations();
             this.calculateRemainingVacationDays();
-          } else {
-            console.log('Daten sind unverändert, keine Aktion notwendig.');
           }
         }
       } catch (error) {
