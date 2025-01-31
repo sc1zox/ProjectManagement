@@ -20,6 +20,7 @@ import {MatIconModule} from '@angular/material/icon';
 import {UrlaubComponent} from '../../components/urlaub/urlaub.component';
 import {MatDivider} from '@angular/material/divider';
 import {MatCard, MatCardContent, MatCardTitle} from '@angular/material/card';
+import {NotificationsService} from '../../../services/notifications.service';
 
 @Component({
   selector: 'app-urlaubs-planung',
@@ -47,6 +48,8 @@ export class UrlaubsPlanungComponent implements OnInit, OnDestroy {
 
   protected isVisible = signal(false);
   currentUser?: User;
+  users: User[] = [];
+  bereichsleiter: User[] = [];
   userCurrentVacationDays?: number;
   userRemainingVacationDays$ = new BehaviorSubject<number>(0);
   urlaub$ = new BehaviorSubject<Urlaub[]>([]);
@@ -65,7 +68,8 @@ export class UrlaubsPlanungComponent implements OnInit, OnDestroy {
   constructor(
     private UserService: UserService,
     private readonly SnackBarService: SnackbarService,
-    private readonly SpinnerService: SpinnerService
+    private readonly SpinnerService: SpinnerService,
+    private readonly NotificationService: NotificationsService,
   ) {
   }
 
@@ -77,6 +81,9 @@ export class UrlaubsPlanungComponent implements OnInit, OnDestroy {
     } catch (error) {
       this.SnackBarService.open('User could not be retrieved');
     }
+
+    this.users = await this.UserService.getUsers();
+    this.bereichsleiter = this.UserService.getBereichsleiter(this.users);
 
     try {
       this.startPolling();
@@ -136,6 +143,9 @@ export class UrlaubsPlanungComponent implements OnInit, OnDestroy {
           this.urlaub$.next(updatedUrlaub);
           this.isVisible.set(!this.isVisible());
           this.SnackBarService.open('Holiday has been successfully entered');
+          for(let b of this.bereichsleiter){
+            await this.NotificationService.createNotification(`The user: ${this.currentUser.vorname} ${this.currentUser.nachname} has requested a vacation. Go to the overview and take a look!`,b.id)
+          }
           this.calculateRemainingVacationDays();
           setTimeout(() => {
             this.resetDatePicker()
