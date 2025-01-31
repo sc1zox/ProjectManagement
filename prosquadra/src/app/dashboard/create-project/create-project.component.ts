@@ -44,6 +44,8 @@ export class CreateProjectComponent implements OnInit{
   roadmap?: Roadmap;
   currentTeam?: Team;
   user?: User;
+  users: User[] = [];
+  bereichsleiter: User[] = []
   @ViewChild(NgProgressRef) progressBar!: NgProgressRef;
 
   constructor(
@@ -64,8 +66,11 @@ export class CreateProjectComponent implements OnInit{
 
   async ngOnInit() {
     await this.loadTeams();
-    if(this.user && this.user.teams)
-    this.userTeam = this.user?.teams[0];
+    if(this.user && this.user.teams) {
+      this.userTeam = this.user?.teams[0];
+    }
+    this.users = await this.UserService.getUsers();
+    this.bereichsleiter = this.UserService.getBereichsleiter(this.users);
   }
 
   async loadTeams() {
@@ -80,6 +85,7 @@ export class CreateProjectComponent implements OnInit{
   }
 
   async onSubmit(): Promise<void> {
+    let newProject: Project;
     this.progressBar.start();
     if (this.projectForm.valid && this.teams) {
       const selectedTeam = this.teams.find(team => team.id === this.projectForm.value.teamName);
@@ -97,7 +103,7 @@ export class CreateProjectComponent implements OnInit{
           ? Math.max(...existingProjects?.map(project => project.priorityPosition || 0))
           : 0;
         const newPriorityPosition = maxPriorityPosition + 1;
-        const newProject: Project = {
+        newProject = {
           id: 0,
           name: this.projectForm.value.projectName,
           description: this.projectForm.value.description,
@@ -112,18 +118,21 @@ export class CreateProjectComponent implements OnInit{
           this.progressBar.complete();
         }
         this.selectedTeam = selectedTeam;
-          try {
-            this.currentTeam = await this.TeamService.getTeamById(selectedTeam.id);
-            this.roadmap = await this.RoadmapService.getRoadmapById(this.currentTeam.roadmap?.id)
-          }catch (error){
-            this.SnackBarService.open('Could not load the team')
-            this.progressBar.complete();
-          }
+        try {
+          this.currentTeam = await this.TeamService.getTeamById(selectedTeam.id);
+          this.roadmap = await this.RoadmapService.getRoadmapById(this.currentTeam.roadmap?.id)
+        }catch (error){
+          this.SnackBarService.open('Could not load the team')
+          this.progressBar.complete();
         }
+      }
       if (this.selectedTeam) {
         this.selectedTeam.members?.forEach((member) => {
-          this.NotificationService.createNotification('A project has been added to your team', member.id);
+          this.NotificationService.createNotification(`The project: ${newProject!.name} has been added to your team: ${this.selectedTeam!.name}`, member.id);
         });
+        for (let b of this.bereichsleiter){
+          await this.NotificationService.createNotification(`The project: ${newProject!.name} was added to the team: ${this.selectedTeam.name}`, b.id)
+        }
         this.projectForm.reset();
       } else {
         console.log('Form is invalid');
