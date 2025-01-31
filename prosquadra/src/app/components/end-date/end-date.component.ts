@@ -76,10 +76,10 @@ export class EndDateComponent implements AfterViewInit,OnInit {
         await this.ProjectService.updateProject(body);
         this.SnackBarService.open('Project data has been updated!')
         for (let b of this.bereichsLeiter){
-          await this.NotificationService.createNotification(`An end date has been calculated for the project: ${this.currentProject?.name} in the team: ${this.currentProject?.team?.name} for the:  ${this.result.toDateString()}`,b.id);
+          await this.NotificationService.createNotification(`An end date has been calculated for the project: ${this.currentProject?.name} in the team: ${this.currentProject?.team?.name} for the:  ${this.result.toLocaleDateString()}`,b.id);
         }
         for (let user of this.currentTeam?.members!){
-          await this.NotificationService.createNotification(`An end date has been calculated for your project: ${this.currentProject?.name} for the:  ${this.result.toDateString()}`,user.id);
+          await this.NotificationService.createNotification(`An end date has been calculated for your project: ${this.currentProject?.name} for the:  ${this.result.toLocaleDateString()}`,user.id);
         }
       } catch (error) {
         this.SnackBarService.open('Project data could not be updated!');
