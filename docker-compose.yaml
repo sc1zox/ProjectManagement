@@ -3,7 +3,7 @@ services:
   prosquadra_frontend:
     container_name: prosquadra_frontend
     restart: always
-    build: ./prosquadra
+    build: frontend
     ports:
       - "4200:4200"
   prosquadra_backend:

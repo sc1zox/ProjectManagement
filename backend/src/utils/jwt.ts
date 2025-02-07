@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import jwt from 'jsonwebtoken';
 
-const SECRET = process.env.JWT_SECRET || 'prosquadra';
+const SECRET = process.env.JWT_SECRET || 'frontend';
 
 export default {
     sign: (payload: { username: String,userId: number }) =>
