@@ -21,7 +21,6 @@ const defaultArbeitszeit: number = 38.5;
     NgIf,
     FormsModule,
     AsyncPipe,
-    MatInput,
     MatButton
   ],
   templateUrl: './arbeitszeit-overview.component.html',

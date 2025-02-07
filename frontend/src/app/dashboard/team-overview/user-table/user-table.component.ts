@@ -39,8 +39,6 @@ import {MatIcon} from '@angular/material/icon';
     MatHeaderRowDef,
     MatButton,
     TeamPlanungComponent,
-    MatIcon,
-
   ],
   templateUrl: './user-table.component.html',
   styleUrl: './user-table.component.scss'

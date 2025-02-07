@@ -23,7 +23,6 @@ import {interval, Subscription} from 'rxjs';
     MatExpansionPanel,
     MatExpansionPanelHeader,
     NgProgressbar,
-    AsyncPipe
   ],
   animations: [
     slideIn

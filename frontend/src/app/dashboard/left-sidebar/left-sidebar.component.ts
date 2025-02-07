@@ -18,7 +18,6 @@ import {User, UserRole} from '../../../types/user';
     MatExpansionPanel,
     MatExpansionPanelTitle,
     NgIf,
-    NgClass
   ],
   templateUrl: './left-sidebar.component.html',
   styleUrls: ['./left-sidebar.component.scss']

@@ -14,8 +14,6 @@ import {UserRole} from '../../../types/user';
     MatFabButton,
     MatIcon,
     NgIf,
-    NgClass,
-    TitleCasePipe
   ],
   animations: [
     slideIn

@@ -1,5 +1,4 @@
 import {Injectable} from '@angular/core';
-import {Project} from '../types/project';
 import {Roadmap} from '../types/roadmap';
 import {TeamService} from './team.service';
 import {Team} from '../types/team';

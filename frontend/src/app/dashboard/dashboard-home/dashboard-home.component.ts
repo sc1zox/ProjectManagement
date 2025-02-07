@@ -11,7 +11,6 @@ import {fadeIn} from '../../../animations/fadeIn';
 import {Router} from '@angular/router';
 import {SpinnerComponent} from '../../components/spinner/spinner.component';
 import {SpinnerService} from '../../../services/spinner.service';
-import {TeamService} from '../../../services/team.service';
 
 
 @Component({
